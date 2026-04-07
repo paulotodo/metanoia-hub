@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metanoia Hub — Design Directions</title>
+<style>
+  /* ========== DESIGN TOKENS ========== */
+  :root {
+    --brand-teal: #2B7A78;
+    --brand-teal-light: #3AAFA9;
+    --brand-teal-dark: #17252A;
+    --brand-terracotta: #C1666B;
+    --brand-terracotta-light: #D4918A;
+    --care-urgent: #C1666B;
+    --care-attention: #D4A24C;
+    --care-ok: #7BA38A;
+    --care-neutral: #8E8D8A;
+    --surface-base: #FAFAF8;
+    --surface-elevated: #FFFFFF;
+    --surface-sunken: #F2F0ED;
+    --text-primary: #17252A;
+    --text-secondary: #5C5C5A;
+    --text-tertiary: #8E8D8A;
+    --shadow-sm: 0 1px 2px rgba(23,37,42,0.06);
+    --shadow-md: 0 4px 6px rgba(23,37,42,0.08);
+    --shadow-lg: 0 10px 15px rgba(23,37,42,0.10);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #1a1a2e;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* ========== SHOWCASE NAVIGATION ========== */
+  .showcase-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 16px;
+    overflow-x: auto;
+  }
+  .showcase-nav h1 {
+    color: white; font-size: 14px; font-weight: 600;
+    white-space: nowrap; margin-right: 8px;
+  }
+  .showcase-nav .divider {
+    width: 1px; height: 24px; background: rgba(255,255,255,0.2);
+  }
+  .nav-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
+    background: transparent; color: rgba(255,255,255,0.7); font-size: 13px;
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
+    font-family: inherit;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+  .nav-btn.active {
+    background: var(--brand-teal); color: white;
+    border-color: var(--brand-teal);
+  }
+
+  /* ========== DIRECTION SECTIONS ========== */
+  .direction-section {
+    display: none; padding-top: 64px; min-height: 100vh;
+  }
+  .direction-section.active { display: block; }
+
+  .direction-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 48px 24px 32px;
+    text-align: center;
+  }
+  .direction-header h2 {
+    color: white; font-size: 28px; font-weight: 700; margin-bottom: 8px;
+  }
+  .direction-header .subtitle {
+    color: rgba(255,255,255,0.6); font-size: 15px; max-width: 600px; margin: 0 auto;
+  }
+  .direction-header .tags {
+    display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .direction-header .tag {
+    padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;
+    background: rgba(43,122,120,0.3); color: var(--brand-teal-light);
+  }
+
+  /* ========== MOCKUP FRAME ========== */
+  .mockup-container {
+    display: flex; justify-content: center; gap: 32px; padding: 32px 24px;
+    flex-wrap: wrap;
+  }
+  .mockup-frame {
+    background: var(--surface-base);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .mockup-frame.mobile {
+    width: 375px; height: 812px;
+    border: 3px solid #333;
+    border-radius: 40px;
+    position: relative;
+  }
+  .mockup-frame.mobile::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 150px; height: 28px; background: #333;
+    border-radius: 0 0 16px 16px; z-index: 10;
+  }
+  .mockup-frame.desktop {
+    width: 960px; max-width: 100%; height: 640px;
+    border: 2px solid #444;
+  }
+  .mockup-inner {
+    height: 100%; overflow-y: auto; position: relative;
+  }
+  .mockup-frame.mobile .mockup-inner {
+    padding-top: 28px;
+  }
+
+  /* ========== LABEL ========== */
+  .device-label {
+    text-align: center; margin-top: 12px;
+    color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;
+  }
+
+  /* ========== COMMON APP COMPONENTS ========== */
+
+  /* --- Status Bar (mobile) --- */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 20px; font-size: 12px; font-weight: 600;
+    color: var(--text-primary); background: var(--surface-base);
+  }
+
+  /* --- Top Bar --- */
+  .top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 20px; background: var(--surface-elevated);
+    border-bottom: 1px solid var(--surface-sunken);
+  }
+  .top-bar .greeting {
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .top-bar .title {
+    font-size: 20px; font-weight: 700; color: var(--text-primary);
+  }
+  .top-bar .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--brand-teal); display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 14px; font-weight: 600;
+  }
+
+  /* --- Bottom Tabs --- */
+  .bottom-tabs {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 0 20px; background: var(--surface-elevated);
+    border-top: 1px solid var(--surface-sunken);
+  }
+  .tab-item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 10px; color: var(--text-tertiary); cursor: pointer;
+  }
+  .tab-item.active { color: var(--brand-teal); }
+  .tab-item .tab-icon { font-size: 22px; }
+  .tab-item .tab-badge {
+    position: relative;
+  }
+  .tab-item .tab-badge::after {
+    content: '3'; position: absolute; top: -4px; right: -10px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--care-urgent); color: white; font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+
+  /* --- Semaphore Summary Bar (Direction A - Hybrid) --- */
+  .semaphore-bar {
+    display: flex; gap: 12px; padding: 16px 20px;
+    background: var(--surface-elevated);
+    border-bottom: 1px solid var(--surface-sunken);
+  }
+  .semaphore-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    flex: 1; justify-content: center;
+  }
+  .semaphore-pill.urgent {
+    background: rgba(193,102,107,0.12); color: var(--care-urgent);
+    border: 1.5px solid rgba(193,102,107,0.3);
+  }
+  .semaphore-pill.attention {
+    background: rgba(212,162,76,0.12); color: var(--care-attention);
+    border: 1.5px solid rgba(212,162,76,0.3);
+  }
+  .semaphore-pill.ok {
+    background: rgba(123,163,138,0.12); color: var(--care-ok);
+    border: 1.5px solid rgba(123,163,138,0.3);
+  }
+  .semaphore-pill .pill-icon { font-size: 14px; }
+  .semaphore-pill .pill-count { font-size: 18px; font-weight: 700; }
+  .semaphore-pill .pill-label { font-size: 10px; font-weight: 500; opacity: 0.8; }
+
+  /* --- Participant Card (Medium - Direction B) --- */
+  .participant-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--surface-sunken);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .participant-card:hover { background: var(--surface-sunken); }
+  .participant-card .p-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--surface-sunken); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 600; color: var(--text-secondary);
+    flex-shrink: 0; position: relative;
+  }
+  .participant-card .p-avatar .status-dot {
+    position: absolute; bottom: 0; right: 0;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2.5px solid var(--surface-elevated);
+  }
+  .participant-card .p-info { flex: 1; min-width: 0; }
+  .participant-card .p-name {
+    font-size: 15px; font-weight: 600; color: var(--text-primary);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .participant-card .p-status-text {
+    font-size: 12px; font-weight: 500; margin-top: 1px;
+  }
+  .participant-card .p-context {
+    font-size: 13px; color: var(--text-secondary); margin-top: 4px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .participant-card .p-cta {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 20px;
+    background: var(--brand-teal); color: white; font-size: 12px;
+    font-weight: 600; border: none; cursor: pointer;
+    align-self: center; transition: background 0.2s;
+    font-family: inherit;
+  }
+  .participant-card .p-cta:hover { background: var(--brand-teal-light); }
+
+  /* --- Participant Card (Compact - Direction A) --- */
+  .participant-card-compact {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--surface-sunken);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .participant-card-compact:hover { background: var(--surface-sunken); }
+  .participant-card-compact .pc-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--surface-sunken); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600; color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .participant-card-compact .pc-info { flex: 1; min-width: 0; }
+  .participant-card-compact .pc-name {
+    font-size: 14px; font-weight: 600; color: var(--text-primary);
+  }
+  .participant-card-compact .pc-context {
+    font-size: 12px; color: var(--text-secondary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .participant-card-compact .pc-indicator {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .participant-card-compact .pc-chevron {
+    color: var(--text-tertiary); font-size: 16px; flex-shrink: 0;
+  }
+
+  /* --- Section Header --- */
+  .section-header {
+    padding: 20px 20px 8px;
+    font-size: 13px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  /* --- Greeting Card --- */
+  .greeting-card {
+    margin: 16px 20px; padding: 20px;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+  .greeting-card .gc-hello {
+    font-size: 14px; color: var(--text-secondary);
+  }
+  .greeting-card .gc-name {
+    font-size: 22px; font-weight: 700; color: var(--text-primary);
+    margin: 4px 0 12px;
+  }
+  .greeting-card .gc-summary {
+    font-size: 14px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .greeting-card .gc-highlight {
+    color: var(--brand-teal); font-weight: 600;
+  }
+  .greeting-card .gc-trend {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 8px; padding: 4px 10px; border-radius: 12px;
+    background: rgba(123,163,138,0.12); color: var(--care-ok);
+    font-size: 13px; font-weight: 600;
+  }
+
+  /* --- Celebration Banner --- */
+  .celebration-banner {
+    margin: 0 20px 12px; padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(193,102,107,0.08), rgba(212,145,138,0.12));
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--brand-terracotta);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .celebration-banner .cb-icon { font-size: 20px; }
+  .celebration-banner .cb-text {
+    font-size: 14px; color: var(--text-primary); font-weight: 500;
+  }
+  .celebration-banner .cb-name { font-weight: 700; }
+
+  /* --- Desktop Sidebar --- */
+  .desktop-layout { display: flex; height: 100%; }
+  .sidebar {
+    width: 240px; background: var(--surface-elevated);
+    border-right: 1px solid var(--surface-sunken);
+    padding: 20px 0; flex-shrink: 0;
+    display: flex; flex-direction: column;
+  }
+  .sidebar .logo {
+    padding: 0 20px 20px; font-size: 18px; font-weight: 700;
+    color: var(--brand-teal); display: flex; align-items: center; gap: 8px;
+  }
+  .sidebar .logo-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--brand-teal); display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 16px;
+  }
+  .sidebar-nav { flex: 1; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px; font-size: 14px; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent;
+  }
+  .sidebar-item:hover { background: var(--surface-sunken); color: var(--text-primary); }
+  .sidebar-item.active {
+    background: rgba(43,122,120,0.08); color: var(--brand-teal);
+    border-left-color: var(--brand-teal); font-weight: 600;
+  }
+  .sidebar-item .si-icon { font-size: 18px; width: 24px; text-align: center; }
+  .sidebar-item .si-badge {
+    margin-left: auto; padding: 2px 8px; border-radius: 10px;
+    background: var(--care-urgent); color: white; font-size: 11px; font-weight: 700;
+  }
+  .sidebar-user {
+    padding: 16px 20px; border-top: 1px solid var(--surface-sunken);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-user .su-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--brand-teal); display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 12px; font-weight: 600;
+  }
+  .sidebar-user .su-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .sidebar-user .su-role { font-size: 11px; color: var(--text-tertiary); }
+
+  .desktop-main {
+    flex: 1; overflow-y: auto; background: var(--surface-base);
+  }
+  .desktop-top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 32px; background: var(--surface-elevated);
+    border-bottom: 1px solid var(--surface-sunken);
+  }
+  .desktop-top-bar .dtb-title {
+    font-size: 22px; font-weight: 700; color: var(--text-primary);
+  }
+  .desktop-top-bar .dtb-search {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 20px;
+    background: var(--surface-sunken); color: var(--text-tertiary);
+    font-size: 13px; width: 240px;
+  }
+  .desktop-content { padding: 24px 32px; }
+
+  /* --- Desktop Semaphore Bar --- */
+  .desktop-semaphore-row {
+    display: flex; gap: 16px; margin-bottom: 24px;
+  }
+  .desktop-semaphore-card {
+    flex: 1; padding: 20px; border-radius: var(--radius-md);
+    background: var(--surface-elevated);
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .desktop-semaphore-card:hover { box-shadow: var(--shadow-md); }
+  .desktop-semaphore-card .dsc-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .desktop-semaphore-card .dsc-icon.urgent { background: rgba(193,102,107,0.12); }
+  .desktop-semaphore-card .dsc-icon.attention { background: rgba(212,162,76,0.12); }
+  .desktop-semaphore-card .dsc-icon.ok { background: rgba(123,163,138,0.12); }
+  .desktop-semaphore-card .dsc-count {
+    font-size: 28px; font-weight: 700; color: var(--text-primary);
+  }
+  .desktop-semaphore-card .dsc-label {
+    font-size: 13px; color: var(--text-secondary);
+  }
+
+  /* --- Desktop Participant Row --- */
+  .desktop-participant-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .desktop-participant-row:hover { box-shadow: var(--shadow-md); }
+  .desktop-participant-row .dpr-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--surface-sunken); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 600; color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .desktop-participant-row .dpr-info { flex: 1; }
+  .desktop-participant-row .dpr-name {
+    font-size: 15px; font-weight: 600; color: var(--text-primary);
+  }
+  .desktop-participant-row .dpr-context {
+    font-size: 13px; color: var(--text-secondary); margin-top: 2px;
+  }
+  .desktop-participant-row .dpr-status {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600;
+  }
+  .desktop-participant-row .dpr-cta {
+    padding: 8px 16px; border-radius: 20px;
+    background: var(--brand-teal); color: white;
+    font-size: 13px; font-weight: 600; border: none;
+    cursor: pointer; transition: background 0.2s;
+    font-family: inherit;
+  }
+  .desktop-participant-row .dpr-cta:hover { background: var(--brand-teal-light); }
+
+  /* ========== DIRECTION-SPECIFIC STYLES ========== */
+
+  /* Direction B: Ultra-clean overrides */
+  .ultra-clean .greeting-card {
+    box-shadow: none;
+    border: 1px solid var(--surface-sunken);
+  }
+  .ultra-clean .participant-card-compact { border-bottom-color: rgba(0,0,0,0.04); }
+
+  /* --- Comparison view --- */
+  .comparison-container {
+    padding: 32px 24px;
+  }
+  .comparison-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 32px; max-width: 1200px; margin: 0 auto;
+  }
+  .comparison-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px; padding: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .comparison-item h3 {
+    color: white; font-size: 18px; margin-bottom: 4px;
+  }
+  .comparison-item .ci-desc {
+    color: rgba(255,255,255,0.5); font-size: 13px; margin-bottom: 16px;
+  }
+  .comparison-item table {
+    width: 100%; border-collapse: collapse;
+  }
+  .comparison-item th {
+    text-align: left; padding: 8px 12px; font-size: 12px;
+    color: rgba(255,255,255,0.4); text-transform: uppercase;
+    letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .comparison-item td {
+    padding: 10px 12px; font-size: 13px; color: rgba(255,255,255,0.8);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .comparison-item .check { color: var(--brand-teal-light); }
+  .comparison-item .partial { color: var(--care-attention); }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .mockup-frame.desktop { display: none; }
+    .comparison-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== SHOWCASE NAVIGATION ========== -->
+<nav class="showcase-nav">
+  <h1>🎨 Metanoia Hub</h1>
+  <div class="divider"></div>
+  <button class="nav-btn active" onclick="showDirection('dir-a')">Direção A — Principal</button>
+  <button class="nav-btn" onclick="showDirection('dir-b')">Direção B — Enxuta</button>
+  <button class="nav-btn" onclick="showDirection('dir-c')">Direção C — Detalhe Expandido</button>
+  <button class="nav-btn" onclick="showDirection('dir-d')">Direção D — Dashboard Relacional</button>
+  <button class="nav-btn" onclick="showDirection('dir-compare')">⚖️ Comparação</button>
+</nav>
+
+<!-- ====================================================================
+     DIRECTION A — Principal (1C, 2C, 3B, 4B)
+     Hybrid Radar + Bottom tabs/Sidebar + Balanced + Medium Cards
+     ==================================================================== -->
+<section id="dir-a" class="direction-section active">
+  <div class="direction-header">
+    <h2>Direção A — Interface de Cuidado</h2>
+    <p class="subtitle">Combinação principal: Radar híbrido, navegação responsiva, peso equilibrado, cards médios. Clareza serena com ação fácil.</p>
+    <div class="tags">
+      <span class="tag">1C Híbrido</span>
+      <span class="tag">2C Responsivo</span>
+      <span class="tag">3B Equilibrado</span>
+      <span class="tag">4B Cards Médios</span>
+    </div>
+  </div>
+
+  <div class="mockup-container">
+    <!-- MOBILE -->
+    <div>
+      <div class="mockup-frame mobile">
+        <div class="mockup-inner">
+          <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+          </div>
+
+          <div class="top-bar">
+            <div>
+              <div class="greeting">Bom dia,</div>
+              <div class="title">Pastor Marcos</div>
+            </div>
+            <div class="avatar">PM</div>
+          </div>
+
+          <!-- Semaphore Summary -->
+          <div class="semaphore-bar">
+            <div class="semaphore-pill urgent">
+              <span class="pill-icon">⚠️</span>
+              <div>
+                <div class="pill-count">3</div>
+                <div class="pill-label">cuidado</div>
+              </div>
+            </div>
+            <div class="semaphore-pill attention">
+              <span class="pill-icon">👀</span>
+              <div>
+                <div class="pill-count">5</div>
+                <div class="pill-label">atenção</div>
+              </div>
+            </div>
+            <div class="semaphore-pill ok">
+              <span class="pill-icon">✓</span>
+              <div>
+                <div class="pill-count">14</div>
+                <div class="pill-label">bem</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Celebration -->
+          <div class="celebration-banner">
+            <span class="cb-icon">💚</span>
+            <span class="cb-text"><span class="cb-name">Juliana</span> voltou à reunião! Seu cuidado fez diferença.</span>
+          </div>
+
+          <!-- Greeting summary -->
+          <div style="padding: 12px 20px 4px;">
+            <span style="font-size: 13px; color: var(--text-secondary);">Esta semana você cuidou de <strong style="color: var(--brand-teal);">4 pessoas</strong>.</span>
+            <span style="display: inline-flex; align-items: center; gap: 4px; margin-left: 4px; padding: 2px 8px; border-radius: 8px; background: rgba(123,163,138,0.12); color: var(--care-ok); font-size: 12px; font-weight: 600;">80% estáveis ↑</span>
+          </div>
+
+          <!-- Section: Precisam de cuidado -->
+          <div class="section-header">⚠️ Precisam de cuidado</div>
+
+          <div class="participant-card">
+            <div class="p-avatar">
+              AN
+              <div class="status-dot" style="background: var(--care-urgent);"></div>
+            </div>
+            <div class="p-info">
+              <div class="p-name">Ana Silva</div>
+              <div class="p-status-text" style="color: var(--care-urgent);">precisa de cuidado</div>
+              <div class="p-context">Faltou 2 reuniões seguidas. Completou toda a trilha anterior. Última ação: mensagem há 5 dias sem resposta.</div>
+            </div>
+            <button class="p-cta">Cuidar</button>
+          </div>
+
+          <div class="participant-card">
+            <div class="p-avatar">
+              RL
+              <div class="status-dot" style="background: var(--care-urgent);"></div>
+            </div>
+            <div class="p-info">
+              <div class="p-name">Roberto Lima</div>
+              <div class="p-status-text" style="color: var(--care-urgent);">precisa de cuidado</div>
+              <div class="p-context">Não acessa a trilha há 3 semanas. Presença irregular no último mês.</div>
+            </div>
+            <button class="p-cta">Cuidar</button>
+          </div>
+
+          <div class="participant-card">
+            <div class="p-avatar">
+              MC
+              <div class="status-dot" style="background: var(--care-urgent);"></div>
+            </div>
+            <div class="p-info">
+              <div class="p-name">Marta Costa</div>
+              <div class="p-status-text" style="color: var(--care-urgent);">precisa de cuidado</div>
+              <div class="p-context">Faltou à última reunião. Parou na trilha no módulo 3.</div>
+            </div>
+            <button class="p-cta">Cuidar</button>
+          </div>
+
+          <!-- Section: Merecem atenção -->
+          <div class="section-header">👀 Merecem atenção</div>
+
+          <div class="participant-card">
+            <div class="p-avatar">
+              CF
+              <div class="status-dot" style="background: var(--care-attention);"></div>
+            </div>
+            <div class="p-info">
+              <div class="p-name">Carlos Ferreira</div>
+              <div class="p-status-text" style="color: var(--care-attention);">merece atenção</div>
+              <div class="p-context">Presente na última reunião, mas atrasou a trilha em 1 semana.</div>
+            </div>
+            <button class="p-cta" style="background: transparent; color: var(--brand-teal); border: 1.5px solid var(--brand-teal);">Ver</button>
+          </div>
+
+          <div style="height: 100px;"></div>
+
+          <!-- Bottom Tabs -->
+          <div class="bottom-tabs">
+            <div class="tab-item active">
+              <span class="tab-icon tab-badge">📡</span>
+              <span>Radar</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📋</span>
+              <span>Reuniões</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📚</span>
+              <span>Trilhas</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">⚙️</span>
+              <span>Mais</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Mobile — Líder (Gestão)</div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div>
+      <div class="mockup-frame desktop">
+        <div class="mockup-inner">
+          <div class="desktop-layout">
+            <div class="sidebar">
+              <div class="logo">
+                <div class="logo-icon">✝</div>
+                Metanoia Hub
+              </div>
+              <div class="sidebar-nav">
+                <div class="sidebar-item active">
+                  <span class="si-icon">📡</span>
+                  Radar Pastoral
+                  <span class="si-badge">3</span>
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📋</span>
+                  Reuniões
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📚</span>
+                  Trilhas
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">👥</span>
+                  Meu Grupo
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📊</span>
+                  Relatórios
+                </div>
+              </div>
+              <div class="sidebar-user">
+                <div class="su-avatar">PM</div>
+                <div>
+                  <div class="su-name">Pastor Marcos</div>
+                  <div class="su-role">Líder de Grupo</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="desktop-main">
+              <div class="desktop-top-bar">
+                <div class="dtb-title">Radar Pastoral</div>
+                <div class="dtb-search">🔍 Buscar participante...</div>
+              </div>
+
+              <div class="desktop-content">
+                <!-- Semaphore Cards -->
+                <div class="desktop-semaphore-row">
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon urgent">⚠️</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-urgent);">3</div>
+                      <div class="dsc-label">precisam de cuidado</div>
+                    </div>
+                  </div>
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon attention">👀</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-attention);">5</div>
+                      <div class="dsc-label">merecem atenção</div>
+                    </div>
+                  </div>
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon ok">✓</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-ok);">14</div>
+                      <div class="dsc-label">estão bem</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Celebration -->
+                <div class="celebration-banner" style="margin: 0 0 20px;">
+                  <span class="cb-icon">💚</span>
+                  <span class="cb-text"><span class="cb-name">Juliana</span> voltou à reunião! Seu cuidado fez diferença.</span>
+                </div>
+
+                <!-- Participant list -->
+                <div style="font-size: 14px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">⚠️ Precisam de cuidado</div>
+
+                <div class="desktop-participant-row">
+                  <div class="dpr-avatar">AN</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Ana Silva</div>
+                    <div class="dpr-context">Faltou 2 reuniões seguidas. Completou toda a trilha anterior.</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(193,102,107,0.12); color: var(--care-urgent);">⚠️ precisa de cuidado</div>
+                  <button class="dpr-cta">Cuidar</button>
+                </div>
+
+                <div class="desktop-participant-row">
+                  <div class="dpr-avatar">RL</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Roberto Lima</div>
+                    <div class="dpr-context">Não acessa a trilha há 3 semanas. Presença irregular.</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(193,102,107,0.12); color: var(--care-urgent);">⚠️ precisa de cuidado</div>
+                  <button class="dpr-cta">Cuidar</button>
+                </div>
+
+                <div class="desktop-participant-row">
+                  <div class="dpr-avatar">MC</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Marta Costa</div>
+                    <div class="dpr-context">Faltou à última reunião. Parou na trilha no módulo 3.</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(193,102,107,0.12); color: var(--care-urgent);">⚠️ precisa de cuidado</div>
+                  <button class="dpr-cta">Cuidar</button>
+                </div>
+
+                <div style="font-size: 14px; font-weight: 600; color: var(--text-tertiary); margin: 24px 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">👀 Merecem atenção</div>
+
+                <div class="desktop-participant-row">
+                  <div class="dpr-avatar">CF</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Carlos Ferreira</div>
+                    <div class="dpr-context">Presente na reunião, atrasou a trilha em 1 semana.</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(212,162,76,0.12); color: var(--care-attention);">👀 merece atenção</div>
+                  <button class="dpr-cta" style="background: transparent; color: var(--brand-teal); border: 1.5px solid var(--brand-teal);">Ver</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Desktop — Líder (Gestão)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================
+     DIRECTION B — Enxuta (1A, 2C, 3A, 4A)
+     WhatsApp List + Bottom tabs/Sidebar + Ultra-clean + Compact Cards
+     ==================================================================== -->
+<section id="dir-b" class="direction-section">
+  <div class="direction-header">
+    <h2>Direção B — WhatsApp do Cuidado</h2>
+    <p class="subtitle">Versão enxuta: lista vertical, ultra-clean, cards compactos. Máxima velocidade de ação, mínima carga visual.</p>
+    <div class="tags">
+      <span class="tag">1A Lista Vertical</span>
+      <span class="tag">2C Responsivo</span>
+      <span class="tag">3A Ultra-clean</span>
+      <span class="tag">4A Compacto</span>
+    </div>
+  </div>
+
+  <div class="mockup-container">
+    <!-- MOBILE -->
+    <div>
+      <div class="mockup-frame mobile">
+        <div class="mockup-inner ultra-clean">
+          <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+          </div>
+
+          <div class="top-bar" style="border-bottom: none;">
+            <div>
+              <div class="title" style="font-size: 18px;">Radar Pastoral</div>
+            </div>
+            <div class="avatar" style="width: 32px; height: 32px; font-size: 12px;">PM</div>
+          </div>
+
+          <!-- Minimal summary -->
+          <div style="padding: 0 20px 12px; font-size: 13px; color: var(--text-secondary);">
+            3 precisam de cuidado · 5 merecem atenção · <span style="color: var(--care-ok);">14 bem</span>
+          </div>
+
+          <!-- Celebration - minimal -->
+          <div style="padding: 0 20px 16px;">
+            <span style="font-size: 13px; color: var(--brand-terracotta);">💚 Juliana voltou à reunião!</span>
+          </div>
+
+          <!-- List: Urgent -->
+          <div class="section-header" style="padding-top: 0; font-size: 11px;">Precisam de cuidado</div>
+
+          <div class="participant-card-compact">
+            <div class="pc-avatar">AN</div>
+            <div class="pc-info">
+              <div class="pc-name">Ana Silva</div>
+              <div class="pc-context">Faltou 2 reuniões · sem resposta à mensagem</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-urgent);">⚠️</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="participant-card-compact">
+            <div class="pc-avatar">RL</div>
+            <div class="pc-info">
+              <div class="pc-name">Roberto Lima</div>
+              <div class="pc-context">Sem acesso à trilha há 3 semanas</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-urgent);">⚠️</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="participant-card-compact">
+            <div class="pc-avatar">MC</div>
+            <div class="pc-info">
+              <div class="pc-name">Marta Costa</div>
+              <div class="pc-context">Faltou à última reunião</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-urgent);">⚠️</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="section-header" style="font-size: 11px;">Merecem atenção</div>
+
+          <div class="participant-card-compact">
+            <div class="pc-avatar">CF</div>
+            <div class="pc-info">
+              <div class="pc-name">Carlos Ferreira</div>
+              <div class="pc-context">Atrasou a trilha em 1 semana</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-attention);">👀</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="participant-card-compact">
+            <div class="pc-avatar">LM</div>
+            <div class="pc-info">
+              <div class="pc-name">Lúcia Mendes</div>
+              <div class="pc-context">Presença oscilante no último mês</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-attention);">👀</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="participant-card-compact">
+            <div class="pc-avatar">PM</div>
+            <div class="pc-info">
+              <div class="pc-name">Pedro Martins</div>
+              <div class="pc-context">Completou módulo mas faltou reunião</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-attention);">👀</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="section-header" style="font-size: 11px;">Estão bem · 14</div>
+
+          <div class="participant-card-compact" style="opacity: 0.7;">
+            <div class="pc-avatar">JR</div>
+            <div class="pc-info">
+              <div class="pc-name">João Ribeiro</div>
+              <div class="pc-context">100% presente · trilha em dia</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-ok);">✓</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div class="participant-card-compact" style="opacity: 0.7;">
+            <div class="pc-avatar">FS</div>
+            <div class="pc-info">
+              <div class="pc-name">Fernanda Santos</div>
+              <div class="pc-context">Engajada na trilha e reuniões</div>
+            </div>
+            <div class="pc-indicator" style="color: var(--care-ok);">✓</div>
+            <div class="pc-chevron">›</div>
+          </div>
+
+          <div style="height: 100px;"></div>
+
+          <div class="bottom-tabs">
+            <div class="tab-item active">
+              <span class="tab-icon tab-badge">📡</span>
+              <span>Radar</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📋</span>
+              <span>Reuniões</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📚</span>
+              <span>Trilhas</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">⚙️</span>
+              <span>Mais</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Mobile — Líder (Enxuto)</div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div>
+      <div class="mockup-frame desktop">
+        <div class="mockup-inner">
+          <div class="desktop-layout">
+            <div class="sidebar" style="width: 200px;">
+              <div class="logo" style="font-size: 16px;">
+                <div class="logo-icon" style="width: 28px; height: 28px; font-size: 14px;">✝</div>
+                Metanoia
+              </div>
+              <div class="sidebar-nav">
+                <div class="sidebar-item active" style="padding: 8px 16px; font-size: 13px;">
+                  <span class="si-icon" style="font-size: 16px;">📡</span>
+                  Radar
+                  <span class="si-badge">3</span>
+                </div>
+                <div class="sidebar-item" style="padding: 8px 16px; font-size: 13px;">
+                  <span class="si-icon" style="font-size: 16px;">📋</span>
+                  Reuniões
+                </div>
+                <div class="sidebar-item" style="padding: 8px 16px; font-size: 13px;">
+                  <span class="si-icon" style="font-size: 16px;">📚</span>
+                  Trilhas
+                </div>
+                <div class="sidebar-item" style="padding: 8px 16px; font-size: 13px;">
+                  <span class="si-icon" style="font-size: 16px;">👥</span>
+                  Grupo
+                </div>
+              </div>
+              <div class="sidebar-user">
+                <div class="su-avatar" style="width: 28px; height: 28px; font-size: 11px;">PM</div>
+                <div>
+                  <div class="su-name" style="font-size: 12px;">Pr. Marcos</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="desktop-main">
+              <div class="desktop-top-bar">
+                <div>
+                  <div class="dtb-title" style="font-size: 18px;">Radar Pastoral</div>
+                  <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">3 cuidado · 5 atenção · 14 bem · <span style="color: var(--care-ok);">80% estáveis ↑</span></div>
+                </div>
+                <div class="dtb-search">🔍 Buscar...</div>
+              </div>
+
+              <div class="desktop-content">
+                <!-- Inline celebration -->
+                <div style="margin-bottom: 20px; font-size: 14px; color: var(--brand-terracotta);">💚 Juliana voltou à reunião! Seu cuidado fez diferença.</div>
+
+                <!-- Clean list -->
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Precisam de cuidado</div>
+
+                <div class="desktop-participant-row" style="box-shadow: none; border: 1px solid var(--surface-sunken);">
+                  <div class="dpr-avatar">AN</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Ana Silva</div>
+                    <div class="dpr-context">Faltou 2 reuniões · sem resposta à mensagem</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(193,102,107,0.08); color: var(--care-urgent); font-size: 11px;">⚠️ cuidado</div>
+                  <button class="dpr-cta" style="padding: 6px 14px; font-size: 12px;">Cuidar</button>
+                </div>
+
+                <div class="desktop-participant-row" style="box-shadow: none; border: 1px solid var(--surface-sunken);">
+                  <div class="dpr-avatar">RL</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Roberto Lima</div>
+                    <div class="dpr-context">Sem acesso à trilha há 3 semanas</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(193,102,107,0.08); color: var(--care-urgent); font-size: 11px;">⚠️ cuidado</div>
+                  <button class="dpr-cta" style="padding: 6px 14px; font-size: 12px;">Cuidar</button>
+                </div>
+
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-tertiary); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.05em;">Merecem atenção</div>
+
+                <div class="desktop-participant-row" style="box-shadow: none; border: 1px solid var(--surface-sunken);">
+                  <div class="dpr-avatar">CF</div>
+                  <div class="dpr-info">
+                    <div class="dpr-name">Carlos Ferreira</div>
+                    <div class="dpr-context">Atrasou a trilha em 1 semana</div>
+                  </div>
+                  <div class="dpr-status" style="background: rgba(212,162,76,0.08); color: var(--care-attention); font-size: 11px;">👀 atenção</div>
+                  <button class="dpr-cta" style="padding: 6px 14px; font-size: 12px; background: transparent; color: var(--brand-teal); border: 1px solid var(--brand-teal);">Ver</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Desktop — Líder (Enxuto)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================
+     DIRECTION C — Detalhe Expandido (1C, 2C, 3B, 4C)
+     Hybrid + Responsive + Balanced + Expanded Cards
+     ==================================================================== -->
+<section id="dir-c" class="direction-section">
+  <div class="direction-header">
+    <h2>Direção C — Contexto Expandido</h2>
+    <p class="subtitle">Variação da principal com cards expandidos. Mais contexto visível sem toque, ideal para líderes com poucos participantes.</p>
+    <div class="tags">
+      <span class="tag">1C Híbrido</span>
+      <span class="tag">2C Responsivo</span>
+      <span class="tag">3B Equilibrado</span>
+      <span class="tag">4C Expandido</span>
+    </div>
+  </div>
+
+  <div class="mockup-container">
+    <div>
+      <div class="mockup-frame mobile">
+        <div class="mockup-inner">
+          <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+          </div>
+
+          <div class="top-bar">
+            <div>
+              <div class="greeting">Bom dia,</div>
+              <div class="title">Pastor Marcos</div>
+            </div>
+            <div class="avatar">PM</div>
+          </div>
+
+          <div class="semaphore-bar">
+            <div class="semaphore-pill urgent">
+              <span class="pill-icon">⚠️</span>
+              <div>
+                <div class="pill-count">3</div>
+                <div class="pill-label">cuidado</div>
+              </div>
+            </div>
+            <div class="semaphore-pill attention">
+              <span class="pill-icon">👀</span>
+              <div>
+                <div class="pill-count">5</div>
+                <div class="pill-label">atenção</div>
+              </div>
+            </div>
+            <div class="semaphore-pill ok">
+              <span class="pill-icon">✓</span>
+              <div>
+                <div class="pill-count">14</div>
+                <div class="pill-label">bem</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">⚠️ Precisam de cuidado</div>
+
+          <!-- Expanded Card -->
+          <div style="margin: 0 20px 12px; padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+              <div class="p-avatar" style="margin: 0;">
+                AN
+                <div class="status-dot" style="background: var(--care-urgent);"></div>
+              </div>
+              <div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Ana Silva</div>
+                <div style="font-size: 12px; font-weight: 600; color: var(--care-urgent);">precisa de cuidado</div>
+              </div>
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+              Faltou 2 reuniões seguidas. Completou toda a trilha anterior. Última ação: mensagem há 5 dias sem resposta.
+            </div>
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📋 2 faltas</span>
+              <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📚 Trilha OK</span>
+              <span style="padding: 4px 8px; border-radius: 8px; background: rgba(193,102,107,0.1); font-size: 11px; color: var(--care-urgent);">↓ declínio</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button style="flex: 1; padding: 10px; border-radius: 20px; background: var(--brand-teal); color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">📱 Enviar mensagem</button>
+              <button style="padding: 10px 14px; border-radius: 20px; background: var(--surface-sunken); color: var(--text-secondary); font-size: 13px; border: none; cursor: pointer; font-family: inherit;">⋯</button>
+            </div>
+          </div>
+
+          <!-- Second expanded card -->
+          <div style="margin: 0 20px 12px; padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+              <div class="p-avatar" style="margin: 0;">
+                RL
+                <div class="status-dot" style="background: var(--care-urgent);"></div>
+              </div>
+              <div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Roberto Lima</div>
+                <div style="font-size: 12px; font-weight: 600; color: var(--care-urgent);">precisa de cuidado</div>
+              </div>
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+              Não acessa a trilha há 3 semanas. Presença irregular no último mês. Sugestão: ligar — mensagem anterior sem retorno.
+            </div>
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📋 Irregular</span>
+              <span style="padding: 4px 8px; border-radius: 8px; background: rgba(193,102,107,0.1); font-size: 11px; color: var(--care-urgent);">📚 3 sem.</span>
+              <span style="padding: 4px 8px; border-radius: 8px; background: rgba(193,102,107,0.1); font-size: 11px; color: var(--care-urgent);">↓ declínio</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button style="flex: 1; padding: 10px; border-radius: 20px; background: var(--brand-teal); color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">📞 Ligar para Roberto</button>
+              <button style="padding: 10px 14px; border-radius: 20px; background: var(--surface-sunken); color: var(--text-secondary); font-size: 13px; border: none; cursor: pointer; font-family: inherit;">⋯</button>
+            </div>
+          </div>
+
+          <div style="height: 100px;"></div>
+
+          <div class="bottom-tabs">
+            <div class="tab-item active">
+              <span class="tab-icon tab-badge">📡</span>
+              <span>Radar</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📋</span>
+              <span>Reuniões</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📚</span>
+              <span>Trilhas</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">⚙️</span>
+              <span>Mais</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Mobile — Cards Expandidos</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================
+     DIRECTION D — Dashboard Relacional (1B, 2C, 3B, 4B)
+     Grid + Responsive + Balanced + Medium Cards
+     ==================================================================== -->
+<section id="dir-d" class="direction-section">
+  <div class="direction-header">
+    <h2>Direção D — Dashboard Relacional</h2>
+    <p class="subtitle">Grid de cards com visão panorâmica. Bom para desktop quando o líder tem muitos participantes e quer visão geral.</p>
+    <div class="tags">
+      <span class="tag">1B Grid</span>
+      <span class="tag">2C Responsivo</span>
+      <span class="tag">3B Equilibrado</span>
+      <span class="tag">4B Médio</span>
+    </div>
+  </div>
+
+  <div class="mockup-container">
+    <div>
+      <div class="mockup-frame desktop">
+        <div class="mockup-inner">
+          <div class="desktop-layout">
+            <div class="sidebar">
+              <div class="logo">
+                <div class="logo-icon">✝</div>
+                Metanoia Hub
+              </div>
+              <div class="sidebar-nav">
+                <div class="sidebar-item active">
+                  <span class="si-icon">📡</span>
+                  Radar Pastoral
+                  <span class="si-badge">3</span>
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📋</span>
+                  Reuniões
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📚</span>
+                  Trilhas
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">👥</span>
+                  Meu Grupo
+                </div>
+              </div>
+              <div class="sidebar-user">
+                <div class="su-avatar">PM</div>
+                <div>
+                  <div class="su-name">Pastor Marcos</div>
+                  <div class="su-role">Líder de Grupo</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="desktop-main">
+              <div class="desktop-top-bar">
+                <div class="dtb-title">Radar Pastoral</div>
+                <div class="dtb-search">🔍 Buscar participante...</div>
+              </div>
+
+              <div class="desktop-content">
+                <div class="desktop-semaphore-row">
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon urgent">⚠️</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-urgent);">3</div>
+                      <div class="dsc-label">precisam de cuidado</div>
+                    </div>
+                  </div>
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon attention">👀</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-attention);">5</div>
+                      <div class="dsc-label">merecem atenção</div>
+                    </div>
+                  </div>
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon ok">✓</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-ok);">14</div>
+                      <div class="dsc-label">estão bem</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Grid of cards -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                  <!-- Urgent cards -->
+                  <div style="padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-urgent);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary);">AN</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600;">Ana Silva</div>
+                        <div style="font-size: 11px; color: var(--care-urgent); font-weight: 600;">⚠️ precisa de cuidado</div>
+                      </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">Faltou 2 reuniões. Sem resposta à mensagem.</div>
+                    <button style="width: 100%; padding: 8px; border-radius: 16px; background: var(--brand-teal); color: white; font-size: 12px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">Cuidar</button>
+                  </div>
+
+                  <div style="padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-urgent);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary);">RL</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600;">Roberto Lima</div>
+                        <div style="font-size: 11px; color: var(--care-urgent); font-weight: 600;">⚠️ precisa de cuidado</div>
+                      </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">Sem acesso à trilha há 3 semanas.</div>
+                    <button style="width: 100%; padding: 8px; border-radius: 16px; background: var(--brand-teal); color: white; font-size: 12px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">Cuidar</button>
+                  </div>
+
+                  <div style="padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-urgent);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary);">MC</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600;">Marta Costa</div>
+                        <div style="font-size: 11px; color: var(--care-urgent); font-weight: 600;">⚠️ precisa de cuidado</div>
+                      </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">Faltou à reunião. Parou no módulo 3.</div>
+                    <button style="width: 100%; padding: 8px; border-radius: 16px; background: var(--brand-teal); color: white; font-size: 12px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">Cuidar</button>
+                  </div>
+
+                  <!-- Attention cards -->
+                  <div style="padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-attention);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary);">CF</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600;">Carlos Ferreira</div>
+                        <div style="font-size: 11px; color: var(--care-attention); font-weight: 600;">👀 merece atenção</div>
+                      </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">Presente na reunião, atrasou trilha.</div>
+                    <button style="width: 100%; padding: 8px; border-radius: 16px; background: transparent; color: var(--brand-teal); font-size: 12px; font-weight: 600; border: 1.5px solid var(--brand-teal); cursor: pointer; font-family: inherit;">Ver</button>
+                  </div>
+
+                  <div style="padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-attention);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary);">LM</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600;">Lúcia Mendes</div>
+                        <div style="font-size: 11px; color: var(--care-attention); font-weight: 600;">👀 merece atenção</div>
+                      </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">Presença oscilante no último mês.</div>
+                    <button style="width: 100%; padding: 8px; border-radius: 16px; background: transparent; color: var(--brand-teal); font-size: 12px; font-weight: 600; border: 1.5px solid var(--brand-teal); cursor: pointer; font-family: inherit;">Ver</button>
+                  </div>
+
+                  <div style="padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-ok); opacity: 0.7;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary);">JR</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600;">João Ribeiro</div>
+                        <div style="font-size: 11px; color: var(--care-ok); font-weight: 600;">✓ está bem</div>
+                      </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">100% presente, trilha em dia.</div>
+                    <button style="width: 100%; padding: 8px; border-radius: 16px; background: transparent; color: var(--text-tertiary); font-size: 12px; font-weight: 600; border: 1px solid var(--surface-sunken); cursor: pointer; font-family: inherit;">Detalhes</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Desktop — Grid Relacional</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================
+     COMPARISON VIEW
+     ==================================================================== -->
+<section id="dir-compare" class="direction-section">
+  <div class="direction-header">
+    <h2>Comparação de Direções</h2>
+    <p class="subtitle">Análise lado a lado das 4 direções de design para facilitar a decisão.</p>
+  </div>
+
+  <div class="comparison-container">
+    <div class="comparison-grid">
+      <!-- Dimension 1: Layout -->
+      <div class="comparison-item">
+        <h3>Layout do Radar</h3>
+        <p class="ci-desc">Como o líder vê o panorama + detalhe</p>
+        <table>
+          <tr><th>Direção</th><th>Abordagem</th><th>Melhor para</th></tr>
+          <tr><td>A (Principal)</td><td>Híbrido: pills + lista</td><td class="check">Equilíbrio panorama/ação</td></tr>
+          <tr><td>B (Enxuta)</td><td>Lista vertical pura</td><td class="check">Velocidade no mobile</td></tr>
+          <tr><td>C (Expandida)</td><td>Híbrido: pills + cards grandes</td><td class="partial">Poucos participantes</td></tr>
+          <tr><td>D (Grid)</td><td>Grid de cards</td><td class="partial">Visão geral desktop</td></tr>
+        </table>
+      </div>
+
+      <!-- Dimension 2: Information Density -->
+      <div class="comparison-item">
+        <h3>Densidade de Informação</h3>
+        <p class="ci-desc">Quanto contexto visível sem interação</p>
+        <table>
+          <tr><th>Direção</th><th>Contexto visível</th><th>Toques p/ agir</th></tr>
+          <tr><td>A (Principal)</td><td>Médio: nome + status + 2 linhas</td><td class="check">2 (ver + cuidar)</td></tr>
+          <tr><td>B (Enxuta)</td><td>Mínimo: nome + 1 linha</td><td class="partial">3 (ver + expandir + cuidar)</td></tr>
+          <tr><td>C (Expandida)</td><td>Alto: tudo visível + sugestão</td><td class="check">1 (cuidar direto)</td></tr>
+          <tr><td>D (Grid)</td><td>Médio: como A em grid</td><td class="check">2 (ver + cuidar)</td></tr>
+        </table>
+      </div>
+
+      <!-- Dimension 3: Mobile Experience -->
+      <div class="comparison-item">
+        <h3>Experiência Mobile</h3>
+        <p class="ci-desc">Qualidade da experiência no celular</p>
+        <table>
+          <tr><th>Direção</th><th>Scroll</th><th>Touch</th><th>Calma</th></tr>
+          <tr><td>A</td><td class="check">Natural</td><td class="check">44px+</td><td class="check">Boa</td></tr>
+          <tr><td>B</td><td class="check">Mínimo</td><td class="check">40px+</td><td class="check">Máxima</td></tr>
+          <tr><td>C</td><td class="partial">Muito scroll</td><td class="check">Grande</td><td class="partial">Pesada</td></tr>
+          <tr><td>D</td><td class="partial">Grid no mobile = ruim</td><td class="partial">Apertado</td><td class="partial">Densa</td></tr>
+        </table>
+      </div>
+
+      <!-- Dimension 4: Scalability -->
+      <div class="comparison-item">
+        <h3>Escalabilidade</h3>
+        <p class="ci-desc">Como funciona com 5 vs 30 participantes</p>
+        <table>
+          <tr><th>Direção</th><th>5 participantes</th><th>30 participantes</th></tr>
+          <tr><td>A</td><td class="check">Confortável</td><td class="check">Scroll gerenciável</td></tr>
+          <tr><td>B</td><td class="check">Rápido</td><td class="check">Lista longa mas eficiente</td></tr>
+          <tr><td>C</td><td class="check">Perfeita</td><td class="partial">Scroll infinito</td></tr>
+          <tr><td>D</td><td class="partial">Espaçoso demais</td><td class="check">Grid brilha aqui</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recommendation -->
+    <div style="max-width: 800px; margin: 32px auto 0; padding: 24px; background: rgba(43,122,120,0.15); border-radius: 12px; border: 1px solid rgba(43,122,120,0.3);">
+      <h3 style="color: var(--brand-teal-light); font-size: 18px; margin-bottom: 8px;">Recomendação</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+        <strong>Direção A como base principal</strong> — melhor equilíbrio entre panorama e ação, funciona bem em mobile e desktop, escala de 5 a 30 participantes.<br><br>
+        <strong>Direção B como modo alternativo</strong> — pode ser oferecida como "modo compacto" no futuro, ideal para líderes que preferem velocidade máxima.<br><br>
+        <strong>Direção C tem elementos úteis</strong> — a ideia de sugestão de ação integrada ao card pode ser incorporada na Direção A via progressive disclosure (expandir card).<br><br>
+        <strong>Direção D é melhor para desktop com muitos participantes</strong> — pode ser uma view alternativa no desktop (toggle lista/grid).
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+function showDirection(id) {
+  document.querySelectorAll('.direction-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
