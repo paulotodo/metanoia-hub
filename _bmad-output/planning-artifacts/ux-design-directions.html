@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Metanoia Hub — Design Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ========== DESIGN TOKENS ========== */
   :root {
@@ -211,6 +214,20 @@
   .semaphore-pill .pill-icon { font-size: 14px; }
   .semaphore-pill .pill-count { font-size: 18px; font-weight: 700; }
   .semaphore-pill .pill-label { font-size: 10px; font-weight: 500; opacity: 0.8; }
+
+  /* --- Expanded Avatar (Direction C) --- */
+  .expanded-card .p-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--surface-sunken); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 600; color: var(--text-secondary);
+    flex-shrink: 0; position: relative;
+  }
+  .expanded-card .p-avatar .status-dot {
+    position: absolute; bottom: 0; right: 0;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2.5px solid var(--surface-elevated);
+  }
 
   /* --- Participant Card (Medium - Direction B) --- */
   .participant-card {
@@ -518,11 +535,11 @@
 <nav class="showcase-nav">
   <h1>🎨 Metanoia Hub</h1>
   <div class="divider"></div>
-  <button class="nav-btn active" onclick="showDirection('dir-a')">Direção A — Principal</button>
-  <button class="nav-btn" onclick="showDirection('dir-b')">Direção B — Enxuta</button>
-  <button class="nav-btn" onclick="showDirection('dir-c')">Direção C — Detalhe Expandido</button>
-  <button class="nav-btn" onclick="showDirection('dir-d')">Direção D — Dashboard Relacional</button>
-  <button class="nav-btn" onclick="showDirection('dir-compare')">⚖️ Comparação</button>
+  <button class="nav-btn active" onclick="showDirection('dir-a', this)">Direção A — Principal</button>
+  <button class="nav-btn" onclick="showDirection('dir-b', this)">Direção B — Enxuta</button>
+  <button class="nav-btn" onclick="showDirection('dir-c', this)">Direção C — Detalhe Expandido</button>
+  <button class="nav-btn" onclick="showDirection('dir-d', this)">Direção D — Dashboard Relacional</button>
+  <button class="nav-btn" onclick="showDirection('dir-compare', this)">⚖️ Comparação</button>
 </nav>
 
 <!-- ====================================================================
@@ -1123,9 +1140,9 @@
           <div class="section-header">⚠️ Precisam de cuidado</div>
 
           <!-- Expanded Card -->
-          <div style="margin: 0 20px 12px; padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent);">
+          <div class="expanded-card" style="margin: 0 20px 12px; padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent);">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-              <div class="p-avatar" style="margin: 0;">
+              <div class="p-avatar">
                 AN
                 <div class="status-dot" style="background: var(--care-urgent);"></div>
               </div>
@@ -1149,9 +1166,9 @@
           </div>
 
           <!-- Second expanded card -->
-          <div style="margin: 0 20px 12px; padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent);">
+          <div class="expanded-card" style="margin: 0 20px 12px; padding: 16px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent);">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-              <div class="p-avatar" style="margin: 0;">
+              <div class="p-avatar">
                 RL
                 <div class="status-dot" style="background: var(--care-urgent);"></div>
               </div>
@@ -1197,6 +1214,169 @@
         </div>
       </div>
       <div class="device-label">Mobile — Cards Expandidos</div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div>
+      <div class="mockup-frame desktop">
+        <div class="mockup-inner">
+          <div class="desktop-layout">
+            <div class="sidebar">
+              <div class="logo">
+                <div class="logo-icon">✝</div>
+                Metanoia Hub
+              </div>
+              <div class="sidebar-nav">
+                <div class="sidebar-item active">
+                  <span class="si-icon">📡</span>
+                  Radar Pastoral
+                  <span class="si-badge">3</span>
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📋</span>
+                  Reuniões
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">📚</span>
+                  Trilhas
+                </div>
+                <div class="sidebar-item">
+                  <span class="si-icon">👥</span>
+                  Meu Grupo
+                </div>
+              </div>
+              <div class="sidebar-user">
+                <div class="su-avatar">PM</div>
+                <div>
+                  <div class="su-name">Pastor Marcos</div>
+                  <div class="su-role">Líder de Grupo</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="desktop-main">
+              <div class="desktop-top-bar">
+                <div class="dtb-title">Radar Pastoral</div>
+                <div class="dtb-search">🔍 Buscar participante...</div>
+              </div>
+
+              <div class="desktop-content">
+                <div class="desktop-semaphore-row">
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon urgent">⚠️</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-urgent);">3</div>
+                      <div class="dsc-label">precisam de cuidado</div>
+                    </div>
+                  </div>
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon attention">👀</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-attention);">5</div>
+                      <div class="dsc-label">merecem atenção</div>
+                    </div>
+                  </div>
+                  <div class="desktop-semaphore-card">
+                    <div class="dsc-icon ok">✓</div>
+                    <div>
+                      <div class="dsc-count" style="color: var(--care-ok);">14</div>
+                      <div class="dsc-label">estão bem</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="font-size: 14px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">⚠️ Precisam de cuidado</div>
+
+                <!-- Expanded card desktop - Ana -->
+                <div class="expanded-card" style="margin: 0 0 16px; padding: 20px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent); display: flex; gap: 20px; align-items: flex-start;">
+                  <div style="flex-shrink: 0;">
+                    <div class="p-avatar">
+                      AN
+                      <div class="status-dot" style="background: var(--care-urgent);"></div>
+                    </div>
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                      <span style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Ana Silva</span>
+                      <span style="font-size: 12px; font-weight: 600; color: var(--care-urgent);">⚠️ precisa de cuidado</span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5;">
+                      Faltou 2 reuniões seguidas. Completou toda a trilha anterior. Última ação: mensagem há 5 dias sem resposta.
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                      <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📋 2 faltas</span>
+                      <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📚 Trilha OK</span>
+                      <span style="padding: 4px 8px; border-radius: 8px; background: rgba(193,102,107,0.1); font-size: 11px; color: var(--care-urgent);">↓ declínio</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px; flex-shrink: 0; align-self: center;">
+                    <button style="padding: 10px 20px; border-radius: 20px; background: var(--brand-teal); color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">📱 Enviar mensagem</button>
+                    <button style="padding: 10px 14px; border-radius: 20px; background: var(--surface-sunken); color: var(--text-secondary); font-size: 13px; border: none; cursor: pointer; font-family: inherit;">⋯</button>
+                  </div>
+                </div>
+
+                <!-- Expanded card desktop - Roberto -->
+                <div class="expanded-card" style="margin: 0 0 16px; padding: 20px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 3px solid var(--care-urgent); display: flex; gap: 20px; align-items: flex-start;">
+                  <div style="flex-shrink: 0;">
+                    <div class="p-avatar">
+                      RL
+                      <div class="status-dot" style="background: var(--care-urgent);"></div>
+                    </div>
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                      <span style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Roberto Lima</span>
+                      <span style="font-size: 12px; font-weight: 600; color: var(--care-urgent);">⚠️ precisa de cuidado</span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5;">
+                      Não acessa a trilha há 3 semanas. Presença irregular no último mês. Sugestão: ligar — mensagem anterior sem retorno.
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                      <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📋 Irregular</span>
+                      <span style="padding: 4px 8px; border-radius: 8px; background: rgba(193,102,107,0.1); font-size: 11px; color: var(--care-urgent);">📚 3 sem.</span>
+                      <span style="padding: 4px 8px; border-radius: 8px; background: rgba(193,102,107,0.1); font-size: 11px; color: var(--care-urgent);">↓ declínio</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px; flex-shrink: 0; align-self: center;">
+                    <button style="padding: 10px 20px; border-radius: 20px; background: var(--brand-teal); color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">📞 Ligar para Roberto</button>
+                    <button style="padding: 10px 14px; border-radius: 20px; background: var(--surface-sunken); color: var(--text-secondary); font-size: 13px; border: none; cursor: pointer; font-family: inherit;">⋯</button>
+                  </div>
+                </div>
+
+                <div style="font-size: 14px; font-weight: 600; color: var(--text-tertiary); margin: 24px 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">👀 Merecem atenção</div>
+
+                <!-- Attention card desktop - Carlos -->
+                <div class="expanded-card" style="margin: 0 0 16px; padding: 20px; background: var(--surface-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border-left: 3px solid var(--care-attention); display: flex; gap: 20px; align-items: flex-start;">
+                  <div style="flex-shrink: 0;">
+                    <div class="p-avatar">
+                      CF
+                      <div class="status-dot" style="background: var(--care-attention);"></div>
+                    </div>
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                      <span style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Carlos Ferreira</span>
+                      <span style="font-size: 12px; font-weight: 600; color: var(--care-attention);">👀 merece atenção</span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5;">
+                      Presente na reunião, atrasou a trilha em 1 semana. Engajamento bom mas progresso lento.
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                      <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">📋 Presente</span>
+                      <span style="padding: 4px 8px; border-radius: 8px; background: rgba(212,162,76,0.1); font-size: 11px; color: var(--care-attention);">📚 Atrasou</span>
+                      <span style="padding: 4px 8px; border-radius: 8px; background: var(--surface-sunken); font-size: 11px; color: var(--text-secondary);">→ estável</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px; flex-shrink: 0; align-self: center;">
+                    <button style="padding: 10px 20px; border-radius: 20px; background: transparent; color: var(--brand-teal); font-size: 13px; font-weight: 600; border: 1.5px solid var(--brand-teal); cursor: pointer; font-family: inherit;">Ver perfil</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Desktop — Cards Expandidos</div>
     </div>
   </div>
 </section>
@@ -1369,6 +1549,113 @@
       </div>
       <div class="device-label">Desktop — Grid Relacional</div>
     </div>
+
+    <!-- MOBILE -->
+    <div>
+      <div class="mockup-frame mobile">
+        <div class="mockup-inner">
+          <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+          </div>
+
+          <div class="top-bar">
+            <div>
+              <div class="greeting">Bom dia,</div>
+              <div class="title">Pastor Marcos</div>
+            </div>
+            <div class="avatar">PM</div>
+          </div>
+
+          <div class="semaphore-bar">
+            <div class="semaphore-pill urgent">
+              <span class="pill-icon">⚠️</span>
+              <div>
+                <div class="pill-count">3</div>
+                <div class="pill-label">cuidado</div>
+              </div>
+            </div>
+            <div class="semaphore-pill attention">
+              <span class="pill-icon">👀</span>
+              <div>
+                <div class="pill-count">5</div>
+                <div class="pill-label">atenção</div>
+              </div>
+            </div>
+            <div class="semaphore-pill ok">
+              <span class="pill-icon">✓</span>
+              <div>
+                <div class="pill-count">14</div>
+                <div class="pill-label">bem</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">⚠️ Precisam de cuidado</div>
+
+          <!-- Grid 2-column on mobile -->
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 16px; margin-bottom: 12px;">
+            <div style="padding: 12px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-urgent);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-secondary);">AN</div>
+                <div style="font-size: 13px; font-weight: 600;">Ana</div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">2 faltas seguidas</div>
+              <button style="width: 100%; padding: 6px; border-radius: 14px; background: var(--brand-teal); color: white; font-size: 11px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">Cuidar</button>
+            </div>
+
+            <div style="padding: 12px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-urgent);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-secondary);">RL</div>
+                <div style="font-size: 13px; font-weight: 600;">Roberto</div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">3 sem. sem trilha</div>
+              <button style="width: 100%; padding: 6px; border-radius: 14px; background: var(--brand-teal); color: white; font-size: 11px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">Cuidar</button>
+            </div>
+
+            <div style="padding: 12px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-urgent);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-secondary);">MC</div>
+                <div style="font-size: 13px; font-weight: 600;">Marta</div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">Parou módulo 3</div>
+              <button style="width: 100%; padding: 6px; border-radius: 14px; background: var(--brand-teal); color: white; font-size: 11px; font-weight: 600; border: none; cursor: pointer; font-family: inherit;">Cuidar</button>
+            </div>
+
+            <div style="padding: 12px; background: var(--surface-elevated); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-top: 3px solid var(--care-attention);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-sunken); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-secondary);">CF</div>
+                <div style="font-size: 13px; font-weight: 600;">Carlos</div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">Atrasou trilha</div>
+              <button style="width: 100%; padding: 6px; border-radius: 14px; background: transparent; color: var(--brand-teal); font-size: 11px; font-weight: 600; border: 1.5px solid var(--brand-teal); cursor: pointer; font-family: inherit;">Ver</button>
+            </div>
+          </div>
+
+          <div style="height: 80px;"></div>
+
+          <div class="bottom-tabs">
+            <div class="tab-item active">
+              <span class="tab-icon tab-badge">📡</span>
+              <span>Radar</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📋</span>
+              <span>Reuniões</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">📚</span>
+              <span>Trilhas</span>
+            </div>
+            <div class="tab-item">
+              <span class="tab-icon">⚙️</span>
+              <span>Mais</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="device-label">Mobile — Grid Compacto</div>
+    </div>
   </div>
 </section>
 
@@ -1450,11 +1737,11 @@
 </section>
 
 <script>
-function showDirection(id) {
+function showDirection(id, btn) {
   document.querySelectorAll('.direction-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
   window.scrollTo(0, 0);
 }
 </script>
