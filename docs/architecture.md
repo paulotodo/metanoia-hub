@@ -298,6 +298,38 @@ metanoia-hub/
 - **SQL raw migrations para RLS policies** — Prisma não tem suporte nativo a RLS; policies gerenciadas manualmente em migration files SQL
 - PostgreSQL com extensão pgvector instalada no MVP, **zero modelagem de embeddings** até Phase 5
 
+**Campos e Models Adicionais (identificados no readiness check):**
+
+```prisma
+// Em user_profiles — para cálculo de delta no SemaforoPill (FR55/FR66)
+model UserProfile {
+  // ... campos existentes
+  last_seen_at DateTime? @map("last_seen_at") // Atualizado via middleware a cada request autenticada
+}
+
+// Em domain_events — para timeline correlacionada (Release 3)
+model DomainEvent {
+  // ... campos existentes
+  correlation_id String? @map("correlation_id") // Agrupa eventos de uma mesma operação (ex.: reunião completa)
+}
+
+// Novo model — registro de ações pastorais rápidas (FR57)
+model QuickTag {
+  id         String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  tenant_id  String   @db.Uuid
+  member_id  String   @db.Uuid  // Participante que recebeu a ação
+  leader_id  String   @db.Uuid  // Líder que registrou
+  tag        String   // Ex.: "oração", "visita", "ligação", "mensagem"
+  note       String?  // Observação livre (opcional)
+  created_at DateTime @default(now()) @map("created_at")
+
+  @@map("quick_tags")
+  @@index([tenant_id, member_id])
+}
+```
+
+> **Nota:** `last_seen_at` é atualizado via middleware NestJS (não via trigger de banco) para manter a lógica na camada de aplicação. `QuickTag` usa vocabulário pastoral conforme FR62.
+
 **Code Organization:**
 - Monorepo com `apps/` e `packages/`
 - Módulos NestJS organizados por bounded context (não pela estrutura default do `nest new`)
@@ -450,6 +482,26 @@ metanoia-hub/
 - **MSW (Mock Service Worker)** como devDependency em `apps/web` para interceptar requests em testes de componente — handlers espelham a OpenAPI spec
 - Playwright 1.59.1 para E2E contra Docker Compose real
 
+### Experience Layout Pattern
+
+**Mapeamento RBAC → Experiência UX:**
+
+O sistema consolida 6 roles RBAC em 3 experiências UX com shell compartilhada e layout adaptativo:
+
+| Role RBAC | Experience UX | Layout Strategy | Navegação Principal |
+|-----------|---------------|-----------------|---------------------|
+| `participant` | Consumo | Mobile-first | Minhas Trilhas, Minha Reunião, Meu Progresso |
+| `leader`, `facilitator` | Gestão | Desktop-first (responsivo) | Dashboard Semáforo, Grupos, Reuniões, Relatórios |
+| `admin`, `coordinator` | Admin | Desktop-first | Config Tenant, Usuários, Trilhas (catálogo), Relatórios Agregados |
+| `super_admin` | Admin (elevado) | Desktop-first | Tenants, Provisionamento, Audit Log, Métricas Plataforma |
+
+**Implementação:**
+
+- `ExperienceResolver` middleware (Next.js): extrai roles do token Keycloak e determina a experience ativa (`consumo | gestao | admin`). Se o usuário tem múltiplos roles, a experience mais elevada prevalece (admin > gestao > consumo)
+- `ExperienceLayout` component (React): adapta sidebar, navegação e dashboard de acordo com a experience resolvida. Componente wrapper no root layout da área autenticada
+- Roteamento: `/app/consumo/*`, `/app/gestao/*`, `/app/admin/*` — cada experiência tem seu subtree de rotas. Redirect automático baseado na experience resolvida após login
+- Feature gating: componentes condicionais via `useExperience()` hook (Zustand store `useAuthStore`)
+
 ### Infrastructure & Deployment
 
 **Hosting:**
@@ -529,6 +581,20 @@ metanoia-hub/
 - **Mensagens de erro para o usuário**: português (PT-BR), centralizadas em `apps/web/messages/pt-BR.json`
 - **Logs**: inglês (para ferramentas de observabilidade parsearem facilmente)
 - **Swagger descriptions**: inglês (preparação para API pública Phase 4)
+
+**Governança de Vocabulário Pastoral (FR62):**
+
+O vocabulário pastoral é um diferenciador do produto e requer governança explícita:
+
+| Fonte | Local | Propósito | Responsável |
+|-------|-------|-----------|-------------|
+| `vocabulary.ts` | `packages/types/src/vocabulary.ts` | Termos de domínio pastoral como constantes/enums (ex.: `CARE_ACTIONS`, `ENGAGEMENT_LEVELS`). Fonte autoritativa para termos no código backend e frontend | Design system team |
+| `pt-BR.json` | `apps/web/messages/pt-BR.json` | Mensagens i18n para UI runtime. Referencia termos de `vocabulary.ts` via chaves padronizadas (ex.: `pastoral.care.visit`, `pastoral.status.thriving`) | Design system team |
+
+**Regras de CI:**
+- Lint rule: proibir strings hardcoded em componentes React — deve usar chaves i18n de `pt-BR.json`
+- Lint rule: proibir termos corporativos de vigilância no codebase: `monitorar`, `rastrear`, `controlar`, `vigiar`, `fiscalizar` (whitelist para contextos técnicos como logs)
+- Alterações em `vocabulary.ts` ou seções `pastoral.*` de `pt-BR.json` requerem review do design system team (CODEOWNERS)
 
 ### Structure Patterns
 
@@ -1291,7 +1357,7 @@ Evento de domínio → BullMQ queue:notifications
 |-------------|----------------------|--------|
 | Performance (11) | Turbopack, Redis cache, SSE | ✅ |
 | Segurança (10) | Keycloak + Guards + RLS + TLS + encryption | ✅ |
-| Escalabilidade (3+) | RLS → db-per-tenant, NATS futuro | ✅ |
+| Escalabilidade (3+) | RLS → db-per-tenant, NATS futuro. **Triggers:** E1: CPU >70% 5min → auto-scale (max 4 dev, 8 prod); E2: BullMQ queue depth >100 → scale workers; E3: semáforo via job assíncrono + Redis cache TTL 5min | ✅ |
 | Confiabilidade (7) | Backup strategy + Redis WAL + DR plan | ✅ |
 | Acessibilidade (6) | WCAG AA via shadcn/ui (Radix primitives) | ✅ |
 | Integração & Resiliência (5) | BullMQ retry, circuit breaker | ✅ |
