@@ -24,12 +24,12 @@
   --color-surface-sunken: #f2f0ed;
 
   /* === Interactive States === */
-  --color-hover: #256664;
-  --color-active: #1f5452;
-  --color-focus: #2b7a78;
-  --color-focus-ring: oklch(from #2b7a78 l c h / 0.4);
-  --color-disabled-bg: #e8e6e3;
-  --color-disabled-text: #a8a6a3;
+  --color-interactive-hover: #256664;
+  --color-interactive-active: #1f5452;
+  --color-interactive-focus: #2b7a78;
+  --color-interactive-focus-ring: oklch(from #2b7a78 l c h / 0.4);
+  --color-interactive-disabled-bg: #e8e6e3;
+  --color-interactive-disabled-text: #a8a6a3;
 
   /* === Text Colors === */
   --color-text-primary: #17252a;
@@ -105,12 +105,12 @@
   --color-surface-elevated: #2a2a2a;
   --color-surface-sunken: #111111;
 
-  --color-hover: #4bc4be;
-  --color-active: #5cd0ca;
-  --color-focus: #3aafa9;
-  --color-focus-ring: oklch(from #3aafa9 l c h / 0.5);
-  --color-disabled-bg: #333333;
-  --color-disabled-text: #666666;
+  --color-interactive-hover: #4bc4be;
+  --color-interactive-active: #5cd0ca;
+  --color-interactive-focus: #3aafa9;
+  --color-interactive-focus-ring: oklch(from #3aafa9 l c h / 0.5);
+  --color-interactive-disabled-bg: #333333;
+  --color-interactive-disabled-text: #666666;
 
   --color-text-primary: #e8e6e3;
   --color-text-secondary: #b0aea9;
