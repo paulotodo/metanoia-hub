@@ -1,52 +1,57 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: metanoia-postgres
-    restart: unless-stopped
+    container_name: metanoia-postgres-test
     ports:
-      - '5432:5432'
+      - '5433:5432'
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-metanoia}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-metanoia_dev_pass}
-      POSTGRES_DB: ${POSTGRES_DB:-metanoia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-metanoia_test}
+    tmpfs:
+      - /var/lib/postgresql/data
     volumes:
-      - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/init-app-role.sql:/docker-entrypoint-initdb.d/01-init-app-role.sql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-metanoia} -d ${POSTGRES_DB:-metanoia_dev}']
-      interval: 5s
-      timeout: 5s
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-metanoia} -d ${POSTGRES_DB:-metanoia_test}']
+      interval: 3s
+      timeout: 3s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   redis:
     image: redis:7-alpine
-    container_name: metanoia-redis
-    restart: unless-stopped
+    container_name: metanoia-redis-test
     ports:
-      - '6379:6379'
-    volumes:
-      - redis-data:/data
+      - '6380:6379'
+    command: redis-server --maxmemory 32mb --maxmemory-policy allkeys-lru
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
-      timeout: 5s
+      interval: 3s
+      timeout: 3s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
-    container_name: metanoia-keycloak
-    restart: unless-stopped
+    container_name: metanoia-keycloak-test
     command: start-dev --import-realm
     ports:
-      - '8080:8080'
+      - '8081:8080'
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-metanoia_dev}
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-metanoia_test}
       KC_DB_USERNAME: ${POSTGRES_USER:-metanoia}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-metanoia_dev_pass}
       KC_DB_SCHEMA: keycloak
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HEALTH_ENABLED: 'true'
       KC_METRICS_ENABLED: 'false'
     volumes:
@@ -60,61 +65,61 @@ services:
       timeout: 10s
       retries: 15
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   minio:
     image: minio/minio:latest
-    container_name: metanoia-minio
-    restart: unless-stopped
+    container_name: metanoia-minio-test
     command: server /data --console-address ":9001"
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - '9002:9000'
+      - '9003:9001'
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
-    volumes:
-      - minio-data:/data
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    tmpfs:
+      - /data
     healthcheck:
       test: ['CMD-SHELL', 'curl -f http://localhost:9000/minio/health/live || exit 1']
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 128M
 
   minio-init:
     image: minio/mc:latest
-    container_name: metanoia-minio-init
+    container_name: metanoia-minio-init-test
     entrypoint: /bin/sh
     command:
       - -c
       - |
-        mc alias set myminio http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}
-        mc mb --ignore-existing myminio/${MINIO_BUCKET:-metanoia-storage}
-        mc anonymous set download myminio/${MINIO_BUCKET:-metanoia-storage}/public
-        echo "Bucket '${MINIO_BUCKET:-metanoia-storage}' ready"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
-      MINIO_BUCKET: ${MINIO_BUCKET:-metanoia-storage}
+        mc alias set myminio http://minio:9000 minioadmin minioadmin
+        mc mb --ignore-existing myminio/metanoia-storage
+        echo "Test bucket ready"
     depends_on:
       minio:
         condition: service_healthy
 
   livekit:
     image: livekit/livekit-server:latest
-    container_name: metanoia-livekit
-    restart: unless-stopped
+    container_name: metanoia-livekit-test
     command: --dev --bind 0.0.0.0
     ports:
-      - '7880:7880'
+      - '7881:7880'
     environment:
-      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:-devkey}: ${LIVEKIT_API_SECRET:-secret_dev_only_not_for_production}"
+      LIVEKIT_KEYS: "devkey: secret_dev_only_not_for_production"
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider http://localhost:7880 || exit 1']
       interval: 5s
       timeout: 5s
       retries: 5
-
-volumes:
-  postgres-data:
-  redis-data:
-  minio-data:
+    deploy:
+      resources:
+        limits:
+          memory: 128M

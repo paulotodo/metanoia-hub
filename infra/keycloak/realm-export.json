@@ -1,0 +1,159 @@
+{
+  "realm": "metanoia",
+  "enabled": true,
+  "displayName": "Metanoia Hub",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "sslRequired": "external",
+  "defaultSignatureAlgorithm": "RS256",
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "roles": {
+    "realm": [
+      {
+        "name": "super_admin",
+        "description": "Platform-wide administrator with full access"
+      },
+      {
+        "name": "admin_tenant",
+        "description": "Tenant administrator managing users, groups and settings"
+      },
+      {
+        "name": "editor_conteudo",
+        "description": "Content editor with trail and module management"
+      },
+      {
+        "name": "lider",
+        "description": "Group leader with pastoral dashboard access"
+      },
+      {
+        "name": "participante",
+        "description": "Regular participant in groups and trails"
+      },
+      {
+        "name": "auditor",
+        "description": "Read-only auditor with compliance report access"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "metanoia-app",
+      "name": "Metanoia Hub App",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "rootUrl": "http://localhost:3000",
+      "baseUrl": "/",
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3000/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "tenant_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "tenant_id",
+            "claim.name": "tenant_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "identityProviders": [],
+  "scopeMappings": [],
+  "clientScopeMappings": {},
+  "users": [
+    {
+      "username": "admin@metanoia.dev",
+      "email": "admin@metanoia.dev",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Admin",
+      "lastName": "Dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["super_admin"],
+      "attributes": {
+        "tenant_id": ["dev-tenant-001"]
+      }
+    },
+    {
+      "username": "lider@metanoia.dev",
+      "email": "lider@metanoia.dev",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Líder",
+      "lastName": "Dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "lider123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["lider"],
+      "attributes": {
+        "tenant_id": ["dev-tenant-001"]
+      }
+    },
+    {
+      "username": "participante@metanoia.dev",
+      "email": "participante@metanoia.dev",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Participante",
+      "lastName": "Dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "participante123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["participante"],
+      "attributes": {
+        "tenant_id": ["dev-tenant-001"]
+      }
+    }
+  ]
+}
