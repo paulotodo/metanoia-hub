@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+dist
+coverage
+
+# Git
+.git
+.gitignore
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+.cursor
+
+# Documentation
+*.md
+!README.md
+docs/
+_bmad-output/
+_bmad/
+auxiliar/
+design-artifacts/
+
+# Test artifacts
+**/*.spec.ts
+**/*.spec.tsx
+**/test/
+**/tests/
+**/e2e/
+**/__tests__/
+**/__snapshots__/
+
+# CI/CD
+.github/
+
+# Misc
+.turbo
+.eslintcache
