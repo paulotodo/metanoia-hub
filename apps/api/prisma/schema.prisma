@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Health check table — validates DB connectivity and migration status
+model Health {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  status    String   @default("ok")
+  checkedAt DateTime @default(now()) @map("checked_at")
+
+  @@map("_health")
+}

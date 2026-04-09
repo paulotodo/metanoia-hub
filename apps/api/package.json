@@ -1,0 +1,40 @@
+{
+  "name": "@metanoia/api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "nest start",
+    "start:prod": "node dist/main",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:migrate": "prisma migrate dev",
+    "db:rls": "bash scripts/apply-rls.sh",
+    "db:setup": "pnpm db:migrate && pnpm db:rls",
+    "db:seed": "prisma db seed"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.18",
+    "@nestjs/config": "^4.0.3",
+    "@nestjs/core": "^11.1.18",
+    "@nestjs/platform-express": "^11.1.18",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "ioredis": "^5.10.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@metanoia/config": "workspace:*",
+    "@metanoia/types": "workspace:*",
+    "@nestjs/cli": "^11.0.18",
+    "@nestjs/schematics": "^11.0.10",
+    "@nestjs/testing": "^11.1.18",
+    "prisma": "^7.7.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.3"
+  }
+}

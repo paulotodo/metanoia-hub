@@ -1,0 +1,29 @@
+{
+  "name": "metanoia-hub",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "db:migrate": "turbo db:migrate",
+    "db:rls": "turbo db:rls",
+    "db:setup": "turbo db:setup",
+    "db:seed": "turbo db:seed"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma",
+      "@nestjs/core",
+      "sharp"
+    ]
+  }
+}
