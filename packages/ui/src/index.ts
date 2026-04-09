@@ -21,3 +21,6 @@ export {
   DialogDescription,
 } from "../components/dialog";
 export { cn } from "../lib/utils";
+export type { NavigationItem } from "../components/navigation-types";
+export { BottomTabs, type BottomTabsProps } from "../components/bottom-tabs";
+export { Sidebar, type SidebarProps } from "../components/sidebar";
