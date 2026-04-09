@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context)
 
 generated: "2026-04-08"
-last_updated: "2026-04-09T11:21:00Z"
+last_updated: "2026-04-09"
 project: metanoia-hub
 project_key: NOKEY
 tracking_system: file-system
@@ -51,7 +51,7 @@ development_status:
   1-4-spike-tecnico-keycloak-multi-tenant-com-4-roles-e-googl: done
   1-5-observabilidade-base-pino-structured-logging-sentry-e-r: done
   1-6-spike-tecnico-pipeline-real-time-livekit-redis-bullmq-s: ready-for-dev
-  1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: ready-for-dev
+  1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: review
   1-8-layout-base-navigationconfig-sidebar-e-bottom-tabs: ready-for-dev
   epic-1-retrospective: optional
 

@@ -7,9 +7,11 @@
     "./prettier": "./prettier.config.mjs",
     "./tsconfig/base": "./tsconfig.base.json",
     "./tsconfig/next": "./tsconfig.next.json",
-    "./tsconfig/nest": "./tsconfig.nest.json"
+    "./tsconfig/nest": "./tsconfig.nest.json",
+    "./tailwind": "./tailwind.preset.css"
   },
   "devDependencies": {
+    "tailwindcss": "^4.2.2",
     "@eslint/js": "^10.0.1",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",

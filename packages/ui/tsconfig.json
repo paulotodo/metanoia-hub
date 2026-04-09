@@ -1,0 +1,11 @@
+{
+  "extends": "@metanoia/config/tsconfig/base",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src", "lib", "components", "__tests__"],
+  "exclude": ["node_modules", "dist"]
+}

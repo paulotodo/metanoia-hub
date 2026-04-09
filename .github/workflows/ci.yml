@@ -120,8 +120,11 @@ jobs:
           key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Start test services
-        run: docker compose -f docker-compose.test.yml up -d --wait
+        run: docker compose -f docker-compose.test.yml up -d --wait postgres redis minio livekit
         timeout-minutes: 3
+
+      - name: Generate Prisma client
+        run: pnpm --filter @metanoia/api exec prisma generate
 
       - name: Setup database
         run: pnpm turbo db:setup
@@ -133,7 +136,7 @@ jobs:
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
       - name: Run RLS isolation tests
-        run: pnpm turbo test --filter=@metanoia/api -- --testPathPattern="test/rls/"
+        run: pnpm turbo test --filter=@metanoia/api -- test/rls/
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
@@ -166,6 +169,9 @@ jobs:
             apps/*/node_modules
             packages/*/node_modules
           key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Generate Prisma client
+        run: pnpm --filter @metanoia/api exec prisma generate
 
       - name: Build
         run: pnpm turbo build

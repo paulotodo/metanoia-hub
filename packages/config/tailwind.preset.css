@@ -1,0 +1,76 @@
+/* =============================================================================
+ * Tailwind CSS v4 Preset — Metanoia Hub
+ * Shared theme with literal values for Tailwind JIT compilation.
+ * Dark mode overrides live in packages/ui/styles/tokens.css (.dark class).
+ * ============================================================================= */
+
+@import "tailwindcss";
+
+@theme {
+  /* === Brand Colors === */
+  --color-brand-teal: #2b7a78;
+  --color-brand-teal-light: #3aafa9;
+  --color-brand-teal-dark: #17252a;
+  --color-brand-terracotta: #c1666b;
+  --color-brand-terracotta-light: #d4918a;
+
+  /* === Pastoral / Care Colors === */
+  --color-care-urgent: #c1666b;
+  --color-care-attention: #d4a24c;
+  --color-care-ok: #7ba38a;
+  --color-care-neutral: #8e8d8a;
+
+  /* === Surface Colors === */
+  --color-surface-base: #fafaf8;
+  --color-surface-elevated: #ffffff;
+  --color-surface-sunken: #f2f0ed;
+
+  /* === Interactive States === */
+  --color-interactive-hover: #256664;
+  --color-interactive-active: #1f5452;
+  --color-interactive-focus: #2b7a78;
+  --color-interactive-focus-ring: oklch(from #2b7a78 l c h / 0.4);
+  --color-interactive-disabled-bg: #e8e6e3;
+  --color-interactive-disabled-text: #a8a6a3;
+
+  /* === Text Colors === */
+  --color-text-primary: #17252a;
+  --color-text-secondary: #5c5a57;
+  --color-text-muted: #8e8d8a;
+  --color-text-inverse: #fafaf8;
+
+  /* === Border Colors === */
+  --color-border-default: #d4d2cf;
+  --color-border-strong: #8e8d8a;
+
+  /* === Font Family === */
+  --font-sans: var(--font-inter, "Inter"), ui-sans-serif, system-ui, sans-serif;
+
+  /* === Font Sizes === */
+  --font-size-display: 2.25rem;
+  --font-size-h1: 1.875rem;
+  --font-size-h2: 1.5rem;
+  --font-size-body: 1rem;
+  --font-size-body-sm: 0.875rem;
+  --font-size-caption: 0.75rem;
+  --font-size-overline: 0.6875rem;
+
+  /* === Font Weights === */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* === Radius === */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-full: 9999px;
+}
+
+/* Dark mode via class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+/* Source paths for content detection (relative to packages/config/) */
+@source "../ui/src/**/*.{ts,tsx}";
+@source "../ui/components/**/*.{ts,tsx}";

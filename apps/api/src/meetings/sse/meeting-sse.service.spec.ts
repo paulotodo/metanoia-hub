@@ -1,5 +1,4 @@
 import { MeetingSseService } from './meeting-sse.service';
-import Redis from 'ioredis';
 
 vi.mock('ioredis', () => {
   const proto = {

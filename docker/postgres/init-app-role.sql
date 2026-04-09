@@ -6,8 +6,10 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- Grant necessary permissions on the database
-GRANT CONNECT ON DATABASE metanoia_dev TO metanoia_app;
+-- Grant necessary permissions on the database (dynamic to work in both dev and test)
+DO $$ BEGIN
+  EXECUTE format('GRANT CONNECT ON DATABASE %I TO metanoia_app', current_database());
+END $$;
 GRANT USAGE ON SCHEMA public TO metanoia_app;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO metanoia_app;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO metanoia_app;

@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@metanoia/config": "workspace:*",
+    "eslint": "^9.39.4",
     "typescript": "^6.0.2",
     "vitest": "^4.1.3"
   }
