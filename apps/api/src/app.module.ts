@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
+import { BullMqModule } from './bullmq/bullmq.module';
+import { MeetingsModule } from './meetings/meetings.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -19,7 +21,9 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     AuthModule,
     PrismaModule,
     RedisModule,
+    BullMqModule,
     HealthModule,
+    MeetingsModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -15,3 +15,18 @@ model Health {
 
   @@map("_health")
 }
+
+/// Meeting event — stores real-time pipeline events for audit and replay
+model MeetingEvent {
+  id        String   @id @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  meetingId String   @map("meeting_id") @db.Uuid
+  eventType String   @map("event_type")
+  userId    String?  @map("user_id") @db.Uuid
+  payload   Json     @default("{}")
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId, meetingId])
+  @@map("meeting_events")
+}
