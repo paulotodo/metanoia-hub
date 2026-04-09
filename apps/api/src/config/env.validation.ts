@@ -19,6 +19,7 @@ export const envSchema = z.object({
   LIVEKIT_URL: z.string().default('ws://localhost:7880'),
   LIVEKIT_API_KEY: z.string().default('devkey'),
   LIVEKIT_API_SECRET: z.string().default('secret_dev_only_not_for_production'),
+  FRONTEND_URL: z.string().url().default('http://localhost:3000'),
   SENTRY_DSN: z.string().url().optional(),
 });
 

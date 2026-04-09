@@ -6,11 +6,16 @@ import { KeycloakAdminService } from './keycloak-admin.service';
 import { PasswordCheckerService } from './password-checker.service';
 import { RegisterController } from './register.controller';
 import { RegisterService } from './register.service';
+import { LoginController } from './login.controller';
+import { LoginService } from './login.service';
+import { OAuthController } from './oauth.controller';
+import { OAuthService } from './oauth.service';
+import { SessionService } from './session.service';
 import { EmailVerificationProducer } from './email-verification.producer';
 import { EmailVerificationWorker } from './email-verification.worker';
 
 @Module({
-  controllers: [RegisterController],
+  controllers: [RegisterController, LoginController, OAuthController],
   providers: [
     KeycloakAuthGuard,
     RolesGuard,
@@ -19,6 +24,9 @@ import { EmailVerificationWorker } from './email-verification.worker';
     KeycloakAdminService,
     PasswordCheckerService,
     RegisterService,
+    LoginService,
+    OAuthService,
+    SessionService,
     EmailVerificationProducer,
     EmailVerificationWorker,
   ],

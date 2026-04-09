@@ -116,6 +116,46 @@ export class KeycloakAdminService {
     return { keycloakId };
   }
 
+  async authenticateUser(
+    email: string,
+    password: string,
+  ): Promise<{ accessToken: string; refreshToken: string; expiresIn: number } | null> {
+    const clientId = this.config.get('KEYCLOAK_CLIENT_ID');
+
+    const response = await fetch(this.tokenUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'password',
+        client_id: clientId,
+        username: email,
+        password,
+      }),
+    });
+
+    if (response.status === 401 || response.status === 400) {
+      return null;
+    }
+
+    if (!response.ok) {
+      const text = await response.text();
+      this.logger.error({ status: response.status, body: text }, 'keycloak authentication failed');
+      throw new Error(`Keycloak authentication failed: ${response.status}`);
+    }
+
+    const data = (await response.json()) as {
+      access_token: string;
+      refresh_token: string;
+      expires_in: number;
+    };
+
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+    };
+  }
+
   async findUserByEmail(email: string): Promise<KeycloakUserRepresentation | null> {
     const token = await this.getAdminToken();
     const response = await fetch(
