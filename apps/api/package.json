@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@metanoia/config": "workspace:*",
+    "eslint": "^9.39.4",
     "@metanoia/types": "workspace:*",
     "@nestjs/cli": "^11.0.18",
     "@nestjs/schematics": "^11.0.10",
