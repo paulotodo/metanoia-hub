@@ -1,0 +1,75 @@
+/* =============================================================================
+ * Global Styles — Metanoia Hub
+ * Entry point CSS: loads tokens, Tailwind preset, and shadcn/ui variable bridge.
+ * Imported by apps/web/app/layout.tsx
+ * ============================================================================= */
+
+@import "./tokens.css";
+@import "@metanoia/config/tailwind";
+
+/* =============================================================================
+ * shadcn/ui Variable Bridge
+ * Maps shadcn's expected CSS variables to our design tokens so generated
+ * components work without modification.
+ * ============================================================================= */
+
+:root {
+  --background: var(--color-surface-base);
+  --foreground: var(--color-text-primary);
+
+  --card: var(--color-surface-elevated);
+  --card-foreground: var(--color-text-primary);
+
+  --popover: var(--color-surface-elevated);
+  --popover-foreground: var(--color-text-primary);
+
+  --primary: var(--color-brand-teal);
+  --primary-foreground: var(--color-text-inverse);
+
+  --secondary: var(--color-surface-sunken);
+  --secondary-foreground: var(--color-text-primary);
+
+  --muted: var(--color-surface-sunken);
+  --muted-foreground: var(--color-text-muted);
+
+  --accent: var(--color-brand-teal-light);
+  --accent-foreground: var(--color-text-primary);
+
+  --destructive: var(--color-care-urgent);
+  --destructive-foreground: var(--color-text-inverse);
+
+  --border: var(--color-border-default);
+  --input: var(--color-border-default);
+  --ring: var(--color-focus-ring);
+  --radius: var(--radius-md);
+}
+
+.dark {
+  --background: var(--color-surface-base);
+  --foreground: var(--color-text-primary);
+
+  --card: var(--color-surface-elevated);
+  --card-foreground: var(--color-text-primary);
+
+  --popover: var(--color-surface-elevated);
+  --popover-foreground: var(--color-text-primary);
+
+  --primary: var(--color-brand-teal);
+  --primary-foreground: var(--color-text-inverse);
+
+  --secondary: var(--color-surface-sunken);
+  --secondary-foreground: var(--color-text-primary);
+
+  --muted: var(--color-surface-sunken);
+  --muted-foreground: var(--color-text-muted);
+
+  --accent: var(--color-brand-teal-light);
+  --accent-foreground: var(--color-text-primary);
+
+  --destructive: var(--color-care-urgent);
+  --destructive-foreground: var(--color-text-inverse);
+
+  --border: var(--color-border-default);
+  --input: var(--color-border-default);
+  --ring: var(--color-focus-ring);
+}
