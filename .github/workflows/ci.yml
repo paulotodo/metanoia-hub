@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10.33.0'
+
+  # Test environment (matches docker-compose.test.yml ports)
+  POSTGRES_USER: metanoia
+  POSTGRES_PASSWORD: metanoia_dev_pass
+  POSTGRES_DB: metanoia_test
+  DATABASE_URL: postgresql://metanoia:metanoia_dev_pass@localhost:5433/metanoia_test
+  DATABASE_APP_URL: postgresql://metanoia_app:metanoia_app_pass@localhost:5433/metanoia_test
+  REDIS_HOST: localhost
+  REDIS_PORT: '6380'
+  REDIS_URL: redis://localhost:6380
+  KEYCLOAK_URL: http://localhost:8081
+  KEYCLOAK_REALM: metanoia
+  KEYCLOAK_CLIENT_ID: metanoia-app
+  MINIO_ENDPOINT: http://localhost:9002
+  MINIO_ACCESS_KEY: minioadmin
+  MINIO_SECRET_KEY: minioadmin
+  MINIO_BUCKET: metanoia-storage
+  LIVEKIT_URL: ws://localhost:7881
+  LIVEKIT_API_KEY: devkey
+  LIVEKIT_API_SECRET: secret_dev_only_not_for_production
+  API_PORT: '3001'
+  NODE_ENV: test
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache pnpm store and node_modules
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+  lint:
+    name: Lint
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Lint
+        run: pnpm turbo lint
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+  test:
+    name: Test
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Start test services
+        run: docker compose -f docker-compose.test.yml up -d --wait
+        timeout-minutes: 3
+
+      - name: Setup database
+        run: pnpm turbo db:setup
+
+      - name: Run tests (includes Zod snapshots)
+        run: pnpm turbo test
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+      - name: Run RLS isolation tests
+        run: pnpm turbo test --filter=@metanoia/api -- --testPathPattern="test/rls/"
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+      - name: Stop test services
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v
+
+  build:
+    name: Build
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Build
+        run: pnpm turbo build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}

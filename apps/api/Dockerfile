@@ -1,0 +1,42 @@
+# ---- Dependencies ----
+FROM node:20-alpine AS deps
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
+WORKDIR /app
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY packages/types/package.json packages/types/package.json
+COPY packages/config/package.json packages/config/package.json
+
+RUN pnpm install --frozen-lockfile --filter=@metanoia/api...
+
+# ---- Build ----
+FROM node:20-alpine AS build
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=deps /app/packages/types/node_modules ./packages/types/node_modules
+COPY --from=deps /app/packages/config/node_modules ./packages/config/node_modules
+
+COPY packages/types packages/types
+COPY packages/config packages/config
+COPY apps/api apps/api
+COPY turbo.json package.json pnpm-workspace.yaml ./
+
+RUN pnpm turbo build --filter=@metanoia/api
+
+# ---- Runner ----
+FROM node:20-alpine AS runner
+RUN addgroup -g 1001 -S app && adduser -S app -u 1001
+WORKDIR /app
+
+COPY --from=build --chown=app:app /app/apps/api/dist ./dist
+COPY --from=build --chown=app:app /app/apps/api/node_modules ./node_modules
+COPY --from=build --chown=app:app /app/apps/api/package.json ./package.json
+
+USER app
+EXPOSE 3001
+
+CMD ["node", "dist/main"]
