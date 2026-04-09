@@ -1,12 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { AsyncLocalStorage } from 'node:async_hooks';
-
-export interface RequestContext {
-  tenantId: string;
-  userId?: string;
-}
-
-export const requestContext = new AsyncLocalStorage<RequestContext>();
+import { requestContext } from '../common/context/request-context';
 
 /**
  * Prisma client extension that auto-injects tenant_id via RLS.

@@ -5,7 +5,7 @@ import { Reflector } from '@nestjs/core';
 import { UnauthorizedException } from '@nestjs/common';
 import { KeycloakAuthGuard } from '../keycloak.guard';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { requestContext } from '../../prisma/prisma.extension';
+import { requestContext } from '../../common/context/request-context';
 
 // Mock jose module
 vi.mock('jose', () => ({
@@ -59,13 +59,13 @@ function createMockExecutionContext(
 describe('KeycloakAuthGuard', () => {
   let guard: KeycloakAuthGuard;
   let reflector: Reflector;
-  let mockStore: { tenantId: string; userId?: string };
+  let mockStore: { tenantId: string; userId?: string; requestId: string; correlationId: string };
 
   beforeEach(async () => {
     vi.restoreAllMocks();
     vi.mocked(jwtVerify).mockReset();
 
-    mockStore = { tenantId: '' };
+    mockStore = { tenantId: '', requestId: '', correlationId: '' };
     vi.spyOn(requestContext, 'getStore').mockReturnValue(mockStore);
 
     const module = await Test.createTestingModule({

@@ -1,11 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
 import { validateEnv } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
-import { TenantContextMiddleware } from './auth/tenant-context.middleware';
+import { RequestContextMiddleware } from './common/context/request-context.middleware';
+import { pinoLoggerConfig } from './common/logger/logger.config';
 
 @Module({
   imports: [
@@ -13,6 +15,7 @@ import { TenantContextMiddleware } from './auth/tenant-context.middleware';
       isGlobal: true,
       validate: validateEnv,
     }),
+    LoggerModule.forRoot(pinoLoggerConfig()),
     AuthModule,
     PrismaModule,
     RedisModule,
@@ -21,6 +24,6 @@ import { TenantContextMiddleware } from './auth/tenant-context.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(TenantContextMiddleware).forRoutes('*');
+    consumer.apply(RequestContextMiddleware).forRoutes('*');
   }
 }

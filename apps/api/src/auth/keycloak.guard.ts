@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import type { JWTVerifyGetKey } from 'jose';
-import { requestContext } from '../prisma/prisma.extension';
+import { requestContext } from '../common/context/request-context';
 import { IS_PUBLIC_KEY } from './decorators/public.decorator';
 import type { KeycloakJwtPayload } from './interfaces/jwt-payload.interface';
 import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';

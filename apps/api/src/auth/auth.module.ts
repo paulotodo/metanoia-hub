@@ -5,6 +5,8 @@ import { RolesGuard } from './roles.guard';
 
 @Module({
   providers: [
+    KeycloakAuthGuard,
+    RolesGuard,
     { provide: APP_GUARD, useClass: KeycloakAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
