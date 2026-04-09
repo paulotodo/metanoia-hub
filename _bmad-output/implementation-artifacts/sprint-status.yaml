@@ -12,6 +12,7 @@
 project: metanoia-hub
 last_updated: "2026-04-09"
 
+
 development_status:
 
   # Epic 1: Fundação Habilitadora do Produto
@@ -19,7 +20,7 @@ development_status:
   1-1-scaffold-do-monorepo-turborepo-com-nextjs-nestjs-prisma: ready-for-dev
   1-2-docker-compose-completo-com-keycloak-minio-e-livekit: review
   1-3-pipeline-cicd-com-github-actions: ready-for-dev
-  1-4-spike-tecnico-keycloak-multi-tenant-com-4-roles-e-googl: ready-for-dev
+  1-4-spike-tecnico-keycloak-multi-tenant-com-4-roles-e-googl: done
   1-5-observabilidade-base-pino-structured-logging-sentry-e-r: ready-for-dev
   1-6-spike-tecnico-pipeline-real-time-livekit-redis-bullmq-s: ready-for-dev
   1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: ready-for-dev

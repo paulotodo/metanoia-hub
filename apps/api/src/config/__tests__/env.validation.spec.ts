@@ -11,7 +11,7 @@ describe('envSchema', () => {
     REDIS_PORT: '6379',
     KEYCLOAK_URL: 'http://localhost:8080',
     KEYCLOAK_REALM: 'metanoia',
-    KEYCLOAK_CLIENT_ID: 'metanoia-app',
+    KEYCLOAK_CLIENT_ID: 'metanoia-web',
     MINIO_ENDPOINT: 'http://localhost:9000',
     MINIO_ACCESS_KEY: 'minioadmin',
     MINIO_SECRET_KEY: 'minioadmin',
@@ -47,7 +47,7 @@ describe('envSchema', () => {
     const result = envSchema.parse(withoutKeycloak);
     expect(result.KEYCLOAK_URL).toBe('http://localhost:8080');
     expect(result.KEYCLOAK_REALM).toBe('metanoia');
-    expect(result.KEYCLOAK_CLIENT_ID).toBe('metanoia-app');
+    expect(result.KEYCLOAK_CLIENT_ID).toBe('metanoia-web');
   });
 
   it('should apply defaults for MinIO variables', () => {

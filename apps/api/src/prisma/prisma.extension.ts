@@ -23,9 +23,7 @@ export function withMultiTenant(prisma: PrismaClient) {
         }
 
         // Set the tenant context for RLS and execute the query
-        await prisma.$executeRawUnsafe(
-          `SET LOCAL app.current_tenant_id = '${ctx.tenantId}'`,
-        );
+        await prisma.$executeRaw`SET LOCAL app.current_tenant_id = ${ctx.tenantId}`;
         return query(args);
       },
     },
