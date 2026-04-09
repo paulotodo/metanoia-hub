@@ -80,12 +80,19 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
     return true;
   }
 
-  private extractToken(request: { headers: { authorization?: string } }): string | null {
+  private extractToken(request: {
+    headers: { authorization?: string };
+    query?: { token?: string };
+  }): string | null {
+    // 1. Prefer Authorization header (standard flow)
     const authorization = request.headers.authorization;
-    if (!authorization) return null;
+    if (authorization) {
+      const [type, token] = authorization.split(' ');
+      return type === 'Bearer' && token ? token : null;
+    }
 
-    const [type, token] = authorization.split(' ');
-    return type === 'Bearer' && token ? token : null;
+    // 2. Fallback to query param (SSE/EventSource — cannot set headers)
+    return request.query?.token ?? null;
   }
 
   private async verifyToken(token: string): Promise<KeycloakJwtPayload> {
