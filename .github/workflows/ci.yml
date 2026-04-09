@@ -136,7 +136,7 @@ jobs:
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
       - name: Run RLS isolation tests
-        run: pnpm turbo test --filter=@metanoia/api -- --testPathPattern="test/rls/"
+        run: pnpm turbo test --filter=@metanoia/api -- test/rls/
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
