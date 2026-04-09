@@ -7,6 +7,16 @@ export const envSchema = z.object({
   DATABASE_APP_URL: z.string().url(),
   REDIS_HOST: z.string().default('localhost'),
   REDIS_PORT: z.coerce.number().int().default(6379),
+  KEYCLOAK_URL: z.string().url().default('http://localhost:8080'),
+  KEYCLOAK_REALM: z.string().default('metanoia'),
+  KEYCLOAK_CLIENT_ID: z.string().default('metanoia-app'),
+  MINIO_ENDPOINT: z.string().url().default('http://localhost:9000'),
+  MINIO_ACCESS_KEY: z.string().default('minioadmin'),
+  MINIO_SECRET_KEY: z.string().default('minioadmin'),
+  MINIO_BUCKET: z.string().default('metanoia-storage'),
+  LIVEKIT_URL: z.string().default('ws://localhost:7880'),
+  LIVEKIT_API_KEY: z.string().default('devkey'),
+  LIVEKIT_API_SECRET: z.string().default('secret_dev_only_not_for_production'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
