@@ -43,8 +43,8 @@
   },
   "clients": [
     {
-      "clientId": "metanoia-app",
-      "name": "Metanoia Hub App",
+      "clientId": "metanoia-web",
+      "name": "Metanoia Hub Web",
       "enabled": true,
       "publicClient": true,
       "standardFlowEnabled": true,
@@ -83,9 +83,77 @@
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
           "config": {
-            "claim.name": "roles",
+            "claim.name": "realm_roles",
             "jsonType.label": "String",
             "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "user_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "id",
+            "claim.name": "user_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "metanoia-api",
+      "name": "Metanoia Hub API",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect",
+      "secret": "dev-secret-only-not-for-production",
+      "attributes": {
+        "use.refresh.tokens": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "tenant_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "tenant_id",
+            "claim.name": "tenant_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "realm_roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "user_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "id",
+            "claim.name": "user_id",
+            "jsonType.label": "String",
             "id.token.claim": "true",
             "access.token.claim": "true",
             "userinfo.token.claim": "true"
@@ -94,7 +162,22 @@
       ]
     }
   ],
-  "identityProviders": [],
+  "identityProviders": [
+    {
+      "alias": "google",
+      "providerId": "google",
+      "enabled": true,
+      "trustEmail": false,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "clientId": "${GOOGLE_OAUTH_CLIENT_ID:REPLACE_WITH_GOOGLE_CLIENT_ID}",
+        "clientSecret": "${GOOGLE_OAUTH_CLIENT_SECRET:REPLACE_WITH_GOOGLE_CLIENT_SECRET}",
+        "defaultScope": "openid email profile",
+        "syncMode": "IMPORT",
+        "useJwksUrl": "true"
+      }
+    }
+  ],
   "scopeMappings": [],
   "clientScopeMappings": {},
   "users": [
@@ -113,6 +196,25 @@
         }
       ],
       "realmRoles": ["super_admin"],
+      "attributes": {
+        "tenant_id": ["dev-tenant-001"]
+      }
+    },
+    {
+      "username": "admin-tenant@metanoia.dev",
+      "email": "admin-tenant@metanoia.dev",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Admin Tenant",
+      "lastName": "Dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admintenant123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["admin_tenant"],
       "attributes": {
         "tenant_id": ["dev-tenant-001"]
       }

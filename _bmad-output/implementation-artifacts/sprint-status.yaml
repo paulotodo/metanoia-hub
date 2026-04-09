@@ -1,31 +1,63 @@
 # Sprint Status — metanoia-hub
 # Generated: 2026-04-08
+# Last Updated: 2026-04-09
 # Total: 90 stories across 16 epics
 
 # STATUS DEFINITIONS:
-# backlog        — Story not yet created/contexted
-# ready-for-dev  — Story file created with full dev context
-# in-progress    — Dev agent currently implementing
-# review         — Code review pending
-# done           — Story completed and verified
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review
+#   - done: Story completed and verified
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context)
 
+generated: "2026-04-08"
+last_updated: "2026-04-09T11:21:00Z"
 project: metanoia-hub
-last_updated: "2026-04-09"
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
 
 development_status:
 
+  # ============================================
+  # RELEASE 1a — MVP Core (Sprints 0-7)
+  # ============================================
+
   # Epic 1: Fundação Habilitadora do Produto
+  # Sprint 0 (DONE): 1-1, 1-2, 1-3, 1-4
+  # Sprint 1: 1-5, 1-6, 1-7, 1-8
   epic-1: in-progress
-  1-1-scaffold-do-monorepo-turborepo-com-nextjs-nestjs-prisma: ready-for-dev
-  1-2-docker-compose-completo-com-keycloak-minio-e-livekit: review
-  1-3-pipeline-cicd-com-github-actions: ready-for-dev
-  1-4-spike-tecnico-keycloak-multi-tenant-com-4-roles-e-googl: ready-for-dev
-  1-5-observabilidade-base-pino-structured-logging-sentry-e-r: ready-for-dev
+  1-1-scaffold-do-monorepo-turborepo-com-nextjs-nestjs-prisma: done
+  1-2-docker-compose-completo-com-keycloak-minio-e-livekit: done
+  1-3-pipeline-cicd-com-github-actions: done
+  1-4-spike-tecnico-keycloak-multi-tenant-com-4-roles-e-googl: done
+  1-5-observabilidade-base-pino-structured-logging-sentry-e-r: done
   1-6-spike-tecnico-pipeline-real-time-livekit-redis-bullmq-s: ready-for-dev
   1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: ready-for-dev
   1-8-layout-base-navigationconfig-sidebar-e-bottom-tabs: ready-for-dev
+  epic-1-retrospective: optional
 
   # Epic 2: Identidade, Acesso & Multi-tenancy
+  # Sprint 2: 2-1, 2-2, 2-3, 2-4
+  # Sprint 3: 2-5, 2-6, 2-7, 2-8
   epic-2: in-progress
   2-1-cadastro-de-usuario-com-email-e-senha: ready-for-dev
   2-2-login-via-emailsenha-e-google-oauth: ready-for-dev
@@ -35,22 +67,33 @@ development_status:
   2-6-isolamento-de-dados-por-tenant-rls: ready-for-dev
   2-7-gestao-de-usuarios-e-papeis-pelo-admin-tenant: ready-for-dev
   2-8-consentimento-lgpd-e-termos-de-uso-middleware: ready-for-dev
+  epic-2-retrospective: optional
 
   # Epic 3: Provisionamento de Tenant & Configuração Básica
+  # Sprint 4: 3-1, 3-2, 3-3
   epic-3: in-progress
   3-1-provisionamento-transacional-de-tenant: ready-for-dev
   3-2-gestao-de-tenants-pelo-super-admin: ready-for-dev
   3-3-guard-de-limites-por-plano-hardcoded: ready-for-dev
+  epic-3-retrospective: optional
 
   # Epic 4: Grupos, Membros & Convites
+  # Sprint 5: 4-1, 4-2, 4-3, 4-4, 4-5
   epic-4: in-progress
   4-1-crud-de-grupos: ready-for-dev
   4-2-vincular-membros-lideres-a-grupo: ready-for-dev
   4-3-convite-via-e-mail-e-link: ready-for-dev
   4-4-associar-trilhas-a-grupo: ready-for-dev
   4-5-participante-visualiza-seus-grupos: ready-for-dev
+  epic-4-retrospective: optional
+
+  # ============================================
+  # RELEASE 1a-beta — Reuniões & Radar (Sprints 8-11)
+  # ============================================
 
   # Epic 5: Reuniões ao Vivo & Presença MVP
+  # Sprint 8: 5-1, 5-2, 5-3
+  # Sprint 9: 5-4, 5-5, 5-6
   epic-5: in-progress
   5-1-crud-de-reunioes-vinculadas-a-grupo: ready-for-dev
   5-2-integracao-agnostica-com-livekit: ready-for-dev
@@ -58,8 +101,11 @@ development_status:
   5-4-telemetria-basica-de-engajamento: ready-for-dev
   5-5-banner-de-transparencia-lista-de-presenca-real-time: ready-for-dev
   5-6-relatorio-pos-reuniao-notificacoes: ready-for-dev
+  epic-5-retrospective: optional
 
   # Epic 6: Radar Pastoral & Visibilidade MVP
+  # Sprint 10: 6-1, 6-2, 6-3
+  # Sprint 11: 6-4, 6-5, 6-6
   epic-6: in-progress
   6-1-vocabulario-pastoral-governanca: ready-for-dev
   6-2-calculo-assincrono-do-semaforo-dashboard: ready-for-dev
@@ -67,14 +113,24 @@ development_status:
   6-4-perfil-consolidado-acoes-de-cuidado-pastoral: ready-for-dev
   6-5-componentes-ux-do-radar-pastoral: ready-for-dev
   6-6-dashboard-agregado-para-admin-tenant: ready-for-dev
+  epic-6-retrospective: optional
 
   # Epic 7: Onboarding Mínimo
+  # Sprint 6: 7-1, 7-2, 7-3
   epic-7: in-progress
   7-1-tela-de-boas-vindas-personalizada: ready-for-dev
   7-2-dados-de-demonstracao-realistas: ready-for-dev
   7-3-mensagens-de-erro-acionaveis: ready-for-dev
+  epic-7-retrospective: optional
+
+  # ============================================
+  # RELEASE 1b — Plataforma Estendida (Sprints 12-17)
+  # ============================================
 
   # Epic 8: Trilhas, Conteúdo, Progresso, Relatórios & Busca
+  # Sprint 12: 8-1, 8-2, 8-3
+  # Sprint 13: 8-4, 8-5, 8-6
+  # Sprint 14: 8-7, 8-8, 8-9, 8-10
   epic-8: in-progress
   8-1-crud-de-trilhas-modulos-aulas-com-repository-pattern: ready-for-dev
   8-2-tipos-de-conteudo-upload-visualizacao-inline: ready-for-dev
@@ -86,29 +142,38 @@ development_status:
   8-8-busca-full-text-por-conteudo: ready-for-dev
   8-9-trailplaylist-skeletons-performance-ux: ready-for-dev
   8-10-tela-minhas-trilhas-listagem-de-trilhas-do-participante: ready-for-dev
+  epic-8-retrospective: optional
 
   # Epic 9: Privacidade, LGPD & Compliance
+  # Sprint 15: 9-1, 9-2, 9-3, 9-4
   epic-9: in-progress
   9-1-exportacao-de-dados-pessoais-portabilidade-lgpd: ready-for-dev
   9-2-exclusao-de-dados-pessoais-eliminacao-lgpd: ready-for-dev
   9-3-log-de-auditoria-imutavel: ready-for-dev
   9-4-base-legal-historico-de-consentimento: ready-for-dev
+  epic-9-retrospective: optional
 
   # Epic 10: Onboarding Avançado & Adoção
+  # Sprint 15: 10-1, 10-2
+  # Sprint 16: 10-3, 10-4
   epic-10: in-progress
   10-1-wizard-de-onboarding-para-admin-tenant: ready-for-dev
   10-2-dados-de-demonstracao-seed: ready-for-dev
   10-3-importacao-csv-upload-preview-validacao: ready-for-dev
   10-4-importacao-csv-confirmacao-processamento: ready-for-dev
+  epic-10-retrospective: optional
 
   # Epic 11: Planos, Limites & Feature Gating
+  # Sprint 16: 11-1, 11-2, 11-3, 11-4
   epic-11: in-progress
   11-1-planos-de-assinatura-limites-dinamicos: ready-for-dev
   11-2-branding-customizado-do-tenant: ready-for-dev
   11-3-politicas-feature-toggles-por-tenant: ready-for-dev
   11-4-prompt-de-upgrade-gestao-de-limites: ready-for-dev
+  epic-11-retrospective: optional
 
   # Epic 12: Hardening de Acessibilidade & Qualidade UX
+  # Sprint 17: 12-1, 12-2, 12-3, 12-4, 12-5, 12-6
   epic-12: in-progress
   12-1-navegacao-por-teclado-fluxos-publicos-infraestrutura-nf: ready-for-dev
   12-2-navegacao-por-teclado-fluxos-autenticados-nfr-a1: ready-for-dev
@@ -116,8 +181,14 @@ development_status:
   12-4-touch-targets-reduced-motion-mobile-feedback-nfr-a2-ux-: ready-for-dev
   12-5-formularios-acessiveis-nfr-a3: ready-for-dev
   12-6-teste-automatizado-de-contraste-axe-core-quality-gate-n: ready-for-dev
+  epic-12-retrospective: optional
+
+  # ============================================
+  # RELEASE 2 — Post-MVP (Sprints 18-21)
+  # ============================================
 
   # Epic 13: Relatórios Avançados & Analytics
+  # Sprint 18: 13-1, 13-2a, 13-2b, 13-3, 13-4, 13-5
   epic-13: in-progress
   13-1-relatorio-por-reuniao-fr63: ready-for-dev
   13-2a-relatorio-consolidado-por-lider-fr79: ready-for-dev
@@ -125,8 +196,10 @@ development_status:
   13-3-deteccao-de-risco-de-evasao-fr66: ready-for-dev
   13-4-metricas-de-plataforma-super-admin-fr67: ready-for-dev
   13-5-templates-de-conteudo-reutilizaveis-fr42: ready-for-dev
+  epic-13-retrospective: optional
 
   # Epic 14: Notificações & Comunicação
+  # Sprint 19: 14-1, 14-2a, 14-2b, 14-2c, 14-3, 14-4
   epic-14: in-progress
   14-1-infraestrutura-de-notificacoes-channel-router-fr77: ready-for-dev
   14-2a-sse-endpoint-redis-pubsub-backend-fr77: ready-for-dev
@@ -134,15 +207,19 @@ development_status:
   14-2c-sse-reconnection-gap-fill-fr77: ready-for-dev
   14-3-notificacoes-por-email-via-resend-fr77-nfr-i1i2i3: ready-for-dev
   14-4-health-check-de-integracoes-dashboard-super-admin-nfr-i: ready-for-dev
+  epic-14-retrospective: optional
 
   # Epic 15: Acessibilidade Avançada
+  # Sprint 20: 15-1, 15-2, 15-3, 15-4
   epic-15: in-progress
   15-1-screen-reader-autenticacao-navegacao-global-landmarks-n: ready-for-dev
   15-2-screen-reader-dashboard-lider-radar-pastoral-listas-nfr: ready-for-dev
   15-3-semaforo-multimodal-icones-texto-complementar-aria-nfr-: ready-for-dev
   15-4-screen-reader-trilhas-progresso-conteudo-nfr-a4: ready-for-dev
+  epic-15-retrospective: optional
 
   # Epic 16: Resiliência, Offline & Expansões Futuras
+  # Sprint 21: 16-1, 16-2, 16-3, 16-4, 16-5, 16-6, 16-7
   epic-16: in-progress
   16-1-preferencias-granulares-de-notificacao-por-tipo-fr78: ready-for-dev
   16-2-pwa-service-worker-leitura-offline-de-conteudo-fr82: ready-for-dev
@@ -151,3 +228,4 @@ development_status:
   16-5-tracing-distribuido-entre-servicos-nfr-o5: ready-for-dev
   16-6-legendas-transcricao-de-video-nfr-a6: ready-for-dev
   16-7-resiliencia-operacional-backup-restore-disaster-recover: ready-for-dev
+  epic-16-retrospective: optional

@@ -4,6 +4,7 @@ import type { Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import type { EnvConfig } from '../config/env.validation';
+import { Public } from '../auth/decorators/public.decorator';
 
 type CheckStatus = 'ok' | 'error';
 
@@ -18,6 +19,7 @@ interface HealthResponse {
   };
 }
 
+@Public()
 @Controller('api/health')
 export class HealthController {
   constructor(

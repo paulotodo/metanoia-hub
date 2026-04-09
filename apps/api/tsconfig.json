@@ -2,6 +2,7 @@
   "extends": "@metanoia/config/tsconfig/nest",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": "./"
   },
   "include": ["src/**/*"],
