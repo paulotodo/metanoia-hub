@@ -1,0 +1,20 @@
+{
+  "register": {
+    "title": "Criar conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "name": "Nome completo",
+    "submit": "Criar conta",
+    "passwordHint": "A senha deve ter entre 12 e 64 caracteres",
+    "errors": {
+      "generic": "Nao foi possivel completar o cadastro. Tente novamente.",
+      "passwordMismatch": "As senhas nao coincidem",
+      "passwordTooShort": "A senha deve ter no minimo 12 caracteres",
+      "passwordTooLong": "A senha deve ter no maximo 64 caracteres",
+      "invalidEmail": "E-mail invalido",
+      "leakedPassword": "Esta senha foi encontrada em vazamentos de dados. Escolha outra senha."
+    },
+    "success": "Conta criada! Verifique seu e-mail para confirmar o cadastro."
+  }
+}

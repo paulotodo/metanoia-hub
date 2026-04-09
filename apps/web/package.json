@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@metanoia/types": "workspace:*",
     "@metanoia/ui": "workspace:*",
     "lucide-react": "^0.511.0",
     "next": "^16.2.3",

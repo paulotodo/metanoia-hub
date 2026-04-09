@@ -6,3 +6,9 @@ export {
   LiveKitWebhookEventSchema,
   type LiveKitWebhookEvent,
 } from './meeting-event';
+export {
+  RegisterUserSchema,
+  type RegisterUser,
+  RegisterUserResponseSchema,
+  type RegisterUserResponse,
+} from './auth/register';
