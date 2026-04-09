@@ -21,3 +21,8 @@
 - SET LOCAL sem transaction boundary no Prisma extension — verificar eficácia do RLS sem $transaction
 - tracesSampleRate hardcoded — tornar configurável via env var SENTRY_TRACES_SAMPLE_RATE
 - redact config só cobre authorization header — expandir para cookies e outros headers sensíveis
+
+## Deferred from: code review of story 1-8 (2026-04-09)
+
+- jest-axe TypeScript types sem augmentation para vitest — `toHaveNoViolations()` funciona em runtime mas não tem type declarations para vitest. Problema pré-existente em apps/web e packages/ui.
+- Sem error boundary no NavigationShell — se um ícone lucide falhar, o layout inteiro crasha sem fallback. Escopo geral de resiliência da app.
