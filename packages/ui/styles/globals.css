@@ -40,36 +40,13 @@
 
   --border: var(--color-border-default);
   --input: var(--color-border-default);
-  --ring: var(--color-focus-ring);
+  --ring: var(--color-interactive-focus-ring);
   --radius: var(--radius-md);
+
+  --primary-hover: var(--color-interactive-hover);
 }
 
-.dark {
-  --background: var(--color-surface-base);
-  --foreground: var(--color-text-primary);
-
-  --card: var(--color-surface-elevated);
-  --card-foreground: var(--color-text-primary);
-
-  --popover: var(--color-surface-elevated);
-  --popover-foreground: var(--color-text-primary);
-
-  --primary: var(--color-brand-teal);
-  --primary-foreground: var(--color-text-inverse);
-
-  --secondary: var(--color-surface-sunken);
-  --secondary-foreground: var(--color-text-primary);
-
-  --muted: var(--color-surface-sunken);
-  --muted-foreground: var(--color-text-muted);
-
-  --accent: var(--color-brand-teal-light);
-  --accent-foreground: var(--color-text-primary);
-
-  --destructive: var(--color-care-urgent);
-  --destructive-foreground: var(--color-text-inverse);
-
-  --border: var(--color-border-default);
-  --input: var(--color-border-default);
-  --ring: var(--color-focus-ring);
-}
+/* Dark mode: no need to duplicate the bridge here.
+ * The variables above reference design tokens (--color-*) which are
+ * already redefined under .dark in tokens.css, so var() resolution
+ * automatically picks up dark values at runtime. */
