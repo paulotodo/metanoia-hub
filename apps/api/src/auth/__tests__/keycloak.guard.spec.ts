@@ -2,9 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { UnauthorizedException } from '@nestjs/common';
 import { KeycloakAuthGuard } from '../keycloak.guard';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { requestContext } from '../../common/context/request-context';
 
 // Mock jose module

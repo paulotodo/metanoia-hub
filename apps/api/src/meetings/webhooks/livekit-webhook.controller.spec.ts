@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
 import { LiveKitWebhookController } from './livekit-webhook.controller';
 import { MeetingEventService } from '../events/meeting-event.service';
 import { ConfigService } from '@nestjs/config';

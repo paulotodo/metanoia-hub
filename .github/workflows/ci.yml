@@ -120,8 +120,11 @@ jobs:
           key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Start test services
-        run: docker compose -f docker-compose.test.yml up -d --wait postgres redis minio livekit keycloak
+        run: docker compose -f docker-compose.test.yml up -d --wait postgres redis minio livekit
         timeout-minutes: 3
+
+      - name: Generate Prisma client
+        run: pnpm --filter @metanoia/api exec prisma generate
 
       - name: Setup database
         run: pnpm turbo db:setup

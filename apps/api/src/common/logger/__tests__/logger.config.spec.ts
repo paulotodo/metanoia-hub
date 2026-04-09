@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { requestContext } from '../../context/request-context';
 import { pinoLoggerConfig } from '../logger.config';
 
