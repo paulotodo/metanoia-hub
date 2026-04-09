@@ -183,6 +183,8 @@ A plataforma adota complexidade progressiva: a maioria dos usuários começa rá
 
 **Regra:** Funcionalidades avançadas não devem poluir a experiência express. Revelação progressiva via menus secundários, seções colapsáveis ou configurações dedicadas. A transição do modo express para avançado é sempre iniciada pelo usuário (nunca automática) via configuração do tenant.
 
+**Mecanismo de transição:** O Admin Tenant ativa funcionalidades avançadas no painel de configurações do tenant (toggle por feature: trilhas avançadas, automações, relatórios detalhados, permissões granulares). O sistema pode exibir um banner informativo sugerindo a ativação quando detecta uso maduro (ex.: >3 grupos ativos, >50 participantes, >10 reuniões realizadas), mas nunca auto-transiciona. A sugestão é dismissável e não reaparece após ser descartada.
+
 ### Acessibilidade como Princípio de Design
 
 Acessibilidade não é checklist técnico — é extensão do DNA pastoral. Incluir é cuidar. O produto deve ser utilizável por pessoas com deficiências visuais, motoras ou cognitivas desde o design, não como remediação posterior.
@@ -1155,7 +1157,7 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | FR06 | O sistema deve suportar os papéis: Super Admin, Admin Tenant, Líder, Participante | 1a |
 | FR07 | O sistema deve isolar dados e operações por tenant, impedindo acesso cruzado | 1a |
 | FR08 | O sistema deve permitir que um Admin Tenant gerencie usuários e papéis dentro do seu tenant | 1a |
-| FR09 | O sistema deve implementar defesa em profundidade com múltiplas camadas de autorização independentes | 1a |
+| FR09 | O sistema deve implementar defesa em profundidade com 3 camadas de autorização independentes: (1) Keycloak identity provider, (2) NestJS Guards por rota, (3) PostgreSQL RLS por tenant. Cada camada opera independentemente — falha em uma não compromete as demais | 1a |
 | FR10 | O sistema deve permitir que o usuário selecione o tenant ativo ao acessar a plataforma | 1a |
 | FR11 | O sistema deve revogar sessões e tokens quando um usuário for removido de um tenant | 1a |
 
@@ -1206,10 +1208,10 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | FR36 | O sistema deve permitir configuração de pré-requisitos entre módulos/aulas | 1b |
 | FR37 | O sistema deve registrar o progresso individual do participante por aula, módulo e trilha | 1a |
 | FR38 | O sistema deve calcular e exibir percentual de conclusão da trilha por participante | 1a |
-| FR39 | O sistema deve suportar regras de conclusão de aula: vídeo assistido, documento lido, marcação manual pelo usuário ou líder | 1b |
+| FR39 | O sistema deve suportar regras de conclusão de aula: vídeo assistido (≥90% da duração), documento lido (scroll ≥80% + tempo ≥ tempo estimado de leitura), ou marcação manual pelo líder/participante. Cada tipo de conteúdo define sua regra padrão, configurável por tenant | 1b |
 | FR40 | O sistema deve permitir publicação e versionamento de conteúdo (rascunho → publicado) | 1b |
 | FR41 | O sistema deve permitir que o tenant defina trilhas no nível do tenant (catálogo) e as associe a múltiplos grupos | 1b |
-| FR42 | O sistema deve suportar templates de conteúdo reutilizáveis para agilizar criação de trilhas | 2 |
+| FR42 | O sistema deve suportar templates de conteúdo reutilizáveis: (a) biblioteca de templates pré-construídos (fornecidos pela plataforma), (b) templates criados pelo admin a partir de trilhas existentes ("salvar como template"). Templates incluem estrutura de módulos/aulas sem conteúdo específico | 2 |
 
 ---
 
@@ -1238,14 +1240,14 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | ID | Requisito Funcional | Release |
 |----|---------------------|---------|
 | FR54 | O sistema deve exibir dashboard semáforo (🟢🟡🔴) por participante para o Líder, baseado em sinais de presença, engajamento e progresso | 2 |
-| FR55 | O sistema deve calcular a classificação semáforo com base em regras objetivas e configuráveis por tenant | 2 |
+| FR55 | O sistema deve calcular a classificação semáforo com base em regras objetivas e configuráveis por tenant. Thresholds padrão: 🟢 presença ≥75% nas últimas 4 semanas + ativo nos últimos 14 dias; 🟡 presença 50-74% OU inativo 14-21 dias; 🔴 presença <50% OU inativo >21 dias. Admin Tenant pode ajustar thresholds por tenant | 2 |
 | FR56 | O sistema deve permitir que o Líder visualize o perfil consolidado de um participante (histórico de presença, progresso em trilhas, sinais de engajamento) | 2 |
 | FR57 | O sistema deve permitir que o Líder registre ações de cuidado pastoral vinculadas a um participante | 2 |
 | FR58 | O sistema deve atualizar o dashboard semáforo em tempo real via SSE | 2 |
 | FR59 | O sistema deve exibir indicadores de tendência por participante (melhorando, estável, declínio) | 2 |
 | FR60 | O sistema deve permitir que o Admin Tenant visualize dashboard agregado de todos os grupos do tenant | 2 |
 | FR61 | O sistema deve exibir alertas quando um participante mudar de status no semáforo (ex.: 🟢→🟡 ou 🟡→🔴) | 2 |
-| FR62 | O sistema deve enquadrar toda a comunicação de monitoramento com vocabulário pastoral (cuidado, não vigilância) | 2 |
+| FR62 | O sistema deve enquadrar toda a comunicação de monitoramento com vocabulário pastoral (cuidado, não vigilância). Governança: termos pastorais definidos em `vocabulary.ts` (packages/types), mensagens UI centralizadas em `pt-BR.json`. Termos proibidos: "monitorar", "rastrear", "controlar", "vigiar" — validado via lint CI. Design system team aprova alterações de vocabulário | 2 |
 
 ---
 
@@ -1256,7 +1258,7 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | FR63 | O sistema deve gerar relatório por reunião com métricas de presença e engajamento | 2 |
 | FR64 | O sistema deve gerar relatório por trilha com métricas de progresso e conclusão por participante | 1b |
 | FR65 | O sistema deve gerar relatório por tenant com métricas agregadas de todos os grupos | 2 |
-| FR66 | O sistema deve identificar e sinalizar participantes em risco de evasão com base em padrões de ausência e inatividade | 2 |
+| FR66 | O sistema deve identificar e sinalizar participantes em risco de evasão com base em padrões de ausência e inatividade. Critérios: alerta ao líder após 3+ ausências consecutivas em reuniões do grupo; flag de inatividade após 2+ semanas sem acesso à plataforma. Notificação via dashboard semáforo (transição automática 🟢→🟡 ou 🟡→🔴 conforme FR55) | 2 |
 | FR67 | O sistema deve gerar métricas de plataforma para Super Admin (tenants ativos, usuários, utilização de recursos) | 2 |
 | FR68 | O sistema deve permitir exportação de relatórios em formato adequado para análise (CSV ou equivalente) | 1b |
 
@@ -1282,13 +1284,13 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 
 | ID | Requisito Funcional | Release |
 |----|---------------------|---------|
-| FR76 | O sistema deve permitir busca por conteúdo dentro de trilhas, aulas e materiais do tenant | 1b |
+| FR76 | O sistema deve permitir busca full-text por conteúdo dentro de trilhas, aulas e materiais do tenant. Implementação via PostgreSQL tsvector sobre título, descrição e tags. Resultados scoped por tenant (RLS). Suporte a busca por termo parcial e acentuação | 1b |
 | FR77 | O sistema deve permitir envio de notificações in-app para usuários (reuniões, atualizações de conteúdo, alertas pastorais) | 2 |
 | FR78 | O sistema deve permitir que o usuário configure preferências de notificação por tipo | Post-MVP |
 | FR79 | O sistema deve gerar relatório consolidado por líder com visão agregada de todos os seus grupos | 2 |
 | FR80 | O sistema deve registrar log de auditoria de ações administrativas (criação/edição/exclusão de recursos, alterações de permissão, configurações de tenant) | 1b |
 | FR81 | O sistema deve exibir mensagens de erro claras e acionáveis, orientando o usuário sobre como resolver o problema | 1b |
-| FR82 | O sistema deve manter funcionalidade básica de leitura (visualização de trilhas e conteúdo já carregado) em caso de instabilidade de conexão | Post-MVP |
+| FR82 | O sistema deve manter funcionalidade básica de leitura (visualização de trilhas e conteúdo já carregado) em caso de instabilidade de conexão. Implementação via PWA com Service Worker: cache de conteúdo já visualizado (trilhas, aulas texto/PDF). Rascunho de registro de presença em reunião offline (sync automático ao reconectar). Não inclui funcionalidades de escrita/edição offline | Post-MVP |
 
 ---
 
@@ -1347,7 +1349,7 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 
 | ID | Requisito | Release |
 |----|-----------|---------|
-| NFR-S1 | Senhas devem ser armazenadas com hash resistente a ataques de GPU e side-channel | 1a |
+| NFR-S1 | Senhas devem ser armazenadas com hash Argon2id (memory cost 64MB, iterations 3, parallelism 1) — resistente a ataques de GPU e side-channel. Delegado ao Keycloak (suporte nativo) | 1a |
 | NFR-S2 | Senha mínima: 12 caracteres; suportar até 64+ caracteres | 1a |
 | NFR-S3 | Senhas vazadas/comuns devem ser bloqueadas no cadastro (lista OWASP/NIST) | 1a |
 | NFR-S4 | MFA obrigatório para Super Admin e Admin Tenant | 1a |
@@ -1383,9 +1385,9 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | Participantes por reunião típica | — | 15–30 | 30–50 |
 
 **Princípios de Escalabilidade:**
-- NFR-E1: App/API/workers devem escalar horizontalmente
-- NFR-E2: Reunião ao vivo e processamento assíncrono devem escalar independentemente do app principal
-- NFR-E3: Semáforo deve ser atualizado por eventos assíncronos, não por processamento síncrono pesado
+- NFR-E1: App/API/workers devem escalar horizontalmente. Trigger: CPU média >70% por 5min → auto-scale (max 4 réplicas dev, 8 prod). Stateless obrigatório — sessão e cache em Redis
+- NFR-E2: Reunião ao vivo e processamento assíncrono devem escalar independentemente do app principal. BullMQ workers em containers separados; scale baseado em queue depth >100 jobs pending
+- NFR-E3: Semáforo deve ser atualizado por eventos assíncronos, não por processamento síncrono pesado. Recálculo via BullMQ job disparado por evento de presença/progresso; resultado cacheado em Redis (TTL 5min)
 
 ---
 
@@ -1505,3 +1507,112 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 6. **Observabilidade (NFR-O1/O2):** Sentry + logs estruturados (JSON) no Release 1. Grafana/Prometheus/Loki no Phase 3.
 7. **Error budget:** Não formalizar no MVP. Usar alerta de uptime (UptimeRobot/Healthchecks.io) + post-mortem para incidentes.
 8. **Acessibilidade (NFR-A1-A3):** shadcn/ui + Radix são AA-compliant por padrão. Esforço adicional concentrado nos componentes custom do Release 2 (semáforo, player, dashboard).
+
+---
+
+## Apêndice: Matriz de Rastreabilidade FR → Jornada
+
+> Mapeamento de cada requisito funcional para a(s) jornada(s) de usuário que o exercita(m).
+> J1 = Participante | J2 = Líder | J3 = Admin Tenant | J4 = Super Admin
+
+| ID | Requisito (resumo) | J1 | J2 | J3 | J4 |
+|----|---------------------|:--:|:--:|:--:|:--:|
+| **1. Identidade & Acesso** |||||
+| FR01 | Cadastro e-mail/senha | ✓ | ✓ | ✓ | |
+| FR02 | Login OAuth (Google) | ✓ | ✓ | ✓ | |
+| FR03 | Associação multi-tenant | ✓ | ✓ | ✓ | |
+| FR04 | Autenticação centralizada (Keycloak) | ✓ | ✓ | ✓ | ✓ |
+| FR05 | Autorização por papéis + contexto tenant | ✓ | ✓ | ✓ | ✓ |
+| FR06 | Papéis: Super Admin, Admin, Líder, Participante | ✓ | ✓ | ✓ | ✓ |
+| FR07 | Isolamento de dados por tenant (RLS) | ✓ | ✓ | ✓ | ✓ |
+| FR08 | Admin gerencia usuários/papéis do tenant | | | ✓ | |
+| FR09 | Defesa em profundidade (3 camadas) | ✓ | ✓ | ✓ | ✓ |
+| FR10 | Seleção de tenant ativo | ✓ | ✓ | ✓ | |
+| FR11 | Revogação de sessão ao remover usuário | | | ✓ | ✓ |
+| **2. Tenant & Configuração** |||||
+| FR12 | Provisionamento de tenant | | | ✓ | ✓ |
+| FR13 | Planos de assinatura (Free/Pro/Enterprise) | | | ✓ | ✓ |
+| FR14 | Configuração de tenant (nome, logo, preferências) | | | ✓ | |
+| FR15 | Feature gating por plano | | | ✓ | ✓ |
+| FR16 | Limites por plano (grupos, membros, storage) | | | ✓ | ✓ |
+| FR17 | Métricas de uso do tenant | | | ✓ | ✓ |
+| FR18 | Super Admin gerencia tenants | | | | ✓ |
+| FR19 | Upgrade/downgrade de plano | | | ✓ | ✓ |
+| **3. Grupos & Membros** |||||
+| FR20 | Criar grupo dentro do tenant | | ✓ | ✓ | |
+| FR21 | Associar líder(es) a grupo | | | ✓ | |
+| FR22 | Convidar participantes (e-mail/link) | | ✓ | ✓ | |
+| FR23 | Aceitar convite e ingressar no grupo | ✓ | | | |
+| FR24 | Visualizar membros do grupo | ✓ | ✓ | ✓ | |
+| FR25 | Remover participante do grupo | | ✓ | ✓ | |
+| FR26 | Transferir participante entre grupos | | | ✓ | |
+| FR27 | Importação em lote via CSV (grupos) | | | ✓ | |
+| FR28 | Importação em lote via CSV (membros) | | ✓ | ✓ | |
+| **4. Trilhas de Conteúdo** |||||
+| FR29 | Criar trilha de conteúdo | | ✓ | ✓ | |
+| FR30 | Criar/ordenar módulos dentro de trilha | | ✓ | ✓ | |
+| FR31 | Criar/ordenar aulas dentro de módulos | | ✓ | ✓ | |
+| FR32 | Tipos de conteúdo (vídeo, texto, PDF, links) | | ✓ | ✓ | |
+| FR33 | Upload de arquivos de conteúdo | | ✓ | ✓ | |
+| FR34 | Visualização inline de conteúdo | ✓ | ✓ | | |
+| FR35 | Acesso sequencial ou livre | | ✓ | ✓ | |
+| FR36 | Pré-requisitos entre módulos/aulas | | ✓ | ✓ | |
+| FR37 | Registro de progresso individual | ✓ | | | |
+| FR38 | Percentual de conclusão por participante | ✓ | ✓ | | |
+| FR39 | Regras de conclusão de aula | ✓ | ✓ | ✓ | |
+| FR40 | Publicação e versionamento de conteúdo | | ✓ | ✓ | |
+| FR41 | Trilhas no nível do tenant (catálogo) | | | ✓ | |
+| FR42 | Templates reutilizáveis | | ✓ | ✓ | |
+| **5. Reuniões ao Vivo** |||||
+| FR43 | Agendar reunião recorrente | | ✓ | ✓ | |
+| FR44 | Integração com videoconferência | | ✓ | | |
+| FR45 | Receber eventos de videoconferência | | | | |
+| FR46 | Registro de presença (manual/auto) | ✓ | ✓ | | |
+| FR47a | Indicador: participação ativa | ✓ | | | |
+| FR47b | Indicador: duração na reunião | ✓ | | | |
+| FR47c | Indicador: foco (opt-in por tenant) | ✓ | | | |
+| FR48 | Lembrete automático pré-reunião | ✓ | ✓ | | |
+| FR49 | Histórico de reuniões do grupo | | ✓ | ✓ | |
+| FR50 | Anotações do líder pós-reunião | | ✓ | | |
+| FR51 | Cancelar/reagendar reunião | | ✓ | ✓ | |
+| FR52 | Reunião avulsa (não recorrente) | | ✓ | ✓ | |
+| FR53 | Gravação opcional de reunião | | ✓ | ✓ | |
+| **6. Visibilidade Pastoral** |||||
+| FR54 | Dashboard semáforo por participante | | ✓ | | |
+| FR55 | Cálculo semáforo com regras configuráveis | | ✓ | ✓ | |
+| FR56 | Perfil consolidado do participante | | ✓ | | |
+| FR57 | Registro de ações de cuidado pastoral | | ✓ | | |
+| FR58 | Dashboard semáforo em tempo real (SSE) | | ✓ | | |
+| FR59 | Indicadores de tendência por participante | | ✓ | ✓ | |
+| FR60 | Dashboard agregado do tenant | | | ✓ | |
+| FR61 | Alertas de mudança de status semáforo | | ✓ | ✓ | |
+| FR62 | Vocabulário pastoral na comunicação | ✓ | ✓ | ✓ | |
+| **7. Relatórios & Analytics** |||||
+| FR63 | Relatório por reunião (presença/engajamento) | | ✓ | ✓ | |
+| FR64 | Relatório por trilha (progresso/conclusão) | | ✓ | ✓ | |
+| FR65 | Relatório por tenant (métricas agregadas) | | | ✓ | |
+| FR66 | Sinalização de risco de evasão | | ✓ | ✓ | |
+| FR67 | Métricas de plataforma (Super Admin) | | | | ✓ |
+| FR68 | Exportação de relatórios (CSV) | | ✓ | ✓ | ✓ |
+| **8. Onboarding & Adoção** |||||
+| FR69 | Tela de boas-vindas personalizada | ✓ | ✓ | ✓ | |
+| FR70 | Tour guiado por papel | ✓ | ✓ | ✓ | |
+| FR71 | Checklist de setup do tenant | | | ✓ | |
+| FR72 | Indicador de progresso de setup | | | ✓ | |
+| FR73 | Exportação de dados pessoais (LGPD) | ✓ | | | |
+| FR74 | Exclusão de conta e dados (LGPD) | ✓ | | | |
+| FR75 | Aceite de termos de uso | ✓ | ✓ | ✓ | |
+| **9. Capabilities Transversais** |||||
+| FR76 | Busca full-text por conteúdo | ✓ | ✓ | ✓ | |
+| FR77 | Notificações in-app | ✓ | ✓ | ✓ | |
+| FR78 | Preferências de notificação | ✓ | ✓ | ✓ | |
+| FR79 | Relatório consolidado por líder | | ✓ | | |
+| FR80 | Audit log de ações administrativas | | | ✓ | ✓ |
+| FR81 | Mensagens de erro claras e acionáveis | ✓ | ✓ | ✓ | ✓ |
+| FR82 | Funcionalidade offline (leitura) | ✓ | | | |
+
+**Cobertura por Jornada:**
+- J1 (Participante): 38 FRs — foco em consumo, progresso, presença
+- J2 (Líder): 46 FRs — foco em gestão de grupo, trilhas, visibilidade pastoral
+- J3 (Admin Tenant): 48 FRs — foco em configuração, relatórios, governança
+- J4 (Super Admin): 14 FRs — foco em provisionamento, métricas de plataforma, auditoria

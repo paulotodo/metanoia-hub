@@ -77,6 +77,17 @@ Em vez de criar experiências separadas para cada role RBAC, consolidar em 3 exp
 
 O Auditor é view-only do Admin. O Editor é subset do Líder. Transição suave entre roles para quem tem múltiplos.
 
+**Mapeamento Formal RBAC → Experience:**
+
+| Role RBAC | Experience UX | Layout Strategy | Navegação Principal | Roteamento |
+|-----------|---------------|-----------------|---------------------|------------|
+| `participant` | Consumo | Mobile-first | Minhas Trilhas, Minha Reunião, Meu Progresso | `/app/consumo/*` |
+| `leader`, `facilitator` | Gestão | Desktop-first (responsivo) | Dashboard Semáforo, Grupos, Reuniões, Relatórios | `/app/gestao/*` |
+| `admin`, `coordinator` | Admin | Desktop-first | Config Tenant, Usuários, Catálogo Trilhas, Relatórios | `/app/admin/*` |
+| `super_admin` | Admin (elevado) | Desktop-first | Control Plane, Tenants, Audit Log, Métricas | `/app/admin/super/*` |
+
+> Quando um usuário tem múltiplos roles, a experience mais elevada prevalece (admin > gestao > consumo). O `ExperienceResolver` middleware no Next.js resolve automaticamente.
+
 ### Oportunidades de Design
 
 1. **Radar Pastoral como momento "wow"** — A tradução de dados comportamentais em linguagem pastoral é inédita no mercado. A experiência do semáforo com contexto expandido + CTA de ação pastoral pode ser o fator decisivo de conversão e retenção.
@@ -187,7 +198,7 @@ Radar (sinal) → Contexto progressivo (entendimento) → Sugestão de ação (s
 
 3. **Volume sem fricção** — Reunião e trilha (coração operacional) devem ser invisíveis em complexidade. Entrar, participar, progredir — sem pensar.
 
-4. **Contexto progressivo** — Nenhum dado sem contexto, mas com progressive disclosure. Nível 1 (lista): cor + nome + 1 frase curta. Nível 2 (expandido): histórico completo, tendência, ações anteriores — sob demanda. Participantes 🔴 no topo com mais contexto, 🟢 compactos.
+4. **Contexto progressivo** — Nenhum dado sem contexto, mas com progressive disclosure. Nível 1 (lista): cor + nome + 1 frase curta. Nível 2 (expandido): histórico completo, tendência, ações anteriores — sob demanda. Participantes 🔴 no topo com mais contexto, 🟢 compactos. **Nota sobre transição Express→Avançado:** A ativação de funcionalidades avançadas é decisão do Admin Tenant (configuração por tenant), nunca automática. O sistema pode exibir banner informativo sugerindo ativação quando detecta uso maduro (>3 grupos, >50 participantes, >10 reuniões), mas a sugestão é dismissável e não reaparece após descartada.
 
 5. **Loop fechado** — A experiência não termina no insight. Termina quando a ação gera resultado e o líder vê o impacto do seu cuidado.
 
@@ -1564,7 +1575,7 @@ flowchart TD
 **Otimizações de fluxo:**
 - **Provisionamento em <5min:** Wizard de 3 passos com preview antes de confirmar — tenant pronto imediatamente
 - **Saúde num relance:** Status dos serviços com semáforo visual (✅/⚠️/❌) — Paulo decide em segundos se precisa agir
-- **Audit log com contexto:** Cada entrada expande com detalhes completos (quem, o quê, quando, de onde) — rastreabilidade total sem sair da tela
+- **Audit log com contexto:** Cada entrada expande com detalhes completos (quem, o quê, quando, de onde) — rastreabilidade total sem sair da tela. Filtros: tipo de evento, usuário, período (date range picker), severity. Busca full-text sobre descrição do evento. Paginação server-side (50 itens/página). Exportação CSV/JSON para análise offline. Componentes: `AuditEventRow` (expandível), `AuditFilterBar` (sticky top), `AuditDetailPanel` (side drawer com JSON formatado)
 - **Alertas proativos:** Sistema notifica Paulo antes que limites sejam atingidos (storage, usuários, latência)
 - **MFA obrigatório:** Segurança reforçada para acesso ao control plane (NFR-S4)
 - **Desktop-first:** Única jornada otimizada para desktop — operações de infra não são feitas no celular
@@ -2446,3 +2457,128 @@ Todo componente pastoral usa `motion-safe:transition-all` em vez de `transition-
 - Skeleton como placeholder (evita CLS)
 - Lazy loading de componentes below the fold
 - Bundle analyzer no CI para monitorar crescimento por rota
+
+---
+
+## Telas Adicionais (Gaps Identificados no Readiness Check)
+
+### Wizard de Importação CSV (FR27-FR28)
+
+**Contexto:** Admin Tenant ou Líder precisa importar grupos e membros em lote a partir de planilhas existentes.
+
+**Fluxo em 4 passos:**
+
+1. **Upload** — `FileUploadZone` com drag & drop. Aceita `.csv` e `.xlsx` (max 5MB). Template para download com colunas esperadas (nome, e-mail, grupo, papel). Feedback imediato: "42 linhas detectadas"
+2. **Preview & Validação** — `CSVPreviewTable` mostra as primeiras 10 linhas. Validação automática destaca erros inline:
+   - 🔴 E-mail inválido ou duplicado (dentro do arquivo ou já existente no tenant)
+   - 🟡 Campo opcional vazio (ex.: telefone)
+   - Contador: "38 válidos, 4 com erro"
+3. **Resolução de Erros** — `ValidationErrorList` agrupa erros por tipo. Opções: corrigir inline, ignorar linha, ou voltar ao passo 1. Não permite prosseguir com erros 🔴
+4. **Confirmação & Resultado** — Preview final: "Importar 38 participantes em 3 grupos?" → `ImportResultSummary`: "38 importados com sucesso, 4 ignorados (ver detalhes)". Link para visualizar membros importados
+
+**Componentes:**
+
+| Componente | Estado | Comportamento |
+|-----------|--------|---------------|
+| `FileUploadZone` | idle, dragging, uploading, done, error | Drag & drop + click. Progress bar durante upload |
+| `CSVPreviewTable` | loading, loaded, with-errors | Tabela com highlight de erros por célula |
+| `ValidationErrorList` | empty, populated | Lista agrupada com ações inline |
+| `ImportResultSummary` | success, partial, failed | Resumo com contadores e link de navegação |
+
+**Regras:**
+- Limite por plano: Free (50 membros/import), Pro (500), Enterprise (5000)
+- Importação é idempotente: e-mails já existentes no tenant são ignorados (não duplicados)
+- Undo disponível por 24h após importação (soft delete)
+
+---
+
+### Workflow de Publicação de Conteúdo (FR40)
+
+**Contexto:** Líder ou Admin cria e publica conteúdo em trilhas com controle de versionamento.
+
+**Estados do Conteúdo:**
+
+```
+[Rascunho] → [Em Revisão] → [Publicado] → [Arquivado]
+     ↑              ↓              ↓
+     └──── Rejeitar ─┘    [Nova Versão] → [Rascunho v2]
+```
+
+**Tela: Editor de Conteúdo com Sidebar de Status**
+
+- **Área principal:** Editor de texto rico (título, corpo, anexos). Preview renderizado ao lado (split view em desktop, toggle em mobile)
+- **Sidebar direita (desktop) / Bottom sheet (mobile):**
+  - Status atual com badge colorido (🟤 Rascunho, 🟡 Em Revisão, 🟢 Publicado, ⚫ Arquivado)
+  - Botão de transição contextual: "Enviar para Revisão" / "Publicar" / "Arquivar"
+  - Histórico de versões: lista colapsável com data, autor e diff resumido
+  - Contagem de participantes que já visualizaram (se publicado)
+
+**Componentes:**
+
+| Componente | Uso |
+|-----------|-----|
+| `ContentEditor` | Editor rich text com toolbar contextual (bold, italic, heading, link, mídia) |
+| `ContentStatusBadge` | Badge colorido com estado atual + tempo desde última atualização |
+| `VersionHistoryList` | Lista colapsável de versões com diff visual (adições em verde, remoções em vermelho) |
+| `PublishConfirmDialog` | Dialog de confirmação: "Publicar para X participantes em Y grupos?" com preview |
+| `ContentPreview` | Renderização final do conteúdo como o participante verá |
+
+**Regras:**
+- Apenas Admin ou Líder com permissão de edição podem transicionar estados
+- Publicação requer confirmação explícita com preview
+- Conteúdo publicado não pode ser editado diretamente — cria nova versão (rascunho v2)
+- Versões anteriores ficam acessíveis para consulta mas não são exibidas ao participante
+- Arquivamento remove do catálogo ativo mas mantém dados de progresso existentes
+
+---
+
+### Telas de Relatórios (FR63-FR68)
+
+**Contexto:** Líder e Admin precisam de visibilidade sobre presença, progresso e saúde dos grupos.
+
+#### Dashboard Relatórios — Líder (Gestão)
+
+**Layout:** 3 seções empilhadas, filtráveis por período (7d, 30d, 90d, custom) e por grupo.
+
+1. **Presença por Reunião** — Gráfico de barras horizontal. Eixo X: % presença. Eixo Y: reuniões (cronológico). Cor: verde (>75%), amarelo (50-75%), vermelho (<50%). Hover mostra lista de ausentes
+2. **Progresso em Trilhas** — Tabela com participantes em linhas e trilhas em colunas. Célula: % conclusão com barra de progresso. Ordenável por qualquer coluna. Destaque para progresso estagnado (sem avanço >14 dias)
+3. **Tendência Semáforo** — Gráfico de linha temporal. Eixo X: semanas. Eixo Y: contagem por status (🟢/🟡/🔴). Permite identificar tendências de declínio no grupo
+
+**Componentes:**
+
+| Componente | Uso |
+|-----------|-----|
+| `ReportFilterBar` | Filtros: período, grupo, trilha, status semáforo. Sticky top |
+| `AttendanceChart` | Gráfico barras com recharts. Tooltip com detalhes |
+| `TrailProgressTable` | Tabela sortable com barras de progresso inline |
+| `TrendLineChart` | Gráfico de linha com 3 séries (🟢/🟡/🔴) |
+| `ReportExportButton` | Dropdown: CSV, PDF. Gera relatório assíncrono com notificação quando pronto |
+
+#### Dashboard Relatórios — Admin (Administração)
+
+**Layout:** Visão agregada de todos os grupos do tenant.
+
+1. **Resumo do Tenant** — Cards com KPIs: total membros, grupos ativos, % presença média, trilhas ativas, taxa de conclusão média
+2. **Comparativo por Grupo** — Tabela com grupos em linhas. Colunas: líder, membros, presença média, progresso médio, status semáforo agregado. Ordenável e filtrável
+3. **Exportação** — CSV consolidado com todos os dados. PDF formatado para compartilhar com liderança
+
+**Regras:**
+- Líder vê apenas relatórios dos seus grupos
+- Admin vê relatórios de todos os grupos do tenant
+- Super Admin vê métricas agregadas por tenant (FR67) — nunca dados individuais
+- Exportação respeita RBAC — CSV do líder não inclui dados de outros grupos
+- Relatórios são gerados sob demanda (não pré-computados) exceto KPIs do dashboard (cache Redis TTL 5min)
+
+---
+
+### Complemento: Wizard de Importação CSV — Especificação de Erro
+
+**Mensagens de erro com vocabulário pastoral (FR62/FR81):**
+
+| Erro Técnico | Mensagem Exibida |
+|-------------|------------------|
+| E-mail duplicado no arquivo | "O membro [nome] aparece mais de uma vez — mantivemos apenas a primeira ocorrência" |
+| E-mail já existe no tenant | "[nome] já faz parte da comunidade — pulamos para não duplicar" |
+| Formato de e-mail inválido | "O e-mail de [nome] parece incompleto — confira e tente novamente" |
+| Limite do plano excedido | "Seu plano permite até [N] membros — considere fazer upgrade para acolher mais pessoas" |
+| Arquivo muito grande | "O arquivo é maior que o permitido (5MB) — tente dividir em partes menores" |
