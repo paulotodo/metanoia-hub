@@ -44,14 +44,14 @@ development_status:
   # Epic 1: Fundação Habilitadora do Produto
   # Sprint 0 (DONE): 1-1, 1-2, 1-3, 1-4
   # Sprint 1: 1-5, 1-6, 1-7, 1-8
-  epic-1: in-progress
+  epic-1: done
   1-1-scaffold-do-monorepo-turborepo-com-nextjs-nestjs-prisma: done
   1-2-docker-compose-completo-com-keycloak-minio-e-livekit: done
   1-3-pipeline-cicd-com-github-actions: done
   1-4-spike-tecnico-keycloak-multi-tenant-com-4-roles-e-googl: done
   1-5-observabilidade-base-pino-structured-logging-sentry-e-r: done
-  1-6-spike-tecnico-pipeline-real-time-livekit-redis-bullmq-s: ready-for-dev
-  1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: review
+  1-6-spike-tecnico-pipeline-real-time-livekit-redis-bullmq-s: done
+  1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: done
   1-8-layout-base-navigationconfig-sidebar-e-bottom-tabs: done
   epic-1-retrospective: optional
 
@@ -59,7 +59,7 @@ development_status:
   # Sprint 2: 2-1, 2-2, 2-3, 2-4
   # Sprint 3: 2-5, 2-6, 2-7, 2-8
   epic-2: in-progress
-  2-1-cadastro-de-usuario-com-email-e-senha: ready-for-dev
+  2-1-cadastro-de-usuario-com-email-e-senha: in-progress
   2-2-login-via-emailsenha-e-google-oauth: ready-for-dev
   2-3-mfa-obrigatorio-para-super-admin-e-admin-tenant: ready-for-dev
   2-4-autorizacao-por-papeis-e-guards-nestjs-3-camadas: ready-for-dev

@@ -30,3 +30,52 @@ model MeetingEvent {
   @@index([tenantId, meetingId])
   @@map("meeting_events")
 }
+
+/// Platform user — created at registration, tenant assigned later
+model User {
+  id        String   @id @db.Uuid
+  email     String   @unique
+  name      String
+  status    String   @default("pending_verification")
+  tenantId  String?  @map("tenant_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userTenants UserTenant[]
+  consents    Consent[]
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+/// Join table — associates users with tenants and their role within each
+model UserTenant {
+  id        String   @id @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  role      String   @default("participante")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, tenantId])
+  @@index([tenantId])
+  @@map("user_tenants")
+}
+
+/// Consent record — tracks user acceptance of legal documents (LGPD)
+model Consent {
+  id           String   @id @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  tenantId     String?  @map("tenant_id") @db.Uuid
+  documentType String   @map("document_type")
+  version      String
+  ipAddress    String   @map("ip_address")
+  userAgent    String   @map("user_agent")
+  acceptedAt   DateTime @default(now()) @map("accepted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([tenantId])
+  @@map("consents")
+}

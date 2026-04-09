@@ -30,4 +30,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     }
     return this.extendedClient;
   }
+
+  /** Raw PrismaClient without RLS — use only for public endpoints (e.g., registration) */
+  get client(): PrismaClient {
+    return this;
+  }
 }

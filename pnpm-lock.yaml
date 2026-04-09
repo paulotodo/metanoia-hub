@@ -105,6 +105,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@metanoia/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@metanoia/ui':
         specifier: workspace:*
         version: link:../../packages/ui
