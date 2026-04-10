@@ -16,5 +16,19 @@
       "leakedPassword": "Esta senha foi encontrada em vazamentos de dados. Escolha outra senha."
     },
     "success": "Conta criada! Verifique seu e-mail para confirmar o cadastro."
+  },
+  "login": {
+    "title": "Entrar",
+    "email": "E-mail",
+    "password": "Senha",
+    "submit": "Entrar",
+    "googleButton": "Entrar com Google",
+    "separator": "ou",
+    "noAccount": "Ainda nao tem conta?",
+    "createAccount": "Criar conta",
+    "errors": {
+      "generic": "Nao foi possivel realizar o login. Tente novamente.",
+      "invalidCredentials": "Email ou senha incorretos"
+    }
   }
 }

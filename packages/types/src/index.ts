@@ -12,3 +12,9 @@ export {
   RegisterUserResponseSchema,
   type RegisterUserResponse,
 } from './auth/register';
+export {
+  LoginSchema,
+  type LoginInput,
+  LoginResponseSchema,
+  type LoginResponse,
+} from './auth/login';

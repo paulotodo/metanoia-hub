@@ -1,0 +1,18 @@
+{
+  "alias": "mock-google",
+  "displayName": "Mock Google (CI)",
+  "providerId": "oidc",
+  "enabled": true,
+  "trustEmail": true,
+  "firstBrokerLoginFlowAlias": "first broker login",
+  "config": {
+    "clientId": "mock-google-client",
+    "clientSecret": "mock-google-secret",
+    "tokenUrl": "http://localhost:9090/mock-google/token",
+    "authorizationUrl": "http://localhost:9090/mock-google/auth",
+    "userInfoUrl": "http://localhost:9090/mock-google/userinfo",
+    "defaultScope": "openid email profile",
+    "syncMode": "IMPORT",
+    "useJwksUrl": "false"
+  }
+}

@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context)
 
 generated: "2026-04-08"
-last_updated: "2026-04-09"
+last_updated: "2026-04-09T21:00:00Z"
 project: metanoia-hub
 project_key: NOKEY
 tracking_system: file-system
@@ -60,7 +60,7 @@ development_status:
   # Sprint 3: 2-5, 2-6, 2-7, 2-8
   epic-2: in-progress
   2-1-cadastro-de-usuario-com-email-e-senha: done
-  2-2-login-via-emailsenha-e-google-oauth: ready-for-dev
+  2-2-login-via-emailsenha-e-google-oauth: review
   2-3-mfa-obrigatorio-para-super-admin-e-admin-tenant: ready-for-dev
   2-4-autorizacao-por-papeis-e-guards-nestjs-3-camadas: ready-for-dev
   2-5-selecao-de-tenant-ativo-e-associacao-multi-tenant: ready-for-dev
