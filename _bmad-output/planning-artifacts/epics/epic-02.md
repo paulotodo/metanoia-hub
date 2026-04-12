@@ -246,3 +246,58 @@ So that the platform collects my data with my explicit consent as required by LG
 **When** I navigate to the footer or settings area
 **Then** the current versions are accessible and readable without requiring re-acceptance
 
+---
+
+### Story 2.9: Recuperação de Senha via Email (Keycloak Nativo)
+
+As a user who forgot my password,
+I want to reset it via an email link without needing to contact an administrator,
+So that I can regain access to my account quickly and continue my pastoral workflow (FR83).
+
+**Release:** 1a-beta
+**Origin:** WDS Phase 3 — Outline 07 (lider-recupera-acesso) expôs que password recovery não existia como FR, Story ou UI. Gap de documentação table-stakes corrigido.
+
+**Acceptance Criteria:**
+
+**Given** I am on the login page (`(public)/login`)
+**When** I cannot remember my password
+**Then** I see a discrete link "Esqueci minha senha" below the password field
+**And** tapping it navigates me to `(public)/recuperar-senha`
+
+**Given** I am on the password recovery page
+**When** I enter my email address and tap "Enviar link de recuperação"
+**Then** the system triggers Keycloak's native `FORGOT_PASSWORD` realm action for that email
+**And** I see a generic confirmation message: "Se esse email existir na nossa base, você vai receber um link nos próximos segundos." (anti-credential-enumeration — same message regardless of whether the email exists)
+**And** no information is leaked about whether the account exists
+
+**Given** I receive the password reset email
+**When** I open it
+**Then** the email uses pastoral tone (not corporate security language): subject "Marcos, aqui tá o link pra sua senha nova", body with 1 short paragraph + 1 large CTA button "Criar nova senha"
+**And** the email contains NO corporate footer, NO "if you did not request this email" disclaimer, NO tracking pixels
+**And** the reset token expires in 15 minutes
+
+**Given** I tap the reset link in the email
+**When** the browser opens `(public)/nova-senha/[token]`
+**Then** I see 2 fields: new password + confirmation
+**And** OWASP password validation runs inline (same rules as Story 2.1: minimum 8 characters, no absurd special character requirements)
+**And** after successful submission, the system updates my password via Keycloak Admin API
+**And** a new session is created automatically (no need to go back to login)
+**And** I am redirected to my default experience route (`/app/gestao/` for Líder, `/app/admin/` for Admin Tenant, `/app/consumo/` for Participante)
+
+**Given** I try to use an expired or already-used reset token
+**When** the page loads
+**Then** I see a pastoral message: "Esse link já venceu — pede outro na tela de login."
+**And** a button redirects me to `(public)/login`
+
+**Given** I am rate-limited (too many reset requests)
+**When** I try to request another reset
+**Then** the system returns the same generic confirmation (no error revealing rate limit) but does not send a new email
+**And** rate limiting follows Story 2.2 patterns (existing implementation)
+
+**Technical Notes:**
+- Backend: POST `/api/v1/auth/forgot-password` → triggers Keycloak realm action; POST `/api/v1/auth/reset-password` → validates token + updates password via Keycloak Admin API
+- Frontend: 2 new routes under `(public)/` route group (SSR, no auth required)
+- Email: Keycloak email template customized with pastoral tone (PT-BR)
+- No new PostgreSQL tables needed — password reset is managed 100% by Keycloak (tokens, expiration, validation)
+- No tenant_id involved — recovery is per-user, not per-tenant
+

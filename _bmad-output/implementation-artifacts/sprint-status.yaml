@@ -57,7 +57,7 @@ development_status:
 
   # Epic 2: Identidade, Acesso & Multi-tenancy
   # Sprint 2: 2-1, 2-2, 2-3, 2-4
-  # Sprint 3: 2-5, 2-6, 2-7, 2-8
+  # Sprint 3: 2-5, 2-6, 2-7, 2-8, 2-9
   epic-2: in-progress
   2-1-cadastro-de-usuario-com-email-e-senha: done
   2-2-login-via-emailsenha-e-google-oauth: done
@@ -67,6 +67,7 @@ development_status:
   2-6-isolamento-de-dados-por-tenant-rls: ready-for-dev
   2-7-gestao-de-usuarios-e-papeis-pelo-admin-tenant: ready-for-dev
   2-8-consentimento-lgpd-e-termos-de-uso-middleware: ready-for-dev
+  2-9-recuperacao-de-senha-via-email-keycloak-nativo: ready-for-dev
   epic-2-retrospective: optional
 
   # Epic 3: Provisionamento de Tenant & Configuração Básica

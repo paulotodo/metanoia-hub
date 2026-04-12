@@ -74,8 +74,9 @@
 | 2-6 | Isolamento de Dados por Tenant (RLS) | 2-5 |
 | 2-7 | Gestao de Usuarios e Papeis pelo Admin Tenant | 2-4, 2-6 |
 | 2-8 | Consentimento LGPD e Termos de Uso (Middleware) | 2-1 |
+| 2-9 | Recuperacao de Senha via Email (Keycloak Nativo) | 2-2 |
 
-**Rationale:** Completa Epic 2. RLS e pre-requisito para todos os dados tenant-scoped. LGPD e obrigatorio no registro.
+**Rationale:** Completa Epic 2. RLS e pre-requisito para todos os dados tenant-scoped. LGPD e obrigatorio no registro. Story 2-9 adicionada via WDS Phase 3 outline 07 (gap table-stakes: password recovery).
 
 ---
 

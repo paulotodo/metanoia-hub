@@ -1160,6 +1160,7 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | FR09 | O sistema deve implementar defesa em profundidade com 3 camadas de autorização independentes: (1) Keycloak identity provider, (2) NestJS Guards por rota, (3) PostgreSQL RLS por tenant. Cada camada opera independentemente — falha em uma não compromete as demais | 1a |
 | FR10 | O sistema deve permitir que o usuário selecione o tenant ativo ao acessar a plataforma | 1a |
 | FR11 | O sistema deve revogar sessões e tokens quando um usuário for removido de um tenant | 1a |
+| FR83 | O sistema deve permitir que o usuário recupere acesso à conta via email quando esquecer a senha, utilizando o fluxo nativo de reset do provedor de identidade (Keycloak) | 1a-beta |
 
 ---
 
@@ -1529,6 +1530,7 @@ O MVP (Release 1a + 1b + 2) está completo quando todos os gates de release fora
 | FR09 | Defesa em profundidade (3 camadas) | ✓ | ✓ | ✓ | ✓ |
 | FR10 | Seleção de tenant ativo | ✓ | ✓ | ✓ | |
 | FR11 | Revogação de sessão ao remover usuário | | | ✓ | ✓ |
+| FR83 | Recuperação de senha via email (Keycloak) | ✓ | ✓ | ✓ | ✓ |
 | **2. Tenant & Configuração** |||||
 | FR12 | Provisionamento de tenant | | | ✓ | ✓ |
 | FR13 | Planos de assinatura (Free/Pro/Enterprise) | | | ✓ | ✓ |

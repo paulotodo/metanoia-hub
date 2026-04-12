@@ -1,0 +1,68 @@
+# WDS Project Outline
+# Generated: 2026-04-09
+# Phase 0: Project Setup
+
+project:
+  name: metanoia-hub
+  type: greenfield
+  product_complexity: complex  # Web Application
+  description: "B2B SaaS platform for Christian discipleship and pastoral care (EdTech)"
+
+tech:
+  stack: react-next  # Next.js 16.2 (App Router)
+  component_library: shadcn-ui
+  skip_design_system: true  # shadcn/ui already bootstrapped
+
+structure:
+  root_folder: design-process
+  progress_folder: design-process/_progress
+  phase_folders:
+    - A-Product-Brief
+    - B-Trigger-Map
+    - C-UX-Scenarios
+    - D-Design-System
+    - E-Assets
+    - F-Testing
+    - G-Product-Development
+
+existing_materials:
+  has_materials: true
+  sources:
+    - path: docs/prd.md
+      type: product-requirements
+      description: "Complete PRD with personas, features, success metrics (106KB)"
+    - path: docs/architecture.md
+      type: architecture
+      description: "Technical architecture, bounded contexts, decisions (84KB)"
+    - path: docs/project-context.md
+      type: project-context
+      description: "47 implementation rules, tech stack, naming conventions"
+    - path: _bmad-output/planning-artifacts/ux-design-specification.md
+      type: ux-specification
+      description: "Prior UX design specification (2584 lines, BMAD process)"
+
+workflow:
+  brief_level: complete
+  strategic_analysis: full  # Phase 2 enabled
+  enabled_phases:
+    - phase-0  # Project Setup (complete)
+    - phase-1  # Product Brief
+    - phase-2  # Trigger Mapping (full)
+    - phase-3  # UX Scenarios
+    - phase-4  # UX Design
+    - phase-6  # Asset Generation
+    - phase-7  # Design System
+  skipped_phases:
+    - phase-5  # Agentic Development (deferred - wireframes before code)
+
+project_context:
+  stakes: enterprise  # High stakes
+  involvement: autonomous  # Autonomous execution
+  role: other  # To be defined
+  recommendation_style: recommend-with-rationale
+  stakeholders: pending  # To be assessed later
+
+working_relationship:
+  communication_language: pt-BR
+  output_language: pt-BR
+  collaboration_mode: autonomous
