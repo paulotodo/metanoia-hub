@@ -184,7 +184,7 @@ design-process/B-Trigger-Map/
 - [x] Cenário 03: Pastor abre vista agregada (4 páginas) ✅ 2026-04-13
 - [x] Cenário 06: Participante recebe cuidado com dignidade (5 páginas) ✅ 2026-04-13
 - [x] Cenário 07: Líder recupera acesso (5 páginas) ✅ 2026-04-13
-- [ ] Cenário 08: Usuário troca de igreja (4 páginas)
+- [x] Cenário 08: Usuário troca de igreja (4 páginas) ✅ 2026-04-13
 - [ ] Cenário 09: Super Admin opera plataforma (4 páginas)
 - [ ] Cenário 04: Champion descobre, apresenta e ativa (10 páginas)
 
@@ -225,6 +225,10 @@ design-process/B-Trigger-Map/
 | 07 | 07.3 | Email de Reset | specified-light | 2026-04-13 |
 | 07 | 07.4 | Nova Senha | specified | 2026-04-13 |
 | 07 | 07.5 | Acesso Restaurado | specified-light | 2026-04-13 |
+| 08 | 08.1 | Login Multi-tenant | specified-light | 2026-04-13 |
+| 08 | 08.2 | Selecionar Igreja | specified | 2026-04-13 |
+| 08 | 08.3 | Tenant Switcher | specified | 2026-04-13 |
+| 08 | 08.4 | Contexto Restaurado | specified-light | 2026-04-13 |
 
 ### Log
 
@@ -266,5 +270,11 @@ design-process/B-Trigger-Map/
   - 07.4 Nova Senha: 6 componentes, 15 keys, 6 states. 2 campos (nova senha + confirmação) com validação OWASP (≥8 chars). Toggle visibility (eye icon). Token uso único + 15 min TTL + 3 estados de erro (expired/invalid/used). Auto-login pós-reset (JWT cookies na response). POST `/api/v1/auth/reset-password`. Domain event `auth.recovery.completed`. Design system: PasswordFieldWithToggle (reutiliza 05.3), TokenErrorState (reutiliza 05.1).
   - 07.5 Acesso Restaurado: spec leve (redirect). Redirect transparente via ExperienceResolver por role (Líder → radar, Admin → admin, Participante → grupos). Silêncio como confirmação — "Marcos vê o radar, essa é a confirmação". Métrica `recovery_to_radar_time` (target ≤3 min). 1 fallback key (session creation failure).
   **Padrões consolidados: anti-credential-enumeration como padrão de segurança, reutilização pesada de componentes (PasswordFieldWithToggle, TokenErrorState, ExperienceResolver), tom pastoral em mensagens de erro de auth.**
+- 2026-04-13: Cenário 08 (Usuário troca de igreja sem perder nada) — **completo** (4/4 páginas specified). Mobile-first + desktop, fluxo dual-path (A: seleção pós-login, B: troca mid-session). Multi-tenancy como experiência pastoral — "trocar de igreja como trocar de conversa no WhatsApp". Resumo por página:
+  - 08.1 Login Multi-tenant: spec leve (passthrough). Routing logic: `user_tenants.count > 1` → redirect para `/selecionar-igreja`; count == 1 → auto-select e skip (Story 2.5 AC #3). JWT sem tenant_id fixo.
+  - 08.2 Selecionar Igreja: 4 componentes, 10 keys, 5 states. ChurchCards com nome da igreja + role pastoral ("Você lidera aqui") + última visita relativa. MRU ordering. POST `/api/v1/auth/select-tenant` → set cookie → ExperienceResolver. DDR 1 resolvido: rota `(auth)/selecionar-igreja` como estado intermediário pós-auth, pré-experience. Design system: ChurchCard, ChurchSelectionLayout.
+  - 08.3 Tenant Switcher: 5 componentes, 8 keys (4 novas + 4 reutilizadas), 4 states. 2 variantes: bottom sheet (mobile) + dropdown (desktop). Trigger: nome da igreja no header, 1 tap (veto: ≤1 tap). Cache invalidation via `removeQueries()` + store reset (DDR 3 resolvido). Escondido se single-tenant. DDR 2 resolvido: posição do trigger no header. Design system: TenantSwitcherTrigger, TenantSwitcherSheet, ChurchCard (compact variant).
+  - 08.4 Contexto Restaurado: spec leve (redirect). ExperienceResolver por role **no tenant selecionado** (Marcos pode ser Líder num e Participante noutro). Silêncio como confirmação (padrão 07.5). 3 sinais visuais: nome da igreja no header, dados do radar, layout por role. Métrica `tenant_switch_time` (≤5s login, ≤2s mid-session).
+  **3 DDRs do outline resolvidos: (1) rota `/selecionar-igreja` como estado auth intermediário, (2) trigger no header com 1 tap, (3) cache invalidation via removeQueries + store reset. Vetos permanentes honrados: zero logout/re-auth, zero dados cross-tenant, zero mensagem de "saída".**
 
 ---
