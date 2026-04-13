@@ -5,9 +5,11 @@ import { ConfigService } from '@nestjs/config';
 import { withMultiTenant } from './prisma.extension';
 import type { EnvConfig } from '../config/env.validation';
 
+type ExtendedClient = ReturnType<typeof withMultiTenant>;
+
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  private extendedClient: ReturnType<typeof withMultiTenant> | undefined;
+  private extendedClient: ExtendedClient | undefined;
 
   constructor(configService: ConfigService<EnvConfig, true>) {
     const connectionString = configService.get('DATABASE_APP_URL', { infer: true });
@@ -17,14 +19,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   async onModuleInit() {
     await this.$connect();
-    this.extendedClient = withMultiTenant(this);
+    this.extendedClient = withMultiTenant(this as unknown as PrismaClient);
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
   }
 
-  get tenant() {
+  /** Extended client with RLS tenant injection — use for all tenant-scoped queries */
+  // @ts-expect-error — intentional override of PrismaClient.tenant (model delegate) with RLS-extended client
+  get tenant(): ExtendedClient {
     if (!this.extendedClient) {
       throw new Error('PrismaService not initialized');
     }
@@ -33,6 +37,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   /** Raw PrismaClient without RLS — use only for public endpoints (e.g., registration) */
   get client(): PrismaClient {
-    return this;
+    return this as unknown as PrismaClient;
   }
 }
