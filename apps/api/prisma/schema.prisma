@@ -41,8 +41,12 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userTenants UserTenant[]
-  consents    Consent[]
+  userTenants      UserTenant[]
+  consents         Consent[]
+  groupMemberships GroupMember[]
+  pastoralAlerts   PastoralAlert[]  @relation("alerts")
+  pastoralActions  PastoralAction[] @relation("actions")
+  pastoralNotes    PastoralNote[]   @relation("notes")
 
   @@index([tenantId])
   @@map("users")
@@ -78,4 +82,113 @@ model Consent {
 
   @@index([tenantId])
   @@map("consents")
+}
+
+/// Tenant — materializes the implicit tenant, self-referencing tenant_id for universal RLS
+model Tenant {
+  id        String   @id @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  groups Group[]
+
+  @@index([tenantId])
+  @@map("tenants")
+}
+
+/// Group — a discipleship small group within a tenant
+model Group {
+  id        String   @id @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant  Tenant        @relation(fields: [tenantId], references: [id])
+  members GroupMember[]
+  alerts  PastoralAlert[]
+  actions PastoralAction[]
+
+  @@index([tenantId])
+  @@map("groups")
+}
+
+/// GroupMember — join table associating users with groups and their role within
+model GroupMember {
+  id        String   @id @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  groupId   String   @map("group_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  role      String   @default("membro")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([groupId, userId])
+  @@index([tenantId])
+  @@map("group_members")
+}
+
+/// PastoralAlert — materialized signal per participant, written by signal engine, read by radar
+model PastoralAlert {
+  id              String   @id @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  participantId   String   @map("participant_id") @db.Uuid
+  groupId         String   @map("group_id") @db.Uuid
+  signalType      String   @map("signal_type")
+  signalVariant   String?  @map("signal_variant")
+  contextPhrase   String?  @map("context_phrase")
+  observedFact    String?  @map("observed_fact")
+  systemLimitation String? @map("system_limitation")
+  presenceDots    Json     @default("[]") @map("presence_dots")
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  participant User  @relation("alerts", fields: [participantId], references: [id])
+  group       Group @relation(fields: [groupId], references: [id])
+
+  @@index([tenantId, active])
+  @@index([participantId])
+  @@map("pastoral_alerts")
+}
+
+/// PastoralAction — care action recorded by the leader
+model PastoralAction {
+  id            String   @id @db.Uuid
+  tenantId      String   @map("tenant_id") @db.Uuid
+  participantId String   @map("participant_id") @db.Uuid
+  groupId       String   @map("group_id") @db.Uuid
+  performedBy   String   @map("performed_by") @db.Uuid
+  actionType    String   @map("action_type")
+  signalType    String   @map("signal_type")
+  note          String?
+  recordedAt    DateTime @default(now()) @map("recorded_at")
+
+  participant User  @relation("actions", fields: [participantId], references: [id])
+  group       Group @relation(fields: [groupId], references: [id])
+
+  @@index([tenantId])
+  @@index([participantId])
+  @@map("pastoral_actions")
+}
+
+/// PastoralNote — relational memory: conversation, prayer, milestone
+model PastoralNote {
+  id            String   @id @db.Uuid
+  tenantId      String   @map("tenant_id") @db.Uuid
+  participantId String   @map("participant_id") @db.Uuid
+  authorId      String   @map("author_id") @db.Uuid
+  noteType      String   @map("note_type")
+  content       String
+  occurredAt    DateTime @map("occurred_at")
+  metadata      Json     @default("{}") @db.JsonB
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  participant User @relation("notes", fields: [participantId], references: [id])
+
+  @@index([tenantId])
+  @@index([participantId, noteType])
+  @@map("pastoral_notes")
 }

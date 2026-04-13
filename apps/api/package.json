@@ -13,7 +13,8 @@
     "db:migrate": "prisma migrate dev",
     "db:rls": "bash scripts/apply-rls.sh",
     "db:setup": "pnpm db:migrate && pnpm db:rls",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:seed:radar": "tsx prisma/seed-radar.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.18",

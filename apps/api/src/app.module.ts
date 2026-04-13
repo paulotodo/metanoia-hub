@@ -8,6 +8,7 @@ import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { BullMqModule } from './bullmq/bullmq.module';
 import { MeetingsModule } from './meetings/meetings.module';
+import { PastoralModule } from './pastoral/pastoral.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -24,6 +25,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     BullMqModule,
     HealthModule,
     MeetingsModule,
+    PastoralModule,
   ],
 })
 export class AppModule implements NestModule {
