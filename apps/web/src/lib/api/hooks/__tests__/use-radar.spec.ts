@@ -30,12 +30,13 @@ describe('useRadarPage', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toBeDefined();
-    expect(result.current.data!.participants).toBeInstanceOf(Array);
-    expect(result.current.data!.participants.length).toBeGreaterThan(0);
-    expect(result.current.data!.groups).toBeInstanceOf(Array);
-    expect(result.current.data!.signalCounts).toBeDefined();
-    expect(result.current.data!.userFirstName).toBeDefined();
+    const data = result.current.data;
+    expect(data).toBeDefined();
+    expect(data?.participants).toBeInstanceOf(Array);
+    expect((data?.participants.length ?? 0) > 0).toBe(true);
+    expect(data?.groups).toBeInstanceOf(Array);
+    expect(data?.signalCounts).toBeDefined();
+    expect(data?.userFirstName).toBeDefined();
   });
 });
 
@@ -48,12 +49,13 @@ describe('useSignalDetail', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toBeDefined();
-    expect(result.current.data!.participantId).toBe(
+    const data = result.current.data;
+    expect(data).toBeDefined();
+    expect(data?.participantId).toBe(
       '019756a1-1001-7000-8000-000000000001',
     );
-    expect(result.current.data!.signalType).toBeDefined();
-    expect(result.current.data!.observedFact).toBeDefined();
+    expect(data?.signalType).toBeDefined();
+    expect(data?.observedFact).toBeDefined();
   });
 
   it('does not fetch when participantId is empty', async () => {
@@ -75,9 +77,10 @@ describe('useParticipantProfile', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toBeDefined();
-    expect(result.current.data!.memory).toBeDefined();
-    expect(result.current.data!.presenceDots).toBeInstanceOf(Array);
+    const data = result.current.data;
+    expect(data).toBeDefined();
+    expect(data?.memory).toBeDefined();
+    expect(data?.presenceDots).toBeInstanceOf(Array);
   });
 });
 
@@ -97,8 +100,9 @@ describe('useRecordCareAction', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toBeDefined();
-    expect(result.current.data!.careActionId).toBeDefined();
-    expect(result.current.data!.recordedAt).toBeDefined();
+    const data = result.current.data;
+    expect(data).toBeDefined();
+    expect(data?.careActionId).toBeDefined();
+    expect(data?.recordedAt).toBeDefined();
   });
 });
