@@ -1,20 +1,44 @@
+import { OnboardingPageLayout } from "@/components/onboarding";
+import {
+  mockInvitesByToken,
+  type InviteStatus,
+} from "../../../../__mocks__/onboarding";
+import { BrandMark } from "./_components/brand-mark";
+import { WelcomeView } from "./_components/welcome-view";
+import { InviteErrorView } from "./_components/invite-error-view";
+import type { TokenErrorVariant } from "@/components/onboarding";
+
 /**
- * 05.1 Aceite do Convite — stub (Session 0).
- * Real UI is built in Session 2.
+ * 05.1 Aceite do Convite — Server Component.
+ *
+ * Until Session 5 wires the real API, the page resolves the token's status
+ * from the in-memory fixture table. Any token not in the table is treated as
+ * invalid. This lets reviewers exercise each of the five states by visiting
+ * /convite/<one of the mock token keys>.
  */
-export default async function AceiteConviteStubPage({
+export default async function AceiteConvitePage({
   params,
 }: {
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
+  const status = resolveStatus(token);
+
   return (
-    <section className="mx-auto max-w-md px-6 py-12 text-center">
-      <h1 className="text-2xl font-bold">Aceite do Convite</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Stub — Cenário 05, página 05.1.
-      </p>
-      <p className="mt-4 break-all font-mono text-xs">token: {token}</p>
-    </section>
+    <OnboardingPageLayout header={<BrandMark />}>
+      {status === "valid" ? (
+        <WelcomeView token={token} />
+      ) : (
+        <InviteErrorView variant={status} />
+      )}
+    </OnboardingPageLayout>
   );
+}
+
+function resolveStatus(token: string): InviteStatus | TokenErrorVariant {
+  const fixture = mockInvitesByToken[token];
+  if (fixture) return fixture.status;
+  // `network` is only produced by the real client in Session 5. For now,
+  // unknown tokens render as "invalid" — the safer default.
+  return "invalid";
 }
