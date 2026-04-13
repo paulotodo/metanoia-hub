@@ -182,7 +182,7 @@ design-process/B-Trigger-Map/
 - [x] Cenário 05: Admin faz onboarding mínimo — variante 1a-beta (5/9 páginas) ✅ 2026-04-13 · 1b adiada
 - [x] Cenário 02: Líder roda reunião e fecha loop (3 páginas) ✅ 2026-04-13
 - [x] Cenário 03: Pastor abre vista agregada (4 páginas) ✅ 2026-04-13
-- [ ] Cenário 06: Participante recebe cuidado com dignidade (5 páginas)
+- [x] Cenário 06: Participante recebe cuidado com dignidade (5 páginas) ✅ 2026-04-13
 - [ ] Cenário 07: Líder recupera acesso (5 páginas)
 - [ ] Cenário 08: Usuário troca de igreja (4 páginas)
 - [ ] Cenário 09: Super Admin opera plataforma (4 páginas)
@@ -215,6 +215,11 @@ design-process/B-Trigger-Map/
 | 03 | 03.2 | Vista Agregada | specified | 2026-04-13 |
 | 03 | 03.3 | Drill-down Grupo | specified | 2026-04-13 |
 | 03 | 03.4 | Visão do Líder | specified | 2026-04-13 |
+| 06 | 06.1 | Convite por Email | specified-light | 2026-04-13 |
+| 06 | 06.2 | Aceite de Convite (Participante) | specified | 2026-04-13 |
+| 06 | 06.3 | OAuth Google | specified-light | 2026-04-13 |
+| 06 | 06.4 | Lista dos Meus Grupos | specified | 2026-04-13 |
+| 06 | 06.5 | Detalhe do Meu Grupo | specified | 2026-04-13 |
 
 ### Log
 
@@ -242,5 +247,12 @@ design-process/B-Trigger-Map/
   - 03.3 Drill-down Grupo: 12 componentes, 20 keys, 5 states. Timeline pastoral das últimas 2 semanas: reuniões (presença agregada + reflexão do líder em blockquote) + cuidados registrados. Presença mostrada como agregado ("6 de 8"), nunca nomes individuais ao pastor. Empty timeline com tom neutro ("pode estar em recesso"). Design system: TimelineEntry, GroupHeaderDetail, EmptyTimelineState.
   - 03.4 Visão do Líder: 14 componentes, 26 keys, 7 states. Perfil do líder como pessoa (não operador). Última conversa pastor→líder (do próprio registro do pastor). Lista compacta de atividade recente (max 5). Campo livre "O que você quer levar para essa conversa?" (280 chars, Improviso Sagrado máximo). `outreach_intent` — design-driven requirement, entidade nova no Epic 6 com RLS `tenant_id + user_id` (líder nunca vê). API: POST/PUT/DELETE `/api/v1/admin/outreach-intents`. Design system: OutreachIntentField, LeaderProfileHeader, CompactActivityList, ExistingIntentBanner.
   **Débitos documentados: (1) FR60 promoção para 1a-beta, (2) story nova `outreach_intent` no Epic 6.**
+- 2026-04-13: Cenário 06 (Participante recebe cuidado com dignidade) — **completo** (5/5 páginas specified). Mobile-first, fluxo email → aceite → OAuth → lista de grupos → detalhe. Coração da tese do produto — único cenário do beneficiário final em primeira pessoa. Resumo por página:
+  - 06.1 Convite por Email: spec leve (externo). Email transacional FR23 — remetente é o líder (não a plataforma), tom pastoral, zero tracking pixel, CTA "Confirmar presença no grupo". 5 translation keys.
+  - 06.2 Aceite de Convite (Participante): 7 componentes, 15 keys, 6 states. Landing mobile SSR com avatar do líder + mensagem personalizada + 2 botões auth (Google primário, email/senha secundário). LGPD como notice no rodapé (não gate). Token 7 dias. Design system: InviteLanding, LeaderAvatar.
+  - 06.3 OAuth Google: spec leve (externo). Google consent screen — scopes mínimos (name + email). State parameter com token de convite para auto-aceite pós-auth. Keycloak cria user Participante automaticamente.
+  - 06.4 Lista dos Meus Grupos: 6 componentes, 10 keys, 5 states. Primeira tela autenticada — calma absoluta. 1 card, zero gráfico, zero badge, zero tour guiado. Welcome message first-visit only. Domain event `participant.group.first_view`. Design system: ParticipantGroupCard, WelcomeMessage.
+  - 06.5 Detalhe do Meu Grupo: 14 componentes, 18 keys, 5 states. Avatar do líder + descrição em blockquote + próximo encontro (data relativa + local) + formato. Frase de fecho "Sem pressa. Quando você vier, a gente tá aqui." — princípio inviolável 6 (dignidade do silêncio) materializado em UI. Zero CTA de trilha (Epic 8 R1b). Design system: GroupDetailView, LeaderPublicProfile, NextMeetingCard, ClosingPhrase.
+  **Anti-patterns bloqueados: zero formulário pós-OAuth, zero tour guiado, zero gamificação, zero celebração sintética, zero ranking, zero "Complete seu perfil".**
 
 ---
