@@ -180,7 +180,7 @@ design-process/B-Trigger-Map/
 
 - [x] Cenário 01: Líder vence a quarta de manhã (5 páginas) ✅ 2026-04-13
 - [x] Cenário 05: Admin faz onboarding mínimo — variante 1a-beta (5/9 páginas) ✅ 2026-04-13 · 1b adiada
-- [ ] Cenário 02: Líder roda reunião e fecha loop (3 páginas)
+- [x] Cenário 02: Líder roda reunião e fecha loop (3 páginas) ✅ 2026-04-13
 - [ ] Cenário 03: Pastor abre vista agregada (4 páginas)
 - [ ] Cenário 06: Participante recebe cuidado com dignidade (5 páginas)
 - [ ] Cenário 07: Líder recupera acesso (5 páginas)
@@ -208,6 +208,9 @@ design-process/B-Trigger-Map/
 | 05 | 05.3 | Criar Conta Admin | specified | 2026-04-13 |
 | 05 | 05.4 | Boas-vindas e Demonstração | specified | 2026-04-13 |
 | 05 | 05.5 | Criar Primeiro Grupo | specified | 2026-04-13 |
+| 02 | 02.1 | Agenda do Grupo | specified | 2026-04-13 |
+| 02 | 02.2 | Reunião ao Vivo | specified | 2026-04-13 |
+| 02 | 02.3 | Pós-reunião | specified | 2026-04-13 |
 
 ### Log
 
@@ -224,5 +227,10 @@ design-process/B-Trigger-Map/
   - 05.4 Boas-vindas + Demo: 8 componentes, 18 keys, 4 states. Momento "wow" — radar de demonstração com 3 cards (Story 7.2). AdminSidebar introduzida. Route guard single-use. Design system: AdminSidebar, DemoRadarCard, WelcomeHero.
   - 05.5 Criar Primeiro Grupo: 9 componentes, 24 keys, 6 states. 3 campos (nome obrigatório, descrição opt, horário opt) + selfAdd checkbox (pré-marcado). Evento `tenant.activation.primary` disparado. NFR-X1 ≤10 min cumprido. Design system: GroupForm, ScheduleInlineField.
   **Variante 1b (wizard guiado, páginas 05.6–05.10) adiada para Release 1b sprint planning.**
+- 2026-04-13: Cenário 02 (Líder roda reunião e fecha loop) — **completo** (3/3 páginas specified). Fluxo pré-reunião → sala ao vivo → pós-reunião. Resumo por página:
+  - 02.1 Agenda do Grupo: 14 componentes, 20 keys, 7 states. Contexto pré-reunião (grupo+dia+hora+local), tópico condicional, lista de confirmados com dots inline, milestones (max 2, Improviso Sagrado), "Abrir sala" 56dp touch target. LiveKit room creation: POST `/api/v1/meetings/{meetingId}/room` → 201. Design system: MeetingContextCard, ConfirmedParticipantDots, MilestoneCard.
+  - 02.2 Reunião ao Vivo: 10 componentes, 22 keys, 6 states. UI minimalista "celular para baixo" — consultada em ≤15s se necessário. Lista de participantes em tempo real via WebSocket/LiveKit events (3 estados: conectado, não entrou, saiu). "Encerrar sala" 56dp destructive com confirmation dialog. Sala continua ativa com tela bloqueada/background. Presença automática via webhooks (zero interação obrigatória). Design system: LiveStatusBar, ParticipantPresenceList, EndConfirmDialog.
+  - 02.3 Pós-reunião: 12 componentes, 18 keys, 6 states. Captura de reflexão pastoral "O que vale lembrar dessa noite?" (280 chars), "Pular desta vez" sem culpa, janela de captura 48h. Domain event `meeting.reflection.captured`, API POST `/api/v1/meetings/{meetingId}/reflections` → 201. Design system: ReflectionFormField, SkipLink, CaptureWindowBanner.
+  **Pipeline completo: LiveKit webhooks → Redis → BullMQ → PostgreSQL para presença integral/parcial.**
 
 ---
