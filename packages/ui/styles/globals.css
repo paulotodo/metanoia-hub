@@ -50,3 +50,16 @@
  * The variables above reference design tokens (--color-*) which are
  * already redefined under .dark in tokens.css, so var() resolution
  * automatically picks up dark values at runtime. */
+
+/* =============================================================================
+ * Onboarding animations
+ * Used by 05.2 Terms page when the user tries to continue without accepting.
+ * Kept here (not in a feature folder) so Tailwind v4 can tokenize the
+ * custom `animate-[onboarding-shake_...]` arbitrary value at build time.
+ * ============================================================================= */
+
+@keyframes onboarding-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
