@@ -3,8 +3,10 @@
 import { use } from "react";
 import Link from "next/link";
 import { ArrowLeft, Heart, Calendar, MessageCircle, HandHeart } from "lucide-react";
-import { mockParticipantProfile } from "../../../../../../../__mocks__/radar";
+import { useParticipantProfile } from "@/lib/api/hooks/use-radar";
 import { PresenceDots } from "../../_components/presence-dots";
+import { ProfileSkeleton } from "../../_components/radar-skeleton";
+import { RadarError } from "../../_components/radar-error";
 
 function formatRelativeDate(isoDate: string): string {
   const diff = Date.now() - new Date(isoDate).getTime();
@@ -63,9 +65,12 @@ export default function ParticipantProfilePage({
   params: Promise<{ participantId: string }>;
 }) {
   const { participantId } = use(params);
+  const { data, isLoading, error, refetch } = useParticipantProfile(participantId);
 
-  // Prototype: use mock data
-  const data = mockParticipantProfile;
+  if (isLoading) return <ProfileSkeleton />;
+  if (error) return <RadarError error={error} onRetry={() => refetch()} />;
+  if (!data) return null;
+
   const { memory } = data;
   const hasAnyMemory =
     memory.lastConversation || memory.lastPrayer || memory.nextMilestone;

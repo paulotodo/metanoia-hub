@@ -3,8 +3,10 @@
 import { use } from "react";
 import Link from "next/link";
 import { ArrowLeft, Eye, Heart } from "lucide-react";
-import { mockSignalDetail } from "../../../../../../__mocks__/radar";
+import { useSignalDetail } from "@/lib/api/hooks/use-radar";
 import { PresenceDots } from "../_components/presence-dots";
+import { SignalDetailSkeleton } from "../_components/radar-skeleton";
+import { RadarError } from "../_components/radar-error";
 
 function formatRelativeDate(isoDate: string): string {
   const diff = Date.now() - new Date(isoDate).getTime();
@@ -29,9 +31,11 @@ export default function SignalDetailPage({
   params: Promise<{ participantId: string }>;
 }) {
   const { participantId } = use(params);
+  const { data, isLoading, error, refetch } = useSignalDetail(participantId);
 
-  // Prototype: use mock data (will be replaced by TanStack Query in Session 6)
-  const data = mockSignalDetail;
+  if (isLoading) return <SignalDetailSkeleton />;
+  if (error) return <RadarError error={error} onRetry={() => refetch()} />;
+  if (!data) return null;
 
   return (
     <div className="space-y-6 py-6">

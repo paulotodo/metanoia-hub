@@ -12,6 +12,8 @@
   "dependencies": {
     "@metanoia/types": "workspace:*",
     "@metanoia/ui": "workspace:*",
+    "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-query-devtools": "^5.99.0",
     "lucide-react": "^0.511.0",
     "next": "^16.2.3",
     "react": "^19.2.5",
@@ -28,6 +30,7 @@
     "eslint": "^9.39.4",
     "jest-axe": "^10.0.0",
     "jsdom": "^29.0.2",
+    "msw": "^2.13.2",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",
     "vitest": "^4.1.3"

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { mockRadarPageData } from "../../../../../__mocks__/radar";
-import type { RadarParticipant, SignalType } from "../../../../../__mocks__/radar";
+import type { RadarParticipant, SignalType } from "@metanoia/types";
+import { useRadarPage } from "@/lib/api/hooks/use-radar";
 import { SaudacaoContextual } from "./_components/saudacao-contextual";
 import { SemaforoPill } from "./_components/semaforo-pill";
 import { GrupoPillFilter } from "./_components/grupo-pill";
@@ -10,34 +10,33 @@ import { SectionDivider } from "./_components/section-divider";
 import { ParticipantCard, ParticipantCardCompact } from "./_components/participant-card";
 import { InboxZeroState } from "./_components/inbox-zero-state";
 import { ReturnBanner } from "./_components/return-banner";
+import { RadarPageSkeleton } from "./_components/radar-skeleton";
+import { RadarError } from "./_components/radar-error";
 
 type PillFilter = SignalType | null;
 
 export default function RadarPage() {
-  const data = mockRadarPageData;
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const { data, isLoading, error, refetch } = useRadarPage(selectedGroupId ?? undefined);
   const [activePill, setActivePill] = useState<PillFilter>(null);
-  const [returnBannerVisible, setReturnBannerVisible] = useState(true);
 
-  // Filter participants by group
-  const filteredByGroup = useMemo(() => {
-    if (!selectedGroupId) return data.participants;
-    return data.participants.filter((p) => p.groupId === selectedGroupId);
-  }, [data.participants, selectedGroupId]);
-
-  // Compute counts from filtered participants
+  // Compute counts from participants
   const counts = useMemo(() => {
-    const urgent = filteredByGroup.filter((p) => p.signalType === "care-urgent");
-    const attention = filteredByGroup.filter((p) => p.signalType === "care-attention");
-    const ok = filteredByGroup.filter((p) => p.signalType === "care-ok");
+    if (!data) return { urgent: [], attention: [], ok: [] };
+    const urgent = data.participants.filter((p) => p.signalType === "care-urgent");
+    const attention = data.participants.filter((p) => p.signalType === "care-attention");
+    const ok = data.participants.filter((p) => p.signalType === "care-ok");
     return { urgent, attention, ok };
-  }, [filteredByGroup]);
+  }, [data]);
+
+  if (isLoading) return <RadarPageSkeleton />;
+  if (error) return <RadarError error={error} onRetry={() => refetch()} />;
+  if (!data) return null;
 
   const isInboxZero = counts.urgent.length === 0 && counts.attention.length === 0;
 
   // ReturnBanner visibility check
   const showReturnBanner =
-    returnBannerVisible &&
     data.lastSeenAt !== null &&
     (Date.now() - new Date(data.lastSeenAt).getTime()) / (1000 * 60 * 60 * 24) > 5;
 
