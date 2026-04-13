@@ -185,7 +185,7 @@ design-process/B-Trigger-Map/
 - [x] Cenário 06: Participante recebe cuidado com dignidade (5 páginas) ✅ 2026-04-13
 - [x] Cenário 07: Líder recupera acesso (5 páginas) ✅ 2026-04-13
 - [x] Cenário 08: Usuário troca de igreja (4 páginas) ✅ 2026-04-13
-- [ ] Cenário 09: Super Admin opera plataforma (4 páginas)
+- [x] Cenário 09: Super Admin opera plataforma (4 páginas) ✅ 2026-04-13
 - [ ] Cenário 04: Champion descobre, apresenta e ativa (10 páginas)
 
 ### Current
@@ -229,6 +229,10 @@ design-process/B-Trigger-Map/
 | 08 | 08.2 | Selecionar Igreja | specified | 2026-04-13 |
 | 08 | 08.3 | Tenant Switcher | specified | 2026-04-13 |
 | 08 | 08.4 | Contexto Restaurado | specified-light | 2026-04-13 |
+| 09 | 09.1 | Login com MFA | specified-light | 2026-04-13 |
+| 09 | 09.2 | Dashboard de Tenants | specified | 2026-04-13 |
+| 09 | 09.3 | Provisionar Tenant | specified | 2026-04-13 |
+| 09 | 09.4 | Detalhe do Tenant | specified | 2026-04-13 |
 
 ### Log
 
@@ -276,5 +280,11 @@ design-process/B-Trigger-Map/
   - 08.3 Tenant Switcher: 5 componentes, 8 keys (4 novas + 4 reutilizadas), 4 states. 2 variantes: bottom sheet (mobile) + dropdown (desktop). Trigger: nome da igreja no header, 1 tap (veto: ≤1 tap). Cache invalidation via `removeQueries()` + store reset (DDR 3 resolvido). Escondido se single-tenant. DDR 2 resolvido: posição do trigger no header. Design system: TenantSwitcherTrigger, TenantSwitcherSheet, ChurchCard (compact variant).
   - 08.4 Contexto Restaurado: spec leve (redirect). ExperienceResolver por role **no tenant selecionado** (Marcos pode ser Líder num e Participante noutro). Silêncio como confirmação (padrão 07.5). 3 sinais visuais: nome da igreja no header, dados do radar, layout por role. Métrica `tenant_switch_time` (≤5s login, ≤2s mid-session).
   **3 DDRs do outline resolvidos: (1) rota `/selecionar-igreja` como estado auth intermediário, (2) trigger no header com 1 tap, (3) cache invalidation via removeQueries + store reset. Vetos permanentes honrados: zero logout/re-auth, zero dados cross-tenant, zero mensagem de "saída".**
+- 2026-04-13: Cenário 09 (Super Admin opera plataforma sem invadir o pastoral) — **completo** (4/4 páginas specified). Desktop-first, tom técnico (não pastoral). Persona sintética Paulo (operador). Separação absoluta: envelope (metadata operacional) nunca carta (dados pastorais). Resumo por página:
+  - 09.1 Login com MFA: spec leve. Login padrão + TOTP challenge via Keycloak conditional auth flow (Story 2.3). MFA obrigatório para super_admin. Lockout 3 tentativas → 5 min. ExperienceResolver → `/app/admin/super/tenants`. Sem seleção de igreja (cross-tenant). DDR 1 parcialmente resolvido: rotas sob `/app/admin/super/*`.
+  - 09.2 Dashboard de Tenants: 9 componentes, 22 keys, 5 states. Tabela paginada com nome, slug, plano, status (4 badges: ativo/suspenso/prov.falhou/provisionando), membros (count), data. Filtros por status e plano. Busca por nome/slug. SuperAdminSidebar mínima (só "Tenants" no MVP, "Métricas" R2). PrismaAdminService sem RLS. Design system: SuperAdminSidebar, TenantStatusBadge, DataTable, SearchWithFilters.
+  - 09.3 Provisionar Tenant: 11 componentes, 26 keys, 6 states. Formulário 4 campos (nome, slug auto-sugerido, email admin, plano). Saga transacional 3 steps (DB → Keycloak → convite) com stepper visual (DDR 3 resolvido). Polling cada 2s. Retry a partir do ponto de falha. POST → 202 Accepted. Slug conflict 409. Design system: SagaStepper, SlugField, ProvisionForm.
+  - 09.4 Detalhe do Tenant: 12 componentes, 28 keys, 7 states. Info card (slug, plano, criado, admin, convite) + numbers card (membros, grupos, líderes — counts only). Ações: editar nome (inline), suspender (destructive + confirmation dialog obrigatório), reativar, retry provisioning. Domain event `tenant.status_changed`. Design system: TenantInfoCard, TenantAggregatesCard, DestructiveConfirmDialog, InlineEditField.
+  **Princípio "envelope não carta" preservado em todas as telas: Super Admin vê metadata operacional (nome, slug, plano, status, counts), nunca dados pastorais (radar, presenças, ações de cuidado, reflexões). Glossário banido ajustado: termos operacionais (dashboard, métricas, status) OK para operador, termos de vigilância sobre pessoas continuam vetados.**
 
 ---
