@@ -16,7 +16,7 @@ describe('OAuthService', () => {
     };
   };
 
-  const metadata = { ipAddress: '127.0.0.1', userAgent: 'test-agent' };
+  const _metadata = { ipAddress: '127.0.0.1', userAgent: 'test-agent' };
 
   beforeEach(async () => {
     configService = {
