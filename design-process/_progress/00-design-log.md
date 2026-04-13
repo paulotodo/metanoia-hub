@@ -183,7 +183,7 @@ design-process/B-Trigger-Map/
 - [x] Cenário 02: Líder roda reunião e fecha loop (3 páginas) ✅ 2026-04-13
 - [x] Cenário 03: Pastor abre vista agregada (4 páginas) ✅ 2026-04-13
 - [x] Cenário 06: Participante recebe cuidado com dignidade (5 páginas) ✅ 2026-04-13
-- [ ] Cenário 07: Líder recupera acesso (5 páginas)
+- [x] Cenário 07: Líder recupera acesso (5 páginas) ✅ 2026-04-13
 - [ ] Cenário 08: Usuário troca de igreja (4 páginas)
 - [ ] Cenário 09: Super Admin opera plataforma (4 páginas)
 - [ ] Cenário 04: Champion descobre, apresenta e ativa (10 páginas)
@@ -220,6 +220,11 @@ design-process/B-Trigger-Map/
 | 06 | 06.3 | OAuth Google | specified-light | 2026-04-13 |
 | 06 | 06.4 | Lista dos Meus Grupos | specified | 2026-04-13 |
 | 06 | 06.5 | Detalhe do Meu Grupo | specified | 2026-04-13 |
+| 07 | 07.1 | Login — Recuperação | specified-light | 2026-04-13 |
+| 07 | 07.2 | Recuperar Senha | specified | 2026-04-13 |
+| 07 | 07.3 | Email de Reset | specified-light | 2026-04-13 |
+| 07 | 07.4 | Nova Senha | specified | 2026-04-13 |
+| 07 | 07.5 | Acesso Restaurado | specified-light | 2026-04-13 |
 
 ### Log
 
@@ -254,5 +259,12 @@ design-process/B-Trigger-Map/
   - 06.4 Lista dos Meus Grupos: 6 componentes, 10 keys, 5 states. Primeira tela autenticada — calma absoluta. 1 card, zero gráfico, zero badge, zero tour guiado. Welcome message first-visit only. Domain event `participant.group.first_view`. Design system: ParticipantGroupCard, WelcomeMessage.
   - 06.5 Detalhe do Meu Grupo: 14 componentes, 18 keys, 5 states. Avatar do líder + descrição em blockquote + próximo encontro (data relativa + local) + formato. Frase de fecho "Sem pressa. Quando você vier, a gente tá aqui." — princípio inviolável 6 (dignidade do silêncio) materializado em UI. Zero CTA de trilha (Epic 8 R1b). Design system: GroupDetailView, LeaderPublicProfile, NextMeetingCard, ClosingPhrase.
   **Anti-patterns bloqueados: zero formulário pós-OAuth, zero tour guiado, zero gamificação, zero celebração sintética, zero ranking, zero "Complete seu perfil".**
+- 2026-04-13: Cenário 07 (Líder recupera acesso antes da quarta de manhã) — **completo** (5/5 páginas specified). Mobile-first, fluxo dual-path recovery (Google OAuth trivial vs password recovery em ≤3 min). FR83/Story 2.9 — gap descoberto pelo processo WDS Phase 3. Resumo por página:
+  - 07.1 Login — Recuperação: spec leve. 2 paths documentados (A: Google OAuth ≤10s, B: password recovery ≤3 min). DDR: link "Esqueci minha senha" adicionado à tela de login existente. 3 mensagens de erro em tom pastoral ("Essa senha não bateu"). 4 translation keys.
+  - 07.2 Recuperar Senha: 11 componentes, 13 keys, 5 states. Campo único de email. Anti-credential-enumeration (POST sempre retorna 200). Resend com cooldown 60s. Auto-focus no email field. POST `/api/v1/auth/forgot-password`. Domain event `auth.recovery.started`. Design system: RecoveryFormLayout (reutiliza OnboardingPageLayout), AntiEnumerationConfirmation.
+  - 07.3 Email de Reset: spec leve (externo). Email transacional Keycloak customizado para tom pastoral PT-BR. Subject com primeiro nome ("{firstName}, aqui tá o link"). Token 15 min. "Se não foi você, pode ignorar — nada muda na sua conta." Zero footer corporativo. 6 translation keys.
+  - 07.4 Nova Senha: 6 componentes, 15 keys, 6 states. 2 campos (nova senha + confirmação) com validação OWASP (≥8 chars). Toggle visibility (eye icon). Token uso único + 15 min TTL + 3 estados de erro (expired/invalid/used). Auto-login pós-reset (JWT cookies na response). POST `/api/v1/auth/reset-password`. Domain event `auth.recovery.completed`. Design system: PasswordFieldWithToggle (reutiliza 05.3), TokenErrorState (reutiliza 05.1).
+  - 07.5 Acesso Restaurado: spec leve (redirect). Redirect transparente via ExperienceResolver por role (Líder → radar, Admin → admin, Participante → grupos). Silêncio como confirmação — "Marcos vê o radar, essa é a confirmação". Métrica `recovery_to_radar_time` (target ≤3 min). 1 fallback key (session creation failure).
+  **Padrões consolidados: anti-credential-enumeration como padrão de segurança, reutilização pesada de componentes (PasswordFieldWithToggle, TokenErrorState, ExperienceResolver), tom pastoral em mensagens de erro de auth.**
 
 ---
