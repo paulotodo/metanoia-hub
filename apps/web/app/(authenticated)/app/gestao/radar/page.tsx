@@ -1,55 +1,158 @@
-import { mockRadarPageData } from "../../../../../__mocks__/radar";
+"use client";
 
-/**
- * Radar Pastoral — Tela principal do líder (01.2)
- *
- * Prototype stub: renders mock data.
- * Will be wired to `useRadarSignals` TanStack Query hook in Session 6.
- */
+import { useState, useMemo } from "react";
+import { mockRadarPageData } from "../../../../../__mocks__/radar";
+import type { RadarParticipant, SignalType } from "../../../../../__mocks__/radar";
+import { SaudacaoContextual } from "./_components/saudacao-contextual";
+import { SemaforoPill } from "./_components/semaforo-pill";
+import { GrupoPillFilter } from "./_components/grupo-pill";
+import { SectionDivider } from "./_components/section-divider";
+import { ParticipantCard, ParticipantCardCompact } from "./_components/participant-card";
+import { InboxZeroState } from "./_components/inbox-zero-state";
+import { ReturnBanner } from "./_components/return-banner";
+
+type PillFilter = SignalType | null;
+
 export default function RadarPage() {
   const data = mockRadarPageData;
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [activePill, setActivePill] = useState<PillFilter>(null);
+  const [returnBannerVisible, setReturnBannerVisible] = useState(true);
+
+  // Filter participants by group
+  const filteredByGroup = useMemo(() => {
+    if (!selectedGroupId) return data.participants;
+    return data.participants.filter((p) => p.groupId === selectedGroupId);
+  }, [data.participants, selectedGroupId]);
+
+  // Compute counts from filtered participants
+  const counts = useMemo(() => {
+    const urgent = filteredByGroup.filter((p) => p.signalType === "care-urgent");
+    const attention = filteredByGroup.filter((p) => p.signalType === "care-attention");
+    const ok = filteredByGroup.filter((p) => p.signalType === "care-ok");
+    return { urgent, attention, ok };
+  }, [filteredByGroup]);
+
+  const isInboxZero = counts.urgent.length === 0 && counts.attention.length === 0;
+
+  // ReturnBanner visibility check
+  const showReturnBanner =
+    returnBannerVisible &&
+    data.lastSeenAt !== null &&
+    (Date.now() - new Date(data.lastSeenAt).getTime()) / (1000 * 60 * 60 * 24) > 5;
+
+  const showDelta = !showReturnBanner;
+
+  // Triple-state pill tap: default → scroll → filter → default
+  function handlePillTap(signalType: SignalType) {
+    if (activePill === signalType) {
+      setActivePill(null); // 3rd tap: restore panorama
+    } else {
+      setActivePill(signalType);
+    }
+  }
+
+  function getPillState(signalType: SignalType) {
+    if (activePill === null) return "default" as const;
+    if (activePill === signalType) return "filter-active" as const;
+    return "dimmed" as const;
+  }
+
+  // Filter by pill
+  function shouldShowSection(signalType: SignalType): boolean {
+    return activePill === null || activePill === signalType;
+  }
+
+  function renderSection(
+    signalType: SignalType,
+    participants: RadarParticipant[],
+    sectionId: string,
+  ) {
+    if (!shouldShowSection(signalType) || participants.length === 0) return null;
+
+    return (
+      <section
+        key={signalType}
+        aria-labelledby={sectionId}
+        className="space-y-3"
+      >
+        <SectionDivider signalType={signalType} id={sectionId} />
+        {signalType === "care-ok" ? (
+          <>
+            <p className="text-sm text-text-secondary lg:text-base">
+              {participants.length} estão bem
+            </p>
+            <ParticipantCardCompact participants={participants} />
+          </>
+        ) : (
+          participants.map((p) => (
+            <ParticipantCard key={p.participantId} participant={p} />
+          ))
+        )}
+      </section>
+    );
+  }
 
   return (
-    <div className="py-6">
+    <div className="space-y-6 py-6">
       {/* 01.2-H1: SaudacaoContextual */}
-      <h1 className="text-display-sm font-semibold">
-        Bom dia, {data.userFirstName}
-      </h1>
+      <SaudacaoContextual
+        firstName={data.userFirstName}
+        urgentCount={counts.urgent.length}
+        attentionCount={counts.attention.length}
+      />
 
-      {/* 01.2-S1/S2/S3: SemaforoPills placeholder */}
-      <div className="mt-4 flex gap-2">
-        <span className="rounded-full bg-care-urgent/10 px-3 py-1 text-sm text-care-urgent">
-          {data.signalCounts.careUrgent} precisam de cuidado
-        </span>
-        <span className="rounded-full bg-care-attention/10 px-3 py-1 text-sm text-care-attention">
-          {data.signalCounts.careAttention} pedem atenção
-        </span>
-        <span className="rounded-full bg-care-ok/10 px-3 py-1 text-sm text-care-ok">
-          {data.signalCounts.careOk} estão bem
-        </span>
+      {/* 01.2-R1: ReturnBanner (conditional) */}
+      {data.lastSeenAt && (
+        <ReturnBanner lastSeenAt={data.lastSeenAt} />
+      )}
+
+      {/* 01.2-S1/S2/S3: SemaforoPills */}
+      <div className="flex gap-2" role="group" aria-label="Filtros do semáforo pastoral">
+        <SemaforoPill
+          signalType="care-urgent"
+          count={counts.urgent.length}
+          delta={data.signalCounts.deltaUrgent}
+          state={getPillState("care-urgent")}
+          showDelta={showDelta}
+          onTap={() => handlePillTap("care-urgent")}
+        />
+        <SemaforoPill
+          signalType="care-attention"
+          count={counts.attention.length}
+          delta={data.signalCounts.deltaAttention}
+          state={getPillState("care-attention")}
+          showDelta={showDelta}
+          onTap={() => handlePillTap("care-attention")}
+        />
+        <SemaforoPill
+          signalType="care-ok"
+          count={counts.ok.length}
+          delta={data.signalCounts.deltaOk}
+          state={getPillState("care-ok")}
+          showDelta={showDelta}
+          onTap={() => handlePillTap("care-ok")}
+        />
       </div>
 
-      {/* 01.2-L1/L2/L3: ParticipantCards placeholder */}
-      <div className="mt-6 space-y-3">
-        {data.participants.map((participant) => (
-          <div
-            key={participant.participantId}
-            className="rounded-lg border border-border-default bg-surface-base p-4"
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-medium">{participant.name}</span>
-              <span className="text-xs text-text-muted">
-                {participant.groupName}
-              </span>
-            </div>
-            {participant.contextPhrase && (
-              <p className="mt-1 text-sm text-text-secondary">
-                {participant.contextPhrase}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
+      {/* 01.2-G1: GrupoPill filter */}
+      <GrupoPillFilter
+        groups={data.groups}
+        selectedGroupId={selectedGroupId}
+        onSelect={setSelectedGroupId}
+      />
+
+      {/* 01.2-L5: InboxZeroState (when all ok) */}
+      {isInboxZero && shouldShowSection("care-ok") ? (
+        <InboxZeroState nextMeeting={data.nextMeeting} />
+      ) : (
+        /* 01.2-L1/L2/L3/L4: Participant sections */
+        <div className="space-y-8">
+          {renderSection("care-urgent", counts.urgent, "section-urgent")}
+          {renderSection("care-attention", counts.attention, "section-attention")}
+          {renderSection("care-ok", counts.ok, "section-ok")}
+        </div>
+      )}
     </div>
   );
 }
