@@ -1,7 +1,6 @@
 "use client";
 
 import { use, useState, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 import { useSignalDetail, useRecordCareAction } from "@/lib/api/hooks/use-radar";
