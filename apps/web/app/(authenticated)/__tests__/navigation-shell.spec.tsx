@@ -3,7 +3,7 @@ import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/radar",
+  usePathname: () => "/app/gestao/radar",
 }));
 
 vi.mock("next/link", () => ({
@@ -33,16 +33,21 @@ import {
 import type { NavigationItem } from "@metanoia/ui";
 
 const testItems: NavigationItem[] = [
-  { key: "radar", label: "Radar", href: "/radar", icon: Radar },
+  { key: "radar", label: "Radar", href: "/app/gestao/radar", icon: Radar },
   {
     key: "reunioes",
     label: "Reuniões",
-    href: "/reunioes",
+    href: "/app/gestao/reunioes",
     icon: CalendarDays,
   },
-  { key: "trilhas", label: "Trilhas", href: "/trilhas", icon: Route },
-  { key: "perfil", label: "Perfil", href: "/perfil", icon: UserCircle },
-  { key: "mais", label: "Mais", href: "/mais", icon: MoreHorizontal },
+  {
+    key: "trilhas",
+    label: "Trilhas",
+    href: "/app/gestao/trilhas",
+    icon: Route,
+  },
+  { key: "perfil", label: "Perfil", href: "/app/perfil", icon: UserCircle },
+  { key: "mais", label: "Mais", href: "/app/mais", icon: MoreHorizontal },
 ];
 
 describe("NavigationShell", () => {
