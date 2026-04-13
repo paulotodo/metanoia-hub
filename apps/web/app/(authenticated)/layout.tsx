@@ -1,3 +1,4 @@
+import { AppQueryProvider } from "@/lib/query";
 import { NavigationShell } from "./_components/navigation-shell";
 
 export default function AuthenticatedLayout({
@@ -5,5 +6,9 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <NavigationShell>{children}</NavigationShell>;
+  return (
+    <NavigationShell>
+      <AppQueryProvider>{children}</AppQueryProvider>
+    </NavigationShell>
+  );
 }

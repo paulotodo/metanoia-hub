@@ -20,6 +20,7 @@ export interface SignalDetail {
   participantId: string;
   name: string;
   signalType: SignalType;
+  groupId: string;
   groupName: string;
   observedFact: ObservedFact;
   systemLimitation: SystemLimitation;
@@ -71,6 +72,7 @@ export const mockSignalDetail: SignalDetail = {
   participantId: "019756a1-1001-7000-8000-000000000001",
   name: "Pedro Almeida",
   signalType: "care-urgent",
+  groupId: "019756a1-2001-7000-8000-000000000001",
   groupName: "Jovens Adultos",
   observedFact: {
     variant: "absence",
@@ -92,6 +94,7 @@ export const mockSignalDetailNoCare: SignalDetail = {
   participantId: "019756a1-1002-7000-8000-000000000002",
   name: "Ana Costa",
   signalType: "care-urgent",
+  groupId: "019756a1-2001-7000-8000-000000000001",
   groupName: "Jovens Adultos",
   observedFact: {
     variant: "early-exit",

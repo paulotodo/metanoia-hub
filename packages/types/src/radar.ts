@@ -103,6 +103,7 @@ export const SignalDetailSchema = z.object({
   participantId: z.string().uuid(),
   name: z.string(),
   signalType: SignalTypeSchema,
+  groupId: z.string().uuid(),
   groupName: z.string(),
   observedFact: ObservedFactSchema,
   systemLimitation: SystemLimitationSchema,

@@ -4,10 +4,9 @@ import { use, useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
-import {
-  mockSignalDetail,
-  mockCareActionResponse,
-} from "../../../../../../../__mocks__/radar";
+import { useSignalDetail, useRecordCareAction } from "@/lib/api/hooks/use-radar";
+import { SignalDetailSkeleton } from "../../_components/radar-skeleton";
+import { RadarError } from "../../_components/radar-error";
 
 type PageState = "form" | "saving" | "confirmation" | "error";
 
@@ -26,9 +25,9 @@ export default function CareActionPage({
   const [showAbandonDialog, setShowAbandonDialog] = useState(false);
   const undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Prototype: mock data
-  const data = mockSignalDetail;
-  const nextMeetingDay = "quinta"; // from mock, will come from API
+  const { data, isLoading, error, refetch } = useSignalDetail(participantId);
+  const mutation = useRecordCareAction(participantId);
+  const nextMeetingDay = "quinta"; // TODO: derive from radar page data
 
   // Auto-focus textarea on mount
   useEffect(() => {
@@ -36,28 +35,35 @@ export default function CareActionPage({
   }, []);
 
   const handleSubmit = useCallback(async () => {
-    if (!note.trim()) return;
+    if (!note.trim() || !data) return;
 
     setPageState("saving");
 
-    // Simulate API call (will be real POST in Session 6)
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    void mockCareActionResponse; // acknowledge mock usage
+    try {
+      await mutation.mutateAsync({
+        participantId,
+        groupId: data.groupId,
+        signalType: data.signalType,
+        note: note.trim(),
+      });
 
-    setPageState("confirmation");
+      setPageState("confirmation");
 
-    // Start undo countdown
-    let count = 5;
-    setUndoCountdown(count);
-    undoTimerRef.current = setInterval(() => {
-      count -= 1;
+      // Start undo countdown
+      let count = 5;
       setUndoCountdown(count);
-      if (count <= 0) {
-        if (undoTimerRef.current) clearInterval(undoTimerRef.current);
-        router.push("/app/gestao/radar");
-      }
-    }, 1000);
-  }, [note, router]);
+      undoTimerRef.current = setInterval(() => {
+        count -= 1;
+        setUndoCountdown(count);
+        if (count <= 0) {
+          if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+          router.push("/app/gestao/radar");
+        }
+      }, 1000);
+    } catch {
+      setPageState("error");
+    }
+  }, [note, data, participantId, mutation, router]);
 
   const handleUndo = useCallback(() => {
     if (undoTimerRef.current) clearInterval(undoTimerRef.current);
@@ -79,6 +85,10 @@ export default function CareActionPage({
       if (undoTimerRef.current) clearInterval(undoTimerRef.current);
     };
   }, []);
+
+  if (isLoading) return <SignalDetailSkeleton />;
+  if (error) return <RadarError error={error} onRetry={() => refetch()} />;
+  if (!data) return null;
 
   // --- Confirmation State ---
   if (pageState === "confirmation") {

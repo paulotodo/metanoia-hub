@@ -81,6 +81,7 @@ export class PastoralService {
       participantId: alert.participantId,
       name: alert.participant.name,
       signalType: alert.signalType as SignalType,
+      groupId: alert.groupId,
       groupName: alert.group.name,
       observedFact: {
         variant: (alert.signalVariant ?? 'fallback') as SignalVariant,
