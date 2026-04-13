@@ -22,38 +22,28 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-import { NavigationShell } from "../_components/navigation-shell";
-import {
-  Radar,
-  CalendarDays,
-  Route,
-  UserCircle,
-  MoreHorizontal,
-} from "lucide-react";
-import type { NavigationItem } from "@metanoia/ui";
+// Mock navigation config with simple span icons (no lucide functions in test)
+vi.mock("../../../config/navigation", () => {
+  const MockIcon = () => <span data-testid="mock-icon" />;
+  return {
+    navigationItems: [
+      { key: "radar", label: "Radar", href: "/app/gestao/radar", icon: MockIcon },
+      { key: "reunioes", label: "Reuniões", href: "/app/gestao/reunioes", icon: MockIcon },
+      { key: "trilhas", label: "Trilhas", href: "/app/gestao/trilhas", icon: MockIcon },
+      { key: "perfil", label: "Perfil", href: "/app/perfil", icon: MockIcon },
+      { key: "mais", label: "Mais", href: "/app/mais", icon: MockIcon },
+    ],
+  };
+});
 
-const testItems: NavigationItem[] = [
-  { key: "radar", label: "Radar", href: "/app/gestao/radar", icon: Radar },
-  {
-    key: "reunioes",
-    label: "Reuniões",
-    href: "/app/gestao/reunioes",
-    icon: CalendarDays,
-  },
-  {
-    key: "trilhas",
-    label: "Trilhas",
-    href: "/app/gestao/trilhas",
-    icon: Route,
-  },
-  { key: "perfil", label: "Perfil", href: "/app/perfil", icon: UserCircle },
-  { key: "mais", label: "Mais", href: "/app/mais", icon: MoreHorizontal },
-];
+import { NavigationShell } from "../_components/navigation-shell";
+
+const expectedLabels = ["Radar", "Reuniões", "Trilhas", "Perfil", "Mais"];
 
 describe("NavigationShell", () => {
   it("renders both sidebar and bottom tabs navigation regions", () => {
     render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <div>Page content</div>
       </NavigationShell>,
     );
@@ -63,19 +53,19 @@ describe("NavigationShell", () => {
 
   it("renders all 5 navigation labels", () => {
     render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <div>Page content</div>
       </NavigationShell>,
     );
-    for (const item of testItems) {
-      const labels = screen.getAllByText(item.label);
+    for (const label of expectedLabels) {
+      const labels = screen.getAllByText(label);
       expect(labels.length).toBeGreaterThanOrEqual(1);
     }
   });
 
   it("renders children in the main content area", () => {
     render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <div data-testid="child-content">Page content</div>
       </NavigationShell>,
     );
@@ -84,7 +74,7 @@ describe("NavigationShell", () => {
 
   it("wraps content in max-w-7xl container", () => {
     render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <div data-testid="child-content">Page content</div>
       </NavigationShell>,
     );
@@ -95,7 +85,7 @@ describe("NavigationShell", () => {
 
   it("passes accessibility checks", async () => {
     const { container } = render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <h1>Dashboard</h1>
         <p>Content area</p>
       </NavigationShell>,
@@ -106,7 +96,7 @@ describe("NavigationShell", () => {
 
   it("hides sidebar on mobile via CSS class", () => {
     render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <div>Content</div>
       </NavigationShell>,
     );
@@ -117,7 +107,7 @@ describe("NavigationShell", () => {
 
   it("hides bottom tabs on desktop via CSS class", () => {
     render(
-      <NavigationShell items={testItems}>
+      <NavigationShell>
         <div>Content</div>
       </NavigationShell>,
     );

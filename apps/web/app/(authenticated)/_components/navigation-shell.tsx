@@ -4,13 +4,14 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { BottomTabs, Sidebar } from "@metanoia/ui";
 import type { NavigationItem } from "@metanoia/ui";
+import { navigationItems } from "../../../config/navigation";
 
 interface NavigationShellProps {
-  items: NavigationItem[];
   children: React.ReactNode;
 }
 
-export function NavigationShell({ items, children }: NavigationShellProps) {
+export function NavigationShell({ children }: NavigationShellProps) {
+  const items = navigationItems;
   const pathname = usePathname();
   const activeKey =
     items.find(

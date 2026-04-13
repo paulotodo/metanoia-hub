@@ -1,4 +1,3 @@
-import { navigationItems } from "../../config/navigation";
 import { NavigationShell } from "./_components/navigation-shell";
 
 export default function AuthenticatedLayout({
@@ -6,5 +5,5 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <NavigationShell items={navigationItems}>{children}</NavigationShell>;
+  return <NavigationShell>{children}</NavigationShell>;
 }
