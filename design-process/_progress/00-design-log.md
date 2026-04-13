@@ -172,9 +172,9 @@ design-process/B-Trigger-Map/
 | Item | Valor |
 |------|-------|
 | Data | 2026-04-12 |
-| Status | Em andamento |
+| Status | Completo (2026-04-13) |
 | Agente | Freya (WDS-4 Suggest mode) |
-| Cenário ativo | 01 — Líder vence a quarta de manhã |
+| Cenários | 9/9 completos — 45 páginas specified |
 
 ### Backlog
 
@@ -186,13 +186,7 @@ design-process/B-Trigger-Map/
 - [x] Cenário 07: Líder recupera acesso (5 páginas) ✅ 2026-04-13
 - [x] Cenário 08: Usuário troca de igreja (4 páginas) ✅ 2026-04-13
 - [x] Cenário 09: Super Admin opera plataforma (4 páginas) ✅ 2026-04-13
-- [ ] Cenário 04: Champion descobre, apresenta e ativa (10 páginas)
-
-### Current
-
-| Task | Cenário | Página | Iniciado |
-|------|---------|--------|----------|
-| Page context + design | 01 | 01.2-tela-principal-lider | 2026-04-12 |
+- [x] Cenário 04: Champion descobre, apresenta e ativa (10 páginas) ✅ 2026-04-13
 
 ### Design Loop Status
 
@@ -233,6 +227,16 @@ design-process/B-Trigger-Map/
 | 09 | 09.2 | Dashboard de Tenants | specified | 2026-04-13 |
 | 09 | 09.3 | Provisionar Tenant | specified | 2026-04-13 |
 | 09 | 09.4 | Detalhe do Tenant | specified | 2026-04-13 |
+| 04 | 04.1 | Landing | specified | 2026-04-13 |
+| 04 | 04.2 | Manifesto Pastoral | specified | 2026-04-13 |
+| 04 | 04.3 | Features | specified | 2026-04-13 |
+| 04 | 04.4 | Estudo de Caso | specified-light | 2026-04-13 |
+| 04 | 04.5 | Pricing | specified | 2026-04-13 |
+| 04 | 04.6 | Apresentação Curada | specified | 2026-04-13 |
+| 04 | 04.7 | Cadastro / Trial | specified | 2026-04-13 |
+| 04 | 04.8 | Sobre | specified-light | 2026-04-13 |
+| 04 | 04.9 | Blog | specified-light | 2026-04-13 |
+| 04 | 04.10 | Contato | specified-light | 2026-04-13 |
 
 ### Log
 
@@ -286,5 +290,32 @@ design-process/B-Trigger-Map/
   - 09.3 Provisionar Tenant: 11 componentes, 26 keys, 6 states. Formulário 4 campos (nome, slug auto-sugerido, email admin, plano). Saga transacional 3 steps (DB → Keycloak → convite) com stepper visual (DDR 3 resolvido). Polling cada 2s. Retry a partir do ponto de falha. POST → 202 Accepted. Slug conflict 409. Design system: SagaStepper, SlugField, ProvisionForm.
   - 09.4 Detalhe do Tenant: 12 componentes, 28 keys, 7 states. Info card (slug, plano, criado, admin, convite) + numbers card (membros, grupos, líderes — counts only). Ações: editar nome (inline), suspender (destructive + confirmation dialog obrigatório), reativar, retry provisioning. Domain event `tenant.status_changed`. Design system: TenantInfoCard, TenantAggregatesCard, DestructiveConfirmDialog, InlineEditField.
   **Princípio "envelope não carta" preservado em todas as telas: Super Admin vê metadata operacional (nome, slug, plano, status, counts), nunca dados pastorais (radar, presenças, ações de cuidado, reflexões). Glossário banido ajustado: termos operacionais (dashboard, métricas, status) OK para operador, termos de vigilância sobre pessoas continuam vetados.**
+- 2026-04-13: Cenário 04 (Champion descobre o Hub, apresenta ao pastor e ativa) — **completo** (10/10 páginas specified). Maior cenário — hybrid device (mobile Sunday → desktop Monday), persona satélite Champion (Julia), funil marketing público SSR/SSG. 7 páginas sunshine path + 3 paralelas. Resumo por página:
+  - 04.1 Landing: 13 componentes, 24 keys. Hero com manifesto em 1 frase ("Cuidado pastoral que começa com visibilidade humilde"), OG tags para WhatsApp preview, MarketingNav + MarketingFooter, 5 seções (hero + social proof + features resume + pricing teaser + CTA). TTI ≤2s. Design system: MarketingNav, MarketingFooter, HeroSection, SocialProofStrip, CTABlock.
+  - 04.2 Manifesto Pastoral: 5 componentes, 5 keys. Peça âncora do funil — conteúdo editorial longo que convence pela empatia, não pela feature list. LongFormContent max-width 680px, line-height 1.7. 5 temas obrigatórios documentados (solidão do líder, limites do improviso, radar como memória coletiva, cuidado como escolha, convite não cobrança). Design system: LongFormContent, ManifestoBlockquote.
+  - 04.3 Features: 4 componentes, 14 keys. Features em linguagem pastoral — cada uma começa com tensão em blockquote ("Faz 2 semanas que o Pedro não aparece"). 4 features: Radar Pastoral, Reunião com memória, Cuidado registrado, Vista pastoral. Alternating layout (image left/right). Design system: FeatureCard.
+  - 04.4 Estudo de Caso: spec leve (editorial dependency). Narrativa, não métricas ("O Marcos agora sabe quem precisa de uma conversa" vs "42% increase"). Blockquotes de líderes reais com atribuição. Estudo projetado rotulado honestamente se sem piloto. LongFormContent reutilizado. 4 keys.
+  - 04.5 Pricing: 6 componentes, 28 keys. 3 planos (Free grátis / Pro R$99/mês / Enterprise sob consulta). Zero "Contact sales" como preço (veto permanente — anti-pastoral). FAQ accordion 5 itens. Champion CTA bridge → 04.6 ("Quer apresentar ao seu pastor?"). Preço por igreja, não por pessoa. Design system: PricingCard, FAQAccordion, ChampionCTABlock.
+  - 04.6 Apresentação Curada (Deck Light): 6 componentes, 16 keys. DDR #27 resolvido. 8 slides (manifesto → features → pricing → CTA). Copy link + download PDF. OG tags para rich preview no WhatsApp/email. Pastor lê em ≤2 min. PDF estático pré-gerado no MVP. Design system: DeckSlide, CopyLinkButton, DownloadButton.
+  - 04.7 Cadastro / Trial: 10 componentes, 20 keys. 2 variantes: Variante A (sales-led, recomendada R1a) = formulário "Quer ver ao vivo?" com 3 campos (nome, email, igreja) → POST demo-request → time comercial liga. Variante B (self-serve, R1b) = trial 14 dias → saga provisioning. DDR go-to-market motion resolvido. Success state com deck link (Champion bridge). Design system: MinimalSignupForm, SuccessConfirmation.
+  - 04.8 Sobre: spec leve (paralela). "Por que a gente faz isso" — narrativa, não institucional. Honestidade radical. LongFormContent reutilizado. 3 keys.
+  - 04.9 Blog: spec leve (paralela). Canal de descoberta via SEO. Reflexões pastorais, não content marketing. MDX estático no MVP, CMS R2+. Zero gated content. Listing + article pages. 4 keys.
+  - 04.10 Contato: spec leve (paralela). "Fale com a gente" — formulário simples (nome, email, mensagem). Alternativa relacional ao self-serve. Honeypot + rate limit anti-spam. 12 keys.
+  **Padrões do cenário 04: (1) conteúdo é editorial — specs definem estrutura, não copy final; (2) SSR/SSG para todas as páginas públicas; (3) tom pastoral mesmo em marketing — zero corporate speak; (4) OG tags em todas as páginas para compartilhamento; (5) Champion bridge pattern (cada página tem CTA para a próxima no funil); (6) DDRs resolvidos inline (rotas, variantes, go-to-market motion).**
+
+### Phase 4 Summary
+
+**Status: COMPLETO** — 45/45 páginas specified across 9 cenários.
+
+| Métrica | Valor |
+|---------|-------|
+| Cenários | 9/9 |
+| Páginas total | 45 |
+| Páginas specified | 30 |
+| Páginas specified-light | 15 |
+| Componentes design system candidatos | ~60 |
+| Translation keys estimadas | ~450 |
+
+**Próximo Step:** Phase 5 — Agentic Development (implementação)
 
 ---
