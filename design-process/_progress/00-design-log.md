@@ -178,7 +178,7 @@ design-process/B-Trigger-Map/
 
 ### Backlog
 
-- [ ] Cenário 01: Líder vence a quarta de manhã (5 páginas)
+- [x] Cenário 01: Líder vence a quarta de manhã (5 páginas) ✅ 2026-04-13
 - [ ] Cenário 05: Admin faz onboarding mínimo (9 páginas)
 - [ ] Cenário 02: Líder roda reunião e fecha loop (3 páginas)
 - [ ] Cenário 03: Pastor abre vista agregada (4 páginas)
@@ -201,6 +201,8 @@ design-process/B-Trigger-Map/
 | 01 | 01.1 | Login Líder | specified-light | 2026-04-12 |
 | 01 | 01.2 | Tela Principal Líder | specified | 2026-04-12 |
 | 01 | 01.3 | Detalhe do Sinal | specified | 2026-04-12 |
+| 01 | 01.4 | Perfil Participante | specified | 2026-04-13 |
+| 01 | 01.5 | Loop Fechado | specified | 2026-04-13 |
 
 ### Log
 
@@ -208,5 +210,7 @@ design-process/B-Trigger-Map/
 - 2026-04-12: 01.1 Login Líder — spec leve (passthrough). Login é infraestrutura implementada (Stories 2.1/2.2). Documentados 2 estados (sessão ativa/expirada) + redirect via ExperienceResolver para `/app/gestao/radar`.
 - 2026-04-12: 01.2 Tela Principal Líder — **specified** (Steps 01–09 completos). 14 componentes, 35 translation keys, 10 page states, 12 spacing objects, 21 typography tokens. Decisões-chave: SemaforoPills como elemento estrutural (Direção A do UX Spec), densidade adaptativa de cards (expanded/medium/compact), Improviso Sagrado respeitado (sugestões pastorais removidas do R1a-beta), compressão tipográfica mobile (H1 20px/600 em ≤360px, restaura 30px/700 em ≥lg), ReturnBanner para ausência >5d, filtro excludente triple-state nas pills. 6 componentes candidatos a design system (SemaforoPill, ParticipantCard, GrupoPill, InboxZeroState, SectionStableResume, ReturnBanner).
 - 2026-04-12: 01.3 Detalhe do Sinal — **specified** (Steps 01–09 completos). 13 componentes, 30 translation keys, 7 page states, 10 spacing objects, 16 typography tokens. Decisões-chave: divisão "o que viu / o que não sabe" (materialização do radar humilde), ObservedFact 16px como conteúdo primário vs SystemLimitation 14px+muted, LastCareRecord condicional (contexto relacional mínimo), PresenceDots (timeline visual sem números), estado "Signal resolved" (race condition → celebração pastoral), atalho 01.3→01.5 (mesmo padrão da 01.2), hierarquia de rotas `/radar/{id}/perfil` e `/radar/{id}/cuidado`. 2 componentes novos candidatos a design system (PresenceDots, SignalExplanation).
+- 2026-04-13: 01.4 Perfil Participante — **specified** (Steps 01–09 completos). 14 componentes, 22 translation keys (14 novas + 8 reutilizadas), 6 page states, 10 spacing objects, 17 typography tokens. Decisões-chave: memória relacional mínima (última conversa, última oração, próximo marco) como conteúdo core, condicionais sem placeholder (padrão 01.3 consolidado), empty state empático ("Ainda não há registros — esta pode ser a primeira conversa"), memory note a 16px (destaque para frase do próprio líder), PresenceDots reutilizado da 01.3 (sempre visível, dados do sistema), CTA único "Registrar cuidado" (sem "Ver essa pessoa" — já estamos no perfil), Improviso Sagrado mantido (zero imperativo). 2 componentes novos candidatos a design system (RelationalMemoryCard, EmptyMemoryState).
+- 2026-04-13: 01.5 Loop Fechado — **specified** (Steps 01–09 completos). 15 componentes, 24 translation keys (20 novas + 4 reutilizadas), 7 page states, 9 spacing objects, 14 typography tokens. Decisões-chave: campo frase livre 280 chars (sem tags, sem categorias no MVP), textarea 16px (evita iOS auto-zoom), auto-focus (teclado abre na entrada), confirmação seca "Obrigado. Vemos você quinta." (variante dinâmica com dia da reunião), abandon dialog para proteger texto não-salvo, botão save com feedback visual (disabled→spinner→confirmation), full-page takeover no estado de confirmação, domain event `radar.action.recorded` documentado, API contract POST `/api/v1/care-actions` → 201. 3 componentes novos candidatos a design system (CareFormField, ConfirmationPage, AbandonDialog). **Cenário 01 completo — 5/5 páginas specified.**
 
 ---
