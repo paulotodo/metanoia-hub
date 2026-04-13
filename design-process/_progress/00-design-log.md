@@ -181,7 +181,7 @@ design-process/B-Trigger-Map/
 - [x] Cenário 01: Líder vence a quarta de manhã (5 páginas) ✅ 2026-04-13
 - [x] Cenário 05: Admin faz onboarding mínimo — variante 1a-beta (5/9 páginas) ✅ 2026-04-13 · 1b adiada
 - [x] Cenário 02: Líder roda reunião e fecha loop (3 páginas) ✅ 2026-04-13
-- [ ] Cenário 03: Pastor abre vista agregada (4 páginas)
+- [x] Cenário 03: Pastor abre vista agregada (4 páginas) ✅ 2026-04-13
 - [ ] Cenário 06: Participante recebe cuidado com dignidade (5 páginas)
 - [ ] Cenário 07: Líder recupera acesso (5 páginas)
 - [ ] Cenário 08: Usuário troca de igreja (4 páginas)
@@ -211,6 +211,10 @@ design-process/B-Trigger-Map/
 | 02 | 02.1 | Agenda do Grupo | specified | 2026-04-13 |
 | 02 | 02.2 | Reunião ao Vivo | specified | 2026-04-13 |
 | 02 | 02.3 | Pós-reunião | specified | 2026-04-13 |
+| 03 | 03.1 | Login Admin Tenant | specified-light | 2026-04-13 |
+| 03 | 03.2 | Vista Agregada | specified | 2026-04-13 |
+| 03 | 03.3 | Drill-down Grupo | specified | 2026-04-13 |
+| 03 | 03.4 | Visão do Líder | specified | 2026-04-13 |
 
 ### Log
 
@@ -232,5 +236,11 @@ design-process/B-Trigger-Map/
   - 02.2 Reunião ao Vivo: 10 componentes, 22 keys, 6 states. UI minimalista "celular para baixo" — consultada em ≤15s se necessário. Lista de participantes em tempo real via WebSocket/LiveKit events (3 estados: conectado, não entrou, saiu). "Encerrar sala" 56dp destructive com confirmation dialog. Sala continua ativa com tela bloqueada/background. Presença automática via webhooks (zero interação obrigatória). Design system: LiveStatusBar, ParticipantPresenceList, EndConfirmDialog.
   - 02.3 Pós-reunião: 12 componentes, 18 keys, 6 states. Captura de reflexão pastoral "O que vale lembrar dessa noite?" (280 chars), "Pular desta vez" sem culpa, janela de captura 48h. Domain event `meeting.reflection.captured`, API POST `/api/v1/meetings/{meetingId}/reflections` → 201. Design system: ReflectionFormField, SkipLink, CaptureWindowBanner.
   **Pipeline completo: LiveKit webhooks → Redis → BullMQ → PostgreSQL para presença integral/parcial.**
+- 2026-04-13: Cenário 03 (Pastor abre vista agregada) — **completo** (4/4 páginas specified). Desktop-first, densidade invertida, fluxo login → vista → drill-down → visão do líder. Resumo por página:
+  - 03.1 Login Admin Tenant: spec leve (passthrough). Fluxo Keycloak unificado, ExperienceResolver detecta `Admin Tenant` → `/app/admin/`. 4 states documentados.
+  - 03.2 Vista Agregada: 10 componentes, 24 keys, 6 states. Grid responsivo (3→2→1 colunas) com GroupPastoralCards. Status qualitativo em 4 níveis (🟢 Saudável, 🟡 Vale acompanhar, 🔴 Vale uma ligação, ⚪ Sem sinal) — frases humanas, zero pontuação. Filtro 3 opções (client-side). Ordenação por atenção pastoral (não ranking). Backend calcula status 1x/dia. ⚠️ Depende de FR60 promoção para 1a-beta. Design system: GroupPastoralCard, StatusFilter, AdminPageLayout, StaleDataBanner.
+  - 03.3 Drill-down Grupo: 12 componentes, 20 keys, 5 states. Timeline pastoral das últimas 2 semanas: reuniões (presença agregada + reflexão do líder em blockquote) + cuidados registrados. Presença mostrada como agregado ("6 de 8"), nunca nomes individuais ao pastor. Empty timeline com tom neutro ("pode estar em recesso"). Design system: TimelineEntry, GroupHeaderDetail, EmptyTimelineState.
+  - 03.4 Visão do Líder: 14 componentes, 26 keys, 7 states. Perfil do líder como pessoa (não operador). Última conversa pastor→líder (do próprio registro do pastor). Lista compacta de atividade recente (max 5). Campo livre "O que você quer levar para essa conversa?" (280 chars, Improviso Sagrado máximo). `outreach_intent` — design-driven requirement, entidade nova no Epic 6 com RLS `tenant_id + user_id` (líder nunca vê). API: POST/PUT/DELETE `/api/v1/admin/outreach-intents`. Design system: OutreachIntentField, LeaderProfileHeader, CompactActivityList, ExistingIntentBanner.
+  **Débitos documentados: (1) FR60 promoção para 1a-beta, (2) story nova `outreach_intent` no Epic 6.**
 
 ---
