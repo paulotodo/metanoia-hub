@@ -179,7 +179,7 @@ design-process/B-Trigger-Map/
 ### Backlog
 
 - [x] Cenário 01: Líder vence a quarta de manhã (5 páginas) ✅ 2026-04-13
-- [ ] Cenário 05: Admin faz onboarding mínimo (9 páginas)
+- [x] Cenário 05: Admin faz onboarding mínimo — variante 1a-beta (5/9 páginas) ✅ 2026-04-13 · 1b adiada
 - [ ] Cenário 02: Líder roda reunião e fecha loop (3 páginas)
 - [ ] Cenário 03: Pastor abre vista agregada (4 páginas)
 - [ ] Cenário 06: Participante recebe cuidado com dignidade (5 páginas)
@@ -203,6 +203,11 @@ design-process/B-Trigger-Map/
 | 01 | 01.3 | Detalhe do Sinal | specified | 2026-04-12 |
 | 01 | 01.4 | Perfil Participante | specified | 2026-04-13 |
 | 01 | 01.5 | Loop Fechado | specified | 2026-04-13 |
+| 05 | 05.1 | Aceite do Convite | specified | 2026-04-13 |
+| 05 | 05.2 | Termos e LGPD | specified | 2026-04-13 |
+| 05 | 05.3 | Criar Conta Admin | specified | 2026-04-13 |
+| 05 | 05.4 | Boas-vindas e Demonstração | specified | 2026-04-13 |
+| 05 | 05.5 | Criar Primeiro Grupo | specified | 2026-04-13 |
 
 ### Log
 
@@ -212,5 +217,12 @@ design-process/B-Trigger-Map/
 - 2026-04-12: 01.3 Detalhe do Sinal — **specified** (Steps 01–09 completos). 13 componentes, 30 translation keys, 7 page states, 10 spacing objects, 16 typography tokens. Decisões-chave: divisão "o que viu / o que não sabe" (materialização do radar humilde), ObservedFact 16px como conteúdo primário vs SystemLimitation 14px+muted, LastCareRecord condicional (contexto relacional mínimo), PresenceDots (timeline visual sem números), estado "Signal resolved" (race condition → celebração pastoral), atalho 01.3→01.5 (mesmo padrão da 01.2), hierarquia de rotas `/radar/{id}/perfil` e `/radar/{id}/cuidado`. 2 componentes novos candidatos a design system (PresenceDots, SignalExplanation).
 - 2026-04-13: 01.4 Perfil Participante — **specified** (Steps 01–09 completos). 14 componentes, 22 translation keys (14 novas + 8 reutilizadas), 6 page states, 10 spacing objects, 17 typography tokens. Decisões-chave: memória relacional mínima (última conversa, última oração, próximo marco) como conteúdo core, condicionais sem placeholder (padrão 01.3 consolidado), empty state empático ("Ainda não há registros — esta pode ser a primeira conversa"), memory note a 16px (destaque para frase do próprio líder), PresenceDots reutilizado da 01.3 (sempre visível, dados do sistema), CTA único "Registrar cuidado" (sem "Ver essa pessoa" — já estamos no perfil), Improviso Sagrado mantido (zero imperativo). 2 componentes novos candidatos a design system (RelationalMemoryCard, EmptyMemoryState).
 - 2026-04-13: 01.5 Loop Fechado — **specified** (Steps 01–09 completos). 15 componentes, 24 translation keys (20 novas + 4 reutilizadas), 7 page states, 9 spacing objects, 14 typography tokens. Decisões-chave: campo frase livre 280 chars (sem tags, sem categorias no MVP), textarea 16px (evita iOS auto-zoom), auto-focus (teclado abre na entrada), confirmação seca "Obrigado. Vemos você quinta." (variante dinâmica com dia da reunião), abandon dialog para proteger texto não-salvo, botão save com feedback visual (disabled→spinner→confirmation), full-page takeover no estado de confirmação, domain event `radar.action.recorded` documentado, API contract POST `/api/v1/care-actions` → 201. 3 componentes novos candidatos a design system (CareFormField, ConfirmationPage, AbandonDialog). **Cenário 01 completo — 5/5 páginas specified.**
+- 2026-04-13: Cenário 05 (Admin faz onboarding mínimo) — **variante 1a-beta completa** (5/5 páginas specified). Desktop-first wizard linear. Resumo por página:
+  - 05.1 Aceite do Convite: 6 componentes, 16 keys, 6 states. Token de uso único (7 dias), rota pública, zero campos. Design system: OnboardingPageLayout, TokenErrorState.
+  - 05.2 Termos e LGPD: 8 componentes, 17 keys, 4 states. Resumo pastoral em 4 bullets ("Seus dados pertencem à sua igreja"), texto legal scrollável, checkbox LGPD-compliant (nunca pré-marcado). Design system: LegalAcceptanceBlock, PastoralSummaryCard.
+  - 05.3 Criar Conta Admin: 10 componentes, 28 keys, 7 states. 4 campos mínimos (nome, email, senha, igreja) + Google OAuth. Keycloak cria user + role Admin Tenant + tenant com RLS. Design system: FormField, OAuthButton, OAuthDivider.
+  - 05.4 Boas-vindas + Demo: 8 componentes, 18 keys, 4 states. Momento "wow" — radar de demonstração com 3 cards (Story 7.2). AdminSidebar introduzida. Route guard single-use. Design system: AdminSidebar, DemoRadarCard, WelcomeHero.
+  - 05.5 Criar Primeiro Grupo: 9 componentes, 24 keys, 6 states. 3 campos (nome obrigatório, descrição opt, horário opt) + selfAdd checkbox (pré-marcado). Evento `tenant.activation.primary` disparado. NFR-X1 ≤10 min cumprido. Design system: GroupForm, ScheduleInlineField.
+  **Variante 1b (wizard guiado, páginas 05.6–05.10) adiada para Release 1b sprint planning.**
 
 ---
