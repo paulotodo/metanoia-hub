@@ -14,12 +14,14 @@
     "db:rls": "bash scripts/apply-rls.sh",
     "db:setup": "pnpm db:migrate && pnpm db:rls",
     "db:seed": "prisma db seed",
-    "db:seed:radar": "tsx prisma/seed-radar.ts"
+    "db:seed:radar": "tsx prisma/seed-radar.ts",
+    "db:seed:invites": "tsx prisma/seed-invites.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.18",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.18",
+    "@nestjs/event-emitter": "^3.0.0",
     "@nestjs/platform-express": "^11.1.18",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
