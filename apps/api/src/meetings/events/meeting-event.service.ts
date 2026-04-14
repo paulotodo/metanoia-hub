@@ -5,7 +5,7 @@ import { RedisService } from '../../redis/redis.service';
 import { BullMqService } from '../../bullmq/bullmq.service';
 import { getRequestContext } from '../../common/context/request-context';
 
-const MEETINGS_QUEUE = 'queue:meetings';
+const MEETINGS_QUEUE = 'meetings';
 
 export interface ParticipantJoinedData {
   meetingId: string;

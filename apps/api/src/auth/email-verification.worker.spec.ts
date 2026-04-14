@@ -12,7 +12,7 @@ describe('EmailVerificationWorker', () => {
     worker.onModuleInit();
 
     expect(mockBullMq.createWorker).toHaveBeenCalledWith(
-      'queue:email-verification',
+      'email-verification',
       expect.any(Function),
     );
     expect(mockWorker.on).toHaveBeenCalledWith('failed', expect.any(Function));
