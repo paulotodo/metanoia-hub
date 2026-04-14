@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { EnvConfig } from '../config/env.validation';
 
@@ -114,6 +114,102 @@ export class KeycloakAdminService {
 
     this.logger.log({ email, keycloakId }, 'user created in keycloak');
     return { keycloakId };
+  }
+
+  /**
+   * Tenant-aware user creation for the invite/onboarding flow.
+   *
+   * Two-step Keycloak protocol:
+   *  1) POST /users — creates the user with the tenantId attribute but no credential.
+   *  2) PUT /users/{id}/reset-password — sets the permanent password separately.
+   *
+   * This separation matches the plan for Cenário 05 Session 4 and lets us
+   * surface password policy failures independently from user creation.
+   */
+  async createUserForTenant(opts: {
+    email: string;
+    name: string;
+    password: string;
+    tenantId: string;
+  }): Promise<{ keycloakUserId: string }> {
+    const { email, name, password, tenantId } = opts;
+    const token = await this.getAdminToken();
+    const [firstName, ...lastParts] = name.trim().split(/\s+/);
+    const lastName = lastParts.join(' ') || undefined;
+
+    // Step 1 — create user
+    const createResponse = await fetch(`${this.baseUrl}/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        username: email,
+        email,
+        firstName,
+        lastName,
+        enabled: true,
+        emailVerified: false,
+        attributes: {
+          tenantId: [tenantId],
+        },
+      }),
+    });
+
+    if (createResponse.status === 409) {
+      throw new ConflictException('Este e-mail já possui cadastro.');
+    }
+
+    if (!createResponse.ok) {
+      const text = await createResponse.text();
+      this.logger.error(
+        { status: createResponse.status, body: text },
+        'failed to create tenant user in keycloak',
+      );
+      throw new Error(`Keycloak user creation failed: ${createResponse.status}`);
+    }
+
+    const location = createResponse.headers.get('Location');
+    const keycloakUserId = location?.split('/').pop();
+
+    if (!keycloakUserId) {
+      throw new Error('Keycloak did not return user ID in Location header');
+    }
+
+    // Step 2 — set password
+    const passwordResponse = await fetch(
+      `${this.baseUrl}/users/${keycloakUserId}/reset-password`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type: 'password',
+          value: password,
+          temporary: false,
+        }),
+      },
+    );
+
+    if (!passwordResponse.ok) {
+      const text = await passwordResponse.text();
+      this.logger.error(
+        { status: passwordResponse.status, body: text, keycloakUserId },
+        'failed to set password for tenant user in keycloak',
+      );
+      throw new Error(
+        `Keycloak password reset failed: ${passwordResponse.status}`,
+      );
+    }
+
+    this.logger.log(
+      { email, keycloakUserId, tenantId },
+      'tenant user created in keycloak',
+    );
+    return { keycloakUserId };
   }
 
   async authenticateUser(

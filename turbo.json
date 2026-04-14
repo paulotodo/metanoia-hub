@@ -20,6 +20,9 @@
     "db:migrate": {
       "cache": false
     },
+    "db:migrate:deploy": {
+      "cache": false
+    },
     "db:rls": {
       "cache": false,
       "dependsOn": ["db:migrate"]
@@ -27,6 +30,10 @@
     "db:setup": {
       "cache": false,
       "dependsOn": ["db:migrate", "db:rls"]
+    },
+    "db:setup:ci": {
+      "cache": false,
+      "dependsOn": ["db:migrate:deploy"]
     },
     "db:seed": {
       "cache": false,

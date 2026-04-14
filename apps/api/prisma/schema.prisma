@@ -91,18 +91,43 @@ model Tenant {
   name      String
   createdAt DateTime @default(now()) @map("created_at")
 
-  groups Group[]
+  groups  Group[]
+  invites Invite[]
 
   @@index([tenantId])
   @@map("tenants")
 }
 
+/// Invite — pre-tenant onboarding token for admin/leader signup (5-leg flow)
+model Invite {
+  id              String    @id @db.Uuid
+  token           String    @unique @db.Text
+  tenantId        String?   @map("tenant_id") @db.Uuid
+  leaderName      String    @map("leader_name") @db.VarChar(200)
+  leaderEmail     String    @map("leader_email") @db.VarChar(320)
+  churchName      String?   @map("church_name") @db.VarChar(200)
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz
+  usedAt          DateTime? @map("used_at") @db.Timestamptz
+  termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("invites")
+}
+
 /// Group — a discipleship small group within a tenant
 model Group {
-  id        String   @id @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
+  id         String   @id @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  name       String
+  dayOfWeek  String   @map("day_of_week") @db.VarChar(8)
+  time       String   @db.VarChar(5)
+  recurrence String   @default("weekly") @db.VarChar(16)
+  notes      String?  @db.VarChar(500)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   tenant  Tenant        @relation(fields: [tenantId], references: [id])
   members GroupMember[]
