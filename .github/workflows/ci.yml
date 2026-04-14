@@ -127,7 +127,7 @@ jobs:
         run: pnpm --filter @metanoia/api exec prisma generate
 
       - name: Setup database
-        run: pnpm turbo db:setup
+        run: pnpm turbo db:setup:ci
 
       - name: Run tests (includes Zod snapshots)
         run: pnpm turbo test
