@@ -22,6 +22,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validateEnv,
+      envFilePath: ['.env', '../../.env'],
     }),
     EventEmitterModule.forRoot(),
     LoggerModule.forRoot(pinoLoggerConfig()),
