@@ -4,6 +4,19 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { generateId } from '@metanoia/types';
 import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
 
+async function ensureTenant(prisma: PrismaClient, tenantId: string, name: string) {
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(
+      `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+    );
+    await tx.$executeRawUnsafe(
+      `INSERT INTO tenants (id, tenant_id, name)
+       VALUES ('${tenantId}'::uuid, '${tenantId}'::uuid, '${name}')
+       ON CONFLICT (id) DO NOTHING`,
+    );
+  });
+}
+
 /**
  * Seeds one invite directly (bypassing RLS via raw SQL so we can set tenant_id
  * to NULL — the pre-tenant case the policy must allow).
@@ -71,6 +84,9 @@ describe('RLS Isolation: invites table', () => {
     const adapter = new PrismaPg({ connectionString });
     prisma = new PrismaClient({ adapter });
     await prisma.$connect();
+
+    await ensureTenant(prisma, TENANT_A_ID, 'Tenant A');
+    await ensureTenant(prisma, TENANT_B_ID, 'Tenant B');
   });
 
   beforeEach(async () => {
