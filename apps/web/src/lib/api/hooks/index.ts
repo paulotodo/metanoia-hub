@@ -5,3 +5,5 @@ export {
   useParticipantProfile,
   useRecordCareAction,
 } from './use-radar';
+export { onboardingKeys, useDemoRadar } from './use-onboarding';
+export { groupKeys, useCreateGroup } from './use-groups';
