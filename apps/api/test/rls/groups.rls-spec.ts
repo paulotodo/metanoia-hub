@@ -5,11 +5,16 @@ import { generateId } from '@metanoia/types';
 import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
 
 async function ensureTenant(prisma: PrismaClient, tenantId: string, name: string) {
-  await prisma.$executeRawUnsafe(
-    `INSERT INTO tenants (id, tenant_id, name)
-     VALUES ('${tenantId}'::uuid, '${tenantId}'::uuid, '${name}')
-     ON CONFLICT (id) DO NOTHING`,
-  );
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(
+      `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+    );
+    await tx.$executeRawUnsafe(
+      `INSERT INTO tenants (id, tenant_id, name)
+       VALUES ('${tenantId}'::uuid, '${tenantId}'::uuid, '${name}')
+       ON CONFLICT (id) DO NOTHING`,
+    );
+  });
 }
 
 async function seedGroup(prisma: PrismaClient, tenantId: string, name: string) {
@@ -44,9 +49,16 @@ async function readGroups(prisma: PrismaClient, tenantCtx: string) {
 
 async function cleanupGroups(prisma: PrismaClient, names: string[]) {
   const list = names.map((n) => `'${n}'`).join(',');
-  await prisma.$executeRawUnsafe(
-    `DELETE FROM groups WHERE name IN (${list})`,
-  );
+  for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
+    await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+      );
+      await tx.$executeRawUnsafe(
+        `DELETE FROM groups WHERE name IN (${list})`,
+      );
+    });
+  }
 }
 
 describe('RLS Isolation: groups table', () => {

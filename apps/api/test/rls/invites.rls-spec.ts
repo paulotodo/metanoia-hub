@@ -15,18 +15,24 @@ async function seedInvite(
 ) {
   const id = generateId();
   const expiresAt = new Date(Date.now() + 86_400_000);
+  const ctx = tenantId ?? TENANT_A_ID;
 
-  if (tenantId === null) {
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO invites (id, token, tenant_id, leader_name, leader_email, expires_at)
-       VALUES ('${id}'::uuid, '${token}', NULL, 'Pre-Tenant Leader', 'pre@example.com', '${expiresAt.toISOString()}')`,
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(
+      `SET LOCAL app.current_tenant_id = '${ctx}'`,
     );
-  } else {
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO invites (id, token, tenant_id, leader_name, leader_email, expires_at)
-       VALUES ('${id}'::uuid, '${token}', '${tenantId}'::uuid, 'Tenant Leader', 'leader@example.com', '${expiresAt.toISOString()}')`,
-    );
-  }
+    if (tenantId === null) {
+      await tx.$executeRawUnsafe(
+        `INSERT INTO invites (id, token, tenant_id, leader_name, leader_email, expires_at)
+         VALUES ('${id}'::uuid, '${token}', NULL, 'Pre-Tenant Leader', 'pre@example.com', '${expiresAt.toISOString()}')`,
+      );
+    } else {
+      await tx.$executeRawUnsafe(
+        `INSERT INTO invites (id, token, tenant_id, leader_name, leader_email, expires_at)
+         VALUES ('${id}'::uuid, '${token}', '${tenantId}'::uuid, 'Tenant Leader', 'leader@example.com', '${expiresAt.toISOString()}')`,
+      );
+    }
+  });
 
   return { id, token, tenantId };
 }
@@ -42,9 +48,16 @@ async function readInvites(prisma: PrismaClient, tenantCtx: string) {
 
 async function cleanupInvites(prisma: PrismaClient, tokens: string[]) {
   const list = tokens.map((t) => `'${t}'`).join(',');
-  await prisma.$executeRawUnsafe(
-    `DELETE FROM invites WHERE token IN (${list})`,
-  );
+  for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
+    await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+      );
+      await tx.$executeRawUnsafe(
+        `DELETE FROM invites WHERE token IN (${list})`,
+      );
+    });
+  }
 }
 
 describe('RLS Isolation: invites table', () => {
