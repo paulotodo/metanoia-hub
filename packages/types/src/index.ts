@@ -81,6 +81,10 @@ export {
   type GroupResponse,
 } from './group';
 export {
+  TenantMeResponseSchema,
+  type TenantMeResponse,
+} from './tenant';
+export {
   DemoRadarSignalSchema,
   type DemoRadarSignal,
   DemoRadarParticipantSchema,

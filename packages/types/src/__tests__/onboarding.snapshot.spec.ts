@@ -26,14 +26,14 @@ describe('DemoRadarSignalSchema snapshot', () => {
 describe('DemoRadarParticipantSchema snapshot', () => {
   it('freezes success and failure shapes', () => {
     const successCase = DemoRadarParticipantSchema.safeParse({
-      name: 'Pedro (exemplo)',
+      nameKey: 'welcome.demo.card1.name',
       signalType: 'care-urgent',
-      contextPhrase: 'Faltou nas últimas 3 reuniões',
+      contextPhraseKey: 'welcome.demo.card1.signal',
     });
     const failureCase = DemoRadarParticipantSchema.safeParse({
-      name: 'Pedro',
+      nameKey: '',
       signalType: 'unknown',
-      contextPhrase: 'x',
+      contextPhraseKey: '',
     });
     expect({
       success: successCase.success,
@@ -42,8 +42,8 @@ describe('DemoRadarParticipantSchema snapshot', () => {
     }).toMatchInlineSnapshot(`
       {
         "data": {
-          "contextPhrase": "Faltou nas últimas 3 reuniões",
-          "name": "Pedro (exemplo)",
+          "contextPhraseKey": "welcome.demo.card1.signal",
+          "nameKey": "welcome.demo.card1.name",
           "signalType": "care-urgent",
         },
         "failure": true,
@@ -59,40 +59,41 @@ describe('DemoRadarResponseSchema snapshot', () => {
       tenantId: '019756c0-0001-7000-8000-000000000001',
       generatedAt: '2026-04-13T12:00:00.000Z',
       isDemo: true,
-      groupName: 'Grupo Exemplo — Quinta à noite',
-      message:
-        'Assim vai ficar quando você tiver seu primeiro grupo com participantes ativos.',
+      groupNameKey: 'welcome.demo.groupName',
+      messageKey: 'welcome.demo.message',
       participants: [
         {
-          name: 'Pedro (exemplo)',
-          signalType: 'care-urgent',
-          contextPhrase: 'Faltou nas últimas 3 reuniões',
-        },
-        {
-          name: 'Ana (exemplo)',
-          signalType: 'care-attention',
-          contextPhrase: 'Saiu cedo na última reunião',
-        },
-        {
-          name: 'Marcos (exemplo)',
+          nameKey: 'welcome.demo.card1.name',
           signalType: 'care-ok',
-          contextPhrase: 'Participação estável',
+          contextPhraseKey: 'welcome.demo.card1.signal',
+        },
+        {
+          nameKey: 'welcome.demo.card2.name',
+          signalType: 'care-attention',
+          contextPhraseKey: 'welcome.demo.card2.signal',
+        },
+        {
+          nameKey: 'welcome.demo.card3.name',
+          signalType: 'care-urgent',
+          contextPhraseKey: 'welcome.demo.card3.signal',
         },
       ],
-      signals: ['care-urgent', 'care-attention', 'care-ok'],
+      signals: ['care-attention', 'care-urgent'],
     });
     const failureCase = DemoRadarResponseSchema.safeParse({
       tenantId: 'not-a-uuid',
       generatedAt: 'not-a-date',
       isDemo: false,
-      groupName: 'x',
-      message: 'y',
+      groupNameKey: '',
+      messageKey: '',
       participants: [],
       signals: ['unknown'],
     });
     expect({
       success: successCase.success,
-      participantCount: successCase.success ? successCase.data.participants.length : 0,
+      participantCount: successCase.success
+        ? successCase.data.participants.length
+        : 0,
       failure: !failureCase.success,
     }).toMatchInlineSnapshot(`
       {

@@ -30,5 +30,94 @@
       "generic": "Nao foi possivel realizar o login. Tente novamente.",
       "invalidCredentials": "Email ou senha incorretos"
     }
+  },
+  "admin": {
+    "nav": {
+      "radar": "Radar",
+      "groups": "Grupos",
+      "settings": "Configurações"
+    }
+  },
+  "welcome": {
+    "title": "Bem-vindo ao Hub, {adminName}.",
+    "subtitle": "Sua igreja está pronta.",
+    "action": {
+      "createGroup": "Criar grupo"
+    },
+    "demo": {
+      "groupName": "Grupo Demo",
+      "message": "Assim ficará seu radar quando você criar seu primeiro grupo.",
+      "disclaimer": "Estes são dados de demonstração. Quando você criar seu primeiro grupo, verá os sinais reais aqui.",
+      "cardTap": {
+        "toast": "Estes são dados de demonstração."
+      },
+      "card1": {
+        "name": "Maria Silva — Grupo Demo",
+        "signal": "Merece atenção — faz 2 semanas que não aparece nas reuniões."
+      },
+      "card2": {
+        "name": "João Oliveira — Grupo Demo",
+        "signal": "Precisa de cuidado — faz 3 semanas que não aparece."
+      },
+      "card3": {
+        "name": "Ana Santos — Grupo Demo",
+        "signal": "Tudo bem — presente nas últimas reuniões."
+      }
+    },
+    "error": {
+      "demoUnavailable": "Não foi possível carregar os exemplos, mas sua igreja está pronta. Crie seu primeiro grupo para começar."
+    }
+  },
+  "group": {
+    "create": {
+      "title": "Crie seu primeiro grupo",
+      "titleNormal": "Novo grupo",
+      "description": "Um grupo é o coração da sua igreja no Hub — é onde líderes e participantes se encontram."
+    },
+    "field": {
+      "optional": "(opcional)",
+      "name": {
+        "label": "Nome do grupo",
+        "placeholder": "Ex: Grupo da Quinta — casa do Pedro",
+        "error": {
+          "required": "Dê um nome ao grupo"
+        }
+      },
+      "description": {
+        "label": "Descrição",
+        "placeholder": "Ex: Grupo de casais, quintas 20h"
+      },
+      "schedule": {
+        "label": "Dia e horário",
+        "dayPlaceholder": "Dia da semana",
+        "timePlaceholder": "Horário",
+        "days": {
+          "monday": "Segunda",
+          "tuesday": "Terça",
+          "wednesday": "Quarta",
+          "thursday": "Quinta",
+          "friday": "Sexta",
+          "saturday": "Sábado",
+          "sunday": "Domingo"
+        }
+      },
+      "selfAdd": {
+        "label": "Me adicionar como participante de teste",
+        "hint": "Isso permite que o radar funcione imediatamente com dados reais."
+      }
+    },
+    "action": {
+      "create": "Criar grupo"
+    },
+    "success": {
+      "toast": "Grupo criado! Seu radar já está funcionando.",
+      "toastNormal": "Grupo criado com sucesso."
+    },
+    "error": {
+      "duplicate": "Já existe um grupo com esse nome na sua igreja.",
+      "network": {
+        "toast": "Não foi possível criar o grupo. Tente novamente."
+      }
+    }
   }
 }

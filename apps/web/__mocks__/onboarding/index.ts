@@ -17,12 +17,10 @@ export type {
   CreateAccountResponse,
 } from "./invites";
 
-export { mockDemoRadar, mockCreateGroupResponse } from "./onboarding";
+export { mockDemoRadar } from "./onboarding";
 export type {
   DayOfWeek,
-  DemoRadarParticipant,
   DemoRadarResponse,
   DemoRadarSignal,
-  CreateGroupRequest,
-  CreateGroupResponse,
+  CreateGroupFormValues,
 } from "./onboarding";

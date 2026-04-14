@@ -1,4 +1,5 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, UseGuards } from '@nestjs/common';
+import { TenantMeResponseSchema } from '@metanoia/types';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { TenantsService } from './tenants.service';
 
@@ -9,7 +10,19 @@ export class TenantsController {
 
   @Get('me')
   async me() {
-    const data = await this.service.findMine();
-    return { data };
+    const tenant = await this.service.findMine();
+
+    const parsed = TenantMeResponseSchema.safeParse({
+      id: tenant.id,
+      tenantId: tenant.tenantId,
+      name: tenant.name,
+      createdAt: tenant.createdAt.toISOString(),
+    });
+
+    if (!parsed.success) {
+      throw new InternalServerErrorException('Tenant response failed schema validation.');
+    }
+
+    return { data: parsed.data };
   }
 }

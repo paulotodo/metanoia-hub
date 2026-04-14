@@ -1,49 +1,45 @@
 /**
  * Mock fixtures for post-auth onboarding pages (05.4 boas-vindas, 05.5 criar primeiro grupo).
- * Shape derived from the specs under design-process/C-UX-Scenarios/05-*.
+ * Shape mirrors the shared Zod schemas in `@metanoia/types`:
+ *   - DemoRadarResponseSchema (onboarding.ts)
+ *   - CreateGroupRequestSchema / GroupResponseSchema (group.ts)
+ * User-facing strings live as i18n keys; FE resolves them via `apps/web/messages/pt-BR.json`.
  */
 
-export type DemoRadarSignal = "care-urgent" | "care-attention" | "care-ok";
+import type {
+  DemoRadarResponse,
+  DemoRadarSignal,
+} from "@metanoia/types";
 
-export interface DemoRadarParticipant {
-  name: string;
-  signalType: DemoRadarSignal;
-  contextPhrase: string;
-}
-
-export interface DemoRadarResponse {
-  /** Illustrative only — tagged so the UI can render a "demo" ribbon. */
-  isDemo: true;
-  groupName: string;
-  participants: DemoRadarParticipant[];
-  message: string;
-}
+export type { DemoRadarResponse, DemoRadarSignal };
 
 export const mockDemoRadar: DemoRadarResponse = {
+  tenantId: "019756c0-0001-7000-8000-000000000001",
+  generatedAt: "2026-04-13T12:00:00.000Z",
   isDemo: true,
-  groupName: "Grupo Exemplo — Quinta à noite",
+  groupNameKey: "welcome.demo.groupName",
+  messageKey: "welcome.demo.message",
   participants: [
     {
-      name: "Pedro (exemplo)",
-      signalType: "care-urgent",
-      contextPhrase: "Faltou nas últimas 3 reuniões",
-    },
-    {
-      name: "Ana (exemplo)",
-      signalType: "care-attention",
-      contextPhrase: "Saiu cedo na última reunião",
-    },
-    {
-      name: "Marcos (exemplo)",
+      nameKey: "welcome.demo.card1.name",
       signalType: "care-ok",
-      contextPhrase: "Participação estável",
+      contextPhraseKey: "welcome.demo.card1.signal",
+    },
+    {
+      nameKey: "welcome.demo.card2.name",
+      signalType: "care-attention",
+      contextPhraseKey: "welcome.demo.card2.signal",
+    },
+    {
+      nameKey: "welcome.demo.card3.name",
+      signalType: "care-urgent",
+      contextPhraseKey: "welcome.demo.card3.signal",
     },
   ],
-  message:
-    "Assim vai ficar quando você tiver seu primeiro grupo com participantes ativos.",
+  signals: ["care-attention", "care-urgent"],
 };
 
-// --- POST /api/v1/groups ---
+// --- POST /api/v1/groups (form shape for the 05.5 page) ---
 
 export type DayOfWeek =
   | "monday"
@@ -54,7 +50,7 @@ export type DayOfWeek =
   | "saturday"
   | "sunday";
 
-export interface CreateGroupRequest {
+export interface CreateGroupFormValues {
   name: string;
   description?: string;
   dayOfWeek?: DayOfWeek;
@@ -62,14 +58,3 @@ export interface CreateGroupRequest {
   timeOfDay?: string;
   addSelfAsParticipant: boolean;
 }
-
-export interface CreateGroupResponse {
-  groupId: string;
-  /** True when this was the first group of the tenant — client triggers activation UX. */
-  isFirstGroup: boolean;
-}
-
-export const mockCreateGroupResponse: CreateGroupResponse = {
-  groupId: "019756c0-0001-7000-8000-000000000001",
-  isFirstGroup: true,
-};

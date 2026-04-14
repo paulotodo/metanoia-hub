@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-// Shape derived from apps/web/__mocks__/onboarding/onboarding.ts to keep FE parity.
-
 // --- Demo radar signal ---
 
 export const DemoRadarSignalSchema = z.enum([
@@ -12,11 +10,12 @@ export const DemoRadarSignalSchema = z.enum([
 export type DemoRadarSignal = z.infer<typeof DemoRadarSignalSchema>;
 
 // --- Demo radar participant ---
+// Backend returns i18n keys; FE resolves them via messages/pt-BR.json.
 
 export const DemoRadarParticipantSchema = z.object({
-  name: z.string(),
+  nameKey: z.string().min(1),
   signalType: DemoRadarSignalSchema,
-  contextPhrase: z.string(),
+  contextPhraseKey: z.string().min(1),
 });
 export type DemoRadarParticipant = z.infer<typeof DemoRadarParticipantSchema>;
 
@@ -26,8 +25,8 @@ export const DemoRadarResponseSchema = z.object({
   tenantId: z.string().uuid(),
   generatedAt: z.string().datetime(),
   isDemo: z.literal(true),
-  groupName: z.string(),
-  message: z.string(),
+  groupNameKey: z.string().min(1),
+  messageKey: z.string().min(1),
   participants: z.array(DemoRadarParticipantSchema),
   signals: z.array(DemoRadarSignalSchema),
 });

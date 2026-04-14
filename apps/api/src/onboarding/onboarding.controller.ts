@@ -3,11 +3,6 @@ import type { DemoRadarResponse } from '@metanoia/types';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { getRequestContext } from '../common/context/request-context';
 
-/**
- * OnboardingController — aggregator for the admin onboarding flow. Currently
- * serves a deterministic demo radar payload so the last onboarding step can
- * render a realistic Pastoral Radar preview before any real data exists.
- */
 @Controller('api/v1/onboarding')
 @UseGuards(KeycloakAuthGuard)
 export class OnboardingController {
@@ -19,24 +14,23 @@ export class OnboardingController {
       tenantId,
       generatedAt: new Date().toISOString(),
       isDemo: true,
-      groupName: 'Grupo de Demonstração',
-      message:
-        'Este é um radar de exemplo para você conhecer o cuidado pastoral em ação. Assim que seu grupo começar, você verá os sinais reais aqui.',
+      groupNameKey: 'welcome.demo.groupName',
+      messageKey: 'welcome.demo.message',
       participants: [
         {
-          name: 'Ana Costa',
+          nameKey: 'welcome.demo.card1.name',
           signalType: 'care-ok',
-          contextPhrase: 'Presente nos últimos 4 encontros. Tudo em paz.',
+          contextPhraseKey: 'welcome.demo.card1.signal',
         },
         {
-          name: 'Pedro Almeida',
+          nameKey: 'welcome.demo.card2.name',
           signalType: 'care-attention',
-          contextPhrase: 'Faltou no último encontro — vale uma mensagem.',
+          contextPhraseKey: 'welcome.demo.card2.signal',
         },
         {
-          name: 'Mariana Santos',
+          nameKey: 'welcome.demo.card3.name',
           signalType: 'care-urgent',
-          contextPhrase: 'Ausente há 3 encontros. Pode precisar de cuidado.',
+          contextPhraseKey: 'welcome.demo.card3.signal',
         },
       ],
       signals: ['care-attention', 'care-urgent'],
