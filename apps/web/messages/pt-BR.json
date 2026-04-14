@@ -30,5 +30,85 @@
       "generic": "Nao foi possivel realizar o login. Tente novamente.",
       "invalidCredentials": "Email ou senha incorretos"
     }
+  },
+  "welcome": {
+    "title": "Bem-vindo, {name}",
+    "subtitle": "Aqui esta um exemplo do seu Radar Pastoral. Crie seu primeiro grupo para comecar.",
+    "action": {
+      "createGroup": "Criar meu primeiro grupo"
+    },
+    "error": {
+      "demoUnavailable": "Nao foi possivel carregar o radar de demonstracao. Voce pode seguir mesmo assim."
+    },
+    "demo": {
+      "disclaimer": "Isto e uma demonstracao. Seu radar real aparece quando voce tiver seu primeiro grupo com participantes."
+    }
+  },
+  "onboarding": {
+    "demo": {
+      "groupName": "Grupo Exemplo — Quinta a noite",
+      "welcomeMessage": "Assim vai ficar quando voce tiver seu primeiro grupo com participantes ativos.",
+      "participant": {
+        "pedro": {
+          "name": "Pedro (exemplo)",
+          "context": "Faltou nas ultimas 3 reunioes"
+        },
+        "ana": {
+          "name": "Ana (exemplo)",
+          "context": "Saiu cedo na ultima reuniao"
+        },
+        "marcos": {
+          "name": "Marcos (exemplo)",
+          "context": "Participacao estavel"
+        }
+      }
+    }
+  },
+  "group": {
+    "create": {
+      "title": "Vamos criar seu primeiro grupo",
+      "titleNormal": "Criar novo grupo",
+      "description": "So 30 segundos. Voce ainda pode editar tudo depois."
+    },
+    "field": {
+      "optional": "(opcional)",
+      "name": {
+        "label": "Nome do grupo",
+        "placeholder": "Ex: Celula Quinta a Noite",
+        "error": {
+          "required": "De um nome ao seu grupo para continuar"
+        }
+      },
+      "schedule": {
+        "label": "Quando se reune",
+        "dayPlaceholder": "Dia da semana",
+        "timePlaceholder": "Horario",
+        "days": {
+          "monday": "Segunda",
+          "tuesday": "Terca",
+          "wednesday": "Quarta",
+          "thursday": "Quinta",
+          "friday": "Sexta",
+          "saturday": "Sabado",
+          "sunday": "Domingo"
+        }
+      },
+      "description": {
+        "label": "Observacoes",
+        "placeholder": "Algo que ajude a lembrar deste grupo"
+      }
+    },
+    "action": {
+      "create": "Criar grupo"
+    },
+    "success": {
+      "toast": "Pronto! Seu primeiro grupo foi criado.",
+      "toastNormal": "Grupo criado com sucesso."
+    },
+    "error": {
+      "network": {
+        "toast": "Nao foi possivel criar o grupo. Verifique sua conexao e tente novamente."
+      }
+    }
   }
 }

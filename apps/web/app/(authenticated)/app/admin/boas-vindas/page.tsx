@@ -1,11 +1,15 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button, Card, Skeleton } from '@metanoia/ui';
+import { Button, Card } from '@metanoia/ui';
 import { useDemoRadar } from '@/lib/api/hooks';
 import { WelcomeHeader } from './_components/welcome-header';
 import { DemoRadarCard } from './_components/demo-radar-card';
 import messages from '../../../../../messages/pt-BR.json';
+
+function Skeleton({ className = '' }: { className?: string }) {
+  return <div className={`bg-surface-subtle animate-pulse rounded-md ${className}`} />;
+}
 
 export default function BoasVindasPage() {
   const router = useRouter();

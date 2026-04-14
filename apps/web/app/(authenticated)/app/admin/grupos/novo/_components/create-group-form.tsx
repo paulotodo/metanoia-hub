@@ -1,19 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import {
-  Button,
-  Input,
-  Label,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  toast,
-} from '@metanoia/ui';
+import { Button, Input } from '@metanoia/ui';
 import { CreateGroupRequestSchema } from '@metanoia/types';
 import type { CreateGroupRequest, DayOfWeek } from '@metanoia/types';
 import { useCreateGroup } from '@/lib/api/hooks';
@@ -37,6 +28,7 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
   const router = useRouter();
   const t = messages.group;
   const createGroup = useCreateGroup();
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const form = useForm<CreateGroupRequest>({
     resolver: zodResolver(CreateGroupRequestSchema),
@@ -48,22 +40,26 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
   });
 
   async function onSubmit(values: CreateGroupRequest) {
+    setSubmitError(null);
     try {
       await createGroup.mutateAsync(values);
-      toast.success(isFirst ? t.success.toast : t.success.toastNormal);
-      router.push('/app/gestao/radar?acabou-de-criar=1');
+      router.push(
+        `/app/gestao/radar?acabou-de-criar=1${isFirst ? '&first=1' : ''}`,
+      );
     } catch {
-      toast.error(t.error.network.toast);
+      setSubmitError(t.error.network.toast);
     }
   }
 
   const dayDays = t.field.schedule.days;
-  const dayValue = form.watch('dayOfWeek');
+  const labelClass = 'text-body-sm text-text-secondary mb-1 block font-medium';
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
       <div>
-        <Label htmlFor="group-name">{t.field.name.label}</Label>
+        <label htmlFor="group-name" className={labelClass}>
+          {t.field.name.label}
+        </label>
         <Input
           id="group-name"
           type="text"
@@ -80,26 +76,26 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <Label htmlFor="group-day">{t.field.schedule.label}</Label>
-          <Select
-            value={dayValue}
-            onValueChange={(v) => form.setValue('dayOfWeek', v as DayOfWeek)}
+          <label htmlFor="group-day" className={labelClass}>
+            {t.field.schedule.label}
+          </label>
+          <select
+            id="group-day"
+            className="border-border bg-surface text-text-primary focus-visible:ring-ring h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2"
+            {...form.register('dayOfWeek')}
           >
-            <SelectTrigger id="group-day">
-              <SelectValue placeholder={t.field.schedule.dayPlaceholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {DAY_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {dayDays[opt.labelKey]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            {DAY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {dayDays[opt.labelKey]}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <Label htmlFor="group-time">{t.field.schedule.timePlaceholder}</Label>
+          <label htmlFor="group-time" className={labelClass}>
+            {t.field.schedule.timePlaceholder}
+          </label>
           <Input
             id="group-time"
             type="time"
@@ -110,10 +106,10 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
       </div>
 
       <div>
-        <Label htmlFor="group-notes">
+        <label htmlFor="group-notes" className={labelClass}>
           {t.field.description.label}{' '}
           <span className="text-text-tertiary">{t.field.optional}</span>
-        </Label>
+        </label>
         <Input
           id="group-notes"
           type="text"
@@ -122,11 +118,13 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
         />
       </div>
 
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={createGroup.isPending}
-      >
+      {submitError && (
+        <p className="text-body-sm text-state-danger" role="alert">
+          {submitError}
+        </p>
+      )}
+
+      <Button type="submit" className="w-full" disabled={createGroup.isPending}>
         {createGroup.isPending ? '...' : t.action.create}
       </Button>
     </form>

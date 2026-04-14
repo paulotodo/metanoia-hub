@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@metanoia/types": "workspace:*",
     "@metanoia/ui": "workspace:*",
     "@tanstack/react-query": "^5.99.0",
@@ -17,7 +18,8 @@
     "lucide-react": "^0.511.0",
     "next": "^16.2.3",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.5",
+    "react-hook-form": "^7.72.1"
   },
   "devDependencies": {
     "@metanoia/config": "workspace:*",

@@ -88,3 +88,7 @@ export {
   DemoRadarResponseSchema,
   type DemoRadarResponse,
 } from './onboarding';
+export {
+  TenantMeResponseSchema,
+  type TenantMeResponse,
+} from './tenant';
