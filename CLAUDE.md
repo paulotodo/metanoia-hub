@@ -123,6 +123,20 @@ Read `docs/project-context.md` for the full 47-rule set. Key highlights:
 - Commits: conventional commits in Portuguese
 - CI: PR → lint + test + build (Turborepo remote cache). Merge main → build + deploy
 
+### Hard rule — fechamento de tarefa
+
+Ao final de **toda tarefa logicamente completa** (uma WDS Session inteira, uma Story, ou uma unidade de trabalho acordada com o usuário), executar o ciclo completo antes de considerar o trabalho encerrado:
+
+1. **Commit** — conventional commits em português, um ou mais commits atômicos descrevendo o "porquê".
+2. **Push** — `git push -u origin <branch>` na branch da tarefa.
+3. **PR** — abrir Pull Request para `dev` (ou para a branch base acordada) com corpo descrevendo endpoints ligados, débitos resolvidos e plano de teste.
+4. **Merge** — após CI verde e review, mergear o PR.
+
+Exceções explícitas:
+- Se a tarefa está **parcialmente completa** (ex.: meio de uma Session), o mínimo obrigatório é commit + push (para não perder trabalho); PR + merge ficam pendentes até o fechamento lógico.
+- Se a branch atual depende de outro PR **ainda não mergeado**, alertar o usuário antes de abrir PR contra `dev` — um PR precoce arrastaria commits de dependências.
+- Nunca mergear com testes/lint/typecheck vermelhos ou hooks bypassados (`--no-verify`).
+
 ## Key Documentation
 
 - `docs/project-context.md` — 47 implementation rules (read before coding)
