@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@livekit/components-react": "^2.9.20",
+    "@livekit/components-styles": "^1.2.0",
     "@metanoia/types": "workspace:*",
     "@metanoia/ui": "workspace:*",
     "@tanstack/react-query": "^5.99.0",
     "@tanstack/react-query-devtools": "^5.99.0",
+    "livekit-client": "^2.18.2",
     "lucide-react": "^0.511.0",
     "next": "^16.2.3",
     "react": "^19.2.5",

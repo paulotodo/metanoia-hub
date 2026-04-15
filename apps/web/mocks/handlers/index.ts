@@ -3,6 +3,7 @@ import { invitesHandlers } from './invites';
 import { onboardingHandlers } from './onboarding';
 import { groupsHandlers } from './groups';
 import { tenantsHandlers } from './tenants';
+import { meetingsHandlers } from './meetings';
 
 export const handlers = [
   ...radarHandlers,
@@ -10,4 +11,5 @@ export const handlers = [
   ...onboardingHandlers,
   ...groupsHandlers,
   ...tenantsHandlers,
+  ...meetingsHandlers,
 ];
