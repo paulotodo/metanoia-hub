@@ -44,7 +44,7 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
     try {
       await createGroup.mutateAsync(values);
       router.push(
-        `/app/gestao/radar?acabou-de-criar=1${isFirst ? '&first=1' : ''}`,
+        `/app/admin?acabou-de-criar=1${isFirst ? '&first=1' : ''}`,
       );
     } catch {
       setSubmitError(t.error.network.toast);
