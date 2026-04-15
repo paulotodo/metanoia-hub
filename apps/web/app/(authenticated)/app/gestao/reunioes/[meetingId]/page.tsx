@@ -5,10 +5,7 @@ import { useState, use } from "react";
 import { MeetingContextCard } from "@/components/meetings/meeting-context-card";
 import { ConfirmedInlineList } from "@/components/meetings/confirmed-inline-list";
 import { MilestoneList } from "@/components/meetings/milestone-list";
-import {
-  mockMeetingAgenda,
-  mockMeetingAgendaEmpty,
-} from "../../../../../../__mocks__/meetings";
+import { mockMeetingAgenda, mockMeetingAgendaEmpty } from "@mocks/meetings";
 
 interface PageProps {
   params: Promise<{ meetingId: string }>;
@@ -37,7 +34,7 @@ export default function AgendaDoGrupoPage({ params }: PageProps) {
           onClick={() => router.back()}
           className="text-sm text-brand-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
         >
-          ← Voltar
+          <span aria-hidden="true">←</span> Voltar
         </button>
         <h1 className="text-xl font-semibold text-text-primary">
           Agenda do grupo

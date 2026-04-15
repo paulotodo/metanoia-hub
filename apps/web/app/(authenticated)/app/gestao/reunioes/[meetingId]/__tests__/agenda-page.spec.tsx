@@ -58,7 +58,7 @@ describe("AgendaDoGrupoPage", () => {
   it("calls router.back() when 'Voltar' is pressed", async () => {
     back.mockClear();
     await renderPage();
-    const btn = await screen.findByRole("button", { name: "← Voltar" });
+    const btn = await screen.findByRole("button", { name: "Voltar" });
     fireEvent.click(btn);
     expect(back).toHaveBeenCalled();
   });
