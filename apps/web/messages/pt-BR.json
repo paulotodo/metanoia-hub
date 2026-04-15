@@ -110,5 +110,93 @@
         "toast": "Nao foi possivel criar o grupo. Verifique sua conexao e tente novamente."
       }
     }
+  },
+  "agenda": {
+    "back": {
+      "label": "Voltar"
+    },
+    "title": "Agenda do grupo",
+    "context": {
+      "details": "{dayOfWeek}, {time} — {location}"
+    },
+    "topic": {
+      "label": "O que vamos conversar",
+      "empty": "Sem topico definido para esta semana."
+    },
+    "confirmed": {
+      "label": "Quem confirmou",
+      "yes": "Confirmou",
+      "pending": "Sem resposta",
+      "empty": "Ninguem respondeu ainda."
+    },
+    "milestones": {
+      "label": "Marcos da semana"
+    },
+    "action": {
+      "openRoom": "Abrir sala",
+      "openRoomLoading": "Abrindo sala...",
+      "enterRoom": "Entrar na sala"
+    },
+    "error": {
+      "networkHeading": "Nao conseguimos carregar a agenda",
+      "networkRetry": "Tentar novamente",
+      "notFoundToast": "Reuniao nao encontrada.",
+      "roomFailedToast": "Nao foi possivel abrir a sala. Tente novamente."
+    }
+  },
+  "live": {
+    "status": {
+      "active": "Reuniao em andamento",
+      "details": "Ha {duration}",
+      "connecting": "Conectando..."
+    },
+    "participants": {
+      "label": "Na sala agora",
+      "connected": "Entrou",
+      "notJoined": "Ainda nao entrou",
+      "left": "Saiu",
+      "notJoinedLabel": "Sem presenca registrada",
+      "waiting": "Aguardando participantes entrarem..."
+    },
+    "action": {
+      "endRoom": "Encerrar sala",
+      "endRoomLoading": "Encerrando..."
+    },
+    "confirm": {
+      "title": "Encerrar a sala?",
+      "body": "Todos serao desconectados e voce vai para a reflexao.",
+      "end": "Encerrar",
+      "cancel": "Cancelar"
+    },
+    "error": {
+      "connection": "Nao conseguimos conectar a sala.",
+      "connectionRetry": "Tentar novamente",
+      "offlineBanner": "Voce esta offline. A lista pode estar desatualizada."
+    }
+  },
+  "reflection": {
+    "context": {
+      "line": "Sobre o encontro com {groupName}"
+    },
+    "field": {
+      "label": "O que vale lembrar?",
+      "placeholder": "Um nome, um pedido, um passo pastoral...",
+      "counter": "{remaining} caracteres"
+    },
+    "action": {
+      "save": "Salvar",
+      "skip": "Pular por agora"
+    },
+    "confirmation": {
+      "saved": "Guardado.",
+      "savedGeneric": "Sua reflexao foi registrada.",
+      "skipped": "Tudo bem.",
+      "skippedGeneric": "Voce pode voltar quando quiser.",
+      "return": "Voltar ao radar"
+    },
+    "error": {
+      "saveFailedToast": "Nao foi possivel salvar. Tente novamente.",
+      "notFoundToast": "Reuniao nao encontrada."
+    }
   }
 }
