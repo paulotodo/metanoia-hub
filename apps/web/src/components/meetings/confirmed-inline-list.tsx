@@ -1,3 +1,6 @@
+"use client";
+
+import { useId } from "react";
 import type { ConfirmedParticipant } from "@metanoia/types";
 
 export function ConfirmedInlineList({
@@ -9,14 +12,12 @@ export function ConfirmedInlineList({
   label: string;
   emptyText: string;
 }) {
+  const labelId = useId();
   const yesList = confirmed.filter((c) => c.response === "yes");
 
   return (
-    <section aria-labelledby="agenda-confirmed-label" className="space-y-2">
-      <h3
-        id="agenda-confirmed-label"
-        className="text-sm font-medium text-text-secondary"
-      >
+    <section aria-labelledby={labelId} className="space-y-2">
+      <h3 id={labelId} className="text-sm font-medium text-text-secondary">
         {label}
       </h3>
       {yesList.length === 0 ? (

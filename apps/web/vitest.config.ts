@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       // Mirror tsconfig paths so tests can import from the `@/` alias.
       '@': path.resolve(__dirname, './src'),
+      '@mocks': path.resolve(__dirname, './__mocks__'),
     },
   },
   test: {
