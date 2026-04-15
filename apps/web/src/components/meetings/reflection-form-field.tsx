@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useId, useRef } from "react";
 
 const MAX = 280;
 
@@ -26,7 +26,8 @@ export const ReflectionFormField = forwardRef<
 ) {
   const localRef = useRef<HTMLTextAreaElement | null>(null);
   const remaining = Math.max(0, MAX - (value?.length ?? 0));
-  const counterId = "reflection-counter";
+  const fieldId = useId();
+  const counterId = `${fieldId}-counter`;
 
   useEffect(() => {
     if (autoFocus && localRef.current) {
@@ -37,13 +38,13 @@ export const ReflectionFormField = forwardRef<
   return (
     <div className="space-y-2">
       <label
-        htmlFor="reflection-text"
+        htmlFor={fieldId}
         className="block text-sm font-medium text-text-secondary"
       >
         {label}
       </label>
       <textarea
-        id="reflection-text"
+        id={fieldId}
         ref={(el) => {
           localRef.current = el;
           if (typeof ref === "function") ref(el);

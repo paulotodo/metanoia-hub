@@ -10,7 +10,7 @@ import {
 } from "@metanoia/types";
 import { ReflectionFormField } from "@/components/meetings/reflection-form-field";
 import { ConfirmationView } from "@/components/meetings/confirmation-view";
-import { mockMeetingAgenda } from "../../../../../../../__mocks__/meetings";
+import { mockMeetingAgenda } from "@mocks/meetings";
 
 interface PageProps {
   params: Promise<{ meetingId: string }>;
@@ -84,6 +84,7 @@ export default function ReflexaoPage({ params }: PageProps) {
         noValidate
         className="space-y-4"
       >
+        {/* value must come after register(...) so controlled value wins over the ref-based default. */}
         <ReflectionFormField
           label="O que vale lembrar?"
           counterTemplate="{remaining} caracteres"
