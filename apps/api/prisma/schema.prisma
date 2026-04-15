@@ -31,6 +31,62 @@ model MeetingEvent {
   @@map("meeting_events")
 }
 
+/// Meeting — a scheduled gathering for a discipleship group; lifecycle scheduled → live → ended
+model Meeting {
+  id             String    @id @db.Uuid
+  tenantId       String    @map("tenant_id") @db.Uuid
+  groupId        String    @map("group_id") @db.Uuid
+  scheduledFor   DateTime  @map("scheduled_for") @db.Timestamptz
+  status         String    @default("scheduled") @db.VarChar(16)
+  topic          String?   @db.VarChar(500)
+  livekitRoomId  String?   @map("livekit_room_id") @db.VarChar(200)
+  startedAt      DateTime? @map("started_at") @db.Timestamptz
+  endedAt        DateTime? @map("ended_at") @db.Timestamptz
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  participants MeetingParticipantRecord[]
+  reflections  Reflection[]
+
+  @@index([tenantId, groupId, scheduledFor])
+  @@map("meetings")
+}
+
+/// MeetingParticipantRecord — per-meeting confirmation + presence (joinedAt/leftAt auto-filled by LiveKit webhooks)
+model MeetingParticipantRecord {
+  id            String    @id @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  meetingId     String    @map("meeting_id") @db.Uuid
+  userId        String?   @map("user_id") @db.Uuid
+  participantId String    @map("participant_id") @db.Uuid
+  name          String    @db.VarChar(200)
+  response      String    @default("pending") @db.VarChar(8)
+  joinedAt      DateTime? @map("joined_at") @db.Timestamptz
+  leftAt        DateTime? @map("left_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, participantId])
+  @@index([tenantId, meetingId])
+  @@map("meeting_participants")
+}
+
+/// Reflection — post-meeting narrative capture by the leader (1–280 chars, Zod enforced)
+model Reflection {
+  id         String   @id @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  meetingId  String   @map("meeting_id") @db.Uuid
+  leaderId   String   @map("leader_id") @db.Uuid
+  text       String   @db.VarChar(280)
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, meetingId])
+  @@map("reflections")
+}
+
 /// Platform user — created at registration, tenant assigned later
 model User {
   id        String   @id @db.Uuid
