@@ -4,6 +4,7 @@ import { onboardingHandlers } from './onboarding';
 import { groupsHandlers } from './groups';
 import { tenantsHandlers } from './tenants';
 import { meetingsHandlers } from './meetings';
+import { pastoralAdminHandlers } from './pastoral-admin';
 
 export const handlers = [
   ...radarHandlers,
@@ -12,4 +13,5 @@ export const handlers = [
   ...groupsHandlers,
   ...tenantsHandlers,
   ...meetingsHandlers,
+  ...pastoralAdminHandlers,
 ];
