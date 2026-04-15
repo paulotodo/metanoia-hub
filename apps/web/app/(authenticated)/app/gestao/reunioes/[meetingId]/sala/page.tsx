@@ -10,7 +10,7 @@ import {
   mockLiveParticipantsEmpty,
   mockRoomStartedAt,
   mockMeetingAgenda,
-} from "../../../../../../../__mocks__/meetings";
+} from "@mocks/meetings";
 
 interface PageProps {
   params: Promise<{ meetingId: string }>;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, useMemo } from "react";
 import type { MeetingParticipant } from "@metanoia/types";
 
 interface ParticipantPresenceListProps {
@@ -33,30 +34,36 @@ export function ParticipantPresenceList({
   leftLabel,
   waitingLabel,
 }: ParticipantPresenceListProps) {
-  const connectedCount = participants.filter(
-    (p) => presenceState(p) === "connected",
-  ).length;
+  const labelId = useId();
 
-  const sorted = [...participants].sort(
-    (a, b) =>
-      sortKey(presenceState(a)) - sortKey(presenceState(b)) ||
-      a.name.localeCompare(b.name, "pt-BR"),
-  );
+  const { sorted, connectedCount } = useMemo(() => {
+    let count = 0;
+    const copy = [...participants];
+    for (const p of copy) {
+      if (presenceState(p) === "connected") count++;
+    }
+    copy.sort(
+      (a, b) =>
+        sortKey(presenceState(a)) - sortKey(presenceState(b)) ||
+        a.name.localeCompare(b.name, "pt-BR"),
+    );
+    return { sorted: copy, connectedCount: count };
+  }, [participants]);
 
   return (
     <section
-      aria-labelledby="participants-label"
+      aria-labelledby={labelId}
       className="space-y-3"
       data-testid="participant-presence-list"
     >
       <div className="flex items-center justify-between">
-        <h3
-          id="participants-label"
-          className="text-sm font-medium text-text-secondary"
-        >
+        <h3 id={labelId} className="text-sm font-medium text-text-secondary">
           {label}
         </h3>
-        <span className="text-xs font-medium text-text-muted" data-testid="participant-count">
+        <span
+          className="text-xs font-medium text-text-muted"
+          data-testid="participant-count"
+        >
           {connectedCount}
         </span>
       </div>
@@ -72,7 +79,7 @@ export function ParticipantPresenceList({
                 ? "bg-care-ok"
                 : state === "left"
                   ? "bg-text-muted"
-                  : "bg-surface-muted";
+                  : "border border-text-muted bg-transparent";
             const stateLabel =
               state === "connected"
                 ? connectedLabel

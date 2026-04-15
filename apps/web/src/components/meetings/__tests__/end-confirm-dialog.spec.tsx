@@ -69,6 +69,22 @@ describe("EndConfirmDialog", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
+  it("calls onOpenChange(false) when Escape is pressed", () => {
+    const onOpenChange = vi.fn();
+    render(
+      <EndConfirmDialog
+        {...baseProps}
+        open
+        onOpenChange={onOpenChange}
+        onConfirm={() => {}}
+      />,
+    );
+    fireEvent.keyDown(document.activeElement ?? document.body, {
+      key: "Escape",
+    });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
   it("shows pending label on end button when pending", () => {
     render(
       <EndConfirmDialog
