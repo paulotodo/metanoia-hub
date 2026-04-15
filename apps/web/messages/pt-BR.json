@@ -198,5 +198,98 @@
       "saveFailedToast": "Nao foi possivel salvar. Tente novamente.",
       "notFoundToast": "Reuniao nao encontrada."
     }
+  },
+  "vista": {
+    "title": "Vista da Igreja",
+    "subtitle": "Seus {groupCount} grupos esta semana",
+    "filter": {
+      "all": "Ver tudo",
+      "attention": "Vale acompanhar",
+      "noSignal": "Sem sinal esta semana",
+      "empty": "Nenhum grupo nesta categoria esta semana"
+    },
+    "card": {
+      "leader": "Líder: {leaderName}",
+      "lastMeeting": "Última reunião: {date}",
+      "members": "{count} participantes"
+    },
+    "status": {
+      "healthy": "Conversa saudável esta semana",
+      "attention": "Vale acompanhar",
+      "call": "Pastor, vale uma ligação",
+      "noSignal": "Sem sinal esta semana"
+    },
+    "footer": {
+      "lastUpdated": "Última atualização: {timestamp}"
+    },
+    "empty": {
+      "heading": "Nenhum grupo criado ainda",
+      "body": "Crie o primeiro grupo para começar a acompanhar a vida da sua igreja.",
+      "cta": "Criar primeiro grupo"
+    },
+    "error": {
+      "network": "Não foi possível carregar a vista. Tente novamente.",
+      "retry": "Tentar novamente"
+    },
+    "stale": {
+      "banner": "Dados de {date} — a próxima atualização acontece em breve"
+    }
+  },
+  "drill": {
+    "back": "Voltar para a vista",
+    "header": {
+      "leader": "Líder: {leaderName}",
+      "details": "{schedule} · {location} · {memberCount} participantes"
+    },
+    "timeline": {
+      "label": "Últimas 2 semanas",
+      "empty": "Sem registros nas últimas 2 semanas. O grupo pode estar em recesso."
+    },
+    "entry": {
+      "meeting": "📅 {date} — Reunião",
+      "presence": "{present} de {total} participantes na sala",
+      "noReflection": "(sem reflexão registrada)",
+      "care": "📅 {date} — Cuidado registrado",
+      "careTarget": "{participantName} · {signalStatus}"
+    },
+    "action": {
+      "viewLeader": "Ver o líder desse grupo"
+    },
+    "error": {
+      "network": "Não foi possível carregar os dados do grupo. Tente novamente.",
+      "retry": "Tentar novamente",
+      "notFound": "Grupo não encontrado"
+    }
+  },
+  "leader": {
+    "back": "Voltar para o grupo",
+    "header": {
+      "context": "Líder do {groupName} · há {tenure}"
+    },
+    "conversation": {
+      "label": "Sua última conversa com {firstName}",
+      "empty": "Você ainda não registrou uma conversa com {firstName}."
+    },
+    "activity": {
+      "label": "O que {firstName} tem registrado",
+      "empty": "{firstName} ainda não registrou atividades. Pode ser um bom momento para perguntar como ele está."
+    },
+    "intent": {
+      "label": "O que você quer levar para essa conversa?",
+      "placeholder": "Ex: Perguntar como ele está se sentindo conduzindo esse grupo",
+      "save": "Anotar para essa semana",
+      "saving": "Salvando...",
+      "saved": "Anotado.",
+      "existing": "Você anotou para essa semana: \"{intentNote}\"",
+      "edit": "Editar",
+      "clear": "Limpar",
+      "clearConfirm": "Limpar a anotação desta semana?",
+      "clearYes": "Limpar",
+      "clearNo": "Manter"
+    },
+    "error": {
+      "network": "Não foi possível carregar os dados do líder. Tente novamente.",
+      "retry": "Tentar novamente"
+    }
   }
 }
