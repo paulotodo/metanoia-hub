@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { createQueryClientWrapper } from "@/lib/test-utils/with-query-client";
 
 const push = vi.fn();
 
@@ -11,13 +12,16 @@ vi.mock("next/navigation", () => ({
 import ReflexaoPage from "../page";
 
 async function renderPage(meetingId = "019756c0-0002-7000-8000-000000000101") {
+  const Wrapper = createQueryClientWrapper();
   const params = Promise.resolve({ meetingId });
   let result!: ReturnType<typeof render>;
   await act(async () => {
     result = render(
-      <Suspense fallback={<div>loading</div>}>
-        <ReflexaoPage params={params} />
-      </Suspense>,
+      <Wrapper>
+        <Suspense fallback={<div>loading</div>}>
+          <ReflexaoPage params={params} />
+        </Suspense>
+      </Wrapper>,
     );
     await params;
   });

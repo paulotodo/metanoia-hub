@@ -1,6 +1,7 @@
 import { Suspense } from "react";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { createQueryClientWrapper } from "@/lib/test-utils/with-query-client";
 
 const push = vi.fn();
 const back = vi.fn();
@@ -12,13 +13,16 @@ vi.mock("next/navigation", () => ({
 import AgendaDoGrupoPage from "../page";
 
 async function renderPage(meetingId = "019756c0-0002-7000-8000-000000000101") {
+  const Wrapper = createQueryClientWrapper();
   const params = Promise.resolve({ meetingId });
   let result!: ReturnType<typeof render>;
   await act(async () => {
     result = render(
-      <Suspense fallback={<div>loading</div>}>
-        <AgendaDoGrupoPage params={params} />
-      </Suspense>,
+      <Wrapper>
+        <Suspense fallback={<div>loading</div>}>
+          <AgendaDoGrupoPage params={params} />
+        </Suspense>
+      </Wrapper>,
     );
     await params;
   });
@@ -29,14 +33,16 @@ describe("AgendaDoGrupoPage", () => {
   it("renders heading, group name and open room button", async () => {
     await renderPage();
     expect(await screen.findByText("Agenda do grupo")).toBeTruthy();
-    expect(await screen.findByText("Jovens Adultos")).toBeTruthy();
+    await waitFor(() =>
+      expect(screen.getByText("Jovens Adultos")).toBeTruthy(),
+    );
     expect(
       await screen.findByRole("button", { name: "Abrir sala" }),
     ).toBeTruthy();
   });
 
-  it("renders topic empty-state for 'empty' meetingId", async () => {
-    await renderPage("empty");
+  it("renders topic empty-state for the empty-meeting fixture id", async () => {
+    await renderPage("019756c0-0002-7000-8000-000000000102");
     expect(
       await screen.findByText("Sem tópico definido para esta semana."),
     ).toBeTruthy();
@@ -47,11 +53,11 @@ describe("AgendaDoGrupoPage", () => {
 
   it("navigates to /sala when 'Abrir sala' is pressed", async () => {
     push.mockClear();
-    await renderPage("test-id-123");
+    await renderPage("019756c0-0002-7000-8000-00000000abcd");
     const btn = await screen.findByRole("button", { name: "Abrir sala" });
     fireEvent.click(btn);
     expect(push).toHaveBeenCalledWith(
-      "/app/gestao/reunioes/test-id-123/sala",
+      "/app/gestao/reunioes/019756c0-0002-7000-8000-00000000abcd/sala",
     );
   });
 

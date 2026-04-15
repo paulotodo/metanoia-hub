@@ -10,7 +10,7 @@ import {
 } from "@metanoia/types";
 import { ReflectionFormField } from "@/components/meetings/reflection-form-field";
 import { ConfirmationView } from "@/components/meetings/confirmation-view";
-import { mockMeetingAgenda } from "@mocks/meetings";
+import { useCreateReflection, useMeetingDetail } from "@/lib/api/hooks";
 
 interface PageProps {
   params: Promise<{ meetingId: string }>;
@@ -19,9 +19,12 @@ interface PageProps {
 type Outcome = "saved" | "skipped";
 
 export default function ReflexaoPage({ params }: PageProps) {
-  use(params);
+  const { meetingId } = use(params);
   const router = useRouter();
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+
+  const { data: meeting } = useMeetingDetail(meetingId);
+  const createReflection = useCreateReflection(meetingId);
 
   const form = useForm<CreateReflectionInput>({
     resolver: zodResolver(CreateReflectionInputSchema),
@@ -35,8 +38,10 @@ export default function ReflexaoPage({ params }: PageProps) {
     setOutcome("skipped");
   }
 
-  function onSubmit(_values: CreateReflectionInput) {
-    setOutcome("saved");
+  function onSubmit(values: CreateReflectionInput) {
+    createReflection.mutate(values, {
+      onSuccess: () => setOutcome("saved"),
+    });
   }
 
   function handleReturn() {
@@ -66,13 +71,14 @@ export default function ReflexaoPage({ params }: PageProps) {
   }
 
   const invalid = !!form.formState.errors.text;
-  const submitDisabled = text.length === 0 || text.length > 280;
+  const submitDisabled =
+    text.length === 0 || text.length > 280 || createReflection.isPending;
 
   return (
     <div className="mx-auto max-w-xl space-y-6 py-6">
       <header className="space-y-1">
         <p className="text-sm text-text-muted">
-          Sobre o encontro com {mockMeetingAgenda.groupName}
+          Sobre o encontro com {meeting?.groupName ?? "o grupo"}
         </p>
         <h1 className="text-xl font-semibold text-text-primary">
           O que vale lembrar?
@@ -101,7 +107,7 @@ export default function ReflexaoPage({ params }: PageProps) {
             disabled={submitDisabled}
             className="h-12 w-full rounded-lg bg-brand-teal px-4 text-base font-semibold text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:opacity-60"
           >
-            Salvar
+            {createReflection.isPending ? "Salvando..." : "Salvar"}
           </button>
           <button
             type="button"

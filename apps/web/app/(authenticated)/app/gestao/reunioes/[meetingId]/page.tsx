@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, use } from "react";
+import { use } from "react";
 import { MeetingContextCard } from "@/components/meetings/meeting-context-card";
 import { ConfirmedInlineList } from "@/components/meetings/confirmed-inline-list";
 import { MilestoneList } from "@/components/meetings/milestone-list";
-import { mockMeetingAgenda, mockMeetingAgendaEmpty } from "@mocks/meetings";
+import { useMeetingDetail } from "@/lib/api/hooks";
 
 interface PageProps {
   params: Promise<{ meetingId: string }>;
@@ -14,16 +14,28 @@ interface PageProps {
 export default function AgendaDoGrupoPage({ params }: PageProps) {
   const { meetingId } = use(params);
   const router = useRouter();
-  const [opening, setOpening] = useState(false);
-
-  // Session 1: fixture-driven. Pick an empty variant for a specific id so we
-  // can eyeball empty states; default otherwise.
-  const meeting =
-    meetingId === "empty" ? mockMeetingAgendaEmpty : mockMeetingAgenda;
+  const { data: meeting, isLoading, isError } = useMeetingDetail(meetingId);
 
   function handleOpenRoom() {
-    setOpening(true);
     router.push(`/app/gestao/reunioes/${meetingId}/sala`);
+  }
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6 py-6">
+        <p className="text-sm text-text-muted">Carregando agenda...</p>
+      </div>
+    );
+  }
+
+  if (isError || !meeting) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6 py-6">
+        <p className="text-sm text-care-alert">
+          Não foi possível carregar esta reunião.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -73,10 +85,9 @@ export default function AgendaDoGrupoPage({ params }: PageProps) {
       <button
         type="button"
         onClick={handleOpenRoom}
-        disabled={opening}
         className="h-14 w-full rounded-lg bg-brand-teal text-base font-semibold text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:opacity-60"
       >
-        {opening ? "Abrindo sala..." : "Abrir sala"}
+        Abrir sala
       </button>
     </div>
   );
