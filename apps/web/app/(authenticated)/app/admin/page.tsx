@@ -16,5 +16,5 @@ export default async function AdminHomePage({ searchParams }: AdminHomeProps) {
     }
   }
   const qs = query.toString();
-  redirect(qs ? `/app/gestao/radar?${qs}` : '/app/gestao/radar');
+  redirect(qs ? `/app/admin/igreja/vista?${qs}` : '/app/admin/igreja/vista');
 }
