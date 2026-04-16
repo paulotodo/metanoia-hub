@@ -9,6 +9,12 @@ const t = messages.precos;
 export const metadata: Metadata = {
   title: t.title,
   description: t.subtitle,
+  openGraph: {
+    title: t.title,
+    description: t.subtitle,
+    url: '/precos',
+  },
+  twitter: { title: t.title, description: t.subtitle },
 };
 
 const PLAN_HREFS: Record<PricingPlanId, string> = {

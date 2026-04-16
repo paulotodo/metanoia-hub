@@ -9,6 +9,12 @@ const t = messages.manifesto;
 export const metadata: Metadata = {
   title: t.title,
   description: t.subtitle,
+  openGraph: {
+    title: t.title,
+    description: t.subtitle,
+    url: '/manifesto',
+  },
+  twitter: { title: t.title, description: t.subtitle },
 };
 
 export default function ManifestoPage() {
