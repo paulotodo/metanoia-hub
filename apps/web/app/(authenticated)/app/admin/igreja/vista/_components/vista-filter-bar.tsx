@@ -21,6 +21,7 @@ export function VistaFilterBar({ active, onChange }: VistaFilterBarProps) {
     <div
       role="tablist"
       aria-label="Filtro de grupos"
+      data-testid="filter-status"
       className="flex flex-wrap gap-2"
     >
       {OPTIONS.map((opt) => {
@@ -31,6 +32,7 @@ export function VistaFilterBar({ active, onChange }: VistaFilterBarProps) {
             type="button"
             role="tab"
             aria-selected={isActive}
+            data-testid={`filter-status-${opt.key}`}
             onClick={() => onChange(opt.key)}
             className={`rounded-full border px-4 py-1.5 text-body-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               isActive
