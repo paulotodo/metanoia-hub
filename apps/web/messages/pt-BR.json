@@ -359,6 +359,33 @@
   "funcionalidades": {
     "title": "Funcionalidades",
     "subtitle": "Cada tela foi desenhada com pastores e líderes reais.",
+    "blocks": {
+      "radar": {
+        "title": "Radar Pastoral",
+        "body": "Painel semanal que mostra quem precisa de um olhar — sem expor ninguém, sem ranquear pessoas."
+      },
+      "grupos": {
+        "title": "Grupos com alma",
+        "body": "Agenda, presenças e reflexões compartilhadas no mesmo lugar, pensados para o líder voluntário."
+      },
+      "reflexoes": {
+        "title": "Reflexões guiadas",
+        "body": "Momento depois da reunião com perguntas que o líder pode usar — ou ignorar — sem culpa."
+      },
+      "onboarding": {
+        "title": "Boas-vindas pastorais",
+        "body": "Quando alguém entra num grupo, recebe acolhida humana antes de ser cobrado por presença."
+      },
+      "relatorios": {
+        "title": "Relatórios sem barulho",
+        "body": "Vista da igreja por papel pastoral — não por métrica de produto."
+      },
+      "equipa": {
+        "title": "Memória pastoral compartilhada",
+        "body": "Notas e contexto ficam com a equipa, não com uma pessoa só. Ninguém volta de férias no escuro."
+      }
+    },
+    "screenshotPlaceholder": "Captura de tela em produção",
     "ctaHeading": "Quer ver uma igreja usando?",
     "ctaPrimary": "Ver estudo de caso",
     "ctaSecondary": "Falar com a equipa"
