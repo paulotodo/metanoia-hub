@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DemoRequestForm } from '@/components/marketing/demo-request-form';
 import messages from '../../../messages/pt-BR.json';
 
 const t = messages.comecar;
@@ -15,9 +16,7 @@ export default function ComecarPage() {
         {t.title}
       </h1>
       <p className="mt-4 text-lg text-[var(--color-text-muted)]">{t.subtitle}</p>
-      <p className="mt-12 text-sm text-[var(--color-text-muted)]">
-        Formulário chega na Session 4.
-      </p>
+      <DemoRequestForm />
     </section>
   );
 }

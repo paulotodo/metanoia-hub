@@ -290,3 +290,37 @@ model OutreachIntent {
   @@index([targetLeaderId])
   @@map("outreach_intents")
 }
+
+/// Public marketing funnel — no tenant_id, no RLS by design.
+/// Captures inbound demo requests from /comecar before any tenant exists.
+model DemoRequest {
+  id         String   @id @db.Uuid
+  fullName   String   @map("full_name") @db.VarChar(120)
+  email      String   @db.VarChar(255)
+  churchName String   @map("church_name") @db.VarChar(160)
+  churchSize String   @map("church_size") @db.VarChar(16)
+  role       String?  @db.VarChar(120)
+  ipAddress  String   @map("ip_address") @db.VarChar(64)
+  userAgent  String   @map("user_agent") @db.VarChar(512)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("demo_requests")
+}
+
+/// Public marketing funnel — no tenant_id, no RLS by design.
+/// Captures inbound contact messages from /contato before any tenant exists.
+model ContactMessage {
+  id        String   @id @db.Uuid
+  fullName  String   @map("full_name") @db.VarChar(120)
+  email     String   @db.VarChar(255)
+  message   String   @db.VarChar(2000)
+  ipAddress String   @map("ip_address") @db.VarChar(64)
+  userAgent String   @map("user_agent") @db.VarChar(512)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("contact_messages")
+}
