@@ -1,66 +1,117 @@
-import { useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   ChurchOverviewResponseSchema,
+  GroupTimelineResponseSchema,
+  LeaderViewResponseSchema,
+  OutreachIntentResponseSchema,
   type ChurchOverviewResponse,
+  type CreateOutreachIntentRequest,
+  type GroupTimelineResponse,
+  type LeaderViewResponse,
+  type OutreachIntentResponse,
+  type UpdateOutreachIntentRequest,
 } from '@metanoia/types';
-import { ApiError } from '../client';
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
-
-function getAccessToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('accessToken');
-}
-
-async function fetchEnvelope<T>(
-  path: string,
-  schema: { parse: (data: unknown) => T },
-): Promise<T> {
-  const token = getAccessToken();
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-
-  if (response.status === 401) {
-    if (typeof window !== 'undefined') {
-      sessionStorage.clear();
-      window.location.href = '/login';
-    }
-    throw new ApiError(401, 'Unauthorized', 'Sessão expirada');
-  }
-
-  if (!response.ok) {
-    const body = (await response.json().catch(() => ({}))) as {
-      error?: string;
-      message?: string;
-      details?: unknown;
-    };
-    throw new ApiError(
-      response.status,
-      body.error ?? 'UnknownError',
-      body.message ?? 'Erro inesperado',
-      body.details,
-    );
-  }
-
-  const json = (await response.json()) as unknown;
-  return schema.parse(json);
-}
+import { envelopeClient } from '../envelope';
 
 export const pastoralAdminKeys = {
   all: ['pastoral-admin'] as const,
   overview: () => [...pastoralAdminKeys.all, 'overview'] as const,
+  timeline: (groupId: string) =>
+    [...pastoralAdminKeys.all, 'timeline', groupId] as const,
+  leader: (leaderId: string) =>
+    [...pastoralAdminKeys.all, 'leader', leaderId] as const,
 };
 
 export function useGroupsAggregated() {
   return useQuery<ChurchOverviewResponse>({
     queryKey: pastoralAdminKeys.overview(),
     queryFn: () =>
-      fetchEnvelope('/admin/church/overview', ChurchOverviewResponseSchema),
+      envelopeClient.get(
+        '/admin/church/overview',
+        ChurchOverviewResponseSchema,
+      ),
+  });
+}
+
+export function useGroupTimeline(groupId: string) {
+  return useQuery<GroupTimelineResponse>({
+    queryKey: pastoralAdminKeys.timeline(groupId),
+    queryFn: () =>
+      envelopeClient.get(
+        `/admin/church/groups/${groupId}/timeline`,
+        GroupTimelineResponseSchema,
+      ),
+    enabled: Boolean(groupId),
+  });
+}
+
+export function useLeaderView(leaderId: string) {
+  return useQuery<LeaderViewResponse>({
+    queryKey: pastoralAdminKeys.leader(leaderId),
+    queryFn: () =>
+      envelopeClient.get(
+        `/admin/church/leaders/${leaderId}`,
+        LeaderViewResponseSchema,
+      ),
+    enabled: Boolean(leaderId),
+  });
+}
+
+export function useCreateOutreachIntent(leaderId: string) {
+  const queryClient = useQueryClient();
+  return useMutation<OutreachIntentResponse, Error, CreateOutreachIntentRequest>(
+    {
+      mutationFn: (body) =>
+        envelopeClient.post(
+          '/admin/outreach-intents',
+          body,
+          OutreachIntentResponseSchema,
+        ),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: pastoralAdminKeys.leader(leaderId),
+        });
+      },
+    },
+  );
+}
+
+export function useUpdateOutreachIntent(leaderId: string) {
+  const queryClient = useQueryClient();
+  return useMutation<
+    OutreachIntentResponse,
+    Error,
+    { intentId: string; body: UpdateOutreachIntentRequest }
+  >({
+    mutationFn: ({ intentId, body }) =>
+      envelopeClient.put(
+        `/admin/outreach-intents/${intentId}`,
+        body,
+        OutreachIntentResponseSchema,
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: pastoralAdminKeys.leader(leaderId),
+      });
+    },
+  });
+}
+
+export function useDeleteOutreachIntent(leaderId: string) {
+  const queryClient = useQueryClient();
+  return useMutation<undefined, Error, string>({
+    mutationFn: async (intentId) => {
+      await envelopeClient.delete(`/admin/outreach-intents/${intentId}`);
+      return undefined;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: pastoralAdminKeys.leader(leaderId),
+      });
+    },
   });
 }
