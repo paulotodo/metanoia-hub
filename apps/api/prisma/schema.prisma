@@ -273,3 +273,20 @@ model PastoralNote {
   @@index([participantId, noteType])
   @@map("pastoral_notes")
 }
+
+/// OutreachIntent — private pastoral note from Admin Tenant about a leader for a given week (Cenário 03)
+model OutreachIntent {
+  id              String   @id @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  createdByUserId String   @map("created_by_user_id") @db.Uuid
+  targetLeaderId  String   @map("target_leader_id") @db.Uuid
+  weekOf          DateTime @map("week_of") @db.Timestamptz
+  note            String   @db.VarChar(280)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([tenantId, createdByUserId, targetLeaderId, weekOf])
+  @@index([tenantId])
+  @@index([targetLeaderId])
+  @@map("outreach_intents")
+}
