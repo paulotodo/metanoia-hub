@@ -1,13 +1,17 @@
-import messages from '../../../../../../messages/pt-BR.json';
+import { Suspense } from 'react';
+import { VistaClient } from './vista-client';
+import { VistaSkeleton } from './_components/vista-skeleton';
 
-export default function VistaPlaceholderPage() {
-  const t = messages.vista;
+export default function VistaPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-display mb-2">{t.title}</h1>
-      <p className="text-body text-text-secondary">
-        {t.subtitle.replace('{groupCount}', '0')}
-      </p>
-    </main>
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-6xl px-6 py-10">
+          <VistaSkeleton />
+        </main>
+      }
+    >
+      <VistaClient />
+    </Suspense>
   );
 }
