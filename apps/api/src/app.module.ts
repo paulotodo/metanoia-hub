@@ -15,6 +15,7 @@ import { InvitesModule } from './invites/invites.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { GroupsModule } from './groups/groups.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
+import { MarketingModule } from './marketing/marketing.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -38,6 +39,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     TenantsModule,
     GroupsModule,
     OnboardingModule,
+    MarketingModule,
   ],
 })
 export class AppModule implements NestModule {
