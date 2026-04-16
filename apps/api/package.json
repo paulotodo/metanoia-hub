@@ -17,7 +17,8 @@
     "db:setup:ci": "pnpm db:migrate:deploy && pnpm db:rls",
     "db:seed": "prisma db seed",
     "db:seed:radar": "tsx prisma/seed-radar.ts",
-    "db:seed:invites": "tsx prisma/seed-invites.ts"
+    "db:seed:invites": "tsx prisma/seed-invites.ts",
+    "db:seed:scenario-03": "tsx prisma/seed-scenario-03.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.18",

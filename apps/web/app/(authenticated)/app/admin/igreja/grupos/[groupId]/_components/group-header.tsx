@@ -10,7 +10,10 @@ interface GroupHeaderProps {
 
 export function GroupHeader({ group }: GroupHeaderProps) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-6">
+    <div
+      data-testid="group-header"
+      className="rounded-lg border border-border bg-surface p-6"
+    >
       <h1 className="text-display mb-3">{group.groupName}</h1>
       <p className="text-body text-text-secondary mb-2">
         {t.leader.replace('{leaderName}', group.leaderName)}

@@ -9,7 +9,10 @@ interface LeaderProfileCardProps {
 
 export function LeaderProfileCard({ leader }: LeaderProfileCardProps) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-6">
+    <div
+      data-testid="leader-profile"
+      className="rounded-lg border border-border bg-surface p-6"
+    >
       <h1 className="text-display mb-2">{leader.fullName}</h1>
       <p className="text-body text-text-secondary">
         {t.context

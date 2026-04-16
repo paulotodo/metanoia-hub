@@ -34,6 +34,7 @@ export function PastoralTimeline({ entries }: PastoralTimelineProps) {
       {entries.map((entry) => (
         <li
           key={entry.entryId}
+          data-testid={`timeline-${entry.type === 'meeting' ? 'meeting' : 'care'}-${entry.entryId}`}
           className="rounded-lg border border-border bg-surface p-4"
         >
           {entry.type === 'meeting' ? (

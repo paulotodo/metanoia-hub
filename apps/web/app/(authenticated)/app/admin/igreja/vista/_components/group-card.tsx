@@ -24,6 +24,7 @@ export function GroupCard({ group, href }: GroupCardProps) {
   return (
     <Link
       href={href}
+      data-testid={`group-card-${group.groupId}`}
       className={`block rounded-lg border border-border bg-surface p-5 border-l-4 shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${STATUS_BORDER_CLASSES[group.status]}`}
     >
       <h3 className="text-heading mb-2">{group.groupName}</h3>

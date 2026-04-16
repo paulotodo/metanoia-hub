@@ -111,6 +111,7 @@ export function OutreachIntentForm({
           </button>
           <button
             type="button"
+            data-testid="outreach-clear"
             onClick={() => setMode('confirm-clear')}
             className="inline-flex items-center rounded-md border border-border bg-surface px-3 py-1.5 text-body-sm hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
@@ -171,6 +172,7 @@ export function OutreachIntentForm({
       </label>
       <textarea
         id="outreach-note"
+        data-testid="outreach-note-input"
         rows={4}
         maxLength={MAX_LENGTH}
         value={note}
@@ -197,6 +199,7 @@ export function OutreachIntentForm({
           ) : null}
           <button
             type="button"
+            data-testid="outreach-save"
             onClick={handleSave}
             disabled={!canSave}
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-body-sm text-primary-foreground hover:bg-primary-hover disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
