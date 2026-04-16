@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { BullMqModule } from './bullmq/bullmq.module';
 import { MeetingsModule } from './meetings/meetings.module';
 import { PastoralModule } from './pastoral/pastoral.module';
+import { AdminPastoralModule } from './admin-pastoral/admin-pastoral.module';
 import { InvitesModule } from './invites/invites.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { GroupsModule } from './groups/groups.module';
@@ -32,6 +33,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     HealthModule,
     MeetingsModule,
     PastoralModule,
+    AdminPastoralModule,
     InvitesModule,
     TenantsModule,
     GroupsModule,
