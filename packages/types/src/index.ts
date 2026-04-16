@@ -156,3 +156,25 @@ export {
   OutreachIntentResponseSchema,
   type OutreachIntentResponse,
 } from './pastoral-admin';
+export {
+  ChurchSizeSchema,
+  type ChurchSize,
+  DemoRequestInputSchema,
+  type DemoRequestInput,
+  DemoRequestRecordSchema,
+  type DemoRequestRecord,
+  DemoRequestResponseSchema,
+  type DemoRequestResponse,
+} from './marketing/demo-request';
+export {
+  ContactMessageInputSchema,
+  type ContactMessageInput,
+  ContactMessageRecordSchema,
+  type ContactMessageRecord,
+  ContactMessageResponseSchema,
+  type ContactMessageResponse,
+} from './marketing/contact-message';
+export {
+  PricingPlanIdSchema,
+  type PricingPlanId,
+} from './marketing/pricing';

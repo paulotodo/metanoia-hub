@@ -291,5 +291,236 @@
       "network": "Não foi possível carregar os dados do líder. Tente novamente.",
       "retry": "Tentar novamente"
     }
+  },
+  "marketingNav": {
+    "brand": "metanoia",
+    "manifesto": "Manifesto",
+    "funcionalidades": "Funcionalidades",
+    "estudoCaso": "Estudo de caso",
+    "precos": "Preços",
+    "apresentacao": "Apresentação",
+    "blog": "Blog",
+    "sobre": "Sobre",
+    "contato": "Contato",
+    "ctaPrimary": "Quero ver ao vivo"
+  },
+  "marketingFooter": {
+    "tagline": "Ferramentas pastorais para igrejas que cuidam das suas pessoas.",
+    "sectionProduto": "Produto",
+    "sectionIgreja": "Igreja",
+    "sectionContato": "Fale com a gente",
+    "copyright": "© {year} metanoia. Feito com cuidado pastoral."
+  },
+  "landing": {
+    "hero": {
+      "headline": "Tecnologia que devolve o pastor ao rebanho.",
+      "subheadline": "Uma plataforma pensada para igrejas que querem cuidar das suas pessoas sem se perder em planilhas.",
+      "ctaPrimary": "Quero ver ao vivo",
+      "ctaSecondary": "Ler o manifesto"
+    },
+    "features": {
+      "heading": "O que o metanoia faz pela sua igreja",
+      "radar": {
+        "title": "Radar Pastoral",
+        "body": "Traduz a participação digital em visibilidade pastoral — quem precisa de um olhar esta semana."
+      },
+      "grupos": {
+        "title": "Grupos com alma",
+        "body": "Agenda, presenças e reflexões no mesmo lugar — sem fricção para o líder voluntário."
+      },
+      "manifesto": {
+        "title": "Linguagem pastoral",
+        "body": "Nada de funil, KPI ou conversão. Aqui falamos de cuidado, presença e acompanhamento."
+      }
+    },
+    "personas": {
+      "heading": "Pensado para quem está no chão da igreja",
+      "pastor": {
+        "title": "Para o pastor titular",
+        "body": "Veja a vida da igreja de uma tela — sem precisar cobrar relatório de ninguém."
+      },
+      "lider": {
+        "title": "Para o líder de grupo",
+        "body": "Ferramenta simples no domingo à noite, que respeita o seu tempo e chama atenção quando importa."
+      },
+      "equipa": {
+        "title": "Para a equipa pastoral",
+        "body": "Memória relacional compartilhada — o que um pastoreou não some quando ele sai de férias."
+      }
+    }
+  },
+  "manifesto": {
+    "title": "Manifesto pastoral",
+    "subtitle": "Por que o metanoia existe — antes de falar de funcionalidades.",
+    "ctaHeading": "Quer conhecer como isto vira prática?",
+    "ctaPrimary": "Ver as funcionalidades",
+    "ctaSecondary": "Falar com a equipa"
+  },
+  "funcionalidades": {
+    "title": "Funcionalidades",
+    "subtitle": "Cada tela foi desenhada com pastores e líderes reais.",
+    "ctaHeading": "Quer ver uma igreja usando?",
+    "ctaPrimary": "Ver estudo de caso",
+    "ctaSecondary": "Falar com a equipa"
+  },
+  "estudoCaso": {
+    "title": "Uma igreja real, um cuidado real",
+    "subtitle": "Como uma congregação de 180 pessoas usa o metanoia no dia a dia.",
+    "ctaHeading": "Quer ver como apresentar isso à sua liderança?",
+    "ctaPrimary": "Abrir apresentação curada"
+  },
+  "precos": {
+    "title": "Preços transparentes",
+    "subtitle": "Sem letras miúdas. Sem 'fale com nosso comercial' para saber quanto custa.",
+    "plans": {
+      "free": {
+        "name": "Comunhão",
+        "price": "Grátis para começar",
+        "description": "Até 3 grupos. Para igrejas pequenas que querem experimentar com calma.",
+        "cta": "Começar grátis"
+      },
+      "pro": {
+        "name": "Discipulado",
+        "price": "Por igreja, não por pessoa",
+        "description": "Grupos ilimitados, Radar Pastoral completo, equipa pastoral colaborativa.",
+        "cta": "Quero ver ao vivo"
+      },
+      "enterprise": {
+        "name": "Rede",
+        "price": "Para redes e denominações",
+        "description": "Multi-igreja, relatórios consolidados e acompanhamento dedicado.",
+        "cta": "Falar com a equipa"
+      }
+    },
+    "faq": {
+      "heading": "Perguntas que a gente ouve",
+      "q1": {
+        "question": "Preciso de cartão de crédito para começar?",
+        "answer": "Não. O plano Comunhão é grátis e não pede cartão."
+      },
+      "q2": {
+        "question": "Quanto tempo demora a configurar?",
+        "answer": "Uma tarde. A gente ajuda com calma — não é uma corrida."
+      },
+      "q3": {
+        "question": "Os dados da nossa igreja ficam seguros?",
+        "answer": "Sim. Isolamento por igreja, criptografia em trânsito e backups diários."
+      }
+    }
+  },
+  "apresentacao": {
+    "title": "Apresentação curada",
+    "subtitle": "Pronto para mostrar ao pastor titular ou à equipa de liderança.",
+    "downloadPdf": "Baixar PDF",
+    "copyLink": "Copiar link desta página",
+    "linkCopied": "Link copiado.",
+    "slides": {
+      "s1": {
+        "heading": "O porquê",
+        "body": "Começa pelo manifesto — tecnologia a serviço do cuidado pastoral."
+      },
+      "s2": {
+        "heading": "A dor",
+        "body": "Pastores sobrecarregados, líderes voluntários sem ferramentas, membros que somem."
+      },
+      "s3": {
+        "heading": "A proposta",
+        "body": "Radar Pastoral — visibilidade sem substituir a conversa."
+      },
+      "s4": {
+        "heading": "Como funciona",
+        "body": "Grupos, reuniões, reflexões — tudo alimenta o radar sem esforço extra."
+      },
+      "s5": {
+        "heading": "Para quem é",
+        "body": "Igrejas locais com 50 a 1000 membros que querem cuidar melhor."
+      },
+      "s6": {
+        "heading": "Para quem não é",
+        "body": "Igrejas que procuram ferramenta de marketing ou de arrecadação."
+      },
+      "s7": {
+        "heading": "Preço",
+        "body": "Por igreja, não por pessoa. Plano grátis para começar."
+      },
+      "s8": {
+        "heading": "Próximo passo",
+        "body": "Marcar uma conversa ao vivo — sem pressão, sem urgência sintética."
+      }
+    }
+  },
+  "comecar": {
+    "title": "Quer ver ao vivo?",
+    "subtitle": "Nossa equipa entra em contato em até 1 dia útil. Sem script comercial.",
+    "form": {
+      "fullName": "Seu nome completo",
+      "email": "E-mail",
+      "churchName": "Nome da sua igreja",
+      "churchSize": "Tamanho aproximado da igreja",
+      "role": "Sua função na igreja",
+      "rolePlaceholder": "Ex: líder de grupo, pastor de jovens (opcional)",
+      "submit": "Quero ver ao vivo",
+      "submitting": "Enviando..."
+    },
+    "churchSize": {
+      "upTo50": "Até 50 pessoas",
+      "between50And200": "De 50 a 200 pessoas",
+      "between200And1000": "De 200 a 1000 pessoas",
+      "over1000": "Mais de 1000 pessoas"
+    },
+    "success": {
+      "heading": "Recebemos seu pedido.",
+      "body": "Nossa equipa entra em contato em até 1 dia útil. Pode fechar esta aba com tranquilidade."
+    },
+    "error": {
+      "generic": "Não conseguimos enviar agora. Tente de novo em um minuto.",
+      "invalidEmail": "E-mail inválido",
+      "required": "Este campo é obrigatório"
+    }
+  },
+  "sobre": {
+    "title": "Sobre o metanoia",
+    "subtitle": "Uma equipa pequena, feita de pessoas que também servem em igrejas locais.",
+    "missao": {
+      "heading": "Nossa missão",
+      "body": "Devolver o pastor ao rebanho — usando tecnologia que respeita a vocação pastoral."
+    },
+    "valores": {
+      "heading": "O que nos guia",
+      "pastoral": "Linguagem pastoral — nunca corporativa",
+      "simplicidade": "Simplicidade — tecnologia a serviço da pessoa",
+      "cuidado": "Cuidado — com dados, tempo e atenção dos nossos utilizadores"
+    },
+    "equipa": {
+      "heading": "Quem faz"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Reflexões sobre cuidado pastoral, tecnologia e vida de igreja.",
+    "empty": "Em breve os primeiros textos.",
+    "readMore": "Continuar lendo",
+    "backToList": "Voltar para o blog"
+  },
+  "contato": {
+    "title": "Fale com a gente",
+    "subtitle": "Dúvida, sugestão, parceria. A gente responde com calma.",
+    "form": {
+      "fullName": "Seu nome",
+      "email": "E-mail",
+      "message": "Sua mensagem",
+      "messagePlaceholder": "Conte o que está no seu coração.",
+      "submit": "Enviar",
+      "submitting": "Enviando..."
+    },
+    "success": {
+      "heading": "Mensagem recebida.",
+      "body": "Respondemos por e-mail em até 2 dias úteis."
+    },
+    "error": {
+      "generic": "Não conseguimos enviar agora. Tente de novo em um minuto.",
+      "invalidEmail": "E-mail inválido",
+      "required": "Este campo é obrigatório"
+    }
   }
 }
