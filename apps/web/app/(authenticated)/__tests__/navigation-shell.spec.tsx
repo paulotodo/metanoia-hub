@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
+import { createQueryClientWrapper } from "@/lib/test-utils/with-query-client";
+
+const Wrapper = createQueryClientWrapper();
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/app/gestao/radar",
@@ -43,9 +46,11 @@ const expectedLabels = ["Radar", "Reuniões", "Trilhas", "Perfil", "Mais"];
 describe("NavigationShell", () => {
   it("renders both sidebar and bottom tabs navigation regions", () => {
     render(
-      <NavigationShell>
-        <div>Page content</div>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <div>Page content</div>
+        </NavigationShell>
+      </Wrapper>,
     );
     const navs = screen.getAllByRole("navigation", { name: /navigation/i });
     expect(navs.length).toBe(2);
@@ -53,9 +58,11 @@ describe("NavigationShell", () => {
 
   it("renders all 5 navigation labels", () => {
     render(
-      <NavigationShell>
-        <div>Page content</div>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <div>Page content</div>
+        </NavigationShell>
+      </Wrapper>,
     );
     for (const label of expectedLabels) {
       const labels = screen.getAllByText(label);
@@ -65,18 +72,22 @@ describe("NavigationShell", () => {
 
   it("renders children in the main content area", () => {
     render(
-      <NavigationShell>
-        <div data-testid="child-content">Page content</div>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <div data-testid="child-content">Page content</div>
+        </NavigationShell>
+      </Wrapper>,
     );
     expect(screen.getByTestId("child-content")).toBeTruthy();
   });
 
   it("wraps content in max-w-7xl container", () => {
     render(
-      <NavigationShell>
-        <div data-testid="child-content">Page content</div>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <div data-testid="child-content">Page content</div>
+        </NavigationShell>
+      </Wrapper>,
     );
     const container = screen.getByTestId("child-content").parentElement;
     expect(container?.className).toContain("max-w-7xl");
@@ -85,10 +96,12 @@ describe("NavigationShell", () => {
 
   it("passes accessibility checks", async () => {
     const { container } = render(
-      <NavigationShell>
-        <h1>Dashboard</h1>
-        <p>Content area</p>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <h1>Dashboard</h1>
+          <p>Content area</p>
+        </NavigationShell>
+      </Wrapper>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -96,9 +109,11 @@ describe("NavigationShell", () => {
 
   it("hides sidebar on mobile via CSS class", () => {
     render(
-      <NavigationShell>
-        <div>Content</div>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <div>Content</div>
+        </NavigationShell>
+      </Wrapper>,
     );
     const navs = screen.getAllByRole("navigation", { name: /navigation/i });
     const sidebar = navs.find((nav) => nav.className.includes("lg:flex"));
@@ -107,9 +122,11 @@ describe("NavigationShell", () => {
 
   it("hides bottom tabs on desktop via CSS class", () => {
     render(
-      <NavigationShell>
-        <div>Content</div>
-      </NavigationShell>,
+      <Wrapper>
+        <NavigationShell>
+          <div>Content</div>
+        </NavigationShell>
+      </Wrapper>,
     );
     const navs = screen.getAllByRole("navigation", { name: /navigation/i });
     const bottomTabs = navs.find((nav) => nav.className.includes("lg:hidden"));

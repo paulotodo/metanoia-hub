@@ -7,8 +7,8 @@ export default function AuthenticatedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <NavigationShell>
-      <AppQueryProvider>{children}</AppQueryProvider>
-    </NavigationShell>
+    <AppQueryProvider>
+      <NavigationShell>{children}</NavigationShell>
+    </AppQueryProvider>
   );
 }

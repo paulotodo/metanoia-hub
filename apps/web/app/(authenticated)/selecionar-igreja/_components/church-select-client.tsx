@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useMyTenants, useSelectTenant } from '@/lib/api/hooks';
+import { useActiveTenantId } from '@/lib/tenant/use-active-tenant-id';
 import { ChurchCard } from './church-card';
 import messages from '../../../../messages/pt-BR.json';
 
@@ -14,13 +15,15 @@ export function ChurchSelectClient() {
 
   const myTenants = useMyTenants();
   const selectTenant = useSelectTenant();
+  const { setActiveTenantId } = useActiveTenantId();
 
   function handleSelect(tenantId: string) {
     setSelectingId(tenantId);
     selectTenant.mutate(
       { tenantId },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          setActiveTenantId(data.tenantId);
           router.push('/app/gestao');
         },
         onError: () => {
