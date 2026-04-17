@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { KeycloakAuthGuard } from '../keycloak.guard';
+import { RedisService } from '../../redis/redis.service';
 import { requestContext } from '../../common/context/request-context';
 
 // Mock jose module
@@ -57,6 +58,7 @@ function createMockExecutionContext(
 describe('KeycloakAuthGuard', () => {
   let guard: KeycloakAuthGuard;
   let reflector: Reflector;
+  let redis: { get: ReturnType<typeof vi.fn> };
   let mockStore: { tenantId: string; userId?: string; requestId: string; correlationId: string };
 
   beforeEach(async () => {
@@ -65,6 +67,8 @@ describe('KeycloakAuthGuard', () => {
 
     mockStore = { tenantId: '', requestId: '', correlationId: '' };
     vi.spyOn(requestContext, 'getStore').mockReturnValue(mockStore);
+
+    redis = { get: vi.fn().mockResolvedValue(null) };
 
     const module = await Test.createTestingModule({
       providers: [
@@ -76,6 +80,7 @@ describe('KeycloakAuthGuard', () => {
           },
         },
         { provide: ConfigService, useValue: mockConfig },
+        { provide: RedisService, useValue: redis },
       ],
     }).compile();
 
@@ -210,6 +215,42 @@ describe('KeycloakAuthGuard', () => {
     expect(ctx._request.user).toEqual(
       expect.objectContaining({ userId: 'user-uuid-123' }),
     );
+  });
+
+  it('should override tenant_id with active-tenant stored in Redis', async () => {
+    vi.mocked(jwtVerify).mockResolvedValue({
+      payload: validPayload,
+      protectedHeader: { alg: 'RS256' },
+    } as any);
+    redis.get.mockResolvedValue('tenant-override-42');
+
+    const ctx = createMockExecutionContext({
+      authorization: 'Bearer valid-token',
+    });
+
+    await guard.canActivate(ctx as any);
+
+    expect(redis.get).toHaveBeenCalledWith('user:user-uuid-123:active-tenant');
+    expect(mockStore.tenantId).toBe('tenant-override-42');
+    expect(ctx._request.user).toEqual(
+      expect.objectContaining({ tenantId: 'tenant-override-42' }),
+    );
+  });
+
+  it('should fallback to JWT tenant_id when Redis lookup fails', async () => {
+    vi.mocked(jwtVerify).mockResolvedValue({
+      payload: validPayload,
+      protectedHeader: { alg: 'RS256' },
+    } as any);
+    redis.get.mockRejectedValue(new Error('redis down'));
+
+    const ctx = createMockExecutionContext({
+      authorization: 'Bearer valid-token',
+    });
+
+    await guard.canActivate(ctx as any);
+
+    expect(mockStore.tenantId).toBe('tenant-001');
   });
 
   it('should handle JWKS endpoint unreachable errors', async () => {
