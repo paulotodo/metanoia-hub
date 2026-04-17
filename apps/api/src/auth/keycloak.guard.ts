@@ -15,6 +15,7 @@ import { IS_PUBLIC_KEY } from './decorators/public.decorator';
 import type { KeycloakJwtPayload } from './interfaces/jwt-payload.interface';
 import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
 import type { EnvConfig } from '../config/env.validation';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
@@ -25,6 +26,7 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
   constructor(
     private readonly reflector: Reflector,
     private readonly config: ConfigService<EnvConfig, true>,
+    private readonly redis: RedisService,
   ) {}
 
   onModuleInit(): void {
@@ -62,22 +64,43 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
       this.logger.warn('user_id claim missing from token, falling back to sub');
     }
 
+    const activeTenantId = await this.resolveActiveTenant(
+      userId,
+      payload.tenant_id,
+    );
+
     // Populate tenant context in AsyncLocalStorage (scoped by TenantContextMiddleware.run())
     const store = requestContext.getStore();
     if (store) {
-      store.tenantId = payload.tenant_id;
+      store.tenantId = activeTenantId;
       store.userId = userId;
     }
 
     const user: AuthenticatedUser = {
       userId,
-      tenantId: payload.tenant_id,
+      tenantId: activeTenantId,
       roles: payload.realm_roles ?? [],
       email: payload.email,
     };
 
     request.user = user;
     return true;
+  }
+
+  private async resolveActiveTenant(
+    userId: string | undefined,
+    fallback: string,
+  ): Promise<string> {
+    if (!userId) return fallback;
+    try {
+      const override = await this.redis.get(`user:${userId}:active-tenant`);
+      return override ?? fallback;
+    } catch (error) {
+      this.logger.warn(
+        `Failed to read active tenant override for ${userId}: ${String(error)}`,
+      );
+      return fallback;
+    }
   }
 
   private extractToken(request: {

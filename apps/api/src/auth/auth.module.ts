@@ -13,9 +13,16 @@ import { OAuthService } from './oauth.service';
 import { SessionService } from './session.service';
 import { EmailVerificationProducer } from './email-verification.producer';
 import { EmailVerificationWorker } from './email-verification.worker';
+import { TenantSelectionController } from './tenant-selection.controller';
+import { TenantSelectionService } from './tenant-selection.service';
 
 @Module({
-  controllers: [RegisterController, LoginController, OAuthController],
+  controllers: [
+    RegisterController,
+    LoginController,
+    OAuthController,
+    TenantSelectionController,
+  ],
   providers: [
     KeycloakAuthGuard,
     RolesGuard,
@@ -29,6 +36,7 @@ import { EmailVerificationWorker } from './email-verification.worker';
     SessionService,
     EmailVerificationProducer,
     EmailVerificationWorker,
+    TenantSelectionService,
   ],
   exports: [KeycloakAuthGuard, KeycloakAdminService],
 })
