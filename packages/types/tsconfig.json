@@ -1,6 +1,9 @@
 {
   "extends": "@metanoia/config/tsconfig/base",
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist",
     "rootDir": "./src"
   },

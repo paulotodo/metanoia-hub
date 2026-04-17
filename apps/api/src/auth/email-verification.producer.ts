@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import type { Queue } from 'bullmq';
 import { BullMqService } from '../bullmq/bullmq.service';
 
-const EMAIL_VERIFICATION_QUEUE = 'queue:email-verification';
+const EMAIL_VERIFICATION_QUEUE = 'email-verification';
 
 interface EmailVerificationJobData {
   userId: string;

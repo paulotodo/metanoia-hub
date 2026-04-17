@@ -8,26 +8,26 @@ import type { EnvConfig } from '../config/env.validation';
 type ExtendedClient = ReturnType<typeof withMultiTenant>;
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService implements OnModuleInit, OnModuleDestroy {
+  private readonly prisma: PrismaClient;
   private extendedClient: ExtendedClient | undefined;
 
   constructor(configService: ConfigService<EnvConfig, true>) {
     const connectionString = configService.get('DATABASE_APP_URL', { infer: true });
     const adapter = new PrismaPg({ connectionString });
-    super({ adapter });
+    this.prisma = new PrismaClient({ adapter });
   }
 
   async onModuleInit() {
-    await this.$connect();
-    this.extendedClient = withMultiTenant(this as unknown as PrismaClient);
+    await this.prisma.$connect();
+    this.extendedClient = withMultiTenant(this.prisma);
   }
 
   async onModuleDestroy() {
-    await this.$disconnect();
+    await this.prisma.$disconnect();
   }
 
   /** Extended client with RLS tenant injection — use for all tenant-scoped queries */
-  // @ts-expect-error — intentional override of PrismaClient.tenant (model delegate) with RLS-extended client
   get tenant(): ExtendedClient {
     if (!this.extendedClient) {
       throw new Error('PrismaService not initialized');
@@ -37,6 +37,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   /** Raw PrismaClient without RLS — use only for public endpoints (e.g., registration) */
   get client(): PrismaClient {
-    return this as unknown as PrismaClient;
+    return this.prisma;
+  }
+
+  /** Tagged-template raw query — passthrough to the inner PrismaClient */
+  get $queryRaw(): PrismaClient['$queryRaw'] {
+    return this.prisma.$queryRaw.bind(this.prisma);
   }
 }

@@ -44,7 +44,7 @@ describe('MeetingEventWorker', () => {
   it('should register worker on module init', () => {
     worker.onModuleInit();
     expect(mockCreateWorker).toHaveBeenCalledWith(
-      'queue:meetings',
+      'meetings',
       expect.any(Function),
     );
   });

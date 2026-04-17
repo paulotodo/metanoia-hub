@@ -82,8 +82,8 @@ async function main() {
 
   // 3. Groups
   const groups = [
-    { id: GROUP_JOVENS, name: 'Jovens Adultos' },
-    { id: GROUP_CASAIS, name: 'Casais' },
+    { id: GROUP_JOVENS, name: 'Jovens Adultos', dayOfWeek: 'thu', time: '19:30' },
+    { id: GROUP_CASAIS, name: 'Casais', dayOfWeek: 'sat', time: '20:00' },
   ];
 
   for (const g of groups) {
@@ -94,6 +94,8 @@ async function main() {
         id: g.id,
         tenantId: TENANT_ID,
         name: g.name,
+        dayOfWeek: g.dayOfWeek,
+        time: g.time,
       },
     });
   }

@@ -5,7 +5,7 @@ import { BullMqService } from '../../bullmq/bullmq.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { requestContext } from '../../common/context/request-context';
 
-const MEETINGS_QUEUE = 'queue:meetings';
+const MEETINGS_QUEUE = 'meetings';
 
 interface MeetingJobData {
   eventId: string;
