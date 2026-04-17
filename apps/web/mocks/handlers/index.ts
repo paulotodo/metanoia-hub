@@ -5,6 +5,7 @@ import { groupsHandlers } from './groups';
 import { tenantsHandlers } from './tenants';
 import { meetingsHandlers } from './meetings';
 import { pastoralAdminHandlers } from './pastoral-admin';
+import { authTenantSelectionHandlers } from './auth-tenant-selection';
 
 export const handlers = [
   ...radarHandlers,
@@ -14,4 +15,5 @@ export const handlers = [
   ...tenantsHandlers,
   ...meetingsHandlers,
   ...pastoralAdminHandlers,
+  ...authTenantSelectionHandlers,
 ];

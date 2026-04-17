@@ -19,6 +19,18 @@ export {
   type LoginResponse,
 } from './auth/login';
 export {
+  UserTenantRoleSchema,
+  type UserTenantRole,
+  UserTenantSchema,
+  type UserTenant,
+  MyTenantsResponseSchema,
+  type MyTenantsResponse,
+  SelectTenantInputSchema,
+  type SelectTenantInput,
+  SelectTenantResponseSchema,
+  type SelectTenantResponse,
+} from './auth/tenant-selection';
+export {
   SignalTypeSchema,
   type SignalType,
   CareActionTypeSchema,

@@ -549,5 +549,38 @@
       "invalidEmail": "E-mail inválido",
       "required": "Este campo é obrigatório"
     }
+  },
+  "churchSelect": {
+    "title": "Escolha a igreja que você quer servir agora",
+    "subtitle": "Você faz parte de mais de uma comunidade. Escolha por qual quer entrar.",
+    "card": {
+      "role": {
+        "leader": "Líder",
+        "admin_tenant": "Administrador",
+        "participant": "Participante"
+      },
+      "lastVisit": "Última visita: {date}",
+      "lastVisitNever": "Primeira visita"
+    },
+    "loading": "Carregando suas igrejas...",
+    "error": {
+      "network": "Não conseguimos carregar suas igrejas agora. Tente de novo em um minuto.",
+      "forbidden": "Você não tem acesso a esta comunidade."
+    },
+    "a11y": {
+      "cardLabel": "Entrar em {churchName} como {role}"
+    }
+  },
+  "switcher": {
+    "title": "Trocar de igreja",
+    "subtitle": "Mude o contexto sem sair da página.",
+    "card": {
+      "active": "Ativa agora"
+    },
+    "loading": "Mudando de comunidade...",
+    "error": {
+      "network": "Não conseguimos trocar agora. Tente de novo em um minuto.",
+      "forbidden": "Você não tem acesso a esta comunidade."
+    }
   }
 }
