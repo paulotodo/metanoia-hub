@@ -14,3 +14,8 @@ export {
   useEndRoom,
   useCreateReflection,
 } from './use-meetings';
+export {
+  tenantSelectionKeys,
+  useMyTenants,
+  useSelectTenant,
+} from './use-tenant-selection';

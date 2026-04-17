@@ -15,8 +15,11 @@ export const UserTenantSchema = z.object({
 });
 export type UserTenant = z.infer<typeof UserTenantSchema>;
 
+export const MyTenantsDataSchema = z.array(UserTenantSchema);
+export type MyTenantsData = z.infer<typeof MyTenantsDataSchema>;
+
 export const MyTenantsResponseSchema = z.object({
-  data: z.array(UserTenantSchema),
+  data: MyTenantsDataSchema,
 });
 export type MyTenantsResponse = z.infer<typeof MyTenantsResponseSchema>;
 
@@ -25,9 +28,12 @@ export const SelectTenantInputSchema = z.object({
 });
 export type SelectTenantInput = z.infer<typeof SelectTenantInputSchema>;
 
+export const SelectTenantDataSchema = z.object({
+  tenantId: z.string().uuid(),
+});
+export type SelectTenantData = z.infer<typeof SelectTenantDataSchema>;
+
 export const SelectTenantResponseSchema = z.object({
-  data: z.object({
-    tenantId: z.string().uuid(),
-  }),
+  data: SelectTenantDataSchema,
 });
 export type SelectTenantResponse = z.infer<typeof SelectTenantResponseSchema>;
