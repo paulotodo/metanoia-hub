@@ -20,6 +20,13 @@ async function bootstrap() {
   const configService = app.get(ConfigService<EnvConfig, true>);
   const port = configService.get('API_PORT', { infer: true });
 
+  app.enableCors({
+    origin: configService.get('FRONTEND_URL', { infer: true }),
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
+
   await app.listen(port);
   app.get(Logger).log(`API running on http://localhost:${port}`);
 }

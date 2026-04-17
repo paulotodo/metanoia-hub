@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -23,6 +24,11 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env.local'),
+        join(__dirname, '..', '.env'),
+        join(__dirname, '..', '..', '..', '.env'),
+      ],
       validate: validateEnv,
     }),
     EventEmitterModule.forRoot(),

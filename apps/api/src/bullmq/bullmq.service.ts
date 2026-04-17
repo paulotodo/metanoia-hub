@@ -4,6 +4,8 @@ import { Queue, Worker, type Processor } from 'bullmq';
 import type { RedisOptions } from 'ioredis';
 import type { EnvConfig } from '../config/env.validation';
 
+const QUEUE_PREFIX = 'queue';
+
 @Injectable()
 export class BullMqService implements OnModuleDestroy {
   private readonly connection: RedisOptions;
@@ -22,7 +24,10 @@ export class BullMqService implements OnModuleDestroy {
     const existing = this.queues.get(name);
     if (existing) return existing;
 
-    const queue = new Queue(name, { connection: this.connection });
+    const queue = new Queue(name, {
+      connection: this.connection,
+      prefix: QUEUE_PREFIX,
+    });
     this.queues.set(name, queue);
     return queue;
   }
@@ -30,6 +35,7 @@ export class BullMqService implements OnModuleDestroy {
   createWorker(name: string, processor: Processor): Worker {
     const worker = new Worker(name, processor, {
       connection: this.connection,
+      prefix: QUEUE_PREFIX,
     });
     this.workers.push(worker);
     return worker;
