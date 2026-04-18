@@ -2,6 +2,8 @@
 
 Status: ready-for-dev
 
+> **Correction note (2026-04-18, WDS Cenário 06 Session 0):** endpoint and frontend route were renamed to align with page spec **06.4 — Lista dos Meus Grupos** and architecture UX-DR22–25 (which reserves `/app/consumo/*` as the participant experience). Previous spec used `GET /api/v1/groups/me` + `/groups/me/page.tsx`. The canonical version is now `GET /api/v1/participant/groups` + `/app/consumo/grupos`. Detail endpoint and route added as `GET /api/v1/participant/groups/:id` + `/app/consumo/grupos/[id]`. The `firstVisit` meta flag and the `participant.group.first_view` domain event are introduced to match the page spec.
+
 ## Story
 
 As a Participante,
@@ -11,48 +13,59 @@ So that I can navigate to my discipleship groups easily.
 ## Acceptance Criteria
 
 **Given** I am authenticated as Participante
-**When** I access `GET /api/v1/groups/me`
-**Then** I see a paginated list of my groups with: group name, leaders (names), member count, trails associated, and my own status in the group (`active`/`invited`)
-**And** pagination follows the standard meta format (total, page, limit)
-**And** I can sort by group name or join date
+**When** I access `GET /api/v1/participant/groups`
+**Then** I see a list of my groups — each item carries the group name, the leader's first name (no surnames, no email), and the next scheduled meeting (if any)
+**And** the response envelope is `{ data: [...], meta: { firstVisit: boolean } }` — no pagination meta in MVP (the participant typically belongs to 1–3 groups)
+**And** `firstVisit = true` on the very first call per participant, then persists as `false`
 
 **Given** I do not belong to any group
-**When** I access `GET /api/v1/groups/me`
-**Then** the API returns 200 with an empty `data` array and meta with `total: 0` (not 404)
+**When** I access `GET /api/v1/participant/groups`
+**Then** the API returns 200 with `data: []` and `meta.firstVisit` (not 404)
 
 **Given** I belong to groups in my tenant
 **When** I access the endpoint
 **Then** RLS guarantees I only see groups where I am a member — no cross-tenant or cross-group leakage
 
+**Given** `firstVisit === true` on a successful response
+**Then** the domain event `participant.group.first_view` is emitted (analytics only — never surfaced to the participant as metric)
+
+**Given** I am authenticated as Participante and I open a specific group
+**When** I access `GET /api/v1/participant/groups/:id`
+**Then** I see the group detail — name, description (nullable), leader (first name + optional avatar), recurrence, next meeting, and the list of other participants showing **first name only** (no avatars, no contact info, no status markers)
+
 ## Tasks / Subtasks
 
 - [ ] Task 1: API — listar meus grupos (AC: #1, #2, #3)
-  - [ ] 1.1 Criar `GET /api/v1/groups/me`
-  - [ ] 1.2 Query: groups onde user é membro via group_members
-  - [ ] 1.3 Incluir: group name, leaders (names), member count, trails associadas, status do user no grupo
-  - [ ] 1.4 Paginação: `{ data: [...], meta: { total, page, limit } }`
-  - [ ] 1.5 Sorting: por group name ou join date
+  - [ ] 1.1 Criar `GET /api/v1/participant/groups`
+  - [ ] 1.2 Query: groups onde user é membro via `group_members`
+  - [ ] 1.3 Incluir: group name, leader first name, next meeting summary
+  - [ ] 1.4 Envelope: `{ data: [...], meta: { firstVisit } }`
 
-- [ ] Task 2: Tratamento de lista vazia (AC: #4, #5)
-  - [ ] 2.1 Retornar 200 com `{ data: [], meta: { total: 0, page: 1, limit: 20 } }`
+- [ ] Task 2: Tratamento de lista vazia (AC: #4)
+  - [ ] 2.1 Retornar 200 com `{ data: [], meta: { firstVisit } }`
   - [ ] 2.2 Nunca retornar 404 para lista vazia
 
-- [ ] Task 3: RLS e isolamento (AC: #6, #7)
+- [ ] Task 3: RLS e isolamento (AC: #5, #6)
   - [ ] 3.1 Garantir que RLS filtra por tenant_id
   - [ ] 3.2 Garantir que user só vê grupos onde é membro
   - [ ] 3.3 Teste: cross-tenant leakage impossível
   - [ ] 3.4 Teste: cross-group leakage impossível
 
 - [ ] Task 4: Zod schemas e snapshot tests
-  - [ ] 4.1 Criar `MyGroupsResponseSchema` em `packages/types`
-  - [ ] 4.2 Snapshot test
+  - [ ] 4.1 Criar `ParticipantGroupsListResponseSchema` + `ParticipantGroupDetailResponseSchema` em `packages/types` _(delivered in WDS Cenário 06 Session 0)_
+  - [ ] 4.2 Snapshot tests _(delivered in WDS Cenário 06 Session 0)_
 
 - [ ] Task 5: Frontend — Meus Grupos
-  - [ ] 5.1 Criar `apps/web/app/(authenticated)/groups/me/page.tsx`
-  - [ ] 5.2 Lista de grupos com nome, líderes, contagem de membros, trilhas
-  - [ ] 5.3 Estado vazio: mensagem amigável "Você ainda não faz parte de nenhum grupo"
-  - [ ] 5.4 Sorting toggles
-  - [ ] 5.5 Testes jest-axe
+  - [ ] 5.1 Criar `apps/web/app/(authenticated)/app/consumo/grupos/page.tsx`
+  - [ ] 5.2 Criar `apps/web/app/(authenticated)/app/consumo/grupos/[id]/page.tsx`
+  - [ ] 5.3 Lista de grupos com nome, líder (primeiro nome), próxima reunião
+  - [ ] 5.4 Estado vazio pastoral: "Ainda não tem grupo por aqui. Assim que um líder te confirmar num grupo, ele aparece aqui."
+  - [ ] 5.5 Detalhe: "Outros participantes" mostra apenas primeiro nome — sem avatar, sem contato
+  - [ ] 5.6 Testes jest-axe
+
+- [ ] Task 6: Domain event `participant.group.first_view`
+  - [ ] 6.1 Emit no primeiro GET bem-sucedido por participante
+  - [ ] 6.2 Nunca expor métricas ao participante — evento é analytics, não UI
 
 ## Dev Notes
 
