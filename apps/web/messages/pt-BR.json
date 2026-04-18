@@ -633,5 +633,91 @@
       "tokenInvalid": "Esse link não é válido. Pede outro na tela de login."
     },
     "fallbackToast": "Senha salva. Entra com a nova senha."
+  },
+  "invite": {
+    "participant": {
+      "logo": {
+        "alt": "metanoia-hub"
+      },
+      "message": "O {leaderFirstName} te convidou pro grupo {groupName}",
+      "auth": {
+        "google": "Continuar com Google",
+        "googleLoading": "Abrindo Google...",
+        "email": "Usar email e senha"
+      },
+      "terms": "Ao continuar, você aceita os termos de uso.",
+      "termsLinkLabel": "termos de uso",
+      "avatarFallbackAlt": "Iniciais de {leaderFirstName}",
+      "loadingAria": "Abrindo convite",
+      "error": {
+        "expired": {
+          "heading": "Esse convite venceu",
+          "body": "Convites duram 7 dias. Avisa o {leaderFirstName} que ele pode te mandar outro."
+        },
+        "used": {
+          "heading": "Você já aceitou esse convite",
+          "body": "Se já tem conta, entra pelo login.",
+          "login": "Ir para o login"
+        },
+        "invalid": {
+          "heading": "Esse convite não é válido",
+          "body": "Confere o link do email ou pede outro pro líder."
+        },
+        "network": "Não conseguimos abrir o convite. Tenta de novo?",
+        "retry": "Tentar novamente"
+      }
+    }
+  },
+  "participant": {
+    "groups": {
+      "title": "Meus grupos",
+      "subtitle": "Encontros que a gente caminha juntos.",
+      "leaderPrefix": "Com {leaderFirstName}",
+      "nextMeetingLabel": "Próxima:",
+      "noNextMeeting": "Sem próxima reunião marcada",
+      "card": {
+        "ariaLabel": "Ver grupo {groupName}"
+      },
+      "empty": {
+        "heading": "Ainda não tem grupo por aqui",
+        "body": "Assim que um líder te confirmar num grupo, ele aparece aqui."
+      },
+      "loadingAria": "Carregando seus grupos",
+      "errors": {
+        "generic": "Não conseguimos carregar seus grupos. Tenta de novo?",
+        "retry": "Tentar novamente"
+      }
+    },
+    "group": {
+      "backToList": "Voltar para meus grupos",
+      "description": {
+        "heading": "Sobre o grupo",
+        "empty": "O líder ainda não escreveu uma descrição."
+      },
+      "leader": {
+        "heading": "Líder",
+        "prefix": "Com"
+      },
+      "nextMeeting": {
+        "heading": "Próxima reunião",
+        "join": "Entrar na reunião",
+        "empty": "Sem próxima reunião marcada ainda.",
+        "timeLabel": "{dayLabel} às {time}"
+      },
+      "peers": {
+        "heading": "Outros participantes",
+        "empty": "Você é o primeiro a confirmar. Os outros chegam em breve."
+      },
+      "recurrence": {
+        "weekly": "Toda semana",
+        "biweekly": "A cada 15 dias",
+        "monthly": "Uma vez por mês"
+      },
+      "errors": {
+        "notFound": "Esse grupo não existe ou você não tem acesso.",
+        "generic": "Não conseguimos carregar esse grupo. Tenta de novo?",
+        "retry": "Tentar novamente"
+      }
+    }
   }
 }
