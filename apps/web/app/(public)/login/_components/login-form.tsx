@@ -121,6 +121,12 @@ export function LoginForm() {
               {errors.password[0]}
             </p>
           )}
+          <Link
+            href="/recuperar-senha"
+            className="text-caption mt-1 inline-block text-text-secondary hover:underline"
+          >
+            {t.forgotPassword}
+          </Link>
         </div>
 
         {serverError && (
