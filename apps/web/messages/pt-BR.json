@@ -26,9 +26,11 @@
     "separator": "ou",
     "noAccount": "Ainda nao tem conta?",
     "createAccount": "Criar conta",
+    "forgotPassword": "Esqueci minha senha",
     "errors": {
-      "generic": "Nao foi possivel realizar o login. Tente novamente.",
-      "invalidCredentials": "Email ou senha incorretos"
+      "generic": "Algo deu errado. Tenta de novo?",
+      "invalidCredentials": "Essa senha não bateu. Tenta de novo ou usa 'Esqueci minha senha'.",
+      "rateLimited": "Muitas tentativas. Espera 5 minutinhos ou usa 'Esqueci minha senha'."
     }
   },
   "welcome": {
@@ -582,5 +584,54 @@
       "network": "Não conseguimos trocar agora. Tente de novo em um minuto.",
       "forbidden": "Você não tem acesso a esta comunidade."
     }
+  },
+  "recovery": {
+    "title": "Recuperar acesso",
+    "subtitle": "Digita o email da sua conta que a gente manda um link.",
+    "email": "E-mail",
+    "submit": "Enviar link",
+    "submitting": "Enviando...",
+    "backToLogin": "← Voltar para o login",
+    "sent": {
+      "title": "Link enviado",
+      "message": "Se esse email existir na nossa base, você vai receber um link nos próximos segundos.",
+      "spamHint": "Se não chegou em 1 minuto, confere a caixa de spam.",
+      "resend": "Reenviar link",
+      "resendCountdown": "Reenviar em {seconds}s"
+    },
+    "errors": {
+      "invalidEmail": "E-mail inválido",
+      "generic": "Algo deu errado. Tenta de novo?"
+    }
+  },
+  "newPassword": {
+    "title": "Criar senha nova",
+    "password": "Nova senha",
+    "confirmPassword": "Confirmar senha",
+    "passwordHint": "Mínimo 8 caracteres",
+    "submit": "Salvar e entrar",
+    "submitting": "Salvando...",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Esconder senha",
+    "validation": {
+      "tooShort": "A senha precisa ter pelo menos 8 caracteres",
+      "tooLong": "A senha pode ter no máximo 64 caracteres",
+      "mismatch": "As senhas não coincidem"
+    },
+    "tokenExpired": {
+      "title": "Esse link já venceu",
+      "message": "Links de recuperação valem por 15 minutos. Pede outro na tela de login.",
+      "backToLogin": "Ir para o login"
+    },
+    "tokenUsed": {
+      "title": "Essa senha já foi criada",
+      "message": "Se você já redefiniu sua senha, entra pelo login.",
+      "backToLogin": "Ir para o login"
+    },
+    "errors": {
+      "generic": "Não conseguimos salvar. Tenta de novo?",
+      "tokenInvalid": "Esse link não é válido. Pede outro na tela de login."
+    },
+    "fallbackToast": "Senha salva. Entra com a nova senha."
   }
 }
