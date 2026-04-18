@@ -15,6 +15,10 @@ import { EmailVerificationProducer } from './email-verification.producer';
 import { EmailVerificationWorker } from './email-verification.worker';
 import { TenantSelectionController } from './tenant-selection.controller';
 import { TenantSelectionService } from './tenant-selection.service';
+import { PasswordRecoveryController } from './password-recovery.controller';
+import { PasswordRecoveryService } from './password-recovery.service';
+import { RecoveryEmailProducer } from './recovery-email.producer';
+import { RecoveryEmailWorker } from './recovery-email.worker';
 
 @Module({
   controllers: [
@@ -22,6 +26,7 @@ import { TenantSelectionService } from './tenant-selection.service';
     LoginController,
     OAuthController,
     TenantSelectionController,
+    PasswordRecoveryController,
   ],
   providers: [
     KeycloakAuthGuard,
@@ -37,6 +42,9 @@ import { TenantSelectionService } from './tenant-selection.service';
     EmailVerificationProducer,
     EmailVerificationWorker,
     TenantSelectionService,
+    PasswordRecoveryService,
+    RecoveryEmailProducer,
+    RecoveryEmailWorker,
   ],
   exports: [KeycloakAuthGuard, KeycloakAdminService],
 })
