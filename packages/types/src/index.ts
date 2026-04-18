@@ -194,3 +194,15 @@ export {
   PricingPlanIdSchema,
   type PricingPlanId,
 } from './marketing/pricing';
+export {
+  ForgotPasswordSchema,
+  type ForgotPasswordInput,
+  ForgotPasswordResponseSchema,
+  type ForgotPasswordResponse,
+  ResetTokenValidateResponseSchema,
+  type ResetTokenValidateResponse,
+  ResetPasswordSchema,
+  type ResetPasswordInput,
+  ResetPasswordResponseSchema,
+  type ResetPasswordResponse,
+} from './auth/password-recovery';
