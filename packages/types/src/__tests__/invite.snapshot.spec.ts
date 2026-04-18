@@ -6,6 +6,8 @@ import {
   AcceptTermsResponseSchema,
   CreateAccountRequestSchema,
   CreateAccountResponseSchema,
+  InviteResolveResponseSchema,
+  AcceptParticipantInviteResponseSchema,
 } from '../invite';
 
 describe('InviteStatusSchema snapshot', () => {
@@ -139,6 +141,77 @@ describe('CreateAccountRequestSchema snapshot', () => {
         "success": true,
       }
     `);
+  });
+});
+
+describe('InviteResolveResponseSchema snapshot', () => {
+  it('accepts an admin-tenant valid invite', () => {
+    const result = InviteResolveResponseSchema.safeParse({
+      status: 'valid',
+      invite: {
+        kind: 'admin-tenant',
+        leader: { name: 'Pastor João', email: 'joao@example.com' },
+        tenant: { id: '019756c0-0001-7000-8000-000000000001', name: 'Igreja Semente' },
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts a participant valid invite', () => {
+    const result = InviteResolveResponseSchema.safeParse({
+      status: 'valid',
+      invite: {
+        kind: 'participant',
+        leader: { firstName: 'Marcos', avatarUrl: null },
+        tenant: { id: '019756c0-0001-7000-8000-000000000001', name: 'Igreja Semente' },
+        group: { id: '019756c0-2000-7000-8000-000000000001', name: 'Fundamentos da Fé' },
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts an expired invite with null payload', () => {
+    const result = InviteResolveResponseSchema.safeParse({
+      status: 'expired',
+      invite: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects a participant invite missing the group field', () => {
+    const result = InviteResolveResponseSchema.safeParse({
+      status: 'valid',
+      invite: {
+        kind: 'participant',
+        leader: { firstName: 'Marcos', avatarUrl: null },
+        tenant: { id: '019756c0-0001-7000-8000-000000000001', name: 'Igreja Semente' },
+      },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an invite with unknown kind', () => {
+    const result = InviteResolveResponseSchema.safeParse({
+      status: 'valid',
+      invite: {
+        kind: 'alien',
+        leader: { firstName: 'Marcos', avatarUrl: null },
+      },
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('AcceptParticipantInviteResponseSchema snapshot', () => {
+  it('freezes participant accept shape', () => {
+    const result = AcceptParticipantInviteResponseSchema.safeParse({
+      accessToken: 'access.jwt.token',
+      refreshToken: 'refresh.jwt.token',
+      tenantId: '019756c0-0001-7000-8000-000000000001',
+      groupId: '019756c0-2000-7000-8000-000000000001',
+      userId: '019756c0-0001-7000-8000-000000000042',
+    });
+    expect(result.success).toBe(true);
   });
 });
 

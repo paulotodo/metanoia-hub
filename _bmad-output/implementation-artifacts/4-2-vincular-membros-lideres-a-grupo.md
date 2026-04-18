@@ -2,6 +2,13 @@
 
 Status: ready-for-dev
 
+> **Implementation drift note (2026-04-18, WDS Cenário 06 Session 0):** the merged schema in `apps/api/prisma/schema.prisma` diverges from this spec:
+>   - `group_members.role` is a free-form `String` with `@default("membro")` — spec called for an enum (`participant`, `leader`).
+>   - `group_members.status` column is **absent** — spec called for an enum (`active`, `invited`, `inactive`).
+>   - `joined_at` column is absent.
+>
+> **Decision taken in Session 0 (option A recommended by the plan):** the WDS Cenário 06 Session 3 migration (which already creates `group_invites`) **also** converts `role` to an enum with backfill `"membro" → "participant"` and adds the `status` enum + `joined_at`. No new registry in Cenário 06 ever uses `"membro"` as role value — the participant accept flow always writes `role = "participant"`. Adding `status` and `joined_at` closes this Story 4.2 debt inline with the participant work.
+
 ## Story
 
 As a Admin/Líder,

@@ -114,6 +114,8 @@ So that the group's participants have access to the assigned learning content.
 
 ### Story 4.5: Participante Visualiza Seus Grupos
 
+> **Correction (2026-04-18, WDS Cenário 06 Session 0):** endpoint + route renamed to align with page spec 06.4 + architecture UX-DR22–25. Previous draft used `GET /api/v1/groups/me` + `/groups/me`. Canonical version now uses `GET /api/v1/participant/groups` + `/app/consumo/grupos`. See `_bmad-output/implementation-artifacts/4-5-participante-visualiza-seus-grupos.md` for the full updated story.
+
 As a Participante,
 I want to see a list of groups I belong to,
 So that I can navigate to my discipleship groups easily.
@@ -121,16 +123,19 @@ So that I can navigate to my discipleship groups easily.
 **Acceptance Criteria:**
 
 **Given** I am authenticated as Participante
-**When** I access `GET /api/v1/groups/me`
-**Then** I see a paginated list of my groups with: group name, leaders (names), member count, trails associated, and my own status in the group (`active`/`invited`)
-**And** pagination follows the standard meta format (total, page, limit)
-**And** I can sort by group name or join date
+**When** I access `GET /api/v1/participant/groups`
+**Then** I see a list of my groups — each item carries the group name, the leader's first name, and the next meeting summary (if any)
+**And** the response envelope is `{ data: [...], meta: { firstVisit: boolean } }` — no pagination meta in MVP
 
 **Given** I do not belong to any group
-**When** I access `GET /api/v1/groups/me`
-**Then** the API returns 200 with an empty `data` array and meta with `total: 0` (not 404)
+**When** I access `GET /api/v1/participant/groups`
+**Then** the API returns 200 with `data: []` and `meta.firstVisit` (not 404)
 
 **Given** I belong to groups in my tenant
 **When** I access the endpoint
 **Then** RLS guarantees I only see groups where I am a member — no cross-tenant or cross-group leakage
+
+**Given** I am authenticated as Participante and I open a specific group
+**When** I access `GET /api/v1/participant/groups/:id`
+**Then** I see the group detail with leader (first name only), recurrence, next meeting, and other participants (first name only — no avatars, no contact)
 
