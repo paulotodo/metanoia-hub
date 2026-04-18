@@ -252,6 +252,42 @@ export class KeycloakAdminService {
     };
   }
 
+  async resetUserPassword(
+    keycloakUserId: string,
+    newPassword: string,
+  ): Promise<void> {
+    const token = await this.getAdminToken();
+
+    const response = await fetch(
+      `${this.baseUrl}/users/${keycloakUserId}/reset-password`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type: 'password',
+          value: newPassword,
+          temporary: false,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      this.logger.error(
+        { status: response.status, body: text, keycloakUserId },
+        'failed to reset user password in keycloak',
+      );
+      throw new Error(
+        `Keycloak password reset failed: ${response.status}`,
+      );
+    }
+
+    this.logger.log({ keycloakUserId }, 'user password reset in keycloak');
+  }
+
   async findUserByEmail(email: string): Promise<KeycloakUserRepresentation | null> {
     const token = await this.getAdminToken();
     const response = await fetch(
