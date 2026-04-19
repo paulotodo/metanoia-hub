@@ -30,7 +30,8 @@ export const ParticipantGroupNextMeetingSchema = z.object({
   startsAt: z.string().datetime(),
   dayOfWeek: DayOfWeekSchema,
   time: z.string().regex(TIME_HH_MM_REGEX),
-  meetingUrl: z.string().url().nullable(),
+  location: z.string().nullable(),
+  meetingUrl: z.string().url().nullable().optional(),
 });
 export type ParticipantGroupNextMeeting = z.infer<
   typeof ParticipantGroupNextMeetingSchema
@@ -70,6 +71,13 @@ export const ParticipantGroupPeerSchema = z.object({
 });
 export type ParticipantGroupPeer = z.infer<typeof ParticipantGroupPeerSchema>;
 
+export const ParticipantGroupFormatSchema = z.enum([
+  'in_person',
+  'online',
+  'hybrid',
+]);
+export type ParticipantGroupFormat = z.infer<typeof ParticipantGroupFormatSchema>;
+
 export const ParticipantGroupDetailSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),
@@ -77,7 +85,9 @@ export const ParticipantGroupDetailSchema = z.object({
   leader: ParticipantGroupLeaderSchema,
   recurrence: GroupRecurrenceSchema,
   nextMeeting: ParticipantGroupNextMeetingSchema.nullable(),
-  peers: z.array(ParticipantGroupPeerSchema),
+  format: ParticipantGroupFormatSchema.nullable(),
+  duration: z.string().nullable(),
+  peers: z.array(ParticipantGroupPeerSchema).optional(),
 });
 export type ParticipantGroupDetail = z.infer<
   typeof ParticipantGroupDetailSchema

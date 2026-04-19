@@ -1,23 +1,25 @@
 interface LeaderAvatarProps {
   firstName: string;
   avatarUrl: string | null;
+  size?: 64 | 72;
 }
 
-/**
- * Spec 06.2-C1 — circular 72px avatar with initials fallback in `bg-brand-teal`.
- * Reused later by 06.5 (leader profile visible to participant).
- */
-export function LeaderAvatar({ firstName, avatarUrl }: LeaderAvatarProps) {
+export function LeaderAvatar({
+  firstName,
+  avatarUrl,
+  size = 72,
+}: LeaderAvatarProps) {
   const initials = computeInitials(firstName);
+  const sizeClass = size === 64 ? "size-[64px]" : "size-[72px]";
 
   if (avatarUrl) {
     return (
       <img
         src={avatarUrl}
         alt={`Foto de ${firstName}`}
-        width={72}
-        height={72}
-        className="size-[72px] rounded-full object-cover"
+        width={size}
+        height={size}
+        className={`${sizeClass} rounded-full object-cover`}
       />
     );
   }
@@ -26,7 +28,7 @@ export function LeaderAvatar({ firstName, avatarUrl }: LeaderAvatarProps) {
     <div
       role="img"
       aria-label={`Iniciais de ${firstName}`}
-      className="flex size-[72px] items-center justify-center rounded-full bg-[var(--color-brand-teal)] text-xl font-semibold text-white"
+      className={`${sizeClass} flex items-center justify-center rounded-full bg-[var(--color-brand-teal)] text-xl font-semibold text-white`}
     >
       {initials}
     </div>

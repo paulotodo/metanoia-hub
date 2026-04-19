@@ -117,6 +117,8 @@ export {
   type ParticipantGroupsListResponse,
   ParticipantGroupPeerSchema,
   type ParticipantGroupPeer,
+  ParticipantGroupFormatSchema,
+  type ParticipantGroupFormat,
   ParticipantGroupDetailSchema,
   type ParticipantGroupDetail,
   ParticipantGroupDetailResponseSchema,
