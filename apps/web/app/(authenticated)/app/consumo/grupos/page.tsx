@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { ParticipantGroupSummary } from '@metanoia/types';
 import messages from '../../../../../messages/pt-BR.json';
@@ -17,24 +17,37 @@ function scheduleTextFor(group: ParticipantGroupSummary): string {
   return formatScheduleShort(group.nextMeeting.dayOfWeek, group.nextMeeting.time);
 }
 
-export default function ParticipantGroupsPage() {
-  const firstName = useCurrentFirstName();
+function NotFoundToast() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [notFoundToast, setNotFoundToast] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (searchParams?.get('notFound') === '1') {
-      setNotFoundToast(true);
+      setVisible(true);
       const url = new URL(window.location.href);
       url.searchParams.delete('notFound');
       router.replace(url.pathname + (url.search || ''));
-      const timer = window.setTimeout(() => setNotFoundToast(false), 4000);
+      const timer = window.setTimeout(() => setVisible(false), 4000);
       return () => window.clearTimeout(timer);
     }
     return undefined;
   }, [searchParams, router]);
 
+  if (!visible) return null;
+  return (
+    <div
+      role="status"
+      data-testid="mygroup-notfound-toast"
+      className="rounded-md border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm text-[var(--color-text-primary)] shadow-sm"
+    >
+      {tGroup.error.notFound}
+    </div>
+  );
+}
+
+export default function ParticipantGroupsPage() {
+  const firstName = useCurrentFirstName();
   const { data, isPending, isError, refetch } = useParticipantGroups();
 
   if (isPending) {
@@ -87,15 +100,9 @@ export default function ParticipantGroupsPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-[720px] flex-col gap-6 px-4 py-8">
-      {notFoundToast ? (
-        <div
-          role="status"
-          data-testid="mygroup-notfound-toast"
-          className="rounded-md border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm text-[var(--color-text-primary)] shadow-sm"
-        >
-          {tGroup.error.notFound}
-        </div>
-      ) : null}
+      <Suspense fallback={null}>
+        <NotFoundToast />
+      </Suspense>
       <section id="mygroups-header" className="flex flex-col gap-2">
         <h1 className="text-[24px] font-bold text-[var(--color-text-primary)]">
           {t.title}
