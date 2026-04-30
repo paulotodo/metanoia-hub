@@ -4,16 +4,19 @@ import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { PlanLimit } from '../common/plan-limits/plan-limit.decorator';
+import { PlanLimitsGuard } from '../common/plan-limits/plan-limits.guard';
 import { GroupsService } from './groups.service';
 
 @Controller('api/v1/groups')
-@UseGuards(KeycloakAuthGuard, RolesGuard)
+@UseGuards(KeycloakAuthGuard, RolesGuard, PlanLimitsGuard)
 @Roles('admin')
 export class GroupsController {
   constructor(private readonly service: GroupsService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @PlanLimit('groups')
   async create(
     @Body(new ZodValidationPipe(CreateGroupRequestSchema)) body: CreateGroupRequest,
   ) {
