@@ -32,13 +32,24 @@ async function ensureTenant(prisma: PrismaClient, tenantId: string, name: string
   });
 }
 
-async function ensureUser(prisma: PrismaClient, userId: string, email: string, name: string) {
-  // Users are NOT tenant-scoped at the row level (tenantId is nullable on User
-  // for pre-onboarding flows), so we insert without setting current_tenant.
-  await prisma.user.upsert({
-    where: { id: userId },
-    update: {},
-    create: { id: userId, email, name, status: 'active' },
+async function ensureUser(
+  prisma: PrismaClient,
+  userId: string,
+  email: string,
+  name: string,
+  tenantId: string,
+) {
+  // Users have FORCE RLS; insert inside a tenant tx with the matching
+  // tenant_id so the WITH CHECK policy is satisfied.
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(
+      `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+    );
+    await tx.$executeRawUnsafe(
+      `INSERT INTO users (id, email, name, status, tenant_id, created_at, updated_at)
+       VALUES ('${userId}'::uuid, '${email}', '${name}', 'active', '${tenantId}'::uuid, NOW(), NOW())
+       ON CONFLICT (id) DO NOTHING`,
+    );
   });
 }
 
@@ -141,9 +152,9 @@ describe('RLS + membership isolation: participant groups queries', () => {
 
     await ensureTenant(prisma, TENANT_A_ID, 'Tenant A');
     await ensureTenant(prisma, TENANT_B_ID, 'Tenant B');
-    await ensureUser(prisma, ALICE_ID, 'alice@rls.test', 'Alice Test');
-    await ensureUser(prisma, BOB_ID, 'bob@rls.test', 'Bob Test');
-    await ensureUser(prisma, CARLA_ID, 'carla@rls.test', 'Carla Test');
+    await ensureUser(prisma, ALICE_ID, 'alice@rls.test', 'Alice Test', TENANT_A_ID);
+    await ensureUser(prisma, BOB_ID, 'bob@rls.test', 'Bob Test', TENANT_A_ID);
+    await ensureUser(prisma, CARLA_ID, 'carla@rls.test', 'Carla Test', TENANT_B_ID);
   });
 
   beforeEach(async () => {
