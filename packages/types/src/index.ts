@@ -105,6 +105,18 @@ export {
   type AcceptParticipantInviteResponse,
 } from './invite';
 export {
+  ConsentDocumentTypeSchema,
+  type ConsentDocumentType,
+  ConsentDocumentStatusSchema,
+  type ConsentDocumentStatus,
+  ConsentStatusResponseSchema,
+  type ConsentStatusResponse,
+  AcceptConsentInputSchema,
+  type AcceptConsentInput,
+  AcceptConsentResponseSchema,
+  type AcceptConsentResponse,
+} from './consent';
+export {
   TenantUserRoleSchema,
   type TenantUserRole,
   TenantUserSummarySchema,
