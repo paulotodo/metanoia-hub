@@ -668,56 +668,45 @@
       }
     }
   },
-  "participant": {
-    "groups": {
-      "title": "Meus grupos",
-      "subtitle": "Encontros que a gente caminha juntos.",
-      "leaderPrefix": "Com {leaderFirstName}",
-      "nextMeetingLabel": "Próxima:",
-      "noNextMeeting": "Sem próxima reunião marcada",
-      "card": {
-        "ariaLabel": "Ver grupo {groupName}"
-      },
-      "empty": {
-        "heading": "Ainda não tem grupo por aqui",
-        "body": "Assim que um líder te confirmar num grupo, ele aparece aqui."
-      },
-      "loadingAria": "Carregando seus grupos",
-      "errors": {
-        "generic": "Não conseguimos carregar seus grupos. Tenta de novo?",
-        "retry": "Tentar novamente"
-      }
+  "mygroups": {
+    "title": "Meus Grupos",
+    "welcome": "Bem-vinda, {firstName}. Aqui estão os seus grupos.",
+    "card": {
+      "leader": "Líder: {leaderName}",
+      "schedule": "{schedule}",
+      "view": "Ver meu grupo →"
     },
-    "group": {
-      "backToList": "Voltar para meus grupos",
-      "description": {
-        "heading": "Sobre o grupo",
-        "empty": "O líder ainda não escreveu uma descrição."
-      },
-      "leader": {
-        "heading": "Líder",
-        "prefix": "Com"
-      },
-      "nextMeeting": {
-        "heading": "Próxima reunião",
-        "join": "Entrar na reunião",
-        "empty": "Sem próxima reunião marcada ainda.",
-        "timeLabel": "{dayLabel} às {time}"
-      },
-      "peers": {
-        "heading": "Outros participantes",
-        "empty": "Você é o primeiro a confirmar. Os outros chegam em breve."
-      },
-      "recurrence": {
-        "weekly": "Toda semana",
-        "biweekly": "A cada 15 dias",
-        "monthly": "Uma vez por mês"
-      },
-      "errors": {
-        "notFound": "Esse grupo não existe ou você não tem acesso.",
-        "generic": "Não conseguimos carregar esse grupo. Tenta de novo?",
-        "retry": "Tentar novamente"
-      }
+    "empty": "Você ainda não participa de nenhum grupo. Quando alguém te convidar, ele vai aparecer aqui.",
+    "error": {
+      "network": "Não conseguimos carregar seus grupos. Tenta de novo?",
+      "retry": "Tentar novamente"
+    }
+  },
+  "mygroup": {
+    "back": "Meus Grupos",
+    "leader": {
+      "label": "{leaderFirstName} lidera esse grupo"
+    },
+    "meeting": {
+      "label": "Próximo encontro",
+      "date": "{dayOfWeek}, {time}",
+      "relative": "{days, plural, =0 {hoje} =1 {amanhã} other {em # dias}}",
+      "location": "📍 {location}",
+      "empty": "O líder ainda não marcou o próximo encontro."
+    },
+    "format": {
+      "label": "Como acontece",
+      "detail": "{format} · ~{duration}",
+      "detailNoDuration": "{format}",
+      "inPerson": "Presencial",
+      "online": "Online",
+      "hybrid": "Híbrido"
+    },
+    "closing": "Sem pressa. Quando você vier, a gente tá aqui.",
+    "error": {
+      "network": "Não conseguimos carregar o grupo. Tenta de novo?",
+      "retry": "Tentar novamente",
+      "notFound": "Grupo não encontrado"
     }
   }
 }

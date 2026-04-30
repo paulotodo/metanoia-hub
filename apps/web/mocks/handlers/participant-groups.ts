@@ -7,7 +7,7 @@ import type {
 const MOCK_GROUP_ID = '019756c0-2000-7000-8000-000000000001';
 const MOCK_SECOND_GROUP_ID = '019756c0-2000-7000-8000-000000000002';
 
-const mockParticipantGroupsList: ParticipantGroupsListResponse = {
+const buildList = (firstVisit: boolean): ParticipantGroupsListResponse => ({
   data: [
     {
       id: MOCK_GROUP_ID,
@@ -20,7 +20,7 @@ const mockParticipantGroupsList: ParticipantGroupsListResponse = {
         startsAt: '2026-04-21T22:00:00.000Z',
         dayOfWeek: 'tue',
         time: '19:00',
-        meetingUrl: null,
+        location: 'Sala 3, Igreja Central',
       },
     },
     {
@@ -34,8 +34,13 @@ const mockParticipantGroupsList: ParticipantGroupsListResponse = {
     },
   ],
   meta: {
-    firstVisit: true,
+    firstVisit,
   },
+});
+
+const emptyList: ParticipantGroupsListResponse = {
+  data: [],
+  meta: { firstVisit: true },
 };
 
 const mockParticipantGroupDetail: ParticipantGroupDetailResponse = {
@@ -53,33 +58,54 @@ const mockParticipantGroupDetail: ParticipantGroupDetailResponse = {
       startsAt: '2026-04-21T22:00:00.000Z',
       dayOfWeek: 'tue',
       time: '19:00',
-      meetingUrl: 'https://meet.metanoia.example/fundamentos',
+      location: 'Sala 3, Igreja Central',
     },
-    peers: [
-      { firstName: 'Ana' },
-      { firstName: 'Rafael' },
-      { firstName: 'Clara' },
-    ],
+    format: 'in_person',
+    duration: '1h30',
+  },
+};
+
+const mockParticipantGroupDetailMinimal: ParticipantGroupDetailResponse = {
+  data: {
+    id: MOCK_SECOND_GROUP_ID,
+    name: 'Caminhada em Cristo',
+    description: null,
+    leader: {
+      firstName: 'Beatriz',
+      avatarUrl: null,
+    },
+    recurrence: 'weekly',
+    nextMeeting: null,
+    format: null,
+    duration: null,
   },
 };
 
 export const participantGroupsHandlers = [
-  http.get('*/api/v1/participant/groups', () =>
-    HttpResponse.json(mockParticipantGroupsList),
-  ),
+  http.get('*/api/v1/participant/groups', ({ request }) => {
+    const url = new URL(request.url);
+    if (request.headers.get('x-mock-empty') === '1') {
+      return HttpResponse.json(emptyList);
+    }
+    const firstVisit = url.searchParams.get('firstVisit') !== 'false';
+    return HttpResponse.json(buildList(firstVisit));
+  }),
 
   http.get('*/api/v1/participant/groups/:id', ({ params }) => {
     const id = String(params.id ?? '');
-    if (id !== MOCK_GROUP_ID) {
-      return HttpResponse.json(
-        {
-          statusCode: 404,
-          error: 'Not Found',
-          message: 'Group not found or not accessible',
-        },
-        { status: 404 },
-      );
+    if (id === MOCK_GROUP_ID) {
+      return HttpResponse.json(mockParticipantGroupDetail);
     }
-    return HttpResponse.json(mockParticipantGroupDetail);
+    if (id === MOCK_SECOND_GROUP_ID) {
+      return HttpResponse.json(mockParticipantGroupDetailMinimal);
+    }
+    return HttpResponse.json(
+      {
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'Group not found or not accessible',
+      },
+      { status: 404 },
+    );
   }),
 ];

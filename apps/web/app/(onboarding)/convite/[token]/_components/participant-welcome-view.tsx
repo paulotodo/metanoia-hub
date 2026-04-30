@@ -1,5 +1,5 @@
 import type { InviteResolveParticipant } from "@metanoia/types";
-import { LeaderAvatar } from "./leader-avatar";
+import { LeaderAvatar } from "@/components/avatar/leader-avatar";
 import { ParticipantAuthButtons } from "./participant-auth-buttons";
 import { TermsNotice } from "./terms-notice";
 
