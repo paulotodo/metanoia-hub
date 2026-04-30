@@ -142,15 +142,22 @@ model Consent {
 
 /// Tenant — materializes the implicit tenant, self-referencing tenant_id for universal RLS
 model Tenant {
-  id        String   @id @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
+  id                String   @id @db.Uuid
+  tenantId          String   @map("tenant_id") @db.Uuid
+  name              String
+  slug              String?  @unique @db.VarChar(60)
+  plan              String   @default("free") @db.VarChar(20)
+  status            String   @default("active") @db.VarChar(32)
+  adminEmail        String?  @map("admin_email") @db.VarChar(320)
+  provisioningState Json?    @map("provisioning_state")
+  createdAt         DateTime @default(now()) @map("created_at")
 
   groups  Group[]
   invites Invite[]
 
   @@index([tenantId])
+  @@index([status])
+  @@index([plan])
   @@map("tenants")
 }
 
