@@ -105,6 +105,20 @@ export {
   type AcceptParticipantInviteResponse,
 } from './invite';
 export {
+  GroupMemberRoleSchema,
+  type GroupMemberRole,
+  AddGroupMemberInputSchema,
+  type AddGroupMemberInput,
+  UpdateGroupMemberRoleInputSchema,
+  type UpdateGroupMemberRoleInput,
+  GroupMemberSummarySchema,
+  type GroupMemberSummary,
+  GroupMembersListResponseSchema,
+  type GroupMembersListResponse,
+  GroupMemberDetailResponseSchema,
+  type GroupMemberDetailResponse,
+} from './group-members';
+export {
   ConsentDocumentTypeSchema,
   type ConsentDocumentType,
   ConsentDocumentStatusSchema,
