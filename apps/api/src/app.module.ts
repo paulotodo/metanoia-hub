@@ -15,6 +15,7 @@ import { AdminPastoralModule } from './admin-pastoral/admin-pastoral.module';
 import { InvitesModule } from './invites/invites.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { GroupsModule } from './groups/groups.module';
+import { ParticipantGroupsModule } from './participant-groups/participant-groups.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { MarketingModule } from './marketing/marketing.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
@@ -44,6 +45,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     InvitesModule,
     TenantsModule,
     GroupsModule,
+    ParticipantGroupsModule,
     OnboardingModule,
     MarketingModule,
   ],
