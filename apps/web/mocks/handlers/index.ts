@@ -8,6 +8,7 @@ import { pastoralAdminHandlers } from './pastoral-admin';
 import { authTenantSelectionHandlers } from './auth-tenant-selection';
 import { authRecoveryHandlers } from './auth-recovery';
 import { participantGroupsHandlers } from './participant-groups';
+import { superAdminTenantsHandlers } from './super-admin-tenants';
 
 export const handlers = [
   ...radarHandlers,
@@ -20,4 +21,5 @@ export const handlers = [
   ...authTenantSelectionHandlers,
   ...authRecoveryHandlers,
   ...participantGroupsHandlers,
+  ...superAdminTenantsHandlers,
 ];

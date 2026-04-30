@@ -708,5 +708,145 @@
       "retry": "Tentar novamente",
       "notFound": "Grupo não encontrado"
     }
+  },
+  "superAdmin": {
+    "tenants": {
+      "title": "Tenants",
+      "newTenant": "Novo Tenant",
+      "search": {
+        "placeholder": "Buscar por nome ou slug"
+      },
+      "filter": {
+        "status": {
+          "label": "Status",
+          "all": "Todos",
+          "active": "Ativo",
+          "suspended": "Suspenso",
+          "failed": "Provisionamento falhou",
+          "provisioning": "Provisionando"
+        },
+        "plan": {
+          "label": "Plano",
+          "all": "Todos",
+          "free": "Free",
+          "pro": "Pro",
+          "enterprise": "Enterprise"
+        }
+      },
+      "table": {
+        "name": "Nome",
+        "slug": "Slug",
+        "plan": "Plano",
+        "status": "Status",
+        "members": "Membros",
+        "created": "Criado"
+      },
+      "status": {
+        "active": "Ativo",
+        "suspended": "Suspenso",
+        "failed": "Prov. falhou",
+        "provisioning": "Provisionando..."
+      },
+      "pagination": "Mostrando {from}-{to} de {total}",
+      "empty": "Nenhum tenant encontrado.",
+      "error": {
+        "network": "Não conseguimos carregar a lista de tenants.",
+        "retry": "Tentar novamente"
+      }
+    },
+    "provision": {
+      "title": "Novo Tenant",
+      "back": "Voltar para tenants",
+      "name": {
+        "label": "Nome da igreja",
+        "placeholder": "Ex: Igreja Restauração",
+        "error": {
+          "required": "Nome da igreja é obrigatório.",
+          "short": "Nome precisa ter pelo menos 3 caracteres.",
+          "long": "Nome pode ter no máximo 100 caracteres."
+        }
+      },
+      "slug": {
+        "label": "Slug",
+        "hint": "Auto-sugerido a partir do nome",
+        "error": {
+          "required": "Slug é obrigatório.",
+          "format": "Slug aceita apenas letras minúsculas, números e hífens.",
+          "conflict": "Esse slug já está em uso. Escolha outro."
+        }
+      },
+      "adminEmail": {
+        "label": "Email do administrador",
+        "hint": "Receberá convite para configurar a igreja",
+        "error": {
+          "required": "Email é obrigatório.",
+          "invalid": "Email inválido."
+        }
+      },
+      "plan": {
+        "label": "Plano",
+        "free": "Free",
+        "pro": "Pro",
+        "enterprise": "Enterprise"
+      },
+      "cancel": "Cancelar",
+      "submit": "Criar Tenant",
+      "saga": {
+        "title": "Criando tenant...",
+        "step": {
+          "db": "Criando registro no banco de dados",
+          "keycloak": "Configurando acesso (Keycloak)",
+          "invite": "Convidando administrador"
+        },
+        "running": "Em execução",
+        "done": "Concluído",
+        "failed": "Falhou",
+        "retry": "Tentar novamente"
+      },
+      "error": {
+        "network": "Falha de rede. Tente novamente.",
+        "db": "Erro ao criar registro. Tente novamente.",
+        "keycloak": "Erro ao configurar acesso. Tente novamente.",
+        "invite": "Erro ao enviar convite. Tente novamente.",
+        "unknown": "Erro inesperado durante o provisionamento."
+      }
+    },
+    "tenantDetail": {
+      "back": "Voltar para tenants",
+      "info": {
+        "title": "Informações",
+        "slug": "Slug",
+        "plan": "Plano",
+        "created": "Criado em",
+        "admin": "Administrador",
+        "invite": "Convite",
+        "inviteStatus": {
+          "pending": "Pendente",
+          "sent": "Enviado ✓",
+          "accepted": "Aceito ✓"
+        }
+      },
+      "numbers": {
+        "title": "Números",
+        "members": "Membros",
+        "groups": "Grupos",
+        "leaders": "Líderes"
+      },
+      "actions": {
+        "title": "Ações",
+        "editName": "Editar nome",
+        "save": "Salvar",
+        "cancel": "Cancelar",
+        "suspend": "Suspender tenant",
+        "reactivate": "Reativar tenant",
+        "retry": "Reexecutar provisionamento"
+      },
+      "suspendDialog": {
+        "title": "Suspender este tenant?",
+        "warning": "Todos os usuários serão desconectados imediatamente. Os dados são preservados — você pode reativar a qualquer momento.",
+        "confirm": "Sim, suspender",
+        "cancel": "Cancelar"
+      }
+    }
   }
 }
