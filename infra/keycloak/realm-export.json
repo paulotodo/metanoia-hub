@@ -13,6 +13,13 @@
   "accessTokenLifespan": 300,
   "ssoSessionIdleTimeout": 1800,
   "ssoSessionMaxLifespan": 36000,
+  "browserFlow": "metanoia browser",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyPeriod": 30,
+  "otpSupportedApplications": ["totpAppGoogleName", "totpAppFreeOTPName", "totpAppMicrosoftAuthenticatorName"],
   "roles": {
     "realm": [
       {
@@ -196,6 +203,7 @@
         }
       ],
       "realmRoles": ["super_admin"],
+      "requiredActions": ["CONFIGURE_TOTP"],
       "attributes": {
         "tenant_id": ["dev-tenant-001"]
       }
@@ -215,6 +223,7 @@
         }
       ],
       "realmRoles": ["admin_tenant"],
+      "requiredActions": ["CONFIGURE_TOTP"],
       "attributes": {
         "tenant_id": ["dev-tenant-001"]
       }
@@ -256,6 +265,126 @@
       "attributes": {
         "tenant_id": ["dev-tenant-001"]
       }
+    }
+  ],
+  "authenticationFlows": [
+    {
+      "alias": "metanoia browser",
+      "description": "Browser-based authentication that requires TOTP for super_admin and admin_tenant roles (Story 2-3).",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "authenticator": "identity-provider-redirector",
+          "requirement": "ALTERNATIVE",
+          "priority": 25,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "requirement": "ALTERNATIVE",
+          "priority": 30,
+          "flowAlias": "metanoia forms",
+          "userSetupAllowed": false,
+          "autheticatorFlow": true
+        }
+      ]
+    },
+    {
+      "alias": "metanoia forms",
+      "description": "Username + password followed by conditional MFA based on realm role.",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "requirement": "CONDITIONAL",
+          "priority": 20,
+          "flowAlias": "metanoia conditional otp super_admin",
+          "userSetupAllowed": false,
+          "autheticatorFlow": true
+        },
+        {
+          "requirement": "CONDITIONAL",
+          "priority": 30,
+          "flowAlias": "metanoia conditional otp admin_tenant",
+          "userSetupAllowed": false,
+          "autheticatorFlow": true
+        }
+      ]
+    },
+    {
+      "alias": "metanoia conditional otp super_admin",
+      "description": "Require OTP if user has the super_admin realm role.",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-user-role",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "authenticatorConfig": "metanoia-mfa-cfg-super-admin",
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        }
+      ]
+    },
+    {
+      "alias": "metanoia conditional otp admin_tenant",
+      "description": "Require OTP if user has the admin_tenant realm role.",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-user-role",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "authenticatorConfig": "metanoia-mfa-cfg-admin-tenant",
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        }
+      ]
+    }
+  ],
+  "authenticatorConfig": [
+    {
+      "alias": "metanoia-mfa-cfg-super-admin",
+      "config": { "condUserRole": "super_admin" }
+    },
+    {
+      "alias": "metanoia-mfa-cfg-admin-tenant",
+      "config": { "condUserRole": "admin_tenant" }
     }
   ]
 }
