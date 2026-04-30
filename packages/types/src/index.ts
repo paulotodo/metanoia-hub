@@ -105,6 +105,18 @@ export {
   type AcceptParticipantInviteResponse,
 } from './invite';
 export {
+  TenantUserRoleSchema,
+  type TenantUserRole,
+  TenantUserSummarySchema,
+  type TenantUserSummary,
+  TenantUsersListResponseSchema,
+  type TenantUsersListResponse,
+  UpdateTenantUserRoleInputSchema,
+  type UpdateTenantUserRoleInput,
+  TenantUserDetailResponseSchema,
+  type TenantUserDetailResponse,
+} from './admin-users';
+export {
   TenantStatusSchema,
   type TenantStatus,
   TenantPlanSchema,
