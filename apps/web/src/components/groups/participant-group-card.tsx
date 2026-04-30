@@ -20,7 +20,6 @@ export function ParticipantGroupCard({
     <li className="list-none">
       <Link
         href={`/app/consumo/grupos/${group.id}`}
-        role="article"
         aria-label={group.name}
         data-testid={`participant-group-card-${group.id}`}
         className="flex min-h-[96px] w-full flex-col gap-1 rounded-lg border border-[var(--border)] bg-[var(--card)] p-4 transition hover:border-[var(--color-brand-teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]"

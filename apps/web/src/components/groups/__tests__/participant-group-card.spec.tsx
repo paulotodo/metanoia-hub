@@ -28,7 +28,7 @@ describe('ParticipantGroupCard', () => {
         scheduleText="Terças, 19h"
       />,
     );
-    expect(screen.getByRole('article', { name: 'Fundamentos da Fé' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Fundamentos da Fé' })).toBeTruthy();
     expect(screen.getByText('Líder: Marcos')).toBeTruthy();
     expect(screen.getByText('Terças, 19h')).toBeTruthy();
     expect(screen.getByText('Ver meu grupo →')).toBeTruthy();
@@ -41,7 +41,7 @@ describe('ParticipantGroupCard', () => {
 
   it('links to the group detail route', () => {
     render(<ParticipantGroupCard group={makeGroup()} scheduleText="Terças, 19h" />);
-    const link = screen.getByRole('article', { name: 'Fundamentos da Fé' });
+    const link = screen.getByRole('link', { name: 'Fundamentos da Fé' });
     expect(link.getAttribute('href')).toBe(
       '/app/consumo/grupos/019756c0-2000-7000-8000-000000000001',
     );
