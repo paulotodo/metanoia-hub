@@ -41,6 +41,16 @@ No console Keycloak (http://localhost:8080), realm `metanoia`:
 2. Atribuir role `super_admin` (criar role se não existir)
 3. Verificar JWT inclui `realm_access.roles: ["super_admin"]`
 
+### 3.1 MFA obrigatório (Story 2-3)
+
+A partir do realm import (Story 2-3), Super Admin e Admin Tenant **exigem TOTP** no login:
+
+- Primeiro login: Keycloak mostra QR code → escanear com Google Authenticator / Authy / 1Password
+- Logins seguintes: digitar código de 6 dígitos após senha
+- Lider e Participante: **não exigem TOTP** (out of scope no MVP)
+
+🐛 Se o login do Super Admin não pedir TOTP: realm não foi reimportado depois da mudança. Recriar Keycloak: `docker compose down keycloak && docker volume rm metanoia-hub_keycloak_data && docker compose up -d keycloak`. Verificar que `browserFlow: "metanoia browser"` aparece em Authentication → Bindings.
+
 ### 4. Iniciar API
 
 ```bash
