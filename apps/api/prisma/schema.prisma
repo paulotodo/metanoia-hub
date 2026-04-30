@@ -169,6 +169,10 @@ model Invite {
   leaderName      String    @map("leader_name") @db.VarChar(200)
   leaderEmail     String    @map("leader_email") @db.VarChar(320)
   churchName      String?   @map("church_name") @db.VarChar(200)
+  kind            String    @default("pre_tenant_signup") @db.VarChar(32)
+  inviteeRole     String?   @map("invitee_role") @db.VarChar(32)
+  groupId         String?   @map("group_id") @db.Uuid
+  revokedAt       DateTime? @map("revoked_at") @db.Timestamptz
   expiresAt       DateTime  @map("expires_at") @db.Timestamptz
   usedAt          DateTime? @map("used_at") @db.Timestamptz
   termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz
@@ -177,6 +181,7 @@ model Invite {
   tenant Tenant? @relation(fields: [tenantId], references: [id])
 
   @@index([tenantId])
+  @@index([kind])
   @@map("invites")
 }
 
