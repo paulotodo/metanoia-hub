@@ -20,6 +20,7 @@ import { SuperAdminTenantsModule } from './super-admin/super-admin-tenants.modul
 import { AdminUsersModule } from './admin-users/admin-users.module';
 import { ConsentModule } from './consent/consent.module';
 import { GroupMembersModule } from './group-members/group-members.module';
+import { AdminInvitesModule } from './admin-invites/admin-invites.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { MarketingModule } from './marketing/marketing.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
@@ -54,6 +55,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     AdminUsersModule,
     ConsentModule,
     GroupMembersModule,
+    AdminInvitesModule,
     OnboardingModule,
     MarketingModule,
   ],
