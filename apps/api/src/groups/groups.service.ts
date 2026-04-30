@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { uuidv7 } from 'uuidv7';
 import {
   GroupResponseSchema,
   type CreateGroupRequest,
   type GroupResponse,
+  type GroupsListResponse,
+  type UpdateGroupRequest,
 } from '@metanoia/types';
 import type { Group } from '@prisma/client';
 import { getRequestContext } from '../common/context/request-context';
@@ -43,6 +45,39 @@ export class GroupsService {
     }
 
     return this.toResponse(group);
+  }
+
+  async list(): Promise<GroupsListResponse> {
+    const groups = await this.repository.listByTenant();
+    return {
+      data: groups.map((g) => this.toResponse(g)),
+      meta: { total: groups.length },
+    };
+  }
+
+  async findById(id: string): Promise<GroupResponse> {
+    const group = await this.repository.findById(id);
+    if (!group) throw new NotFoundException('Group not found');
+    return this.toResponse(group);
+  }
+
+  async update(id: string, body: UpdateGroupRequest): Promise<GroupResponse> {
+    const updated = await this.repository.update(id, {
+      ...(body.name !== undefined ? { name: body.name } : {}),
+      ...(body.dayOfWeek !== undefined ? { dayOfWeek: body.dayOfWeek } : {}),
+      ...(body.time !== undefined ? { time: body.time } : {}),
+      ...(body.recurrence !== undefined
+        ? { recurrence: body.recurrence }
+        : {}),
+      ...(body.notes !== undefined ? { notes: body.notes } : {}),
+    });
+    if (!updated) throw new NotFoundException('Group not found');
+    return this.toResponse(updated);
+  }
+
+  async delete(id: string): Promise<void> {
+    const deleted = await this.repository.delete(id);
+    if (!deleted) throw new NotFoundException('Group not found');
   }
 
   private toResponse(group: Group): GroupResponse {

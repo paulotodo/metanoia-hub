@@ -1,5 +1,23 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { CreateGroupRequestSchema, type CreateGroupRequest } from '@metanoia/types';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
+import {
+  CreateGroupRequestSchema,
+  UpdateGroupRequestSchema,
+  type CreateGroupRequest,
+  type UpdateGroupRequest,
+} from '@metanoia/types';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -14,6 +32,17 @@ import { GroupsService } from './groups.service';
 export class GroupsController {
   constructor(private readonly service: GroupsService) {}
 
+  @Get()
+  async list() {
+    return this.service.list();
+  }
+
+  @Get(':id')
+  async detail(@Param('id', ParseUUIDPipe) id: string) {
+    const data = await this.service.findById(id);
+    return { data };
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @PlanLimit('groups')
@@ -22,5 +51,21 @@ export class GroupsController {
   ) {
     const data = await this.service.create(body);
     return { data };
+  }
+
+  @Patch(':id')
+  @UsePipes(new ZodValidationPipe(UpdateGroupRequestSchema))
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: UpdateGroupRequest,
+  ) {
+    const data = await this.service.update(id, body);
+    return { data };
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    await this.service.delete(id);
   }
 }

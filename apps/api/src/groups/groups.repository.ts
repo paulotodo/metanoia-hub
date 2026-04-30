@@ -39,4 +39,38 @@ export class GroupsRepository {
   async countByTenant(): Promise<number> {
     return this.prisma.tenant.group.count();
   }
+
+  async listByTenant(): Promise<Group[]> {
+    return this.prisma.tenant.group.findMany({
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async findById(id: string): Promise<Group | null> {
+    return this.prisma.tenant.group.findFirst({ where: { id } });
+  }
+
+  async update(
+    id: string,
+    patch: Partial<{
+      name: string;
+      dayOfWeek: string;
+      time: string;
+      recurrence: string;
+      notes: string | null;
+    }>,
+  ): Promise<Group | null> {
+    const existing = await this.findById(id);
+    if (!existing) return null;
+    return this.prisma.tenant.group.update({
+      where: { id },
+      data: patch,
+    });
+  }
+
+  async delete(id: string): Promise<Group | null> {
+    const existing = await this.findById(id);
+    if (!existing) return null;
+    return this.prisma.tenant.group.delete({ where: { id } });
+  }
 }

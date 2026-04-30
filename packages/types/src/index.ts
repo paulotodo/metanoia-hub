@@ -198,6 +198,12 @@ export {
   type CreateGroupRequest,
   GroupResponseSchema,
   type GroupResponse,
+  UpdateGroupRequestSchema,
+  type UpdateGroupRequest,
+  GroupsListResponseSchema,
+  type GroupsListResponse,
+  GroupDetailResponseSchema,
+  type GroupDetailResponse,
 } from './group';
 export {
   DemoRadarSignalSchema,

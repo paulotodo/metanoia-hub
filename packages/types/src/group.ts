@@ -43,3 +43,38 @@ export const GroupResponseSchema = z.object({
   updatedAt: z.string().datetime(),
 });
 export type GroupResponse = z.infer<typeof GroupResponseSchema>;
+
+// --- PATCH /api/v1/groups/:id ---
+
+export const UpdateGroupRequestSchema = z
+  .object({
+    name: z.string().min(2).max(120).optional(),
+    dayOfWeek: DayOfWeekSchema.optional(),
+    time: z
+      .string()
+      .regex(TIME_HH_MM_REGEX, 'Time must be in HH:MM format')
+      .optional(),
+    recurrence: GroupRecurrenceSchema.optional(),
+    notes: z.string().max(500).nullable().optional(),
+  })
+  .refine((v) => Object.keys(v).length > 0, {
+    message: 'at_least_one_field_required',
+  });
+export type UpdateGroupRequest = z.infer<typeof UpdateGroupRequestSchema>;
+
+// --- GET /api/v1/groups (list) ---
+
+export const GroupsListResponseSchema = z.object({
+  data: z.array(GroupResponseSchema),
+  meta: z.object({
+    total: z.number().int().nonnegative(),
+  }),
+});
+export type GroupsListResponse = z.infer<typeof GroupsListResponseSchema>;
+
+// --- GET /api/v1/groups/:id (detail envelope) ---
+
+export const GroupDetailResponseSchema = z.object({
+  data: GroupResponseSchema,
+});
+export type GroupDetailResponse = z.infer<typeof GroupDetailResponseSchema>;
