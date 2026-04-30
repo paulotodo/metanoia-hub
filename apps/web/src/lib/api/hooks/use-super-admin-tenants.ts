@@ -1,8 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  ProvisionStatusResponseSchema,
+  ProvisionTenantInputSchema,
+  ProvisionTenantResponseSchema,
   TenantDetailResponseSchema,
+  TenantPatchInputSchema,
+  TenantPatchResponseSchema,
   TenantsListResponseSchema,
+  type ProvisionStatusResponse,
+  type ProvisionTenantInput,
+  type ProvisionTenantResponse,
   type TenantDetailResponse,
+  type TenantPatchInput,
+  type TenantPatchResponse,
   type TenantPlan,
   type TenantStatus,
   type TenantsListQuery,
@@ -62,5 +72,67 @@ export function useSuperAdminTenant(id: string) {
       ),
     enabled: id.length > 0,
     staleTime: 15_000,
+  });
+}
+
+export function useProvisionTenant() {
+  const qc = useQueryClient();
+  return useMutation<ProvisionTenantResponse, Error, ProvisionTenantInput>({
+    mutationFn: (input) =>
+      envelopeClient.post(
+        '/admin/super/tenants',
+        ProvisionTenantInputSchema.parse(input),
+        ProvisionTenantResponseSchema,
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: superAdminTenantsKeys.all });
+    },
+  });
+}
+
+export function useProvisionStatus(
+  tenantId: string,
+  options: { enabled?: boolean; refetchInterval?: number } = {},
+) {
+  return useQuery<ProvisionStatusResponse>({
+    queryKey: [...superAdminTenantsKeys.all, 'provision-status', tenantId],
+    queryFn: () =>
+      envelopeClient.get(
+        `/admin/super/tenants/${tenantId}/provision-status`,
+        ProvisionStatusResponseSchema,
+      ),
+    enabled: tenantId.length > 0 && options.enabled !== false,
+    refetchInterval: options.refetchInterval ?? 2000,
+  });
+}
+
+export function usePatchTenant(id: string) {
+  const qc = useQueryClient();
+  return useMutation<TenantPatchResponse, Error, TenantPatchInput>({
+    mutationFn: (input) =>
+      envelopeClient.patch(
+        `/admin/super/tenants/${id}`,
+        TenantPatchInputSchema.parse(input),
+        TenantPatchResponseSchema,
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: superAdminTenantsKeys.detail(id) });
+      void qc.invalidateQueries({ queryKey: superAdminTenantsKeys.all });
+    },
+  });
+}
+
+export function useRetryProvision(id: string) {
+  const qc = useQueryClient();
+  return useMutation<ProvisionTenantResponse, Error>({
+    mutationFn: () =>
+      envelopeClient.post(
+        `/admin/super/tenants/${id}/retry`,
+        {},
+        ProvisionTenantResponseSchema,
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: superAdminTenantsKeys.detail(id) });
+    },
   });
 }
