@@ -67,6 +67,9 @@ export const envelopeClient = {
   put: <T>(path: string, body: unknown, schema: Schema<T>) =>
     request(path, { method: 'PUT', body: JSON.stringify(body) }, schema),
 
+  patch: <T>(path: string, body: unknown, schema: Schema<T>) =>
+    request(path, { method: 'PATCH', body: JSON.stringify(body) }, schema),
+
   delete: (path: string): Promise<void> =>
     request(path, { method: 'DELETE' }) as Promise<void>,
 };
