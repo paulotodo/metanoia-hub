@@ -150,6 +150,7 @@ model Tenant {
   status            String   @default("active") @db.VarChar(32)
   adminEmail        String?  @map("admin_email") @db.VarChar(320)
   provisioningState Json?    @map("provisioning_state")
+  isDemo            Boolean  @default(false) @map("is_demo")
   createdAt         DateTime @default(now()) @map("created_at")
 
   groups  Group[]
