@@ -18,7 +18,9 @@
     "db:seed": "prisma db seed",
     "db:seed:radar": "tsx prisma/seed-radar.ts",
     "db:seed:invites": "tsx prisma/seed-invites.ts",
-    "db:seed:scenario-03": "tsx prisma/seed-scenario-03.ts"
+    "db:seed:scenario-03": "tsx prisma/seed-scenario-03.ts",
+    "db:seed:demo": "tsx prisma/seeds/demo-seed.ts",
+    "db:seed:demo:clean": "tsx prisma/seeds/demo-seed-clean.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.18",
