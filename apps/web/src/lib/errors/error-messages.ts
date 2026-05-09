@@ -8,7 +8,7 @@ const ERROR_NAME_TO_KEY: Record<string, string> = {
   Unauthorized: 'auth.sessionExpired',
   NotFound: 'notFound.generic',
   ConsentRequired: 'conflict.consentRequired',
-  PlanLimitReached: 'plan.limitReachedGeneric',
+  PlanLimitReached: 'plan.limitReached',
   Conflict: 'conflict.duplicate',
   TooManyRequests: 'rateLimit.tooManyRequests',
   BadRequest: 'validation.generic',
@@ -75,8 +75,23 @@ export function resolveError(error: unknown): ResolvedError {
     if (mappedKey) {
       const template = lookup(mappedKey);
       if (template) {
+        const interpolated = interpolate(template, params);
+        // If interpolation left placeholders unresolved (backend didn't send
+        // the expected details keys), fall back to a generic variant rather
+        // than showing "{current}/{max}" literals to the user.
+        if (interpolated.includes('{')) {
+          const genericKey = `${mappedKey}Generic`;
+          const generic = lookup(genericKey);
+          if (generic) {
+            return {
+              message: generic,
+              errorKey: genericKey,
+              statusCode: error.statusCode,
+            };
+          }
+        }
         return {
-          message: interpolate(template, params),
+          message: interpolated,
           errorKey: mappedKey,
           statusCode: error.statusCode,
         };

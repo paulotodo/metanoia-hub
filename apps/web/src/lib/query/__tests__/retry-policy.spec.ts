@@ -14,15 +14,23 @@ describe('shouldRetryQuery', () => {
     expect(shouldRetryQuery(3, new Error('net'))).toBe(false);
   });
 
-  it('does NOT retry 4xx ApiErrors (deterministic, user-fault)', () => {
+  it('does NOT retry deterministic 4xx ApiErrors', () => {
     expect(shouldRetryQuery(0, new ApiError(400, 'BadRequest', 'x'))).toBe(false);
     expect(shouldRetryQuery(0, new ApiError(401, 'Unauthorized', 'x'))).toBe(
       false,
     );
     expect(shouldRetryQuery(0, new ApiError(403, 'Forbidden', 'x'))).toBe(false);
     expect(shouldRetryQuery(0, new ApiError(404, 'NotFound', 'x'))).toBe(false);
-    expect(shouldRetryQuery(0, new ApiError(429, 'TooManyRequests', 'x'))).toBe(
+    expect(shouldRetryQuery(0, new ApiError(422, 'Unprocessable', 'x'))).toBe(
       false,
+    );
+  });
+
+  it('retries transient 4xx ApiErrors (408, 425, 429)', () => {
+    expect(shouldRetryQuery(0, new ApiError(408, 'Timeout', 'x'))).toBe(true);
+    expect(shouldRetryQuery(0, new ApiError(425, 'TooEarly', 'x'))).toBe(true);
+    expect(shouldRetryQuery(0, new ApiError(429, 'TooManyRequests', 'x'))).toBe(
+      true,
     );
   });
 

@@ -7,7 +7,7 @@ describe('resolveError', () => {
     const err = new ApiError(403, 'Forbidden', 'irrelevant', {
       errorKey: 'plan.limitReached',
       current: 3,
-      max: 3,
+      limit: 3,
       resource: 'grupos',
     });
 
@@ -16,6 +16,28 @@ describe('resolveError', () => {
     expect(r.message).toContain('3/3');
     expect(r.message).toContain('grupos');
     expect(r.message).toContain('upgrade');
+  });
+
+  it('interpolates plan.limitReached from PlanLimitReached + backend details', () => {
+    // Mirrors the actual NestJS PlanLimitsGuard payload (no errorKey, field is `limit`).
+    const err = new ApiError(403, 'PlanLimitReached', 'plan exceeded', {
+      resource: 'grupos',
+      plan: 'starter',
+      current: 3,
+      limit: 3,
+    });
+
+    const r = resolveError(err);
+    expect(r.errorKey).toBe('plan.limitReached');
+    expect(r.message).toContain('3/3 grupos');
+    expect(r.message).not.toContain('{');
+  });
+
+  it('falls back to plan.limitReachedGeneric when details lack interpolation keys', () => {
+    const err = new ApiError(403, 'PlanLimitReached', 'plan exceeded');
+    const r = resolveError(err);
+    expect(r.errorKey).toBe('plan.limitReachedGeneric');
+    expect(r.message).not.toContain('{');
   });
 
   it('maps known error names to keys', () => {

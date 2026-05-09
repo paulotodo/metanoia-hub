@@ -41,6 +41,42 @@ describe('ClientErrorReportSchema (contract snapshot)', () => {
     ).toThrow();
   });
 
+  it('rejects control chars in route (log injection guard)', () => {
+    expect(() =>
+      ClientErrorReportSchema.parse({
+        errorName: 'X',
+        message: 'y',
+        route: '/legit\nFAKE LOG ENTRY',
+      }),
+    ).toThrow();
+  });
+
+  it('rejects control chars in errorName (log injection guard)', () => {
+    expect(() =>
+      ClientErrorReportSchema.parse({
+        errorName: 'TypeError\r\nFAKE',
+        message: 'y',
+      }),
+    ).toThrow();
+  });
+
+  it('rejects non-error statusCode (1xx/2xx/3xx are not error reports)', () => {
+    expect(() =>
+      ClientErrorReportSchema.parse({
+        errorName: 'X',
+        message: 'y',
+        statusCode: 200,
+      }),
+    ).toThrow();
+    expect(() =>
+      ClientErrorReportSchema.parse({
+        errorName: 'X',
+        message: 'y',
+        statusCode: 399,
+      }),
+    ).toThrow();
+  });
+
   it('rejects non-UUID userId/tenantId', () => {
     expect(() =>
       ClientErrorReportSchema.parse({

@@ -30,6 +30,21 @@ const STATUS_TO_ERROR_NAME: Record<number, string> = {
   503: 'ServiceUnavailable',
 };
 
+/**
+ * Domain-specific `error` names a controller may set on its HttpException
+ * payload. Anything outside this set falls back to the status-derived name —
+ * prevents arbitrary attacker strings from reaching the FE error key map.
+ */
+const ALLOWED_DOMAIN_ERRORS = new Set<string>([
+  'ConsentRequired',
+  'PlanLimitReached',
+  'TenantSuspended',
+  'InvalidInvite',
+  'MfaRequired',
+  'EmailAlreadyTaken',
+  ...Object.values(STATUS_TO_ERROR_NAME),
+]);
+
 function pickStatus(exception: unknown): number {
   if (exception instanceof HttpException) return exception.getStatus();
   return HttpStatus.INTERNAL_SERVER_ERROR;
@@ -61,7 +76,7 @@ export function buildEnvelope(
 
       const rawError = body['error'];
       const error =
-        typeof rawError === 'string' && !rawError.includes(' ')
+        typeof rawError === 'string' && ALLOWED_DOMAIN_ERRORS.has(rawError)
           ? rawError
           : (STATUS_TO_ERROR_NAME[statusCode] ?? 'Error');
 

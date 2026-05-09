@@ -859,7 +859,7 @@
       "mfaRequired": "Confirme o código MFA para continuar."
     },
     "plan": {
-      "limitReached": "Limite do plano atingido ({current}/{max} {resource}). Fale com o administrador para upgrade.",
+      "limitReached": "Limite do plano atingido ({current}/{limit} {resource}). Fale com o administrador para upgrade.",
       "limitReachedGeneric": "Você atingiu o limite do seu plano. Fale com o administrador para upgrade."
     },
     "notFound": {

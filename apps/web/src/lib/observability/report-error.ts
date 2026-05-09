@@ -1,12 +1,27 @@
 import type { ClientErrorReport } from '@metanoia/types';
 import { ApiError } from '../api/client';
 
-const ENDPOINT = '/api/v1/observability/client-errors';
+const ENDPOINT_PATH = '/api/v1/observability/client-errors';
 const TIMEOUT_MS = 3_000;
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
-const REPORT_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '') + ENDPOINT;
+/**
+ * Resolve the full report URL from `NEXT_PUBLIC_API_URL`. Strips any path
+ * component so callers configuring `https://api.x.com` or `https://api.x.com/api/v1`
+ * both end up at `https://api.x.com/api/v1/observability/client-errors`.
+ */
+function resolveReportUrl(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+  try {
+    return new URL(ENDPOINT_PATH, new URL(raw).origin).toString();
+  } catch {
+    // Last-resort fallback — same-origin POST will at least surface CORS
+    // failures during local dev rather than producing malformed URLs.
+    return ENDPOINT_PATH;
+  }
+}
+
+const REPORT_URL = resolveReportUrl();
 
 export interface ReportErrorContext {
   route?: string;

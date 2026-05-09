@@ -16,6 +16,7 @@ interface Bucket {
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 30;
 const MAX_TRACKED_IPS = 10_000;
+const EVICT_BATCH = 256;
 
 /**
  * In-memory IP rate limiter for the public client-error reporting endpoint.
@@ -23,7 +24,8 @@ const MAX_TRACKED_IPS = 10_000;
  * normal during incidents and we don't want to throttle our own telemetry.
  *
  * Single-process; swap for a Redis-backed implementation if we ever scale
- * the API horizontally.
+ * the API horizontally. Trusts `req.ip` to reflect the real client IP, which
+ * requires `app.set('trust proxy', ...)` in bootstrap.
  */
 @Injectable()
 export class ClientErrorRateLimitGuard implements CanActivate {
@@ -32,15 +34,14 @@ export class ClientErrorRateLimitGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<Request>();
-    const ip = req.ip ?? req.socket.remoteAddress ?? 'unknown';
+    const key = this.resolveKey(req);
     const now = Date.now();
 
-    this.evictExpired(now);
-
-    let bucket = this.buckets.get(ip);
+    let bucket = this.buckets.get(key);
     if (!bucket || bucket.resetAt <= now) {
+      this.evict(now);
       bucket = { count: 1, resetAt: now + WINDOW_MS };
-      this.buckets.set(ip, bucket);
+      this.buckets.set(key, bucket);
       return true;
     }
 
@@ -48,7 +49,7 @@ export class ClientErrorRateLimitGuard implements CanActivate {
     if (bucket.count > MAX_REQUESTS) {
       const retryAfterSec = Math.ceil((bucket.resetAt - now) / 1000);
       this.logger.warn(
-        { ip, count: bucket.count, retryAfterSec },
+        { key, count: bucket.count, retryAfterSec },
         'client-error rate limit exceeded',
       );
       throw new HttpException(
@@ -63,10 +64,32 @@ export class ClientErrorRateLimitGuard implements CanActivate {
     return true;
   }
 
-  private evictExpired(now: number): void {
-    if (this.buckets.size <= MAX_TRACKED_IPS) return;
-    for (const [ip, bucket] of this.buckets) {
-      if (bucket.resetAt <= now) this.buckets.delete(ip);
+  private resolveKey(req: Request): string {
+    return req.ip ?? req.socket.remoteAddress ?? 'unknown';
+  }
+
+  /**
+   * Evict expired buckets on every fresh window, plus a hard-cap fallback
+   * in case unique IPs accumulate faster than they expire (CGNAT, mobile
+   * rotations, Tor). Bounded work per call to keep the path O(EVICT_BATCH).
+   */
+  private evict(now: number): void {
+    let scanned = 0;
+    for (const [key, bucket] of this.buckets) {
+      if (bucket.resetAt <= now) {
+        this.buckets.delete(key);
+      }
+      if (++scanned >= EVICT_BATCH) break;
+    }
+
+    if (this.buckets.size > MAX_TRACKED_IPS) {
+      const overflow = this.buckets.size - MAX_TRACKED_IPS;
+      let removed = 0;
+      for (const key of this.buckets.keys()) {
+        if (removed >= overflow) break;
+        this.buckets.delete(key);
+        removed += 1;
+      }
     }
   }
 }

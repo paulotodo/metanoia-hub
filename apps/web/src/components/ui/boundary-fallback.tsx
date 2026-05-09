@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@metanoia/ui';
 import { reportError } from '@/lib/observability/report-error';
 import messages from '../../../messages/pt-BR.json';
@@ -35,7 +35,12 @@ export function BoundaryFallback({
   route,
   withRootShell = false,
 }: BoundaryFallbackProps) {
+  // React 19 StrictMode runs effects twice in dev — without this guard the
+  // boundary would fire two beacons per crash and pollute Sentry.
+  const reportedRef = useRef<Error | null>(null);
   useEffect(() => {
+    if (reportedRef.current === error) return;
+    reportedRef.current = error;
     reportError(error, {
       route: route ?? (typeof window !== 'undefined' ? window.location.pathname : undefined),
       digest: error.digest,
@@ -52,7 +57,7 @@ export function BoundaryFallback({
       <h1 className="text-2xl font-semibold text-text-primary md:text-3xl">
         {t.title}
       </h1>
-      <p className="max-w-md text-base text-[var(--color-text-muted)]">
+      <p className="text-text-muted max-w-md text-base">
         {t.description}
       </p>
       <div className="flex gap-3">

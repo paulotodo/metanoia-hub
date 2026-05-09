@@ -109,6 +109,22 @@ describe('AllExceptionsFilter', () => {
       const env = buildEnvelope(new HttpException('hi', 400), 400);
       expect(env).not.toHaveProperty('details');
     });
+
+    it('rejects unknown error names (whitelist guards FE error key map)', () => {
+      const exc = new HttpException(
+        { error: 'attacker-controlled-name', message: 'oops' },
+        400,
+      );
+      expect(buildEnvelope(exc, 400).error).toBe('BadRequest');
+    });
+
+    it('accepts whitelisted domain error names', () => {
+      const exc = new HttpException(
+        { error: 'PlanLimitReached', message: 'too many groups' },
+        403,
+      );
+      expect(buildEnvelope(exc, 403).error).toBe('PlanLimitReached');
+    });
   });
 
   describe('catch', () => {

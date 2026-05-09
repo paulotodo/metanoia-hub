@@ -62,13 +62,50 @@ describe('ObservabilityController', () => {
       '/admin/igreja/vista',
     );
     expect(capturedScope.setTag).toHaveBeenCalledWith('digest', 'abc123');
-    expect(capturedScope.setUser).toHaveBeenCalledWith({
-      id: '019486f0-1234-7abc-89de-fedcba987654',
-    });
+    // tenantId/userId from a public endpoint are CLAIMED by an unauthenticated
+    // client — namespace them so dashboards never confuse them with token IDs.
+    expect(capturedScope.setTag).toHaveBeenCalledWith(
+      'claimedTenantId',
+      '019486f0-aaaa-7bbb-9ccc-ddddeeeeffff',
+    );
+    expect(capturedScope.setTag).toHaveBeenCalledWith(
+      'claimedUserId',
+      '019486f0-1234-7abc-89de-fedcba987654',
+    );
+    expect(capturedScope.setUser).not.toHaveBeenCalled();
     expect(capturedScope.setExtra).toHaveBeenCalledWith(
       'componentStack',
       'at PageA\n  at LayoutB',
     );
+  });
+
+  it('strips control chars from user-supplied strings (log injection guard)', () => {
+    let capturedScope: any;
+    vi.mocked(Sentry.withScope).mockImplementation((cb: any) => {
+      const scope = {
+        setTag: vi.fn(),
+        setUser: vi.fn(),
+        setExtra: vi.fn(),
+      };
+      capturedScope = scope;
+      cb(scope);
+    });
+
+    controller.reportClientError({
+      errorName: 'TypeError',
+      message: 'real message',
+      route: '/legit\nFAKE LOG ENTRY',
+      digest: 'abc\r123',
+    });
+
+    const routeCall = capturedScope.setTag.mock.calls.find(
+      (c: unknown[]) => c[0] === 'route',
+    );
+    const digestCall = capturedScope.setTag.mock.calls.find(
+      (c: unknown[]) => c[0] === 'digest',
+    );
+    expect(routeCall?.[1]).not.toMatch(/[\r\n]/);
+    expect(digestCall?.[1]).not.toMatch(/[\r\n]/);
   });
 
   it('reports without optional fields when omitted', () => {
