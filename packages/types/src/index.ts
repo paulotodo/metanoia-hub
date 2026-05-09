@@ -1,6 +1,10 @@
 export { PaginationSchema, type Pagination } from './pagination';
 export { generateId } from './id';
 export {
+  ClientErrorReportSchema,
+  type ClientErrorReport,
+} from './observability';
+export {
   MeetingEventSchema,
   type MeetingEvent,
   LiveKitWebhookEventSchema,

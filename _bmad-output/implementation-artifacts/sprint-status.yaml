@@ -121,7 +121,7 @@ development_status:
   epic-7: in-progress
   7-1-tela-de-boas-vindas-personalizada: ready-for-dev
   7-2-dados-de-demonstracao-realistas: done
-  7-3-mensagens-de-erro-acionaveis: ready-for-dev
+  7-3-mensagens-de-erro-acionaveis: review
   epic-7-retrospective: optional
 
   # ============================================
