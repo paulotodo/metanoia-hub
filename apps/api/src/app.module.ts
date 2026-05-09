@@ -23,6 +23,7 @@ import { GroupMembersModule } from './group-members/group-members.module';
 import { AdminInvitesModule } from './admin-invites/admin-invites.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { MarketingModule } from './marketing/marketing.module';
+import { ObservabilityModule } from './observability/observability.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -58,6 +59,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     AdminInvitesModule,
     OnboardingModule,
     MarketingModule,
+    ObservabilityModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -9,17 +9,18 @@ vi.mock('@sentry/nestjs', () => ({
     return scope;
   }),
   captureException: vi.fn(),
+  captureMessage: vi.fn(),
 }));
 
 import * as Sentry from '@sentry/nestjs';
-import { SentryExceptionFilter } from '../../src/common/sentry/sentry.filter';
+import { AllExceptionsFilter } from '../../src/common/filters/http-exception.filter';
 
 /**
  * NFR-O2: Application errors generate Sentry alerts
  * with sufficient diagnostic context.
  */
 describe('NFR-O2: Sentry receives adequate context on errors', () => {
-  let filter: SentryExceptionFilter;
+  let filter: AllExceptionsFilter;
   let mockHost: any;
   let mockResponse: any;
 
@@ -44,7 +45,7 @@ describe('NFR-O2: Sentry receives adequate context on errors', () => {
       getType: () => 'http' as any,
     };
 
-    filter = new SentryExceptionFilter({
+    filter = new AllExceptionsFilter({
       reply: (_response: any, body: any, statusCode: number) => {
         mockResponse.status(statusCode);
         mockResponse.json(body);
@@ -82,7 +83,10 @@ describe('NFR-O2: Sentry receives adequate context on errors', () => {
         expect(Sentry.captureException).toHaveBeenCalledWith(error);
         expect(capturedScope.setTag).toHaveBeenCalledWith('tenantId', 'tenant-nfr');
         expect(capturedScope.setTag).toHaveBeenCalledWith('requestId', 'req-nfr-001');
-        expect(capturedScope.setTag).toHaveBeenCalledWith('correlationId', 'corr-nfr-001');
+        expect(capturedScope.setTag).toHaveBeenCalledWith(
+          'correlationId',
+          'corr-nfr-001',
+        );
         expect(capturedScope.setUser).toHaveBeenCalledWith({ id: 'user-nfr' });
         resolve();
       });
@@ -101,7 +105,10 @@ describe('NFR-O2: Sentry receives adequate context on errors', () => {
     filter.catch(error, mockHost);
 
     expect(Sentry.captureException).toHaveBeenCalledWith(error);
-    expect(capturedScope.setTag).not.toHaveBeenCalledWith('tenantId', expect.anything());
+    expect(capturedScope.setTag).not.toHaveBeenCalledWith(
+      'tenantId',
+      expect.anything(),
+    );
     expect(capturedScope.setUser).not.toHaveBeenCalled();
   });
 
@@ -124,8 +131,14 @@ describe('NFR-O2: Sentry receives adequate context on errors', () => {
         const error = new Error('Error on public route');
         filter.catch(error, mockHost);
 
-        expect(capturedScope.setTag).toHaveBeenCalledWith('requestId', 'req-public-002');
-        expect(capturedScope.setTag).not.toHaveBeenCalledWith('tenantId', expect.anything());
+        expect(capturedScope.setTag).toHaveBeenCalledWith(
+          'requestId',
+          'req-public-002',
+        );
+        expect(capturedScope.setTag).not.toHaveBeenCalledWith(
+          'tenantId',
+          expect.anything(),
+        );
         resolve();
       });
     });

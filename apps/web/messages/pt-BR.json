@@ -848,5 +848,50 @@
         "cancel": "Cancelar"
       }
     }
+  },
+  "error": {
+    "permission": {
+      "denied": "Você não tem permissão para esta ação. Fale com o administrador do seu grupo."
+    },
+    "auth": {
+      "sessionExpired": "Sua sessão expirou. Entre novamente para continuar.",
+      "invalidCredentials": "E-mail ou senha incorretos. Verifique e tente novamente.",
+      "mfaRequired": "Confirme o código MFA para continuar."
+    },
+    "plan": {
+      "limitReached": "Limite do plano atingido ({current}/{limit} {resource}). Fale com o administrador para upgrade.",
+      "limitReachedGeneric": "Você atingiu o limite do seu plano. Fale com o administrador para upgrade."
+    },
+    "notFound": {
+      "generic": "Recurso não encontrado. Verifique o endereço ou volte ao início.",
+      "group": "Grupo não encontrado. Talvez tenha sido removido — volte para a listagem.",
+      "meeting": "Reunião não encontrada. Confirme o link ou volte para a agenda.",
+      "tenant": "Igreja não encontrada. Selecione outra ou contate o administrador."
+    },
+    "validation": {
+      "generic": "Verifique os campos destacados e tente novamente.",
+      "required": "Preencha {field} para continuar."
+    },
+    "conflict": {
+      "duplicate": "Já existe um registro com esses dados. Verifique e tente novamente.",
+      "consentRequired": "Você precisa aceitar os termos atualizados para continuar."
+    },
+    "rateLimit": {
+      "tooManyRequests": "Muitas tentativas em pouco tempo. Aguarde um instante e tente novamente."
+    },
+    "network": {
+      "failed": "Não foi possível carregar. Verifique sua conexão e tente novamente.",
+      "retry": "Tentar novamente",
+      "retrying": "Tentando reconectar..."
+    },
+    "boundary": {
+      "title": "Algo não saiu como esperado",
+      "description": "Tivemos um imprevisto ao carregar esta página. Nossa equipe foi avisada — você pode tentar novamente.",
+      "retry": "Tentar novamente",
+      "home": "Voltar ao início"
+    },
+    "unknown": {
+      "generic": "Aconteceu um imprevisto. Tente novamente em instantes."
+    }
   }
 }
