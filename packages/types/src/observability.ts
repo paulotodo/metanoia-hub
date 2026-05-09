@@ -11,6 +11,7 @@ import { z } from 'zod';
 // Reject CR/LF/control chars in user-supplied strings — they reach pino logs
 // and Sentry tags from a public endpoint, so log forging must be blocked at
 // the contract.
+// eslint-disable-next-line no-control-regex
 const NO_CONTROL_CHARS = /^[^\x00-\x1f\x7f]*$/;
 
 export const ClientErrorReportSchema = z.object({
