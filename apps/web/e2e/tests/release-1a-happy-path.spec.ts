@@ -101,7 +101,9 @@ test.describe('Release 1a happy path', () => {
           timeout: 15_000,
         });
         await page.getByTestId(`church-card-${E2E_DEMO_TENANT_ID}`).click();
-        await page.waitForURL(/^\/(app)(\/|$)/, { timeout: 15_000 });
+        // waitForURL matches against the full URL (http://host:3000/app/...),
+        // not just the pathname — anchor accordingly.
+        await page.waitForURL(/\/app(\/|$)/, { timeout: 15_000 });
       });
 
       let groupId = '';
