@@ -220,16 +220,20 @@ async function main() {
 
   // Keyed by `id` (not `email`) so a re-run never reassigns a pre-existing
   // user from another tenant onto DEMO_TENANT_ID via email collision.
+  // Users.tenantId stays null (matches the registered-user pattern). Tenant
+  // membership lives in `user_tenants`. Setting tenantId here would hide the
+  // user from the unauthenticated login lookup (RLS on `users` requires
+  // tenant_id = current_setting OR IS NULL).
   for (const u of users) {
     await prisma.user.upsert({
       where: { id: u.id },
-      update: { name: u.name, status: 'active' },
+      update: { name: u.name, status: 'active', tenantId: null },
       create: {
         id: u.id,
         email: u.email,
         name: u.name,
         status: 'active',
-        tenantId: DEMO_TENANT_ID,
+        tenantId: null,
       },
     });
   }
