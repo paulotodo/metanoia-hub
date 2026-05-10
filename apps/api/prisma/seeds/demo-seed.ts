@@ -265,6 +265,26 @@ async function main() {
     });
   }
 
+  // 3b. Consents — pre-accept LGPD/ToS for every demo user so login flow
+  // skips the /consent gate (matches the "this account has been around"
+  // expectation of demo data; otherwise login redirects to a consent page
+  // that does not yet exist).
+  for (const u of users) {
+    await prisma.consent.upsert({
+      where: { id: `019899a0-7002-9000-8000-${u.id.slice(-12)}` },
+      update: {},
+      create: {
+        id: `019899a0-7002-9000-8000-${u.id.slice(-12)}`,
+        userId: u.id,
+        tenantId: null,
+        documentType: 'terms_of_service',
+        version: '1.0.0',
+        ipAddress: '127.0.0.1',
+        userAgent: 'demo-seed',
+      },
+    });
+  }
+
   // 4. Group "Grupo Esperança" — quintas 19h30
   await prisma.group.upsert({
     where: { id: GROUP_ID },
