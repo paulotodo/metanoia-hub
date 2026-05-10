@@ -177,9 +177,9 @@ test.describe('Release 1a happy path', () => {
           // / etc) and never calls `GET /api/v1/invites/:token`. Real tokens
           // resolve to `invalid` → InviteErrorView is rendered. The wire-up
           // to the real API is logged as a separate P0 follow-up; this step
-          // smoke-checks that the route renders any heading + responds, so
-          // the rest of the flow stays guarded against regressions.
-          await expect(participantPage.getByRole('heading', { level: 1 })).toBeVisible({
+          // smoke-checks that the route serves the onboarding shell so the
+          // rest of the flow stays guarded against regressions.
+          await expect(participantPage.getByText(/metanoia[-\s]?hub/i).first()).toBeVisible({
             timeout: 15_000,
           });
         } finally {
