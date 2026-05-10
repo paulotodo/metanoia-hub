@@ -31,6 +31,8 @@ describe('TenantSelectionService', () => {
         findUnique: ReturnType<typeof vi.fn>;
       };
       tenant: { findMany: ReturnType<typeof vi.fn> };
+      $transaction: ReturnType<typeof vi.fn>;
+      $executeRawUnsafe: ReturnType<typeof vi.fn>;
     };
   };
   let redis: { set: ReturnType<typeof vi.fn> };
@@ -43,6 +45,11 @@ describe('TenantSelectionService', () => {
           findUnique: vi.fn(),
         },
         tenant: { findMany: vi.fn() },
+        // listMyTenants wraps the lookup in a $transaction so it can SET LOCAL
+        // app.current_tenant_id before reading. The mock just invokes the
+        // callback with `prisma.client` itself acting as the tx handle.
+        $transaction: vi.fn(async (cb: (tx: unknown) => unknown) => cb(prisma.client)),
+        $executeRawUnsafe: vi.fn().mockResolvedValue(undefined),
       },
     };
     redis = { set: vi.fn().mockResolvedValue('OK') };

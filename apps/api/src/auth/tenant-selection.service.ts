@@ -44,25 +44,42 @@ export class TenantSelectionService {
   ) {}
 
   async listMyTenants(): Promise<MyTenantItem[]> {
-    const { userId } = getRequestContext();
+    const ctx = getRequestContext();
+    const userId = ctx?.userId;
     if (!userId) {
       throw new ForbiddenException('userId missing from request context');
     }
 
-    const memberships = await this.prisma.client.userTenant.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'asc' },
+    // FORCE ROW LEVEL SECURITY on `user_tenants` and `tenants` requires
+    // `app.current_tenant_id` to be set per-transaction. Without it the
+    // membership lookup returns zero rows even when the membership exists.
+    // We seed the SQL var from the JWT's tenant_id claim (the user's
+    // primary tenant) so the membership for that tenant is visible.
+    //
+    // Limitation logged as P0 follow-up (Story 7-6): a user with multiple
+    // tenants only sees memberships matching their JWT claim. The proper
+    // fix is a BYPASSRLS connection or an RLS policy that allows
+    // `WHERE user_id = current_setting('app.current_user_id')`.
+    const result = await this.prisma.client.$transaction(async (tx) => {
+      if (ctx?.tenantId) {
+        await tx.$executeRawUnsafe(
+          `SET LOCAL app.current_tenant_id = '${ctx.tenantId}'`,
+        );
+      }
+      const memberships = await tx.userTenant.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'asc' },
+      });
+      if (memberships.length === 0) return { memberships, tenants: [] };
+      const tenantIds = memberships.map((m) => m.tenantId);
+      const tenants = await tx.tenant.findMany({
+        where: { id: { in: tenantIds } },
+      });
+      return { memberships, tenants };
     });
 
-    if (memberships.length === 0) return [];
-
-    const tenantIds = memberships.map((m) => m.tenantId);
-    const tenants = await this.prisma.client.tenant.findMany({
-      where: { id: { in: tenantIds } },
-    });
-    const tenantById = new Map(tenants.map((t) => [t.id, t]));
-
-    return memberships
+    const tenantById = new Map(result.tenants.map((t) => [t.id, t]));
+    return result.memberships
       .map((m): MyTenantItem | null => {
         const tenant = tenantById.get(m.tenantId);
         if (!tenant) return null;
