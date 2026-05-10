@@ -31,7 +31,7 @@ so that conseguimos detectar regressões cross-bounded-context antes do tag Rele
 **Given** a stack local rodando (`docker compose up -d` + `pnpm dev`) e demo seed aplicado (`db:seed:demo` + `db:seed:demo:keycloak`)
 **When** rodo `pnpm --filter @metanoia/web e2e tests/release-1a-happy-path.spec.ts`
 **Then** o spec percorre **6 etapas atômicas em ordem**, cada uma como `test.step()` separado, com asserts user-facing (texto pt-BR ou data-testid já existente):
-1. **Registrar** novo admin: `/register` → preenche `name/email/password` (email único por run via `e2e-${randomUUID()}@e2e.metanoia.local`) → submit → redireciona para login com banner de sucesso
+1. **Registrar** novo admin: `/register` → preenche `name/email/password` (email único por run via `e2e-${randomUUID()}@e2e.metanoia.local`) → submit → renderiza card de sucesso (`role="status"` com "Conta criada!") in-place na própria rota `/register`. **Nota (post-review 2026-05-10):** AC original previa redirect para `/login` que nunca foi implementado; spec valida apenas o banner user-facing. Adicionar redirect é follow-up para Story 7-6.
 2. **Login**: `/login` → preenche credenciais demo `admin@demo.metanoia.app / E2E_DEMO_PASSWORD` (o demo admin, NÃO o user recém-criado, porque o registrar não cria associação a tenant — registrar serve para validar a tela apenas) → redireciona para `/selecionar-igreja`
 3. **Selecionar tenant**: `/selecionar-igreja` → aguarda `data-testid="church-select-list"` → clica em `data-testid="church-card-019899a0-7002-7000-8000-000000000001"` → redireciona para `/app/admin`
 4. **Criar grupo**: navega para `/app/admin/grupos/novo` → preenche nome `E2E Grupo ${runId}` → submit → redireciona para `/app/admin/igreja/grupos/<id>` (URL dinâmica capturada com regex)

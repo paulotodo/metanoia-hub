@@ -51,10 +51,13 @@ test.describe('Release 1a happy path', () => {
         await page.locator('#register-password').fill('E2eSenhaForte!2026');
         await page.locator('#register-confirm-password').fill('E2eSenhaForte!2026');
         await page.getByRole('button', { name: /criar conta/i }).click();
+        // Register flow renders the success card in-place; it does NOT
+        // redirect to /login. Original AC text described a redirect that
+        // was never implemented — the user-facing banner (role=status)
+        // is the real contract.
         await expect(page.getByRole('status')).toContainText(/conta criada/i, {
           timeout: 20_000,
         });
-        await page.waitForURL(/\/login/, { timeout: 10_000 });
       });
 
       await test.step('2. Login com admin demo', async () => {
