@@ -4,17 +4,18 @@ import { PlanLimitsService } from '../plan-limits.service';
 const TENANT = '01912345-6789-7000-8000-000000000001';
 
 function makePrisma(plan: string, groupCount: number) {
+  // Service wraps lookups in $transaction to SET LOCAL the tenant context
+  // before reading. The mock just invokes the callback with the same tx
+  // handle exposing tenant/group/userTenant + $executeRawUnsafe.
+  const tx = {
+    tenant: { findUnique: vi.fn().mockResolvedValue(plan === null ? null : { plan }) },
+    group: { count: vi.fn().mockResolvedValue(groupCount) },
+    userTenant: { count: vi.fn().mockResolvedValue(0) },
+    $executeRawUnsafe: vi.fn().mockResolvedValue(undefined),
+  };
   return {
     client: {
-      tenant: {
-        findUnique: vi.fn().mockResolvedValue({ plan }),
-      },
-      group: {
-        count: vi.fn().mockResolvedValue(groupCount),
-      },
-      userTenant: {
-        count: vi.fn().mockResolvedValue(0),
-      },
+      $transaction: vi.fn(async (cb: (tx: unknown) => unknown) => cb(tx)),
     },
   } as never;
 }
@@ -31,11 +32,7 @@ describe('PlanLimitsService', () => {
   });
 
   it('getPlan defaults to free when tenant not found', async () => {
-    const s = new PlanLimitsService({
-      client: {
-        tenant: { findUnique: vi.fn().mockResolvedValue(null) },
-      },
-    } as never);
+    const s = new PlanLimitsService(makePrisma(null as unknown as string, 0));
     expect(await s.getPlan(TENANT)).toBe('free');
   });
 
