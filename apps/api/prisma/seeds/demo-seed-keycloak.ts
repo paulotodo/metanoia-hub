@@ -99,7 +99,10 @@ async function createUser(
       lastName,
       enabled: true,
       emailVerified: true,
-      attributes: { tenantId: [DEMO_TENANT_ID], appUserId: [user.id] },
+      // Realm protocol mapper reads user attribute `tenant_id` (snake_case)
+      // and emits it as JWT claim `tenant_id`. KeycloakAuthGuard requires it
+      // — without it every authenticated request returns 401.
+      attributes: { tenant_id: [DEMO_TENANT_ID] },
       credentials: [{ type: 'password', value: E2E_DEMO_PASSWORD, temporary: false }],
     }),
   });
