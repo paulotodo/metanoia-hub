@@ -23,7 +23,7 @@ env:
   REDIS_URL: redis://localhost:6380
   KEYCLOAK_URL: http://localhost:8081
   KEYCLOAK_REALM: metanoia
-  KEYCLOAK_CLIENT_ID: metanoia-app
+  KEYCLOAK_CLIENT_ID: metanoia-web
   MINIO_ENDPOINT: http://localhost:9002
   MINIO_ACCESS_KEY: minioadmin
   MINIO_SECRET_KEY: minioadmin
@@ -259,16 +259,6 @@ jobs:
 
       - name: Wait for services
         run: pnpm dlx wait-on -t 90000 http://localhost:3001/api/health http://localhost:3000
-
-      - name: Probe register endpoint (debug visibility)
-        run: |
-          set +e
-          curl -sS -o /tmp/e2e-logs/register-probe.json -w 'HTTP %{http_code}\n' \
-            -X POST http://localhost:3001/api/v1/auth/register \
-            -H 'Content-Type: application/json' \
-            -d '{"name":"CI Probe","email":"ci-probe@e2e.metanoia.local","password":"CiProbeSenha!2026"}'
-          echo '--- response body ---'
-          cat /tmp/e2e-logs/register-probe.json || true
 
       - name: Run Playwright tests
         run: pnpm --filter @metanoia/web e2e
