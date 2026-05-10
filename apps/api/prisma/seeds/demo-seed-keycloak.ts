@@ -414,7 +414,7 @@ async function main() {
   await pg.end();
 
   console.log(
-    `\nDemo Keycloak seed concluído: ${created} criados, ${updated} atualizados (senha = E2E_DEMO_PASSWORD).`,
+    `\nDemo Keycloak seed completed: ${created} created, ${updated} updated (password = E2E_DEMO_PASSWORD).`,
   );
 }
 

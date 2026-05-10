@@ -47,9 +47,27 @@ export async function apiPost<TBody, TResponse>(
 
   if (!response.ok()) {
     throw new Error(
-      `POST ${url} failed (${response.status()}): ${JSON.stringify(parsed).slice(0, 300)}`,
+      `POST ${url} failed (${response.status()}): ${redactSecrets(parsed).slice(0, 300)}`,
     );
   }
 
   return { status: response.status(), data: parsed as TResponse };
+}
+
+const SECRET_KEYS = new Set([
+  'accesstoken',
+  'refreshtoken',
+  'sessionid',
+  'authorization',
+  'password',
+  'token',
+]);
+
+function redactSecrets(value: unknown): string {
+  return JSON.stringify(value, (key, val) => {
+    if (typeof key === 'string' && SECRET_KEYS.has(key.toLowerCase())) {
+      return '[REDACTED]';
+    }
+    return val as unknown;
+  });
 }

@@ -183,14 +183,18 @@ jobs:
     name: E2E (Playwright)
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:3000
       E2E_API_URL: http://localhost:3001
+      # Ephemeral demo password — Keycloak realm and Postgres are wiped at the
+      # end of every run. Override via repo secret `E2E_DEMO_PASSWORD` if
+      # tightening is needed.
       E2E_DEMO_PASSWORD: ${{ secrets.E2E_DEMO_PASSWORD || 'Demo!Pass2026' }}
       E2E_DEMO_TENANT_ID: 019899a0-7002-7000-8000-000000000001
       E2E_DEMO_ADMIN_EMAIL: admin@demo.metanoia.app
-      KEYCLOAK_ADMIN_USER: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER || 'admin' }}
+      KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD || 'admin' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -216,7 +220,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
+          # Keyed on the lockfile so patch-level upgrades of @playwright/test
+          # invalidate the binary cache.
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Install Playwright (chromium)
         run: pnpm --filter @metanoia/web exec playwright install --with-deps chromium
@@ -256,6 +262,8 @@ jobs:
         run: |
           pnpm --filter @metanoia/web start > /tmp/e2e-logs/web.log 2>&1 &
           echo $! > /tmp/e2e-logs/web.pid
+        env:
+          PORT: '3000'
 
       - name: Wait for services
         run: pnpm dlx wait-on -t 90000 http://localhost:3001/api/health http://localhost:3000
