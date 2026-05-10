@@ -93,6 +93,11 @@ async function createUser(
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
+      // Pin the KC user id to the same UUID as the PG `users.id` row so
+      // the JWT `sub`/`user_id` claim matches `user_tenants.user_id` etc.
+      // Without this, KC autogenerates a random id and downstream lookups
+      // (e.g. /my-tenants) return empty results.
+      id: user.id,
       username: user.email,
       email: user.email,
       firstName,
