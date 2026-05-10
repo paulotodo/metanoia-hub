@@ -64,24 +64,22 @@ test.describe('Release 1a happy path', () => {
         await page.goto('/login');
         await page.locator('#login-email').fill(E2E_DEMO_ADMIN_EMAIL);
         await page.locator('#login-password').fill(E2E_DEMO_PASSWORD);
-
-        // Capture the login response while submitting via the real form so we
-        // get a bearer token for cleanup without bypassing the UI handler.
-        const loginResponsePromise = page.waitForResponse(
-          (response) =>
-            response.url().endsWith('/api/v1/auth/login') &&
-            response.request().method() === 'POST',
-          { timeout: 20_000 },
-        );
         await page.locator('form button[type="submit"]').click();
-        const loginResponse = await loginResponsePromise;
-        const loginBody = (await loginResponse.json()) as {
-          data: { accessToken: string };
-        };
-        bearerToken = loginBody.data.accessToken;
-        expect(bearerToken, 'login response missing data.accessToken').toBeTruthy();
-
         await page.waitForURL(/\/selecionar-igreja/, { timeout: 15_000 });
+
+        // Read the bearer from sessionStorage (the login form persists it
+        // there before redirecting). Reading the network response body is
+        // unreliable here: the form calls `sessionStorage.setItem` and
+        // `window.location.href` in the same microtask, so by the time
+        // `response.json()` runs Chromium has already discarded the
+        // resource ("Network.getResponseBody: No resource with given
+        // identifier found"). sessionStorage matches what the real app
+        // consumes anyway.
+        const token = await page.evaluate(() =>
+          sessionStorage.getItem('accessToken'),
+        );
+        expect(token, 'sessionStorage missing accessToken after login').toBeTruthy();
+        bearerToken = token as string;
       });
 
       await test.step('3. Selecionar tenant demo', async () => {
