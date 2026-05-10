@@ -29,6 +29,17 @@ export const DEMO_TENANT_ID = '019899a0-7002-7000-8000-000000000001';
 const ADMIN_ID = '019899a0-7002-7000-8000-000000000002';
 const LEADER_ID = '019899a0-7002-7000-8000-000000000003';
 
+// --- Public exports for downstream provisioning (Story 7-4 Keycloak seed) ----
+
+export type DemoRole = 'admin_tenant' | 'lider' | 'participante';
+
+export interface DemoUser {
+  id: string;
+  email: string;
+  name: string;
+  role: DemoRole;
+}
+
 const GROUP_ID = '019899a0-7002-1000-8000-000000000001';
 
 type Status = 'verde' | 'amarelo' | 'vermelho' | 'novo';
@@ -152,6 +163,17 @@ const PARTICIPANTS: Participant[] = [
     trend: 'estavel',
     presence: [],
   },
+];
+
+export const DEMO_USERS: DemoUser[] = [
+  { id: ADMIN_ID, email: 'admin@demo.metanoia.app', name: 'Pastora Sofia Mendes', role: 'admin_tenant' },
+  { id: LEADER_ID, email: 'lider@demo.metanoia.app', name: 'Líder Mateus Ribeiro', role: 'lider' },
+  ...PARTICIPANTS.map<DemoUser>((p) => ({
+    id: p.id,
+    email: p.email,
+    name: p.name,
+    role: 'participante',
+  })),
 ];
 
 const STATUS_TO_SIGNAL: Record<Exclude<Status, 'novo'>, string> = {

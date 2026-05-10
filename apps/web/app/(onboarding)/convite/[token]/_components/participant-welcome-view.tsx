@@ -18,7 +18,10 @@ export function ParticipantWelcomeView({
 }: ParticipantWelcomeViewProps) {
   const { leader, group } = invite;
   return (
-    <div className="flex w-full flex-col items-center gap-6">
+    <div
+      data-testid="participant-welcome-view"
+      className="flex w-full flex-col items-center gap-6"
+    >
       <LeaderAvatar firstName={leader.firstName} avatarUrl={leader.avatarUrl} />
       <h1 className="text-center text-[22px] font-bold leading-tight text-[var(--color-text-primary)] sm:text-[28px]">
         O {leader.firstName} te convidou pro grupo{" "}
