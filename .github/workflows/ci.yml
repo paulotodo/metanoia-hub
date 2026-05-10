@@ -244,19 +244,43 @@ jobs:
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
       - name: Start API
-        run: pnpm --filter @metanoia/api start:e2e &
+        run: |
+          mkdir -p /tmp/e2e-logs
+          pnpm --filter @metanoia/api start:e2e > /tmp/e2e-logs/api.log 2>&1 &
+          echo $! > /tmp/e2e-logs/api.pid
         env:
           NODE_ENV: production
           PORT: '3001'
 
       - name: Start Web
-        run: pnpm --filter @metanoia/web start &
+        run: |
+          pnpm --filter @metanoia/web start > /tmp/e2e-logs/web.log 2>&1 &
+          echo $! > /tmp/e2e-logs/web.pid
 
       - name: Wait for services
         run: pnpm dlx wait-on -t 90000 http://localhost:3001/api/health http://localhost:3000
 
+      - name: Probe register endpoint (debug visibility)
+        run: |
+          set +e
+          curl -sS -o /tmp/e2e-logs/register-probe.json -w 'HTTP %{http_code}\n' \
+            -X POST http://localhost:3001/api/v1/auth/register \
+            -H 'Content-Type: application/json' \
+            -d '{"name":"CI Probe","email":"ci-probe@e2e.metanoia.local","password":"CiProbeSenha!2026"}'
+          echo '--- response body ---'
+          cat /tmp/e2e-logs/register-probe.json || true
+
       - name: Run Playwright tests
         run: pnpm --filter @metanoia/web e2e
+
+      - name: Dump API logs on failure
+        if: failure()
+        run: |
+          echo '=== API log (tail 200) ==='
+          tail -200 /tmp/e2e-logs/api.log || echo '(no api log)'
+          echo ''
+          echo '=== WEB log (tail 100) ==='
+          tail -100 /tmp/e2e-logs/web.log || echo '(no web log)'
 
       - name: Upload Playwright report
         if: always()
@@ -273,6 +297,14 @@ jobs:
           name: playwright-traces
           path: apps/web/test-results
           retention-days: 14
+
+      - name: Upload service logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: service-logs
+          path: /tmp/e2e-logs
+          retention-days: 7
 
       - name: Stop test services
         if: always()
