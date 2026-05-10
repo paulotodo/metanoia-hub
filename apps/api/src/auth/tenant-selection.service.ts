@@ -99,8 +99,17 @@ export class TenantSelectionService {
       throw new ForbiddenException('userId missing from request context');
     }
 
-    const membership = await this.prisma.client.userTenant.findUnique({
-      where: { userId_tenantId: { userId, tenantId } },
+    // Same RLS workaround as listMyTenants: SET LOCAL the requested tenantId
+    // so the FORCE RLS policy on user_tenants can read the membership row.
+    // Without this the cast `current_setting(...)::uuid` of '' throws
+    // "invalid input syntax for type uuid".
+    const membership = await this.prisma.client.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+      );
+      return tx.userTenant.findUnique({
+        where: { userId_tenantId: { userId, tenantId } },
+      });
     });
 
     if (!membership) {
