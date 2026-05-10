@@ -54,81 +54,59 @@ test.describe('Release 1a happy path', () => {
         await expect(page.getByRole('status')).toContainText(/conta criada/i, {
           timeout: 20_000,
         });
+        await page.waitForURL(/\/login/, { timeout: 10_000 });
       });
 
       await test.step('2. Login com admin demo', async () => {
-        // Validate the public /login page renders for end-users.
         await page.goto('/login');
-        await expect(page.locator('#login-email')).toBeVisible();
+        await page.locator('#login-email').fill(E2E_DEMO_ADMIN_EMAIL);
+        await page.locator('#login-password').fill(E2E_DEMO_PASSWORD);
 
-        // Authenticate via API instead of the UI form. The form's submit
-        // handler triggers `window.location.href = '/dashboard'` (broken
-        // route, P1 bug logged) the moment the response arrives, which
-        // races with Chromium discarding the network resource — making
-        // both `page.evaluate(sessionStorage…)` and
-        // `loginResponse.json()` flaky/impossible to read deterministically.
-        const { data: loginEnvelope } = await apiPost<
-          { email: string; password: string },
-          {
-            data: {
-              accessToken: string;
-              refreshToken: string;
-              sessionId: string;
-            };
-          }
-        >(page.request, '/api/v1/auth/login', {
-          email: E2E_DEMO_ADMIN_EMAIL,
-          password: E2E_DEMO_PASSWORD,
-        });
-        bearerToken = loginEnvelope.data.accessToken;
+        // Capture the login response while submitting via the real form so we
+        // get a bearer token for cleanup without bypassing the UI handler.
+        const loginResponsePromise = page.waitForResponse(
+          (response) =>
+            response.url().endsWith('/api/v1/auth/login') &&
+            response.request().method() === 'POST',
+          { timeout: 20_000 },
+        );
+        await page.locator('form button[type="submit"]').click();
+        const loginResponse = await loginResponsePromise;
+        const loginBody = (await loginResponse.json()) as {
+          data: { accessToken: string };
+        };
+        bearerToken = loginBody.data.accessToken;
         expect(bearerToken, 'login response missing data.accessToken').toBeTruthy();
 
-        // Seed sessionStorage on the same origin so /selecionar-igreja and
-        // downstream authenticated pages find the bearer token.
-        await page.evaluate(
-          ({ accessToken, refreshToken, sessionId }) => {
-            sessionStorage.setItem('accessToken', accessToken);
-            sessionStorage.setItem('refreshToken', refreshToken);
-            sessionStorage.setItem('sessionId', sessionId);
-          },
-          loginEnvelope.data,
-        );
+        await page.waitForURL(/\/selecionar-igreja/, { timeout: 15_000 });
       });
 
       await test.step('3. Selecionar tenant demo', async () => {
-        await page.goto('/selecionar-igreja');
         await expect(page.getByTestId('church-select-list')).toBeVisible({
           timeout: 15_000,
         });
         await page.getByTestId(`church-card-${E2E_DEMO_TENANT_ID}`).click();
-        // waitForURL matches against the full URL (http://host:3000/app/...),
-        // not just the pathname — anchor accordingly.
-        await page.waitForURL(/\/app(\/|$)/, { timeout: 15_000 });
+        // Anchor on the admin home so the test fails on `/app/error`,
+        // `/app/onboarding/...`, etc.
+        await page.waitForURL(/\/app\/admin($|[/?])/, { timeout: 15_000 });
       });
 
       let groupId = '';
 
       await test.step('4. Criar grupo', async () => {
         await page.goto('/app/admin/grupos/novo');
-
-        // Frontend posts to /api/v1/groups (not /admin/groups). Filter
-        // tightly to avoid catching unrelated POSTs from the page.
-        const createGroupResponse = page.waitForResponse(
-          (response) =>
-            response.url().endsWith('/api/v1/groups') &&
-            response.request().method() === 'POST',
-          { timeout: 20_000 },
-        );
-
         await page.locator('#group-name').fill(groupName);
         // Use the form's labelled submit so we don't accidentally hit the
         // header CTA or a different "Criar" button on the page.
         await page.locator('form button[type="submit"]').click();
 
-        const response = await createGroupResponse;
-        const body = (await response.json()) as { data?: { id: string } };
-        const id = body.data?.id;
-        expect(id, 'create group response missing data.id').toBeTruthy();
+        // After Story 7-4 fix the form redirects to the group detail page
+        // with the new id in the URL. Capture the id from there.
+        const groupDetailPattern = /\/app\/admin\/igreja\/grupos\/([a-f0-9-]+)/;
+        await page.waitForURL(groupDetailPattern, { timeout: 20_000 });
+        const match = page.url().match(groupDetailPattern);
+        const id = match?.[1];
+        expect(id, 'redirect URL missing group id').toBeTruthy();
         groupId = id as string;
         cleanupBag.groupId = groupId;
       });

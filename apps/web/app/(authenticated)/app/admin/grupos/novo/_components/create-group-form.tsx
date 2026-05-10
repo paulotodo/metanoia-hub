@@ -42,10 +42,9 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
   async function onSubmit(values: CreateGroupRequest) {
     setSubmitError(null);
     try {
-      await createGroup.mutateAsync(values);
-      router.push(
-        `/app/admin?acabou-de-criar=1${isFirst ? '&first=1' : ''}`,
-      );
+      const created = await createGroup.mutateAsync(values);
+      const suffix = isFirst ? '?acabou-de-criar=1&first=1' : '?acabou-de-criar=1';
+      router.push(`/app/admin/igreja/grupos/${created.id}${suffix}`);
     } catch {
       setSubmitError(t.error.network.toast);
     }
