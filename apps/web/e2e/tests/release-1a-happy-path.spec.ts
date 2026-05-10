@@ -57,53 +57,46 @@ test.describe('Release 1a happy path', () => {
       });
 
       await test.step('2. Login com admin demo', async () => {
+        // Validate the public /login page renders for end-users.
         await page.goto('/login');
-        await page.locator('#login-email').fill(E2E_DEMO_ADMIN_EMAIL);
-        await page.locator('#login-password').fill(E2E_DEMO_PASSWORD);
+        await expect(page.locator('#login-email')).toBeVisible();
 
-        // Capture the login response directly. The login form sets
-        // sessionStorage.accessToken AND immediately does
-        // `window.location.href = '/dashboard'` (a P1 bug — the route
-        // doesn't exist). Reading sessionStorage via page.evaluate races
-        // the navigation; intercepting the response is deterministic.
-        const loginResponsePromise = page.waitForResponse(
-          (response) =>
-            response.url().endsWith('/api/v1/auth/login') &&
-            response.request().method() === 'POST',
-          { timeout: 15_000 },
-        );
-        await page.getByRole('button', { name: /^entrar$/i }).click();
-        const loginResponse = await loginResponsePromise;
-        const loginBody = (await loginResponse.json()) as {
-          data: {
-            accessToken: string;
-            refreshToken?: string;
-            sessionId?: string;
-          };
-        };
-        bearerToken = loginBody.data.accessToken;
+        // Authenticate via API instead of the UI form. The form's submit
+        // handler triggers `window.location.href = '/dashboard'` (broken
+        // route, P1 bug logged) the moment the response arrives, which
+        // races with Chromium discarding the network resource — making
+        // both `page.evaluate(sessionStorage…)` and
+        // `loginResponse.json()` flaky/impossible to read deterministically.
+        const { data: loginEnvelope } = await apiPost<
+          { email: string; password: string },
+          {
+            data: {
+              accessToken: string;
+              refreshToken: string;
+              sessionId: string;
+            };
+          }
+        >(page.request, '/api/v1/auth/login', {
+          email: E2E_DEMO_ADMIN_EMAIL,
+          password: E2E_DEMO_PASSWORD,
+        });
+        bearerToken = loginEnvelope.data.accessToken;
         expect(bearerToken, 'login response missing data.accessToken').toBeTruthy();
 
-        // Recover from the broken redirect to /dashboard. The FE's login
-        // handler also writes sessionStorage but the navigation race may
-        // destroy its execution context before it runs — write it ourselves
-        // so /selecionar-igreja and downstream pages can authenticate.
+        // Seed sessionStorage on the same origin so /selecionar-igreja and
+        // downstream authenticated pages find the bearer token.
         await page.evaluate(
           ({ accessToken, refreshToken, sessionId }) => {
             sessionStorage.setItem('accessToken', accessToken);
-            if (refreshToken) sessionStorage.setItem('refreshToken', refreshToken);
-            if (sessionId) sessionStorage.setItem('sessionId', sessionId);
+            sessionStorage.setItem('refreshToken', refreshToken);
+            sessionStorage.setItem('sessionId', sessionId);
           },
-          loginBody.data as {
-            accessToken: string;
-            refreshToken?: string;
-            sessionId?: string;
-          },
+          loginEnvelope.data,
         );
-        await page.goto('/selecionar-igreja');
       });
 
       await test.step('3. Selecionar tenant demo', async () => {
+        await page.goto('/selecionar-igreja');
         await expect(page.getByTestId('church-select-list')).toBeVisible({
           timeout: 15_000,
         });
