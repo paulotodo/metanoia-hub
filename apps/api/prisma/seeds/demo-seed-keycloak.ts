@@ -177,6 +177,117 @@ async function ensureRealmRole(
   }
 }
 
+interface KeycloakClient {
+  id: string;
+  clientId: string;
+}
+
+interface ClientRole {
+  id: string;
+  name: string;
+}
+
+async function findClient(token: string, clientId: string): Promise<KeycloakClient> {
+  const response = await fetch(
+    `${adminBase}/clients?clientId=${encodeURIComponent(clientId)}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  if (!response.ok) {
+    throw new Error(`Failed to look up client "${clientId}": ${response.status}`);
+  }
+  const clients = (await response.json()) as KeycloakClient[];
+  const client = clients[0];
+  if (!client) {
+    throw new Error(
+      `Client "${clientId}" not found in realm ${KEYCLOAK_REALM}. ` +
+        `Make sure infra/keycloak/realm-export.json was imported.`,
+    );
+  }
+  return client;
+}
+
+async function getClientRole(
+  token: string,
+  clientUuid: string,
+  roleName: string,
+): Promise<ClientRole> {
+  const response = await fetch(
+    `${adminBase}/clients/${clientUuid}/roles/${encodeURIComponent(roleName)}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Client role "${roleName}" not found on client ${clientUuid}: ${response.status}`,
+    );
+  }
+  return (await response.json()) as ClientRole;
+}
+
+async function getServiceAccountUserId(token: string, clientUuid: string): Promise<string> {
+  const response = await fetch(
+    `${adminBase}/clients/${clientUuid}/service-account-user`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Service account user for client ${clientUuid} not found (${response.status}). ` +
+        `Confirm serviceAccountsEnabled=true on the client.`,
+    );
+  }
+  const user = (await response.json()) as { id: string };
+  return user.id;
+}
+
+async function ensureServiceAccountClientRoles(
+  token: string,
+  serviceAccountUserId: string,
+  realmMgmtUuid: string,
+  roleNames: string[],
+): Promise<void> {
+  const roles = await Promise.all(
+    roleNames.map((name) => getClientRole(token, realmMgmtUuid, name)),
+  );
+
+  const response = await fetch(
+    `${adminBase}/users/${serviceAccountUserId}/role-mappings/clients/${realmMgmtUuid}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(roles.map((r) => ({ id: r.id, name: r.name }))),
+    },
+  );
+
+  if (!response.ok && response.status !== 409) {
+    const body = await response.text();
+    throw new Error(
+      `Failed to grant ${roleNames.join(',')} to service account (${response.status}): ${body.slice(0, 200)}`,
+    );
+  }
+}
+
+/**
+ * Without these mappings the API client (`metanoia-api`) cannot create or
+ * search Keycloak users, so the registration flow returns 500 ("An unexpected
+ * error occurred") and login lookups fail. Idempotent — Keycloak silently
+ * ignores roles already present.
+ */
+async function provisionApiServiceAccount(token: string): Promise<void> {
+  const apiClient = await findClient(token, 'metanoia-api');
+  const realmMgmt = await findClient(token, 'realm-management');
+  const saUserId = await getServiceAccountUserId(token, apiClient.id);
+  await ensureServiceAccountClientRoles(token, saUserId, realmMgmt.id, [
+    'manage-users',
+    'view-users',
+    'query-users',
+  ]);
+  console.log(
+    `  - service-account-metanoia-api → manage-users + view-users + query-users (realm-management)`,
+  );
+}
+
 async function main() {
   console.log(
     `Provisioning ${DEMO_USERS.length} demo users into Keycloak realm "${KEYCLOAK_REALM}" at ${KEYCLOAK_URL}...`,
@@ -189,6 +300,11 @@ async function main() {
     console.error('[demo-seed-keycloak] admin login failed:', (error as Error).message);
     process.exit(1);
   }
+
+  // Pre-step: ensure the API client can manage realm users.
+  // Without this the register flow fails with 500 because the realm export
+  // doesn't ship with service-account role mappings.
+  await provisionApiServiceAccount(token);
 
   let created = 0;
   let updated = 0;
