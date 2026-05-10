@@ -26,3 +26,18 @@
 
 - jest-axe TypeScript types sem augmentation para vitest — `toHaveNoViolations()` funciona em runtime mas não tem type declarations para vitest. Problema pré-existente em apps/web e packages/ui.
 - Sem error boundary no NavigationShell — se um ícone lucide falhar, o layout inteiro crasha sem fallback. Escopo geral de resiliência da app.
+
+## Deferred from: code review of story-7-4-e2e-happy-path-release-1a (2026-05-10)
+
+- **Bug irmão `KeycloakAdminService.createUserForTenant`** — rota invites (Story 4-3) tem typo idêntico ao corrigido em `createUser`, todos os usuários convidados saem sem `tenant_id` claim. P0 delegado para Story 7-6.
+- **Concentração arquitetural — helper `withTenant`** — pattern `$transaction + SET LOCAL` duplicado em 4 repos (`groups`, `admin-invites`, `tenant-selection`, `plan-limits`). Story 7-5 deve consolidar em helper central com UUID guard uniforme.
+- **`vitest.config.ts` exclude `e2e/**` não declarado** — funcionalmente OK pelo include guard, mas Task 1 da Story 7-4 pedia exclude explícito. Adicionar para defesa em profundidade.
+- **ESLint ignora `apps/web/e2e/**` totalmente** — dívida intencional; quando `@playwright/test` for tracked como devDep raiz, restaurar lint sobre specs E2E.
+- **`apps/web/e2e/fixtures/auth.fixture.ts` código morto** — fixture `adminPage` exportada mas não consumida pelo spec atual. Próximas suites E2E (Stories 7-5+) devem usar ou remover.
+- **`apiPost` E2E consome `${E2E_API_URL}` (3001) bypassando rewrites Next** — não exercita CORS/rewrite real. Avaliar mudança para `${E2E_BASE_URL}/api/v1/...` quando rewrite estiver estável.
+- **Cleanup E2E faz DELETE → controller faz revoke (soft delete)** — invites do run ficam como rows revoked. Mitigação: reset diário do demo seed em CI; long-term: hard-delete via Prisma client em fixture.
+- **`getRequestContext()` optional chaining inconsistente em `tenant-selection.service`** — cosmético; remover `?.` quando refactor de RequestContext rodar.
+- **`realignPgUserId` pode invalidar Redis cache de sessão em ambiente compartilhado** — improvável em CI; documentar guard ou flush sessões `session:*` no fim do seed.
+- **Seed Keycloak sem retry/backoff em chamadas REST** — falha mid-loop deixa users sem role. Wrapper `retryWithBackoff` em chamadas `findUserByEmail/createUser/ensureRealmRole`.
+- **Playwright `retries: 2` em CI** — mascara flakes em vez de expô-las. Reduzir para 0/1 após estabilização da suite.
+- **`ON UPDATE CASCADE` em todas as FKs `users.id` assumido sem teste** — adicionar teste de migration que valida CASCADE em todas as referências; Story 7-5.

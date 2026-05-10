@@ -35,8 +35,8 @@ so that conseguimos detectar regressões cross-bounded-context antes do tag Rele
 2. **Login**: `/login` → preenche credenciais demo `admin@demo.metanoia.app / E2E_DEMO_PASSWORD` (o demo admin, NÃO o user recém-criado, porque o registrar não cria associação a tenant — registrar serve para validar a tela apenas) → redireciona para `/selecionar-igreja`
 3. **Selecionar tenant**: `/selecionar-igreja` → aguarda `data-testid="church-select-list"` → clica em `data-testid="church-card-019899a0-7002-7000-8000-000000000001"` → redireciona para `/app/admin`
 4. **Criar grupo**: navega para `/app/admin/grupos/novo` → preenche nome `E2E Grupo ${runId}` → submit → redireciona para `/app/admin/igreja/grupos/<id>` (URL dinâmica capturada com regex)
-5. **Convidar membro**: na página de detalhe do grupo, abre fluxo de convite, gera token de convite via API (POST `/api/v1/admin/groups/<id>/invitations` consumido com `request.fetch` autenticado pelo cookie/token da sessão Playwright) e captura o `inviteUrl` da resposta
-6. **Boas-vindas do participante**: nova `browser.newContext()` (sem auth) navega para o `inviteUrl` (`/convite/<token>`) → afirma que `ParticipantWelcomeView` renderiza com `data-testid="participant-welcome-view"` (criar testid se não existir) e exibe nome do grupo do passo 4
+5. **Convidar membro**: na página de detalhe do grupo, abre fluxo de convite, gera token de convite via API (POST `/api/v1/admin/invites` com `kind: 'group_member'` + `groupId` no body, consumido com `request.fetch` autenticado por Bearer da sessão Playwright) e captura o `inviteUrl` da resposta. **Nota (post-review 2026-05-10):** spec original rascunhou `POST /api/v1/admin/groups/<id>/invitations` (rota nested que não existe no backend); rota real é flat `/admin/invites`. AC atualizado para refletir implementação.
+6. **Boas-vindas do participante (smoke)**: nova `browser.newContext()` (sem auth) navega para o `inviteUrl` (`/convite/<token>`) → afirma que a casca de onboarding renderiza (brand mark `metanoia-hub` visível). **Reclassificado como smoke check em 2026-05-10** (post-review): o wire-up de `convite/[token]/page.tsx` para chamar o endpoint real de invites (e renderizar `ParticipantWelcomeView` com o nome do grupo) ficou fora do escopo desta story. Cobertura ponta-a-ponta do Cenário 06 fica para Story 7-6.
 **And** spec passa em ≤ 90s (target — não usar `test.setTimeout` global; cada `test.step` segue defaults Playwright)
 **And** spec é idempotente: pode rodar duas vezes seguidas sem quebrar (nomes únicos por `runId`, cleanup opcional não obrigatório, demo seed restante sobrevive)
 
@@ -435,3 +435,116 @@ execução vai miss; depois fica em cache.
 
 - Sprint-status flipped (7-3 review→done; 7-4 ready-for-dev→in-review→done).
   [`sprint-status.yaml:122`](sprint-status.yaml#L122)
+
+---
+
+### Review Findings
+
+Code Review executado em 2026-05-10 (3 layers paralelos: Blind Hunter, Edge Case Hunter, Acceptance Auditor). 66 findings brutos → 38 únicos após dedup. Triage: 7 decision-needed, 17 patch, 12 defer, 2 dismissed.
+
+**Decision-needed (PO/SM call — bloqueia merge final):**
+
+- [ ] [Review][Decision] **Step 6 virou smoke check, não valida `participant-welcome-view` + nome do grupo (AC violado)** — `apps/web/e2e/tests/release-1a-happy-path.spec.ts:175-197`. AC #3 step 6 pede assert do testid + nome do grupo do step 4; implementação aceita brand mark da error view. Decisão: (a) reabrir 7-4 para wire-up Cenário 06; (b) reclassificar AC oficialmente para "smoke"; (c) deferir wire-up para 7-5/7-6. (sources: blind+edge+auditor)
+- [ ] [Review][Decision] **Step 2 não exercita login UI — workaround via API + `sessionStorage`** — `apps/web/e2e/tests/release-1a-happy-path.spec.ts:97-130`. AC #3 step 2 pede submit do form. Decisão: (a) consertar handler `/dashboard` antes do merge; (b) ratificar workaround na spec. (sources: blind+auditor)
+- [ ] [Review][Decision] **Bug P0 do invite (Cenário 06 wire-up) aberto, story marcada `done` sem fechar gate AC #6** — `_bmad-output/implementation-artifacts/sprint-7-bug-log.md:32`. AC #6 exige P0/P1 fechados ou reclassificados explicitamente. PO ratifica reclassificação para Story 7-6 ou bloqueia merge. (source: auditor)
+- [ ] [Review][Decision] **Scope creep: 8 arquivos backend modificados além do escopo da spec** — `groups.controller.ts`, `prisma.extension.ts`, `groups.repository.ts`, `admin-invites.repository.ts`, `tenant-selection.service.ts`, `plan-limits.service.ts`, `keycloak-admin.service.ts`, `demo-seed.ts`. Decisão: (a) ratificar como bug-fixes obrigatórios para CI verde; (b) extrair para Story 7-5 (deferred-work). (source: auditor)
+- [ ] [Review][Decision] **`demo-seed.ts` muda `User.tenantId DEMO_TENANT_ID → null`** — `apps/api/prisma/seeds/demo-seed.ts:165-178`. Mudança semântica que pode afetar queries do dashboard demo e abrir leak de RLS read em policies que permitem `tenant_id IS NULL`. Confirmar com PO se a mudança era intencional ou efeito colateral do bug-fix de login. (sources: blind+edge+auditor)
+- [ ] [Review][Decision] **AC #4 — `groupId` capturado via `waitForResponse` em vez de regex de URL pós-redirect** — `apps/web/e2e/tests/release-1a-happy-path.spec.ts:2150-2168`. Bypass esquiva o bug P2 do redirect pós-criação. Decisão: consertar redirect ou ratificar bypass na spec. (source: auditor)
+- [ ] [Review][Decision] **Endpoint invite na spec divergente do real (`/admin/groups/<id>/invitations` vs `/admin/invites`)** — `apps/web/e2e/tests/release-1a-happy-path.spec.ts:2184`. Spec referencia rota nested que não existe; implementação usa rota flat real. Atualizar texto do AC para refletir endpoint real. (source: auditor)
+
+**Patch (correção determinística):**
+
+- [ ] [Review][Patch] **`SET LOCAL app.current_tenant_id` interpolation em 5 callers sem `UUID_RE` guard** [`apps/api/src/prisma/prisma.extension.ts:23` + `groups.repository.ts:38` + `admin-invites.repository.ts:18` + `auth/tenant-selection.service.ts:60,103` + `common/plan-limits/plan-limits.service.ts:36,60`] — Critical: centralizar em helper `setTenantContext(tx, tenantId)` com regex guard uniforme. (sources: blind+edge+auditor)
+- [ ] [Review][Patch] **`tenant-selection.listMyTenants` só retorna tenant do JWT — quebra usuário multi-tenant** [`apps/api/src/auth/tenant-selection.service.ts:54-71`] — Critical: usar BYPASSRLS connection ou policy `WHERE user_id = current_setting('app.current_user_id')`. (sources: blind+edge)
+- [ ] [Review][Patch] **`waitForURL(/\/app(\/|$)/)` regex frouxa — match em `/app/error`** [`apps/web/e2e/tests/release-1a-happy-path.spec.ts:2140`] — High: apertar para `/^\/app\/admin($|\/)/` + assert visibility de elemento esperado da home admin. (source: edge)
+- [ ] [Review][Patch] **Cleanup não remove `users` registrado no Step 1 (KC + PG)** [`apps/web/e2e/helpers/cleanup.ts`] — High: adicionar `userId`/`keycloakUserId` ao `CleanupArtifacts` + DELETE em ambos. (sources: blind+edge)
+- [ ] [Review][Patch] **Senha demo `Demo!Pass2026` em fallback hardcoded em workflow + setup/env + seed** [`.github/workflows/ci.yml:26`, `apps/web/e2e/setup/env.ts:18`, `apps/api/prisma/seeds/demo-seed-keycloak.ts:719`] — High: eliminar fallback, fail-fast se secret ausente. (sources: blind+edge)
+- [ ] [Review][Patch] **Service account `manage-users/view-users/query-users` granted via seed dev** [`apps/api/prisma/seeds/demo-seed-keycloak.ts:1019-1037`] — High: mover para `realm-export.json` (artefato de infra). (sources: blind+edge+auditor)
+- [ ] [Review][Patch] **`enableUnmanagedAttributes` muda config realm-wide via seed dev** [`apps/api/prisma/seeds/demo-seed-keycloak.ts:981-1017`] — Medium: persistir em `realm-export.json`. (sources: blind+edge+auditor)
+- [ ] [Review][Patch] **`KEYCLOAK_CLIENT_ID metanoia-app → metanoia-web` aplicado apenas em CI** [`.github/workflows/ci.yml:10`] — Medium: sync `.env.example`, `docker-compose.yml`, infra docs. (source: edge)
+- [ ] [Review][Patch] **`apiPost` log inclui body completo sem sanitize de tokens** [`apps/web/e2e/helpers/api-client.ts:50-53`] — Medium: sanitize chaves `Authorization`/`accessToken` antes de stringify. (sources: blind+edge)
+- [ ] [Review][Patch] **`plan-limits.hasCapacity` retorna `current: 0` fake para `membersPerGroup`** [`apps/api/src/common/plan-limits/plan-limits.service.ts:42-45`] — Medium: exigir `groupId` arg ou throw em vez de retornar fake. (source: edge)
+- [ ] [Review][Patch] **Cache Playwright keyed por `apps/web/package.json` em vez de `pnpm-lock.yaml`** [`.github/workflows/ci.yml:53-56`] — Medium: trocar para `hashFiles('pnpm-lock.yaml')` para invalidar em patch upgrades. (source: edge)
+- [ ] [Review][Patch] **Job `e2e` sem `timeout-minutes`** [`.github/workflows/ci.yml:21`] — Medium: adicionar `timeout-minutes: 20`. (source: edge)
+- [ ] [Review][Patch] **`PORT=3000` não setado explicitamente no `next start` step** [`.github/workflows/ci.yml:93-95`] — Medium: env explícito + `lsof :3000` pre-check. (source: edge)
+- [ ] [Review][Patch] **Step 1 não valida redirect pós-registro** [`apps/web/e2e/tests/release-1a-happy-path.spec.ts:2087-2090`] — Medium: adicionar `await page.waitForURL(/\/login/)`. (source: edge)
+- [ ] [Review][Patch] **Login response shape `{ data: { data: { accessToken } } }` confuso** [`apps/web/e2e/tests/release-1a-happy-path.spec.ts:2103-2117`] — Medium: extrair tipo central para `@metanoia/types` e reutilizar. (source: edge)
+- [ ] [Review][Patch] **`KEYCLOAK_ADMIN_PASSWORD: admin` hardcoded em workflow** [`.github/workflows/ci.yml:30`] — Medium: usar secret + fallback random. (sources: blind+edge)
+- [ ] [Review][Patch] **Comentário PT-BR no log do `demo-seed-keycloak`** [`apps/api/prisma/seeds/demo-seed-keycloak.ts:1107`] — Low: traduzir para EN (CLAUDE.md: "logs in English"). (source: auditor)
+
+**Defer (pre-existente / fora do escopo / Story 7-5/7-6):**
+
+- [x] [Review][Defer] **Bug irmão `KeycloakAdminService.createUserForTenant` (rota invites Story 4-3)** [`_bmad-output/implementation-artifacts/sprint-7-bug-log.md:640`] — admitido P0, delegado para Story 7-6.
+- [x] [Review][Defer] **Concentração arquitetural — `withTenant` duplicado em 4 repos em vez de helper central** — Story 7-5 (deferred-work) já capturada no bug-log.
+- [x] [Review][Defer] **`vitest.config.ts` exclude `e2e/**` não entregue (Task 1)** — funcionalmente OK pelo include guard `app/**`/`src/**`; documentar follow-up.
+- [x] [Review][Defer] **ESLint ignora `e2e/**` totalmente** [`apps/web/eslint.config.mjs`] — dívida intencional, documentada na spec.
+- [x] [Review][Defer] **`fixtures/auth.fixture.ts` código morto — não consumido pelo spec** [`apps/web/e2e/fixtures/auth.fixture.ts`] — entregue para próximas suites E2E.
+- [x] [Review][Defer] **`apiPost` consome `${E2E_API_URL}` (3001) bypassando rewrites Next** [`apps/web/e2e/helpers/api-client.ts:24-26`] — decisão arquitetural E2E.
+- [x] [Review][Defer] **Cleanup helper invoca DELETE → controller faz revoke (soft delete)** [`apps/api/src/admin-invites/admin-invites.controller.ts:42`] — comportamento controller existente, reset diário no CI mitiga.
+- [x] [Review][Defer] **`getRequestContext()` optional chaining inconsistente** [`apps/api/src/auth/tenant-selection.service.ts:46-50`] — cosmético; `request-context.ts` lança quando store ausente.
+- [x] [Review][Defer] **`realignPgUserId` pode invalidar Redis cache em ambiente compartilhado** [`apps/api/prisma/seeds/demo-seed-keycloak.ts:1039-1054`] — improvável em CI/dev; documentar guard.
+- [x] [Review][Defer] **Seed Keycloak sem retry/backoff em chamadas REST** [`apps/api/prisma/seeds/demo-seed-keycloak.ts:1086-1102`] — flake conhecida; resolver se aparecer.
+- [x] [Review][Defer] **Playwright `retries: 2` em CI mascarando flakes** [`apps/web/playwright.config.ts:11`] — política inicial; revisar após estabilização.
+- [x] [Review][Defer] **`ON UPDATE CASCADE` em FKs `users.id` assumido sem assertion automatizada** [`apps/api/prisma/seeds/demo-seed-keycloak.ts:1039-1054`] — adicionar teste de migration que valida CASCADE em Story 7-5.
+
+**Dismiss (ruído):**
+
+- `pnpm-lock.yaml` requer verificação manual — sem evidência concreta de drift.
+- `e2e/tsconfig.json exclude=[]` — cosmético sem impacto.
+
+---
+
+### Post-Review Resolution Log (2026-05-10)
+
+Após walk-through das 7 decision-needed em sessão paralela, registradas decisões + patches aplicados nesta sessão.
+
+**Decisions resolvidas (PO/SM):**
+
+| # | Decisão | Escolha | Ação |
+|---|---------|---------|------|
+| 1 | AC #3 step 6 = smoke check | (b) Reclassificar AC + criar Story 7-6 | AC reescrito acima; bug-log linha 32 atualizado para "reclassificado — scope Story 7-6" |
+| 2 | Step 2 login UI workaround | (a) Consertar handler + remover workaround | `login-form.tsx` `/dashboard` → `/selecionar-igreja`; `auth/callback/page.tsx` idem; testes do callback atualizados; spec usa form UI real com `waitForURL(/\/selecionar-igreja/)` |
+| 3 | Gate AC #6 + P0 invite aberto | (a) Reclassificação formal | bug-log linha 32 atualizado para `reclassificado` |
+| 4 | Scope creep backend (8 arquivos) | (a) Ratificar como bug-fixes | mantido nesta PR; scope creep registrado para retro Sprint 7 |
+| 5 | `demo-seed.ts tenantId: null` | (a) Ratificar pattern alinhado com registered-user | mantido; documentado nas Dev Notes (abaixo) |
+| 6 | AC #4 `waitForResponse` vs URL regex | (a) Consertar redirect + usar regex de URL | `create-group-form.tsx` redireciona para `/app/admin/igreja/grupos/${created.id}`; spec captura via `waitForURL(groupDetailPattern)` regex |
+| 7 | Endpoint invite spec divergente | (a) Atualizar spec com endpoint real | AC #3 step 5 reescrito acima para `/api/v1/admin/invites` flat |
+
+**Patches aplicados nesta sessão (batch-apply):**
+
+- [x] `waitForURL` step 3 apertado de `/\/app(\/|$)/` para `/\/app\/admin($|[\/?])/` — bloqueia falsos positivos em `/app/error`
+- [x] Step 1 ganha `await page.waitForURL(/\/login/)` pós-registro — valida redirect
+- [x] Step 4 captura `groupId` via regex de URL (alinhado com AC + decisão 6)
+- [x] Step 2 substituído por login via form UI real (decisão 2)
+- [x] `apps/web/e2e/helpers/api-client.ts`: `redactSecrets()` em logs de erro (sanitize `accessToken`/`refreshToken`/`sessionId`/`authorization`/`password`/`token`)
+- [x] `.github/workflows/ci.yml`: job `e2e` ganha `timeout-minutes: 20`
+- [x] `.github/workflows/ci.yml`: cache Playwright keyed por `hashFiles('pnpm-lock.yaml')` (não mais `apps/web/package.json`)
+- [x] `.github/workflows/ci.yml`: `PORT=3000` explícito no step Start Web
+- [x] `.github/workflows/ci.yml`: `KEYCLOAK_ADMIN_USER/PASSWORD` agora usam secrets com fallback documentado
+- [x] `.github/workflows/ci.yml`: comentário explica `E2E_DEMO_PASSWORD` fallback como ephemeral
+- [x] `apps/api/prisma/seeds/demo-seed-keycloak.ts`: log final traduzido para EN
+
+**Patches deixados como action items (judgment arquitetural — escopo Story 7-5):**
+
+- [ ] SET LOCAL helper centralizado (5 callers) — refactor multi-arquivo; Story 7-5 deve consolidar `withTenant` + `UUID_RE` guard único
+- [ ] `tenant-selection.listMyTenants` RLS bypass connection — exige decisão entre BYPASSRLS connection vs nova policy (`user_id = current_setting('app.current_user_id')`)
+- [ ] Cleanup E2E remove `users` (KC + PG) registrado no Step 1 — exige endpoint DELETE KC + adicionar ao CleanupArtifacts
+- [ ] Senha demo `Demo!Pass2026` fallback removido — pode quebrar dev local sem secret; revisar com PO
+- [ ] Service account roles + `enableUnmanagedAttributes` para `realm-export.json` — refactor de infra, escopo Story 7-5
+- [ ] `plan-limits.hasCapacity` — exigir `groupId` arg ou throw; afeta callers que dependem do retorno `current: 0` fake
+- [ ] Login response shape — extrair tipo central para `@metanoia/types`
+
+---
+
+### Dev Notes — Post-Review Addendum (2026-05-10)
+
+**Sobre `demo-seed.ts` mudando `User.tenantId` para `null` (Decision 5):** alinhamento com pattern do fluxo de registro — usuários recém-registrados via `/register` ficam com `tenantId: null` até selecionar tenant. Membership real é via `user_tenants` (admin/lider) e `group_members` (participantes). Política RLS `users` permite `tenant_id IS NULL OR tenant_id = current_setting(...)`. Refactor de longo prazo (Story 7-5): consolidar políticas RLS conflitantes e remover ambiguidade entre `users.tenantId` FK direto e `user_tenants` membership.
+
+**Sobre scope creep backend (Decision 4):** 8 arquivos backend foram modificados além do escopo "validation-only" da story. Cada mudança é bug-fix obrigatório descoberto pelo E2E (todos documentados em `sprint-7-bug-log.md`). Decisão pós-review foi ratificar para manter CI verde. Lição capturada para retro Sprint 7: stories de "validation E2E" devem incluir buffer explícito para bug-fixes cross-bounded-context.
+
+**Pendências encaminhadas para Story 7-6 (wire-up Cenário 06):**
+1. `convite/[token]/page.tsx` deixar de servir mock e chamar `GET /api/v1/invites/:token` real
+2. `ParticipantWelcomeView` renderizar com nome do grupo da response
+3. Step 6 do E2E voltar a validar `data-testid="participant-welcome-view"` + nome do grupo
+4. Bug irmão `KeycloakAdminService.createUserForTenant` (typo `tenantId` vs `tenant_id`) — fixar usando mesmo pattern do `createUser`
+5. Criar rota `/consent` (login form ainda redireciona para `/consent` quando `!hasConsent`)
