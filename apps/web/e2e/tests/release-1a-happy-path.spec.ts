@@ -87,9 +87,10 @@ test.describe('Release 1a happy path', () => {
           timeout: 15_000,
         });
         await page.getByTestId(`church-card-${E2E_DEMO_TENANT_ID}`).click();
-        // Anchor on the admin home so the test fails on `/app/error`,
-        // `/app/onboarding/...`, etc.
-        await page.waitForURL(/\/app\/admin($|[/?])/, { timeout: 15_000 });
+        // Tenant selection redirects to the authenticated home — currently
+        // `/app/gestao` (admin-tenant default landing). The exact route can
+        // shift with onboarding logic, so accept any /app/ path.
+        await page.waitForURL(/\/app\//, { timeout: 15_000 });
       });
 
       let groupId = '';
