@@ -16,6 +16,7 @@
  * Usage: pnpm --filter @metanoia/api db:seed:demo:keycloak
  */
 
+import { Client } from 'pg';
 import { DEMO_TENANT_ID, DEMO_USERS, type DemoRole } from './demo-seed';
 
 // docker-compose exposes the master admin via `KEYCLOAK_ADMIN`/`KEYCLOAK_ADMIN_PASSWORD`.
@@ -93,11 +94,10 @@ async function createUser(
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      // Pin the KC user id to the same UUID as the PG `users.id` row so
-      // the JWT `sub`/`user_id` claim matches `user_tenants.user_id` etc.
-      // Without this, KC autogenerates a random id and downstream lookups
-      // (e.g. /my-tenants) return empty results.
-      id: user.id,
+      // KC ignores `id` on POST /users (always autogenerates) — we sync
+      // by UPDATEing the PG `users.id` afterwards so JWT.sub matches
+      // `user_tenants.user_id`. ON UPDATE CASCADE on every users.id FK
+      // propagates the change.
       username: user.email,
       email: user.email,
       firstName,
@@ -346,6 +346,23 @@ async function provisionApiServiceAccount(token: string): Promise<void> {
   );
 }
 
+async function realignPgUserId(
+  pg: Client,
+  email: string,
+  newId: string,
+): Promise<void> {
+  // ON UPDATE CASCADE on every users.id FK propagates this to user_tenants,
+  // group_members, consents, pastoral_*. Idempotent — no-op if id already
+  // matches.
+  const result = await pg.query(
+    `UPDATE users SET id = $1::uuid WHERE email = $2 AND id <> $1::uuid RETURNING id`,
+    [newId, email],
+  );
+  if (result.rowCount && result.rowCount > 0) {
+    console.log(`    └─ PG users.id realigned to KC id ${newId}`);
+  }
+}
+
 async function main() {
   console.log(
     `Provisioning ${DEMO_USERS.length} demo users into Keycloak realm "${KEYCLOAK_REALM}" at ${KEYCLOAK_URL}...`,
@@ -365,6 +382,14 @@ async function main() {
   await enableUnmanagedAttributes(token);
   await provisionApiServiceAccount(token);
 
+  // PG client to realign demo `users.id` to the KC-generated id (KC ignores
+  // explicit id on POST). Uses DATABASE_URL (superuser) to bypass FORCE RLS.
+  const pgConn =
+    process.env.DATABASE_URL ??
+    'postgresql://metanoia:metanoia_dev_pass@localhost:5432/metanoia_dev';
+  const pg = new Client({ connectionString: pgConn });
+  await pg.connect();
+
   let created = 0;
   let updated = 0;
 
@@ -382,8 +407,11 @@ async function main() {
     }
 
     await ensureRealmRole(token, keycloakId, user.role);
+    await realignPgUserId(pg, user.email, keycloakId);
     console.log(`  - ${user.email} [${user.role}] → ${existing ? 'updated' : 'created'} (${keycloakId})`);
   }
+
+  await pg.end();
 
   console.log(
     `\nDemo Keycloak seed concluído: ${created} criados, ${updated} atualizados (senha = E2E_DEMO_PASSWORD).`,
