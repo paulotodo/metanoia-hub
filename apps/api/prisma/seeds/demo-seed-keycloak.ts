@@ -272,6 +272,56 @@ async function ensureServiceAccountClientRoles(
 }
 
 /**
+ * Keycloak 24+ ships with User Profile enabled and a default
+ * `unmanagedAttributePolicy` that silently DROPS any user attribute not
+ * declared in the profile schema. The realm export bypasses this check (so
+ * `admin@metanoia.dev` keeps `tenant_id`), but every user created via the
+ * Admin REST API loses unmanaged attributes — which means our `tenant_id`
+ * mapper has nothing to emit and downstream auth fails with
+ * "Missing tenant_id claim in token".
+ *
+ * Flipping `unmanagedAttributePolicy: ENABLED` realm-wide lets all callers
+ * (seed + register + invite flows) keep their attributes intact. Idempotent.
+ */
+async function enableUnmanagedAttributes(token: string): Promise<void> {
+  const getResp = await fetch(`${adminBase}/users/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!getResp.ok) {
+    throw new Error(
+      `Failed to read user-profile config (${getResp.status}). ` +
+        `Confirm the master admin token has manage-realm.`,
+    );
+  }
+  const profile = (await getResp.json()) as Record<string, unknown> & {
+    unmanagedAttributePolicy?: string;
+  };
+
+  if (profile.unmanagedAttributePolicy === 'ENABLED') {
+    console.log('  - user-profile.unmanagedAttributePolicy already ENABLED');
+    return;
+  }
+
+  profile.unmanagedAttributePolicy = 'ENABLED';
+
+  const putResp = await fetch(`${adminBase}/users/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(profile),
+  });
+  if (!putResp.ok) {
+    const body = await putResp.text();
+    throw new Error(
+      `Failed to set unmanagedAttributePolicy=ENABLED (${putResp.status}): ${body.slice(0, 200)}`,
+    );
+  }
+  console.log('  - user-profile.unmanagedAttributePolicy → ENABLED');
+}
+
+/**
  * Without these mappings the API client (`metanoia-api`) cannot create or
  * search Keycloak users, so the registration flow returns 500 ("An unexpected
  * error occurred") and login lookups fail. Idempotent — Keycloak silently
@@ -304,9 +354,10 @@ async function main() {
     process.exit(1);
   }
 
-  // Pre-step: ensure the API client can manage realm users.
-  // Without this the register flow fails with 500 because the realm export
-  // doesn't ship with service-account role mappings.
+  // Pre-steps:
+  //   1. allow custom user attributes (`tenant_id`) to survive REST writes
+  //   2. grant the API client the realm-management roles it needs
+  await enableUnmanagedAttributes(token);
   await provisionApiServiceAccount(token);
 
   let created = 0;
