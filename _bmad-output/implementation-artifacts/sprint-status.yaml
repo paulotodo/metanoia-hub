@@ -126,7 +126,7 @@ development_status:
   7-4-e2e-happy-path-release-1a: done
   7-5-hardening-release-1a: done
   7-6-cleanup-tactical-release-1a: done
-  7-7-migrate-with-multi-tenant: review
+  7-7-migrate-with-multi-tenant: done
   epic-7-retrospective: optional
 
   # ============================================
