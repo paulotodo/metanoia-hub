@@ -18,6 +18,20 @@ pela suite E2E (Story 7-4) e por sessões de hardening (Story 7-5). Cada entrada
 - **Story de fix** vazio = ainda não tem story; preenche quando o bug for
   triado para uma sprint específica.
 
+## Story 7-5 resolution summary (2026-05-10)
+
+Story 7-5 fechou os seguintes bugs arquiteturais expostos pela Story 7-4:
+
+- **Bug `PlanLimitsService`** (row 36): pattern `$transaction + SET LOCAL` agora vem do helper central `withTenantTx` (`apps/api/src/prisma/with-tenant-tx.ts`). ✅
+- **Bug `tenant-selection.selectTenant`** (row 38): migrado para `withTenantTx({ tenantId })`. ✅
+- **Bug `tenant-selection.listMyTenants`** (row 39): migrado para `withTenantTx` quando ctx.tenantId existe. ✅
+- **Bug groups RLS pool routing** (row 34): `GroupsRepository` migrado para `withTenantTx`. ✅
+- **Bug invites RLS pool routing** (row 33): `AdminInvitesRepository` migrado para `withTenantTx`. ✅
+- **Bug Prisma extension `$1` SET LOCAL** (row 35): extension `withMultiTenant` marcada `@deprecated`; callers usam helper. Deletação fica para Story 7-7 (7 repos legacy).
+- **Bug RLS policies inconsistentes (NULLIF)**: migration `20260510210000_consolidate_rls_nullif` consolida 5 policies pure-flat + 3 duplicatas. Teste em `apps/api/test/rls/nullif-isolation.spec.ts`. ✅
+- **Bug Cenário 06 SSR stub mock-only** (row 32): `/convite/[token]/page.tsx` agora chama `GET /api/v1/invites/:token/resolve` real; backend ganhou endpoint discriminado. ✅
+- **Bug `users.id != JWT.user_id` CASCADE assumido** (row 40): integration test `cascade-users-id.spec.ts` valida invariante CASCADE em todas as 6 FKs. ✅
+
 ## Bugs
 
 | Data | Descrição | Severidade | Trace | Story de fix | Status |

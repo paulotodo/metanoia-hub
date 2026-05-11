@@ -124,7 +124,7 @@ development_status:
   7-2-dados-de-demonstracao-realistas: done
   7-3-mensagens-de-erro-acionaveis: done
   7-4-e2e-happy-path-release-1a: done
-  7-5-hardening-release-1a: in-progress
+  7-5-hardening-release-1a: review
   epic-7-retrospective: optional
 
   # ============================================
