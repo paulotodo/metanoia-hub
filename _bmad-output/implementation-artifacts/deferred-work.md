@@ -5,8 +5,8 @@
 Após Sprint 7 fechado, todos os itens abertos receberam destino. Resumo:
 
 - **Sprint 8 (P0/P1)** — 2 stories novas absorvem os itens críticos:
-  - `2-10-auth-hardening` — audience JWT + secret rotation + Object.freeze guard
-  - `1-9-config-hardening` — LoggerModule.forRootAsync + tracesSampleRate env + redact expandido + X-Request-Id
+  - [`2-10-auth-hardening`](./2-10-auth-hardening.md) — audience JWT + secret rotation + Object.freeze guard
+  - [`1-9-config-hardening`](./1-9-config-hardening.md) — LoggerModule.forRootAsync + tracesSampleRate env + redact expandido + X-Request-Id
 - **Release 1b** — 6 itens (tactical em qualquer story / Sprint 17 Epic 12 / sprint estabilização)
 - **Backlog** — 2 itens (defesa hipotética; sem dono claro)
 - **Bloqueado por dependência externa** — 3 itens (Google OAuth real + WS/GraphQL guard)
@@ -17,7 +17,7 @@ Itens implicitamente resolvidos pelo `withTenantTx` (Story 7-5/7-7) marcados `~~
 
 ## Deferred from: code review of story 1-4 (2026-04-09)
 
-- Secret do client `metanoia-api` hardcoded no realm-export.json — configuração de dev apenas, substituir por secret gerado em produção → **Sprint 8 (Story 2-10 auth-hardening)**
+- Secret do client `metanoia-api` hardcoded no realm-export.json — configuração de dev apenas, substituir por secret gerado em produção → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md))**
 - ~~`SET LOCAL` em transação pode ser explorado se tenantId não é UUID — fix de SQL injection já aplicado com template literal, validação de formato UUID seria defesa em profundidade~~ ✅ Resolvido em Story 7-5 (`apps/api/src/prisma/with-tenant-tx.ts:53` valida UUID via regex antes do `SET LOCAL`).
 - Google OAuth placeholders requerem credenciais reais do Google Cloud Console para teste E2E completo → **Bloqueado por dependência externa**
 - Guard HTTP-only: não suporta WebSocket ou GraphQL — fora do escopo do spike, implementar quando necessário → **Bloqueado (aguarda primeira feature WS/GraphQL)**
@@ -25,17 +25,17 @@ Itens implicitamente resolvidos pelo `withTenantTx` (Story 7-5/7-7) marcados `~~
 - Teste E2E do Google OAuth — requer credenciais reais, validar quando Google Cloud Console estiver configurado → **Bloqueado por dependência externa**
 - APP_GUARD registration order (KeycloakAuthGuard antes de RolesGuard) — funciona na prática mas a ordem não é explícita no código → **Release 1b (tactical em qualquer story)**
 - mockClear pattern inconsistente nos testes — apenas um teste faz mockClear, deveria estar no beforeEach para consistência → **Release 1b (tactical em qualquer story)**
-- Audience (`aud`) validation no JWT — token `aud` contém `metanoia-web`, API precisa de audience mapper no Keycloak para validar corretamente. Decisão: defer (party mode 3-0 unânime). Resolver em story de auth hardening → **Sprint 8 (Story 2-10 auth-hardening) — P0**
+- Audience (`aud`) validation no JWT — token `aud` contém `metanoia-web`, API precisa de audience mapper no Keycloak para validar corretamente. Decisão: defer (party mode 3-0 unânime). Resolver em story de auth hardening → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md)) — P0**
 
 ## Deferred from: code review of story-1-5 (2026-04-09)
 
-- Adicionar header X-Request-Id na response do middleware — melhoria de observabilidade para clientes → **Sprint 8 (Story 1-9 config-hardening)**
-- Store mutable no guard — considerar Object.freeze() após população para segurança → **Sprint 8 (Story 2-10 auth-hardening)**
-- LoggerModule.forRoot avaliado em load time — migrar para forRootAsync com ConfigService → **Sprint 8 (Story 1-9 config-hardening)**
+- Adicionar header X-Request-Id na response do middleware — melhoria de observabilidade para clientes → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
+- Store mutable no guard — considerar Object.freeze() após população para segurança → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md))**
+- LoggerModule.forRoot avaliado em load time — migrar para forRootAsync com ConfigService → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
 - tenantId inicializado como '' ao invés de null — alinhar com regra de null explícito → **Release 1b (tactical em qualquer story)**
 - ~~SET LOCAL sem transaction boundary no Prisma extension — verificar eficácia do RLS sem $transaction~~ ✅ Resolvido em Story 7-5 (helper `withTenantTx` envolve SET LOCAL e a query no mesmo `$transaction` → mesma conexão garantida) e Story 7-7 (extension legacy `withMultiTenant` deletado, 48 callsites migrados).
-- tracesSampleRate hardcoded — tornar configurável via env var SENTRY_TRACES_SAMPLE_RATE → **Sprint 8 (Story 1-9 config-hardening)**
-- redact config só cobre authorization header — expandir para cookies e outros headers sensíveis → **Sprint 8 (Story 1-9 config-hardening)**
+- tracesSampleRate hardcoded — tornar configurável via env var SENTRY_TRACES_SAMPLE_RATE → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
+- redact config só cobre authorization header — expandir para cookies e outros headers sensíveis → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
 
 ## Deferred from: code review of story 1-8 (2026-04-09)
 
