@@ -1,13 +1,11 @@
-import { test as base, type Page } from '@playwright/test';
-import { E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD } from '../setup/env';
+import type { Page } from '@playwright/test';
 
 /**
- * Reusable login helpers and Playwright fixtures.
+ * Reusable login helper for the E2E suite.
  *
  * `loginAs(page, email, password)` performs a UI login against the public
- * `/login` page, mirroring exactly what an end-user does. Used both inline
- * in the happy-path spec (where login itself is an assertion) and by
- * fixtures that need an already-authenticated session.
+ * `/login` page, mirroring exactly what an end-user does. Specs that need
+ * an already-authenticated session call this from `beforeEach`.
  */
 
 export async function loginAs(
@@ -21,16 +19,4 @@ export async function loginAs(
   await page.getByRole('button', { name: /entrar/i }).click();
 }
 
-interface AuthFixtures {
-  adminPage: Page;
-}
-
-export const test = base.extend<AuthFixtures>({
-  adminPage: async ({ page }, use) => {
-    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
-    await page.waitForURL(/^\/(selecionar-igreja|app)(\/|$)/);
-    await use(page);
-  },
-});
-
-export { expect } from '@playwright/test';
+export { test, expect } from '@playwright/test';
