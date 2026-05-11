@@ -23,10 +23,12 @@ export interface WithTenantTxOptions {
  * tables can resolve `current_setting('app.current_tenant_id')` to a real
  * tenant and let the query through.
  *
- * Uses `prisma.client.$transaction` directly (NOT the `withMultiTenant`
- * extension) because the extension dispatches `SET LOCAL` on the outer
- * client, which the connection pool may route to a different connection than
- * the subsequent query. SET LOCAL persists only for the transaction it ran in.
+ * Uses `prisma.client.$transaction` directly so SET LOCAL and the query
+ * are guaranteed to run on the same Postgres connection. The previous
+ * `withMultiTenant` extension (deleted in Story 7-7) dispatched SET LOCAL
+ * on the outer client, which the connection pool could route to a different
+ * connection than the subsequent query — SET LOCAL persists only for the
+ * transaction it ran in.
  *
  * Tenant resolution:
  *   1. `opts.tenantId` if provided.

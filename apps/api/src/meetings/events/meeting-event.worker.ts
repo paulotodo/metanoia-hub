@@ -1,8 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import type { Job, Worker } from 'bullmq';
+import type { Prisma } from '@prisma/client';
 import { generateId } from '@metanoia/types';
 import { BullMqService } from '../../bullmq/bullmq.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { withTenantTx } from '../../prisma/with-tenant-tx';
 import { requestContext } from '../../common/context/request-context';
 
 const MEETINGS_QUEUE = 'meetings';
@@ -58,10 +60,12 @@ export class MeetingEventWorker implements OnModuleInit {
       async () => {
         try {
           // Idempotency: skip if event already persisted (retry safety)
-          const existing = await this.prisma.tenant.meetingEvent.findFirst({
-            where: { meetingId, eventType, userId: userId ?? null, version: job.data.version },
-            select: { id: true },
-          });
+          const existing = await withTenantTx(this.prisma, (tx) =>
+            tx.meetingEvent.findFirst({
+              where: { meetingId, eventType, userId: userId ?? null, version: job.data.version },
+              select: { id: true },
+            }),
+          );
 
           if (existing) {
             this.logger.warn(
@@ -71,17 +75,19 @@ export class MeetingEventWorker implements OnModuleInit {
             return;
           }
 
-          await this.prisma.tenant.meetingEvent.create({
-            data: {
-              id: generateId(),
-              tenantId,
-              meetingId,
-              eventType,
-              userId: userId ?? null,
-              payload: data ?? {},
-              version: job.data.version,
-            },
-          });
+          await withTenantTx(this.prisma, (tx) =>
+            tx.meetingEvent.create({
+              data: {
+                id: generateId(),
+                tenantId,
+                meetingId,
+                eventType,
+                userId: userId ?? null,
+                payload: (data ?? {}) as Prisma.InputJsonValue,
+                version: job.data.version,
+              },
+            }),
+          );
 
           this.logger.log(
             { tenantId, meetingId, eventId, jobId: job.id },

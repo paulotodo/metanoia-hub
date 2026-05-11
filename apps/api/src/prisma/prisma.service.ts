@@ -2,15 +2,11 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { ConfigService } from '@nestjs/config';
-import { withMultiTenant } from './prisma.extension';
 import type { EnvConfig } from '../config/env.validation';
-
-type ExtendedClient = ReturnType<typeof withMultiTenant>;
 
 @Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
   private readonly prisma: PrismaClient;
-  private extendedClient: ExtendedClient | undefined;
 
   constructor(configService: ConfigService<EnvConfig, true>) {
     const connectionString = configService.get('DATABASE_APP_URL', { infer: true });
@@ -20,22 +16,19 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     await this.prisma.$connect();
-    this.extendedClient = withMultiTenant(this.prisma);
   }
 
   async onModuleDestroy() {
     await this.prisma.$disconnect();
   }
 
-  /** Extended client with RLS tenant injection — use for all tenant-scoped queries */
-  get tenant(): ExtendedClient {
-    if (!this.extendedClient) {
-      throw new Error('PrismaService not initialized');
-    }
-    return this.extendedClient;
-  }
-
-  /** Raw PrismaClient without RLS — use only for public endpoints (e.g., registration) */
+  /**
+   * Raw PrismaClient — use only for non-tenant-scoped queries (public
+   * endpoints, signup, health checks). All tenant-scoped queries MUST go
+   * through `withTenantTx` (apps/api/src/prisma/with-tenant-tx.ts), which
+   * wraps the query in a `$transaction` that issues
+   * `SET LOCAL app.current_tenant_id` first so RLS policies can resolve.
+   */
   get client(): PrismaClient {
     return this.prisma;
   }
