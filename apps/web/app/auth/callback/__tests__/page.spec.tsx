@@ -44,13 +44,13 @@ afterEach(() => {
 });
 
 describe("/auth/callback — non-regression (no state.inviteToken)", () => {
-  it("redirects to /dashboard when tokens present and consent granted", async () => {
+  it("redirects to /selecionar-igreja when tokens present and consent granted", async () => {
     stubLocation(
       "#access_token=a&refresh_token=r",
       "?session_id=s&has_consent=true",
     );
     render(<AuthCallbackPage />);
-    await waitFor(() => expect(location.href).toBe("/dashboard"));
+    await waitFor(() => expect(location.href).toBe("/selecionar-igreja"));
     expect(sessionStorage.getItem("accessToken")).toBe("a");
     expect(sessionStorage.getItem("refreshToken")).toBe("r");
     expect(sessionStorage.getItem("sessionId")).toBe("s");
@@ -126,7 +126,7 @@ describe("/auth/callback — participant invite branch (state.inviteToken)", () 
 
     render(<AuthCallbackPage />);
 
-    await waitFor(() => expect(location.href).toBe("/dashboard"));
+    await waitFor(() => expect(location.href).toBe("/selecionar-igreja"));
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });

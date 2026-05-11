@@ -79,6 +79,9 @@ export class KeycloakAdminService {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
+        // Realm doesn't enable `registrationEmailAsUsername`, so the username
+        // must be set explicitly or Keycloak returns 400 "User name is missing".
+        username: email,
         email,
         firstName,
         lastName,

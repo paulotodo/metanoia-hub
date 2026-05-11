@@ -23,7 +23,7 @@ env:
   REDIS_URL: redis://localhost:6380
   KEYCLOAK_URL: http://localhost:8081
   KEYCLOAK_REALM: metanoia
-  KEYCLOAK_CLIENT_ID: metanoia-app
+  KEYCLOAK_CLIENT_ID: metanoia-web
   MINIO_ENDPOINT: http://localhost:9002
   MINIO_ACCESS_KEY: minioadmin
   MINIO_SECRET_KEY: minioadmin
@@ -178,3 +178,132 @@ jobs:
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+  e2e:
+    name: E2E (Playwright)
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      E2E_BASE_URL: http://localhost:3000
+      E2E_API_URL: http://localhost:3001
+      # Ephemeral demo password — Keycloak realm and Postgres are wiped at the
+      # end of every run. Override via repo secret `E2E_DEMO_PASSWORD` if
+      # tightening is needed.
+      E2E_DEMO_PASSWORD: ${{ secrets.E2E_DEMO_PASSWORD || 'Demo!Pass2026' }}
+      E2E_DEMO_TENANT_ID: 019899a0-7002-7000-8000-000000000001
+      E2E_DEMO_ADMIN_EMAIL: admin@demo.metanoia.app
+      KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER || 'admin' }}
+      KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD || 'admin' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          # Keyed on the lockfile so patch-level upgrades of @playwright/test
+          # invalidate the binary cache.
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright (chromium)
+        run: pnpm --filter @metanoia/web exec playwright install --with-deps chromium
+
+      - name: Start test services
+        run: docker compose -f docker-compose.test.yml up -d --wait postgres redis keycloak minio livekit
+        timeout-minutes: 5
+
+      - name: Generate Prisma client
+        run: pnpm --filter @metanoia/api exec prisma generate
+
+      - name: Setup database
+        run: pnpm turbo db:setup:ci
+
+      - name: Seed demo data (Postgres)
+        run: pnpm --filter @metanoia/api db:seed:demo
+
+      - name: Seed demo users (Keycloak)
+        run: pnpm --filter @metanoia/api db:seed:demo:keycloak
+
+      - name: Build apps
+        run: pnpm turbo build --filter=@metanoia/api --filter=@metanoia/web
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+      - name: Start API
+        run: |
+          mkdir -p /tmp/e2e-logs
+          pnpm --filter @metanoia/api start:e2e > /tmp/e2e-logs/api.log 2>&1 &
+          echo $! > /tmp/e2e-logs/api.pid
+        env:
+          NODE_ENV: production
+          PORT: '3001'
+
+      - name: Start Web
+        run: |
+          pnpm --filter @metanoia/web start > /tmp/e2e-logs/web.log 2>&1 &
+          echo $! > /tmp/e2e-logs/web.pid
+        env:
+          PORT: '3000'
+
+      - name: Wait for services
+        run: pnpm dlx wait-on -t 90000 http://localhost:3001/api/health http://localhost:3000
+
+      - name: Run Playwright tests
+        run: pnpm --filter @metanoia/web e2e
+
+      - name: Dump API logs on failure
+        if: failure()
+        run: |
+          echo '=== API log (tail 200) ==='
+          tail -200 /tmp/e2e-logs/api.log || echo '(no api log)'
+          echo ''
+          echo '=== WEB log (tail 100) ==='
+          tail -100 /tmp/e2e-logs/web.log || echo '(no web log)'
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 14
+
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: apps/web/test-results
+          retention-days: 14
+
+      - name: Upload service logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: service-logs
+          path: /tmp/e2e-logs
+          retention-days: 7
+
+      - name: Stop test services
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v

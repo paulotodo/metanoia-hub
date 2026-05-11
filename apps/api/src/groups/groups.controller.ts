@@ -28,7 +28,7 @@ import { GroupsService } from './groups.service';
 
 @Controller('api/v1/groups')
 @UseGuards(KeycloakAuthGuard, RolesGuard, PlanLimitsGuard)
-@Roles('admin')
+@Roles('admin_tenant')
 export class GroupsController {
   constructor(private readonly service: GroupsService) {}
 

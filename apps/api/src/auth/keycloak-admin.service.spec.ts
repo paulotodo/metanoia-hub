@@ -61,7 +61,8 @@ describe('KeycloakAdminService', () => {
     it('should create user and return keycloak id', async () => {
       const keycloakId = '550e8400-e29b-41d4-a716-446655440000';
 
-      vi.spyOn(global, 'fetch')
+      const fetchSpy = vi
+        .spyOn(global, 'fetch')
         .mockResolvedValueOnce(
           new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
         )
@@ -74,6 +75,14 @@ describe('KeycloakAdminService', () => {
 
       const result = await service.createUser('user@example.com', 'securePass123!', 'John Doe');
       expect(result.keycloakId).toBe(keycloakId);
+
+      // Regression guard: realm doesn't enable registrationEmailAsUsername,
+      // so the request body MUST include `username`. Without it Keycloak
+      // returns 400 "User name is missing" and registration breaks E2E.
+      const createUserCall = fetchSpy.mock.calls[1];
+      const requestBody = JSON.parse((createUserCall?.[1]?.body as string) ?? '{}');
+      expect(requestBody.username).toBe('user@example.com');
+      expect(requestBody.email).toBe('user@example.com');
     });
 
     it('should throw KeycloakConflictError on 409', async () => {

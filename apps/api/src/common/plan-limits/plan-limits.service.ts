@@ -18,46 +18,56 @@ import {
 export class PlanLimitsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getPlan(tenantId: string): Promise<TenantPlan> {
-    const tenant = await this.prisma.client.tenant.findUnique({
-      where: { id: tenantId },
-      select: { plan: true },
-    });
-    return (tenant?.plan ?? 'free') as TenantPlan;
-  }
-
-  async countResource(
-    tenantId: string,
-    resource: PlanLimitedResource,
-  ): Promise<number> {
-    switch (resource) {
-      case 'groups':
-        return this.prisma.client.group.count({ where: { tenantId } });
-      case 'leadersPerTenant':
-        return this.prisma.client.userTenant.count({
-          where: { tenantId, role: 'lider' },
-        });
-      case 'membersPerGroup':
-        // Per-group caps are enforced inline by the caller (GroupMember
-        // create flow knows the groupId); the guard exposes the cap value
-        // so callers don't hardcode it.
-        throw new Error(
-          'membersPerGroup is per-group; use getLimit() and count manually',
-        );
-    }
-  }
-
+  /**
+   * Wraps the lookup in a transaction that SETs `app.current_tenant_id` so
+   * the FORCE RLS policies on `tenants`/`groups`/`user_tenants` allow the
+   * read. Without this, `current_setting(...)::uuid` of the empty default
+   * raises `invalid input syntax for type uuid: ""`.
+   */
   async hasCapacity(
     tenantId: string,
     resource: PlanLimitedResource,
   ): Promise<{ allowed: boolean; current: number; limit: number; plan: TenantPlan }> {
-    const plan = await this.getPlan(tenantId);
-    const limit = getLimit(plan, resource);
-    if (resource === 'membersPerGroup') {
-      // Not tenant-wide; caller must check.
-      return { allowed: true, current: 0, limit, plan };
-    }
-    const current = await this.countResource(tenantId, resource);
-    return { allowed: current < limit, current, limit, plan };
+    return this.prisma.client.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+      );
+
+      const tenant = await tx.tenant.findUnique({
+        where: { id: tenantId },
+        select: { plan: true },
+      });
+      const plan = (tenant?.plan ?? 'free') as TenantPlan;
+      const limit = getLimit(plan, resource);
+
+      if (resource === 'membersPerGroup') {
+        return { allowed: true, current: 0, limit, plan };
+      }
+
+      let current = 0;
+      if (resource === 'groups') {
+        current = await tx.group.count({ where: { tenantId } });
+      } else if (resource === 'leadersPerTenant') {
+        current = await tx.userTenant.count({
+          where: { tenantId, role: 'lider' },
+        });
+      }
+
+      return { allowed: current < limit, current, limit, plan };
+    });
+  }
+
+  /** Kept for callers that only need the plan (no capacity check). */
+  async getPlan(tenantId: string): Promise<TenantPlan> {
+    const tenant = await this.prisma.client.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+      );
+      return tx.tenant.findUnique({
+        where: { id: tenantId },
+        select: { plan: true },
+      });
+    });
+    return (tenant?.plan ?? 'free') as TenantPlan;
   }
 }

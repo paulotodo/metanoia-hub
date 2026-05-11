@@ -29,6 +29,17 @@ export const DEMO_TENANT_ID = '019899a0-7002-7000-8000-000000000001';
 const ADMIN_ID = '019899a0-7002-7000-8000-000000000002';
 const LEADER_ID = '019899a0-7002-7000-8000-000000000003';
 
+// --- Public exports for downstream provisioning (Story 7-4 Keycloak seed) ----
+
+export type DemoRole = 'admin_tenant' | 'lider' | 'participante';
+
+export interface DemoUser {
+  id: string;
+  email: string;
+  name: string;
+  role: DemoRole;
+}
+
 const GROUP_ID = '019899a0-7002-1000-8000-000000000001';
 
 type Status = 'verde' | 'amarelo' | 'vermelho' | 'novo';
@@ -154,6 +165,17 @@ const PARTICIPANTS: Participant[] = [
   },
 ];
 
+export const DEMO_USERS: DemoUser[] = [
+  { id: ADMIN_ID, email: 'admin@demo.metanoia.app', name: 'Pastora Sofia Mendes', role: 'admin_tenant' },
+  { id: LEADER_ID, email: 'lider@demo.metanoia.app', name: 'Líder Mateus Ribeiro', role: 'lider' },
+  ...PARTICIPANTS.map<DemoUser>((p) => ({
+    id: p.id,
+    email: p.email,
+    name: p.name,
+    role: 'participante',
+  })),
+];
+
 const STATUS_TO_SIGNAL: Record<Exclude<Status, 'novo'>, string> = {
   verde: 'care-ok',
   amarelo: 'care-attention',
@@ -198,16 +220,20 @@ async function main() {
 
   // Keyed by `id` (not `email`) so a re-run never reassigns a pre-existing
   // user from another tenant onto DEMO_TENANT_ID via email collision.
+  // Users.tenantId stays null (matches the registered-user pattern). Tenant
+  // membership lives in `user_tenants`. Setting tenantId here would hide the
+  // user from the unauthenticated login lookup (RLS on `users` requires
+  // tenant_id = current_setting OR IS NULL).
   for (const u of users) {
     await prisma.user.upsert({
       where: { id: u.id },
-      update: { name: u.name, status: 'active' },
+      update: { name: u.name, status: 'active', tenantId: null },
       create: {
         id: u.id,
         email: u.email,
         name: u.name,
         status: 'active',
-        tenantId: DEMO_TENANT_ID,
+        tenantId: null,
       },
     });
   }
@@ -235,6 +261,26 @@ async function main() {
         userId: ut.userId,
         tenantId: DEMO_TENANT_ID,
         role: ut.role,
+      },
+    });
+  }
+
+  // 3b. Consents — pre-accept LGPD/ToS for every demo user so login flow
+  // skips the /consent gate (matches the "this account has been around"
+  // expectation of demo data; otherwise login redirects to a consent page
+  // that does not yet exist).
+  for (const u of users) {
+    await prisma.consent.upsert({
+      where: { id: `019899a0-7002-9000-8000-${u.id.slice(-12)}` },
+      update: {},
+      create: {
+        id: `019899a0-7002-9000-8000-${u.id.slice(-12)}`,
+        userId: u.id,
+        tenantId: null,
+        documentType: 'terms_of_service',
+        version: '1.0.0',
+        ipAddress: '127.0.0.1',
+        userAgent: 'demo-seed',
       },
     });
   }

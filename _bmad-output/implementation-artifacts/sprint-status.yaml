@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context)
 
 generated: "2026-04-08"
-last_updated: "2026-05-08T00:00:00Z"
+last_updated: "2026-05-10T15:00:00Z"
 project: metanoia-hub
 project_key: NOKEY
 tracking_system: file-system
@@ -118,10 +118,12 @@ development_status:
 
   # Epic 7: Onboarding Mínimo
   # Sprint 6: 7-1, 7-2, 7-3
+  # Sprint 7 (Estabilização Release 1a): 7-4 (E2E happy path), 7-5 (deferred-work), 7-6 (bugs do E2E) — adicionadas fora do plano original
   epic-7: in-progress
   7-1-tela-de-boas-vindas-personalizada: ready-for-dev
   7-2-dados-de-demonstracao-realistas: done
-  7-3-mensagens-de-erro-acionaveis: review
+  7-3-mensagens-de-erro-acionaveis: done
+  7-4-e2e-happy-path-release-1a: done
   epic-7-retrospective: optional
 
   # ============================================

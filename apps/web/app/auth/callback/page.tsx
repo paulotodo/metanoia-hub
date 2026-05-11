@@ -67,7 +67,7 @@ async function handleCallback() {
   if (!hasConsent) {
     window.location.href = '/consent';
   } else {
-    window.location.href = '/dashboard';
+    window.location.href = '/selecionar-igreja';
   }
 }
 

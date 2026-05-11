@@ -61,13 +61,14 @@ export function LoginForm() {
       sessionStorage.setItem('refreshToken', data.refreshToken);
       sessionStorage.setItem('sessionId', data.sessionId);
 
-      // Redirect based on consent and tenant state
+      // Redirect based on consent and tenant state.
+      // Consent route still pending; tracked as follow-up. Both tenant branches
+      // converge to /selecionar-igreja, which renders an empty-state if the
+      // user has no memberships.
       if (!data.user.hasConsent) {
         window.location.href = '/consent';
-      } else if (data.user.tenants.length === 0) {
-        window.location.href = '/tenant/select';
       } else {
-        window.location.href = '/dashboard';
+        window.location.href = '/selecionar-igreja';
       }
     } catch {
       setServerError(t.errors.generic);

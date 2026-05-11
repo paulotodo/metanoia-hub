@@ -13,41 +13,66 @@ export interface CreateGroupInput {
 }
 
 /**
- * GroupsRepository — uses the RLS-aware client. The session-level
- * `app.current_tenant_id` is set by the Prisma extension, but the column still
- * needs to be populated on insert — read it from the request context.
+ * GroupsRepository — runs every read/write inside an explicit
+ * `$transaction` that issues `SET LOCAL app.current_tenant_id` first. This
+ * is more reliable than the global Prisma extension because `SET LOCAL`
+ * only persists for statements on the same connection — the connection pool
+ * routes each Prisma call to a potentially different connection unless they
+ * are wrapped in a transaction.
  */
 @Injectable()
 export class GroupsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  private async withTenant<T>(
+    fn: (tx: Parameters<Parameters<PrismaService['client']['$transaction']>[0]>[0]) => Promise<T>,
+  ): Promise<T> {
+    const { tenantId } = getRequestContext();
+    if (!tenantId) {
+      throw new Error('GroupsRepository called without tenant context');
+    }
+    return this.prisma.client.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
+      );
+      return fn(tx);
+    });
+  }
+
   async create(input: CreateGroupInput): Promise<Group> {
     const { tenantId } = getRequestContext();
-    return this.prisma.tenant.group.create({
-      data: {
-        id: input.id,
-        tenantId,
-        name: input.name,
-        dayOfWeek: input.dayOfWeek,
-        time: input.time,
-        recurrence: input.recurrence,
-        notes: input.notes,
-      },
-    });
+    if (!tenantId) {
+      throw new Error('GroupsRepository.create called without tenant context');
+    }
+    return this.withTenant((tx) =>
+      tx.group.create({
+        data: {
+          id: input.id,
+          tenantId,
+          name: input.name,
+          dayOfWeek: input.dayOfWeek,
+          time: input.time,
+          recurrence: input.recurrence,
+          notes: input.notes,
+        },
+      }),
+    );
   }
 
   async countByTenant(): Promise<number> {
-    return this.prisma.tenant.group.count();
+    return this.withTenant((tx) => tx.group.count());
   }
 
   async listByTenant(): Promise<Group[]> {
-    return this.prisma.tenant.group.findMany({
-      orderBy: { name: 'asc' },
-    });
+    return this.withTenant((tx) =>
+      tx.group.findMany({ orderBy: { name: 'asc' } }),
+    );
   }
 
   async findById(id: string): Promise<Group | null> {
-    return this.prisma.tenant.group.findFirst({ where: { id } });
+    return this.withTenant((tx) =>
+      tx.group.findFirst({ where: { id } }),
+    );
   }
 
   async update(
@@ -60,17 +85,18 @@ export class GroupsRepository {
       notes: string | null;
     }>,
   ): Promise<Group | null> {
-    const existing = await this.findById(id);
-    if (!existing) return null;
-    return this.prisma.tenant.group.update({
-      where: { id },
-      data: patch,
+    return this.withTenant(async (tx) => {
+      const existing = await tx.group.findFirst({ where: { id } });
+      if (!existing) return null;
+      return tx.group.update({ where: { id }, data: patch });
     });
   }
 
   async delete(id: string): Promise<Group | null> {
-    const existing = await this.findById(id);
-    if (!existing) return null;
-    return this.prisma.tenant.group.delete({ where: { id } });
+    return this.withTenant(async (tx) => {
+      const existing = await tx.group.findFirst({ where: { id } });
+      if (!existing) return null;
+      return tx.group.delete({ where: { id } });
+    });
   }
 }

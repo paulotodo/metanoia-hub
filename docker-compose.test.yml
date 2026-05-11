@@ -55,6 +55,9 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HEALTH_ENABLED: 'true'
       KC_METRICS_ENABLED: 'false'
+      # Cap JVM heap so it stays inside the cgroup limit below.
+      # start-dev + realm import needs ~512M heap; total RSS lands ~1.0-1.2G.
+      JAVA_OPTS_KC_HEAP: '-Xms256m -Xmx768m'
     volumes:
       - ./infra/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
@@ -64,12 +67,12 @@ services:
       test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/8080 && echo -e "GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q 200']
       interval: 10s
       timeout: 10s
-      retries: 15
-      start_period: 30s
+      retries: 30
+      start_period: 60s
     deploy:
       resources:
         limits:
-          memory: 768M
+          memory: 1536M
 
   minio:
     image: minio/minio:latest
