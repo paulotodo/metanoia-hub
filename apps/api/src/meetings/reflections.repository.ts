@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { Reflection } from '@prisma/client';
 import { getRequestContext } from '../common/context/request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 
 @Injectable()
 export class ReflectionsRepository {
@@ -14,21 +15,25 @@ export class ReflectionsRepository {
     text: string;
   }): Promise<Reflection> {
     const { tenantId } = getRequestContext();
-    return this.prisma.tenant.reflection.create({
-      data: {
-        id: input.id,
-        tenantId,
-        meetingId: input.meetingId,
-        leaderId: input.leaderId,
-        text: input.text,
-      },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.reflection.create({
+        data: {
+          id: input.id,
+          tenantId,
+          meetingId: input.meetingId,
+          leaderId: input.leaderId,
+          text: input.text,
+        },
+      }),
+    );
   }
 
   async findByMeeting(meetingId: string): Promise<Reflection[]> {
-    return this.prisma.tenant.reflection.findMany({
-      where: { meetingId },
-      orderBy: { recordedAt: 'desc' },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.reflection.findMany({
+        where: { meetingId },
+        orderBy: { recordedAt: 'desc' },
+      }),
+    );
   }
 }

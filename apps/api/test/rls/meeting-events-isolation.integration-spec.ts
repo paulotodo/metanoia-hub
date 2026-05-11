@@ -7,7 +7,7 @@ import { createMeetingEvent } from '../factories/meeting-event.factory';
  *
  * Prerequisites:
  * - PostgreSQL running with RLS policies applied
- * - Prisma client configured with withMultiTenant extension
+ * - Tenant-scoped queries routed through withTenantTx (apps/api/src/prisma/with-tenant-tx.ts)
  *
  * This test validates:
  * 1. Tenant A can only see their own events

@@ -5,6 +5,7 @@ import type {
   SignalType,
 } from '@metanoia/types';
 import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 
 @Injectable()
 export class PastoralRepository {
@@ -14,48 +15,58 @@ export class PastoralRepository {
     const where: Record<string, unknown> = { active: true };
     if (groupId) where.groupId = groupId;
 
-    return this.prisma.tenant.pastoralAlert.findMany({
-      where,
-      include: {
-        participant: { select: { id: true, name: true } },
-        group: { select: { id: true, name: true } },
-      },
-      orderBy: [
-        { signalType: 'asc' }, // care-urgent first (alphabetical)
-        { updatedAt: 'desc' },
-      ],
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.pastoralAlert.findMany({
+        where,
+        include: {
+          participant: { select: { id: true, name: true } },
+          group: { select: { id: true, name: true } },
+        },
+        orderBy: [
+          { signalType: 'asc' }, // care-urgent first (alphabetical)
+          { updatedAt: 'desc' },
+        ],
+      }),
+    );
   }
 
   async findAlertByParticipant(participantId: string) {
-    return this.prisma.tenant.pastoralAlert.findFirst({
-      where: { participantId, active: true },
-      include: {
-        participant: { select: { id: true, name: true } },
-        group: { select: { id: true, name: true } },
-      },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.pastoralAlert.findFirst({
+        where: { participantId, active: true },
+        include: {
+          participant: { select: { id: true, name: true } },
+          group: { select: { id: true, name: true } },
+        },
+      }),
+    );
   }
 
   async findLastCareAction(participantId: string) {
-    return this.prisma.tenant.pastoralAction.findFirst({
-      where: { participantId },
-      orderBy: { recordedAt: 'desc' },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.pastoralAction.findFirst({
+        where: { participantId },
+        orderBy: { recordedAt: 'desc' },
+      }),
+    );
   }
 
   async findNotesByParticipant(participantId: string) {
-    return this.prisma.tenant.pastoralNote.findMany({
-      where: { participantId },
-      orderBy: { occurredAt: 'desc' },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.pastoralNote.findMany({
+        where: { participantId },
+        orderBy: { occurredAt: 'desc' },
+      }),
+    );
   }
 
   async findGroupsByTenant() {
-    return this.prisma.tenant.group.findMany({
-      select: { id: true, name: true },
-      orderBy: { name: 'asc' },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.group.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
+      }),
+    );
   }
 
   async createCareAction(data: {
@@ -68,18 +79,20 @@ export class PastoralRepository {
     tenantId: string;
   }) {
     const id = generateId();
-    const action = await this.prisma.tenant.pastoralAction.create({
-      data: {
-        id,
-        tenantId: data.tenantId,
-        participantId: data.participantId,
-        groupId: data.groupId,
-        performedBy: data.performedBy,
-        actionType: data.actionType,
-        signalType: data.signalType,
-        note: data.note,
-      },
-    });
+    const action = await withTenantTx(this.prisma, (tx) =>
+      tx.pastoralAction.create({
+        data: {
+          id,
+          tenantId: data.tenantId,
+          participantId: data.participantId,
+          groupId: data.groupId,
+          performedBy: data.performedBy,
+          actionType: data.actionType,
+          signalType: data.signalType,
+          note: data.note,
+        },
+      }),
+    );
 
     return { careActionId: action.id, recordedAt: action.recordedAt.toISOString() };
   }

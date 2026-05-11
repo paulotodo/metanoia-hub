@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 
 /**
  * ParticipantGroupsRepository — read-only queries scoped to the current
- * authenticated user. Tenant isolation is enforced by RLS via the Prisma
- * extension; on top of that, every query filters by the requesting user's
- * GroupMember rows so participants only see groups they belong to.
+ * authenticated user. Tenant isolation is enforced by RLS via `withTenantTx`
+ * (SET LOCAL app.current_tenant_id + query share the same connection);
+ * additionally, every query filters by the requesting user's GroupMember
+ * rows so participants only see groups they belong to.
  */
 @Injectable()
 export class ParticipantGroupsRepository {
@@ -16,20 +18,22 @@ export class ParticipantGroupsRepository {
    * next upcoming meeting (status='scheduled', scheduledFor >= now) included.
    */
   async findGroupsForUser(userId: string) {
-    return this.prisma.tenant.group.findMany({
-      where: { members: { some: { userId } } },
-      orderBy: { name: 'asc' },
-      include: {
-        members: {
-          where: { role: 'lider' },
-          take: 1,
-          include: {
-            user: { select: { id: true, name: true } },
+    return withTenantTx(this.prisma, (tx) =>
+      tx.group.findMany({
+        where: { members: { some: { userId } } },
+        orderBy: { name: 'asc' },
+        include: {
+          members: {
+            where: { role: 'lider' },
+            take: 1,
+            include: {
+              user: { select: { id: true, name: true } },
+            },
           },
+          _count: { select: { members: true } },
         },
-        _count: { select: { members: true } },
-      },
-    });
+      }),
+    );
   }
 
   /**
@@ -38,19 +42,21 @@ export class ParticipantGroupsRepository {
    * existence). Includes leader, all members (for peers), and next meeting.
    */
   async findGroupForUser(groupId: string, userId: string) {
-    return this.prisma.tenant.group.findFirst({
-      where: {
-        id: groupId,
-        members: { some: { userId } },
-      },
-      include: {
-        members: {
-          include: {
-            user: { select: { id: true, name: true } },
+    return withTenantTx(this.prisma, (tx) =>
+      tx.group.findFirst({
+        where: {
+          id: groupId,
+          members: { some: { userId } },
+        },
+        include: {
+          members: {
+            include: {
+              user: { select: { id: true, name: true } },
+            },
           },
         },
-      },
-    });
+      }),
+    );
   }
 
   /**
@@ -59,18 +65,20 @@ export class ParticipantGroupsRepository {
    * Prisma cannot easily express "first meeting in the future" via include.
    */
   async findNextMeeting(groupId: string) {
-    return this.prisma.tenant.meeting.findFirst({
-      where: {
-        groupId,
-        status: 'scheduled',
-        scheduledFor: { gte: new Date() },
-      },
-      orderBy: { scheduledFor: 'asc' },
-      select: {
-        id: true,
-        scheduledFor: true,
-        livekitRoomId: true,
-      },
-    });
+    return withTenantTx(this.prisma, (tx) =>
+      tx.meeting.findFirst({
+        where: {
+          groupId,
+          status: 'scheduled',
+          scheduledFor: { gte: new Date() },
+        },
+        orderBy: { scheduledFor: 'asc' },
+        select: {
+          id: true,
+          scheduledFor: true,
+          livekitRoomId: true,
+        },
+      }),
+    );
   }
 }
