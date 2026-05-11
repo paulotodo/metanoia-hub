@@ -25,6 +25,12 @@ export class InvitesController {
     return { data };
   }
 
+  @Get(':token/resolve')
+  async resolve(@Param('token') token: string) {
+    const data = await this.service.resolveToken(token);
+    return { data };
+  }
+
   @Post(':token/accept-terms')
   @HttpCode(HttpStatus.OK)
   async acceptTerms(

@@ -30,7 +30,7 @@
 ## Deferred from: code review of story-7-4-e2e-happy-path-release-1a (2026-05-10)
 
 - **Bug irmão `KeycloakAdminService.createUserForTenant`** — rota invites (Story 4-3) tem typo idêntico ao corrigido em `createUser`, todos os usuários convidados saem sem `tenant_id` claim. P0 delegado para Story 7-6.
-- **Concentração arquitetural — helper `withTenant`** — pattern `$transaction + SET LOCAL` duplicado em 4 repos (`groups`, `admin-invites`, `tenant-selection`, `plan-limits`). Story 7-5 deve consolidar em helper central com UUID guard uniforme.
+- ~~**Concentração arquitetural — helper `withTenant`** — pattern `$transaction + SET LOCAL` duplicado em 4 repos (`groups`, `admin-invites`, `tenant-selection`, `plan-limits`).~~ ✅ Resolvido em Story 7-5 (`apps/api/src/prisma/with-tenant-tx.ts`). Os 7 repos legacy via `prisma.tenant.*` (Story 7-7) ainda usam o extension.
 - **`vitest.config.ts` exclude `e2e/**` não declarado** — funcionalmente OK pelo include guard, mas Task 1 da Story 7-4 pedia exclude explícito. Adicionar para defesa em profundidade.
 - **ESLint ignora `apps/web/e2e/**` totalmente** — dívida intencional; quando `@playwright/test` for tracked como devDep raiz, restaurar lint sobre specs E2E.
 - **`apps/web/e2e/fixtures/auth.fixture.ts` código morto** — fixture `adminPage` exportada mas não consumida pelo spec atual. Próximas suites E2E (Stories 7-5+) devem usar ou remover.
@@ -40,4 +40,8 @@
 - **`realignPgUserId` pode invalidar Redis cache de sessão em ambiente compartilhado** — improvável em CI; documentar guard ou flush sessões `session:*` no fim do seed.
 - **Seed Keycloak sem retry/backoff em chamadas REST** — falha mid-loop deixa users sem role. Wrapper `retryWithBackoff` em chamadas `findUserByEmail/createUser/ensureRealmRole`.
 - **Playwright `retries: 2` em CI** — mascara flakes em vez de expô-las. Reduzir para 0/1 após estabilização da suite.
-- **`ON UPDATE CASCADE` em todas as FKs `users.id` assumido sem teste** — adicionar teste de migration que valida CASCADE em todas as referências; Story 7-5.
+- ~~**`ON UPDATE CASCADE` em todas as FKs `users.id` assumido sem teste** — adicionar teste de migration que valida CASCADE em todas as referências; Story 7-5.~~ ✅ Resolvido em Story 7-5 (`apps/api/test/migrations/cascade-users-id.spec.ts`).
+
+## Deferred from: implementation of story 7-5 (2026-05-10)
+
+- **Migrar 7 repos legacy do extension `withMultiTenant` para `withTenantTx`** — Story 7-5 introduziu o helper e migrou 5 callsites com pattern manual (`groups`, `admin-invites`, `tenant-selection` ×2, `plan-limits` ×2). Os 7 repos restantes (`admin-pastoral` ~15 callsites, `meetings` ~5, `meetings/reflections` ~2, `meetings/events/meeting-event.worker` ~2, `group-members` ~8, `participant-groups` ~3, `tenants/tenants.service` ~1) ainda usam o extension via `this.prisma.tenant.*`. Têm o mesmo bug latente de pool routing (SET LOCAL em conexão diferente da query) — funciona em CI por baixa concorrência. Story 7-7 migra todos, deleta o extension e remove `get tenant` do `PrismaService`. Bloqueia tag Release 1a-beta se algum dos repos for executado sob carga concorrente real.
