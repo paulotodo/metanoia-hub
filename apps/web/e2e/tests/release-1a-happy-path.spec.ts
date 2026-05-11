@@ -3,7 +3,7 @@ import { newRunId } from '../helpers/run-id';
 import { apiPost } from '../helpers/api-client';
 import { cleanupArtifacts, type CleanupArtifacts } from '../helpers/cleanup';
 import {
-  E2E_API_URL,
+  E2E_BASE_URL,
   E2E_DEMO_ADMIN_EMAIL,
   E2E_DEMO_PASSWORD,
   E2E_DEMO_TENANT_ID,
@@ -24,8 +24,8 @@ import {
 // Tiny safety check so an env misconfiguration fails the suite immediately
 // rather than mid-step with a cryptic 401.
 test.beforeAll(() => {
-  if (!E2E_API_URL.startsWith('http')) {
-    throw new Error(`E2E_API_URL must include protocol, got "${E2E_API_URL}"`);
+  if (!E2E_BASE_URL.startsWith('http')) {
+    throw new Error(`E2E_BASE_URL must include protocol, got "${E2E_BASE_URL}"`);
   }
 });
 

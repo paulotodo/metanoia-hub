@@ -186,7 +186,6 @@ jobs:
     timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:3000
-      E2E_API_URL: http://localhost:3001
       # Ephemeral demo password — Keycloak realm and Postgres are wiped at the
       # end of every run. Override via repo secret `E2E_DEMO_PASSWORD` if
       # tightening is needed.

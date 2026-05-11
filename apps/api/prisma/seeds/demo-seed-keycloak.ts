@@ -18,6 +18,7 @@
 
 import { Client } from 'pg';
 import { DEMO_TENANT_ID, DEMO_USERS, type DemoRole } from './demo-seed';
+import { retryWithBackoff } from './_retry';
 
 // docker-compose exposes the master admin via `KEYCLOAK_ADMIN`/`KEYCLOAK_ADMIN_PASSWORD`.
 // `KEYCLOAK_ADMIN_USER` is also accepted for parity with other tooling.
@@ -376,11 +377,16 @@ async function main() {
     process.exit(1);
   }
 
-  // Pre-steps:
+  // Pre-steps (each wrapped in retry — Keycloak listeners may still be
+  // warming up in the first few seconds after `start-dev --import-realm`):
   //   1. allow custom user attributes (`tenant_id`) to survive REST writes
   //   2. grant the API client the realm-management roles it needs
-  await enableUnmanagedAttributes(token);
-  await provisionApiServiceAccount(token);
+  await retryWithBackoff(() => enableUnmanagedAttributes(token), {
+    label: 'enableUnmanagedAttributes',
+  });
+  await retryWithBackoff(() => provisionApiServiceAccount(token), {
+    label: 'provisionApiServiceAccount',
+  });
 
   // PG client to realign demo `users.id` to the KC-generated id (KC ignores
   // explicit id on POST). Uses DATABASE_URL (superuser) to bypass FORCE RLS.
@@ -393,20 +399,32 @@ async function main() {
   let created = 0;
   let updated = 0;
 
+  // Each Keycloak REST call is wrapped — transient connection-reset/503
+  // during the first ~5s of CI boot is the dominant flake source. The PG
+  // realign is intentionally NOT retried: it's a deterministic UPDATE; a
+  // failure there means schema drift, not transient infra.
   for (const user of DEMO_USERS) {
-    const existing = await findUserByEmail(token, user.email);
+    const existing = await retryWithBackoff(() => findUserByEmail(token, user.email), {
+      label: `findUserByEmail(${user.email})`,
+    });
     let keycloakId: string;
 
     if (existing) {
       keycloakId = existing.id;
-      await resetPassword(token, keycloakId);
+      await retryWithBackoff(() => resetPassword(token, keycloakId), {
+        label: `resetPassword(${user.email})`,
+      });
       updated += 1;
     } else {
-      keycloakId = await createUser(token, user);
+      keycloakId = await retryWithBackoff(() => createUser(token, user), {
+        label: `createUser(${user.email})`,
+      });
       created += 1;
     }
 
-    await ensureRealmRole(token, keycloakId, user.role);
+    await retryWithBackoff(() => ensureRealmRole(token, keycloakId, user.role), {
+      label: `ensureRealmRole(${user.email})`,
+    });
     await realignPgUserId(pg, user.email, keycloakId);
     console.log(`  - ${user.email} [${user.role}] → ${existing ? 'updated' : 'created'} (${keycloakId})`);
   }

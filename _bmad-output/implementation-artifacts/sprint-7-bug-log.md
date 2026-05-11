@@ -18,6 +18,16 @@ pela suite E2E (Story 7-4) e por sessões de hardening (Story 7-5). Cada entrada
 - **Story de fix** vazio = ainda não tem story; preenche quando o bug for
   triado para uma sprint específica.
 
+## Story 7-6 resolution summary (2026-05-11)
+
+Story 7-6 fechou:
+
+- **Bug P0 `createUserForTenant` attribute camelCase**: `keycloak-admin.service.ts:158` enviava `attributes: { tenantId: [...] }`, mas o protocol mapper definido em `infra/keycloak/realm-export.json` lê `user.attribute: tenant_id` (snake_case). Invited users provisionados via convite saiam sem o claim `tenant_id` no JWT → `KeycloakAuthGuard` rejeitava todo request autenticado. Fix: snake_case + regression specs no `keycloak-admin.service.spec.ts` (3 cenários cobrindo body shape, 409, 400 password) + snapshot test `test/keycloak/tenant-claim-mapper.spec.ts` validando invariante mapper↔atributo cross-files. ✅
+- **Cleanup tactical Playwright/Vitest/ESLint**: `retries: 2 → 1` no playwright.config; vitest exclude `e2e/**` explícito; `@playwright/test` promovido para devDep raiz → ESLint cobre `apps/web/e2e/**` (zero violações pegas); fixture morta `adminPage` removida. ✅
+- **`apiPost` via Next rewrite**: api-client + cleanup + spec guard usam `E2E_BASE_URL` (porta 3000, exercitando rewrite real); `E2E_API_URL` removido de env.ts + workflow CI. ✅
+- **Seed Keycloak retry/backoff**: helper `retryWithBackoff` em `prisma/seeds/_retry.ts` (attempts=3, baseMs=500); 6 chamadas top-level no demo-seed envoltas; spec em `test/seeds/retry.spec.ts` (4 cenários: primeira, segunda, exaustão, exponential). ✅
+- **`getRequestContext()` optional chaining redundante**: `tenant-selection.service.ts` cosmético — `ctx?.userId/tenantId` → `ctx.userId/tenantId` (helper sempre throws ou retorna context completo). ✅
+
 ## Story 7-5 resolution summary (2026-05-10)
 
 Story 7-5 fechou os seguintes bugs arquiteturais expostos pela Story 7-4:

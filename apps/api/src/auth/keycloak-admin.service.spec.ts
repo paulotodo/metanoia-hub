@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ConflictException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { KeycloakAdminService, KeycloakConflictError } from './keycloak-admin.service';
 
@@ -95,6 +96,99 @@ describe('KeycloakAdminService', () => {
       await expect(
         service.createUser('user@example.com', 'securePass123!', 'John Doe'),
       ).rejects.toThrow(KeycloakConflictError);
+    });
+  });
+
+  describe('createUserForTenant', () => {
+    const tenantId = '0190ba6e-1f8a-7000-9000-000000000001';
+
+    it('should create user with tenant_id (snake_case) attribute and set password via separate PUT', async () => {
+      const keycloakId = '550e8400-e29b-41d4-a716-446655440000';
+
+      const fetchSpy = vi
+        .spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(
+          new Response(null, {
+            status: 201,
+            headers: { Location: `http://localhost:8080/admin/realms/metanoia/users/${keycloakId}` },
+          }),
+        )
+        .mockResolvedValueOnce(new Response(null, { status: 204 }));
+
+      const result = await service.createUserForTenant({
+        email: 'invitee@example.com',
+        name: 'Jane Doe',
+        password: 'Secret123!',
+        tenantId,
+      });
+
+      expect(result.keycloakUserId).toBe(keycloakId);
+
+      // Regression guard: the Keycloak protocol mapper reads
+      // `user.attribute: "tenant_id"` (snake_case). Sending the attribute as
+      // `tenantId` (camelCase) silently strips the claim from the JWT and
+      // breaks login for every invited user.
+      const createUserCall = fetchSpy.mock.calls[1];
+      const requestBody = JSON.parse((createUserCall?.[1]?.body as string) ?? '{}');
+      expect(requestBody.username).toBe('invitee@example.com');
+      expect(requestBody.email).toBe('invitee@example.com');
+      expect(requestBody.firstName).toBe('Jane');
+      expect(requestBody.lastName).toBe('Doe');
+      expect(requestBody.attributes).toEqual({ tenant_id: [tenantId] });
+      expect(requestBody.attributes.tenantId).toBeUndefined();
+
+      // Password is set on a separate PUT /reset-password — not on the create call.
+      expect(requestBody.credentials).toBeUndefined();
+      const passwordCall = fetchSpy.mock.calls[2];
+      expect(passwordCall?.[0]).toBe(
+        `http://localhost:8080/admin/realms/metanoia/users/${keycloakId}/reset-password`,
+      );
+      expect(passwordCall?.[1]?.method).toBe('PUT');
+    });
+
+    it('should throw ConflictException on 409 from create user', async () => {
+      vi.spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(new Response('Conflict', { status: 409 }));
+
+      await expect(
+        service.createUserForTenant({
+          email: 'taken@example.com',
+          name: 'Jane Doe',
+          password: 'Secret123!',
+          tenantId,
+        }),
+      ).rejects.toBeInstanceOf(ConflictException);
+    });
+
+    it('should throw when password reset returns non-2xx', async () => {
+      const keycloakId = '550e8400-e29b-41d4-a716-446655440000';
+
+      vi.spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(
+          new Response(null, {
+            status: 201,
+            headers: { Location: `http://localhost:8080/admin/realms/metanoia/users/${keycloakId}` },
+          }),
+        )
+        .mockResolvedValueOnce(new Response('policy violation', { status: 400 }));
+
+      await expect(
+        service.createUserForTenant({
+          email: 'invitee@example.com',
+          name: 'Jane Doe',
+          password: 'short',
+          tenantId,
+        }),
+      ).rejects.toThrow(/Keycloak password reset failed: 400/);
     });
   });
 

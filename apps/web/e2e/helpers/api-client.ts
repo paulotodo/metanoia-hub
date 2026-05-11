@@ -1,12 +1,14 @@
 import type { APIRequestContext } from '@playwright/test';
-import { E2E_API_URL } from '../setup/env';
+import { E2E_BASE_URL } from '../setup/env';
 
 /**
- * Thin wrapper over Playwright's APIRequestContext that prefixes the API
- * base URL, attaches the Bearer token (frontend stores access tokens in
- * sessionStorage rather than cookies, so `page.request` does NOT carry
- * authentication automatically), and surfaces non-OK responses with the
- * response body for easier debugging.
+ * Thin wrapper over Playwright's APIRequestContext that prefixes the Next
+ * front-door base URL (port 3000) so requests flow through the
+ * `/api/v1/:path*` rewrite declared in `apps/web/next.config.ts`, exercising
+ * the exact same path a browser client uses. It attaches the Bearer token
+ * (frontend stores access tokens in sessionStorage rather than cookies, so
+ * `page.request` does NOT carry authentication automatically) and surfaces
+ * non-OK responses with the response body for easier debugging.
  */
 export interface ApiResponse<T> {
   status: number;
@@ -31,7 +33,7 @@ export async function apiPost<TBody, TResponse>(
   body: TBody,
   options?: ApiCallOptions,
 ): Promise<ApiResponse<TResponse>> {
-  const url = `${E2E_API_URL}${path}`;
+  const url = `${E2E_BASE_URL}${path}`;
   const response = await request.post(url, {
     data: body as unknown as Record<string, unknown>,
     headers: buildHeaders(options),
