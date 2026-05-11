@@ -155,7 +155,12 @@ export class KeycloakAdminService {
         enabled: true,
         emailVerified: false,
         attributes: {
-          tenantId: [tenantId],
+          // Must match the Keycloak protocol mapper's `user.attribute`
+          // (snake_case) in `infra/keycloak/realm-export.json`. Using camelCase
+          // here silently breaks JWT issuance: the attribute is stored on the
+          // user profile but the mapper never finds it, so the invited user
+          // receives a token without the `tenant_id` claim.
+          tenant_id: [tenantId],
         },
       }),
     });
