@@ -1,5 +1,5 @@
 import type { APIRequestContext } from '@playwright/test';
-import { E2E_API_URL } from '../setup/env';
+import { E2E_BASE_URL } from '../setup/env';
 
 /**
  * Best-effort cleanup: removes the artefacts a single run created (group
@@ -41,7 +41,7 @@ export async function cleanupArtifacts(
   if (artifacts.inviteId) {
     try {
       const res = await request.delete(
-        `${E2E_API_URL}/api/v1/admin/invites/${artifacts.inviteId}`,
+        `${E2E_BASE_URL}/api/v1/admin/invites/${artifacts.inviteId}`,
         { ...DELETE_OPTS, headers },
       );
       if (!res.ok()) {
@@ -56,7 +56,7 @@ export async function cleanupArtifacts(
   if (artifacts.groupId) {
     try {
       const res = await request.delete(
-        `${E2E_API_URL}/api/v1/groups/${artifacts.groupId}`,
+        `${E2E_BASE_URL}/api/v1/groups/${artifacts.groupId}`,
         { ...DELETE_OPTS, headers },
       );
       if (!res.ok()) {

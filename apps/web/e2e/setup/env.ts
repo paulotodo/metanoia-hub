@@ -18,7 +18,6 @@ function read(name: string, fallback: string): string {
 }
 
 export const E2E_BASE_URL = read('E2E_BASE_URL', 'http://localhost:3000');
-export const E2E_API_URL = read('E2E_API_URL', 'http://localhost:3001');
 export const E2E_DEMO_PASSWORD = read('E2E_DEMO_PASSWORD', 'Demo!Pass2026');
 export const E2E_DEMO_TENANT_ID = read(
   'E2E_DEMO_TENANT_ID',
