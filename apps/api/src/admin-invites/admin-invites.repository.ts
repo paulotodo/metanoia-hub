@@ -3,30 +3,11 @@ import { uuidv7 } from 'uuidv7';
 import type { Invite } from '@prisma/client';
 import { getRequestContext } from '../common/context/request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 
-/**
- * Same SET-LOCAL-inside-$transaction pattern as GroupsRepository — see the
- * doc comment there. Uses prisma.client + explicit transaction to guarantee
- * the SET LOCAL and the actual query run on the same connection.
- */
 @Injectable()
 export class AdminInvitesRepository {
   constructor(private readonly prisma: PrismaService) {}
-
-  private async withTenant<T>(
-    fn: (tx: Parameters<Parameters<PrismaService['client']['$transaction']>[0]>[0]) => Promise<T>,
-  ): Promise<T> {
-    const { tenantId } = getRequestContext();
-    if (!tenantId) {
-      throw new Error('AdminInvitesRepository called without tenant context');
-    }
-    return this.prisma.client.$transaction(async (tx) => {
-      await tx.$executeRawUnsafe(
-        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
-      );
-      return fn(tx);
-    });
-  }
 
   async create(input: {
     token: string;
@@ -38,10 +19,7 @@ export class AdminInvitesRepository {
     expiresAt: Date;
   }): Promise<Invite> {
     const { tenantId } = getRequestContext();
-    if (!tenantId) {
-      throw new Error('AdminInvitesRepository.create called without tenant context');
-    }
-    return this.withTenant((tx) =>
+    return withTenantTx(this.prisma, (tx) =>
       tx.invite.create({
         data: {
           id: uuidv7(),
@@ -59,7 +37,7 @@ export class AdminInvitesRepository {
   }
 
   async listForTenant(): Promise<Invite[]> {
-    return this.withTenant((tx) =>
+    return withTenantTx(this.prisma, (tx) =>
       tx.invite.findMany({
         where: { kind: { not: 'pre_tenant_signup' } },
         orderBy: { createdAt: 'desc' },
@@ -68,11 +46,13 @@ export class AdminInvitesRepository {
   }
 
   async findById(id: string): Promise<Invite | null> {
-    return this.withTenant((tx) => tx.invite.findFirst({ where: { id } }));
+    return withTenantTx(this.prisma, (tx) =>
+      tx.invite.findFirst({ where: { id } }),
+    );
   }
 
   async revoke(id: string): Promise<Invite | null> {
-    return this.withTenant(async (tx) => {
+    return withTenantTx(this.prisma, async (tx) => {
       const existing = await tx.invite.findFirst({ where: { id } });
       if (!existing) return null;
       return tx.invite.update({
@@ -83,7 +63,7 @@ export class AdminInvitesRepository {
   }
 
   async findActiveByEmail(email: string): Promise<Invite | null> {
-    return this.withTenant((tx) =>
+    return withTenantTx(this.prisma, (tx) =>
       tx.invite.findFirst({
         where: {
           leaderEmail: email,

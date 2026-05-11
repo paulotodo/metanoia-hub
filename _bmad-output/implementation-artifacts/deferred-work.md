@@ -41,3 +41,7 @@
 - **Seed Keycloak sem retry/backoff em chamadas REST** — falha mid-loop deixa users sem role. Wrapper `retryWithBackoff` em chamadas `findUserByEmail/createUser/ensureRealmRole`.
 - **Playwright `retries: 2` em CI** — mascara flakes em vez de expô-las. Reduzir para 0/1 após estabilização da suite.
 - **`ON UPDATE CASCADE` em todas as FKs `users.id` assumido sem teste** — adicionar teste de migration que valida CASCADE em todas as referências; Story 7-5.
+
+## Deferred from: implementation of story 7-5 (2026-05-10)
+
+- **Migrar 7 repos legacy do extension `withMultiTenant` para `withTenantTx`** — Story 7-5 introduziu o helper e migrou 5 callsites com pattern manual (`groups`, `admin-invites`, `tenant-selection` ×2, `plan-limits` ×2). Os 7 repos restantes (`admin-pastoral` ~15 callsites, `meetings` ~5, `meetings/reflections` ~2, `meetings/events/meeting-event.worker` ~2, `group-members` ~8, `participant-groups` ~3, `tenants/tenants.service` ~1) ainda usam o extension via `this.prisma.tenant.*`. Têm o mesmo bug latente de pool routing (SET LOCAL em conexão diferente da query) — funciona em CI por baixa concorrência. Story 7-7 migra todos, deleta o extension e remove `get tenant` do `PrismaService`. Bloqueia tag Release 1a-beta se algum dos repos for executado sob carga concorrente real.

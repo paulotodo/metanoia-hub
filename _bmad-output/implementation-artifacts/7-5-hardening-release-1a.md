@@ -1,6 +1,6 @@
 # Story 7.5: Hardening Release 1a — Tenant Isolation & SSR Wire-up
 
-Status: ready-for-dev
+Status: in-progress
 
 baseline_commit: a88db3c (dev após merge PR #96)
 
@@ -22,10 +22,11 @@ so that elimino divergência entre repos (que já produziu 4 bugs idênticos em 
 - abre `prisma.client.$transaction(async (tx) => { await tx.$executeRawUnsafe(\`SET LOCAL app.current_tenant_id = '${tenantId}'\`); return fn(tx); })`
 - expõe o `tx` tipado (`Parameters<Parameters<PrismaClient['$transaction']>[0]>[0]`) para a callback
 **And** os 5 callsites listados acima são reescritos para usar `withTenantTx`, removendo helpers privados `withTenant` duplicados de `groups.repository.ts` e `admin-invites.repository.ts`
-**And** a Prisma extension `withMultiTenant` em `apps/api/src/prisma/prisma.extension.ts` é deletada (não substituída — ela cria a ilusão de funcionar e induz callers a esquecer do helper); o `PrismaService` retorna o `PrismaClient` cru
+**And** a Prisma extension `withMultiTenant` em `apps/api/src/prisma/prisma.extension.ts` é marcada `@deprecated` com JSDoc explicando o bug de pool routing (SET LOCAL roda em conexão diferente da query) e apontando para a Story 7-7 que migrará os 7 repos restantes (`admin-pastoral`, `meetings`, `meetings/reflections`, `meetings/events/meeting-event.worker`, `group-members`, `participant-groups`, `tenants/tenants.service`) — a extension NÃO é deletada nesta story porque esses 7 repos ainda dependem dela; deletação é parte da Story 7-7
 **And** uma suíte `apps/api/src/prisma/__tests__/with-tenant-tx.spec.ts` cobre: (a) UUID guard rejeita strings inválidas, (b) prefere `opts.tenantId` sobre `RequestContext`, (c) lança quando ambos faltam, (d) propaga o `tx` para a callback, (e) rollback em erro dentro da callback
-**And** todos os testes existentes que dependiam de `withMultiTenant` em integration setup são atualizados (search por `withMultiTenant` em `__tests__/`)
 **And** `pnpm turbo test` permanece verde
+
+> **Scope split (decisão 2026-05-10):** o artifact original propunha deletar `withMultiTenant` nesta story, mas grep revelou ~40 callsites do `prisma.tenant.*` em 7 outros repos. Deletar o extension exigiria refactor de ≈12 callsites adicionais e dobraria o escopo. Decisão Paulo: introduzir helper + migrar 5 callsites manuais nesta story; criar Story 7-7 para migrar os 7 repos restantes.
 
 **Given** `/convite/[token]/page.tsx` ainda consome `resolveInviteFixture` (in-memory mock) — wire-up real nunca aconteceu desde Cenário 06 Session 2 (PR #78) — e `GET /api/v1/invites/:token` existe há ~3 semanas em `apps/api/src/invites/invites.controller.ts`
 **When** esta story é entregue
@@ -63,9 +64,9 @@ so that elimino divergência entre repos (que já produziu 4 bugs idênticos em 
 - [ ] Refactor `admin-invites.repository.ts` — remover método privado `withTenantTx`, usar helper
 - [ ] Refactor `tenant-selection.service.ts` — `listMyTenants` + `selectTenant` (este último passa `tenantId` explícito via `opts`)
 - [ ] Refactor `common/plan-limits/plan-limits.service.ts` — 2 callsites
-- [ ] Refactor `invites/invites.service.ts` — verificar se também usa pattern manual (busca confirmou que sim)
-- [ ] Deletar `withMultiTenant` em `prisma.extension.ts` e ajustar `prisma.service.ts` para expor `PrismaClient` cru
-- [ ] Atualizar testes que referenciam `withMultiTenant` (busca + ajuste)
+- [ ] NÃO refactor `invites/invites.service.ts.createAccount` — o `$transaction` ali NÃO usa SET LOCAL (cria o tenant na mesma tx, pré-RLS context); usa o `prisma.client` cru, está correto
+- [ ] Marcar `withMultiTenant` em `prisma.extension.ts` como `@deprecated` com JSDoc explicando o bug de pool routing e apontando para Story 7-7
+- [ ] Manter `prisma.service.ts` inalterado: `get tenant` continua disponível para os 7 repos legacy; `get client` é o entry point para callers via `withTenantTx`
 - [ ] Rodar `pnpm turbo test build lint` — todos verdes
 
 ### Task 2 — Wire-up SSR `/convite/[token]` (AC2)
@@ -127,6 +128,7 @@ Server Components que precisam de dados HTTP usam `fetch` nativo (regra explíci
 - Cleanup dos workarounds tactical aplicados na Story 7-4 (`Playwright retries: 2`, `vitest.config exclude e2e`, `ESLint ignora e2e`, etc.) — vai para **Story 7-6**
 - Retry/backoff no `demo-seed-keycloak.ts` — vai para **Story 7-6**
 - Cleanup E2E DELETE → revoke soft-delete mismatch — vai para **Story 7-6**
+- **Migração dos 7 repos legacy que ainda usam `prisma.tenant.*` via extension `withMultiTenant`** (`admin-pastoral`, `meetings`, `meetings/reflections`, `meetings/events/meeting-event.worker`, `group-members`, `participant-groups`, `tenants/tenants.service`) — vai para **Story 7-7** (criada como follow-up nesta story). Esses repos têm o mesmo bug de pool routing dos 5 callsites que migramos aqui, mas o blast radius é maior (≈40 callsites) e o escopo seria demais para uma única PR. Story 7-7 deleta a extension após migração completa.
 
 ## File List
 
@@ -140,8 +142,7 @@ A ser populado durante implementação. Arquivos previstos:
 - (talvez) `apps/api/prisma/migrations/<ts>_cascade_users_id_fks/migration.sql`
 
 **Modified:**
-- `apps/api/src/prisma/prisma.extension.ts` (deletar `withMultiTenant`)
-- `apps/api/src/prisma/prisma.service.ts` (expor PrismaClient cru)
+- `apps/api/src/prisma/prisma.extension.ts` (marcar `withMultiTenant` como `@deprecated`, NÃO deletar)
 - `apps/api/src/groups/groups.repository.ts`
 - `apps/api/src/admin-invites/admin-invites.repository.ts`
 - `apps/api/src/auth/tenant-selection.service.ts`
@@ -158,12 +159,13 @@ A ser populado durante implementação. Arquivos previstos:
 | Data | Autor | Mudança |
 |------|-------|---------|
 | 2026-05-10 | Claude (bmad-create-story shorthand) | Artifact criado como ready-for-dev, baseline a88db3c |
+| 2026-05-10 | Claude (bmad-dev-story start) | Scope split AC1: grep revelou 7 repos legacy via `prisma.tenant.*` (~40 callsites) que dependem do extension. Decisão Paulo: marcar `withMultiTenant` como `@deprecated` nesta story; criar Story 7-7 para migrar os 7 repos e deletar extension. Status: in-progress. |
 
 ## Suggested Review Order
 
 1. `apps/api/src/prisma/with-tenant-tx.ts` + spec — entender o contrato do helper antes de revisar os 5 callsites
 2. Diff dos 5 repositórios/services — confirmar redução de duplicação 1:1
-3. Deleção de `withMultiTenant` em `prisma.extension.ts` — pegar se há caller esquecido
+3. JSDoc `@deprecated` em `withMultiTenant` (`prisma.extension.ts`) — confirmar que aponta para Story 7-7 e que extension NÃO foi deletada
 4. Migration `_consolidate_rls_nullif` + RLS test — validar que policies não passaram a aceitar tenant null silenciosamente
 5. CASCADE test — confirmar discovery via `information_schema` e smoke de UPDATE
 6. `/convite/[token]/page.tsx` — confirmar que zero código de runtime importa `resolveInviteFixture`

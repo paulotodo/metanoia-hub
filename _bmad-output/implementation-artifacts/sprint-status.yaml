@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context)
 
 generated: "2026-04-08"
-last_updated: "2026-05-10T15:00:00Z"
+last_updated: "2026-05-10T20:30:00Z"
 project: metanoia-hub
 project_key: NOKEY
 tracking_system: file-system
@@ -124,6 +124,7 @@ development_status:
   7-2-dados-de-demonstracao-realistas: done
   7-3-mensagens-de-erro-acionaveis: done
   7-4-e2e-happy-path-release-1a: done
+  7-5-hardening-release-1a: in-progress
   epic-7-retrospective: optional
 
   # ============================================

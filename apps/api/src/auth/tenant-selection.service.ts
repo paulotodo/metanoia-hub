@@ -7,6 +7,7 @@ import {
 import type { UserTenantRole } from '@metanoia/types';
 import { getRequestContext } from '../common/context/request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 import { RedisService } from '../redis/redis.service';
 
 export interface MyTenantItem {
@@ -60,23 +61,35 @@ export class TenantSelectionService {
     // tenants only sees memberships matching their JWT claim. The proper
     // fix is a BYPASSRLS connection or an RLS policy that allows
     // `WHERE user_id = current_setting('app.current_user_id')`.
-    const result = await this.prisma.client.$transaction(async (tx) => {
-      if (ctx?.tenantId) {
-        await tx.$executeRawUnsafe(
-          `SET LOCAL app.current_tenant_id = '${ctx.tenantId}'`,
-        );
-      }
-      const memberships = await tx.userTenant.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'asc' },
-      });
-      if (memberships.length === 0) return { memberships, tenants: [] };
-      const tenantIds = memberships.map((m) => m.tenantId);
-      const tenants = await tx.tenant.findMany({
-        where: { id: { in: tenantIds } },
-      });
-      return { memberships, tenants };
-    });
+    //
+    // Note: pre-tenant-context paths (when ctx.tenantId is missing) fall
+    // through to the raw client because withTenantTx requires a tenantId.
+    // This branch keeps the pre-existing behavior for that edge case.
+    const result = ctx?.tenantId
+      ? await withTenantTx(this.prisma, async (tx) => {
+          const memberships = await tx.userTenant.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'asc' },
+          });
+          if (memberships.length === 0) return { memberships, tenants: [] };
+          const tenantIds = memberships.map((m) => m.tenantId);
+          const tenants = await tx.tenant.findMany({
+            where: { id: { in: tenantIds } },
+          });
+          return { memberships, tenants };
+        })
+      : await this.prisma.client.$transaction(async (tx) => {
+          const memberships = await tx.userTenant.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'asc' },
+          });
+          if (memberships.length === 0) return { memberships, tenants: [] };
+          const tenantIds = memberships.map((m) => m.tenantId);
+          const tenants = await tx.tenant.findMany({
+            where: { id: { in: tenantIds } },
+          });
+          return { memberships, tenants };
+        });
 
     const tenantById = new Map(result.tenants.map((t) => [t.id, t]));
     return result.memberships
@@ -102,15 +115,17 @@ export class TenantSelectionService {
     // Same RLS workaround as listMyTenants: SET LOCAL the requested tenantId
     // so the FORCE RLS policy on user_tenants can read the membership row.
     // Without this the cast `current_setting(...)::uuid` of '' throws
-    // "invalid input syntax for type uuid".
-    const membership = await this.prisma.client.$transaction(async (tx) => {
-      await tx.$executeRawUnsafe(
-        `SET LOCAL app.current_tenant_id = '${tenantId}'`,
-      );
-      return tx.userTenant.findUnique({
-        where: { userId_tenantId: { userId, tenantId } },
-      });
-    });
+    // "invalid input syntax for type uuid". opts.tenantId is required here
+    // because the JWT's tenant claim does NOT necessarily match the tenant
+    // being selected — the user is choosing which tenant to activate.
+    const membership = await withTenantTx(
+      this.prisma,
+      (tx) =>
+        tx.userTenant.findUnique({
+          where: { userId_tenantId: { userId, tenantId } },
+        }),
+      { tenantId },
+    );
 
     if (!membership) {
       throw new NotFoundException(
