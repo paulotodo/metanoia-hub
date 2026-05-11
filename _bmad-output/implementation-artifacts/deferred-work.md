@@ -29,18 +29,18 @@
 
 ## Deferred from: code review of story-7-4-e2e-happy-path-release-1a (2026-05-10)
 
-- **Bug irmão `KeycloakAdminService.createUserForTenant`** — rota invites (Story 4-3) tem typo idêntico ao corrigido em `createUser`, todos os usuários convidados saem sem `tenant_id` claim. P0 delegado para Story 7-6.
+- ~~**Bug irmão `KeycloakAdminService.createUserForTenant`** — typo `tenantId` (camelCase) no atributo enviado ao Keycloak, mapper espera `tenant_id` (snake_case). Invited users saem sem `tenant_id` claim.~~ ✅ Resolvido em Story 7-6 (`keycloak-admin.service.ts:158` + 3 regression specs + snapshot test `tenant-claim-mapper.spec.ts`).
 - ~~**Concentração arquitetural — helper `withTenant`** — pattern `$transaction + SET LOCAL` duplicado em 4 repos (`groups`, `admin-invites`, `tenant-selection`, `plan-limits`).~~ ✅ Resolvido em Story 7-5 (`apps/api/src/prisma/with-tenant-tx.ts`). Os 7 repos legacy via `prisma.tenant.*` (Story 7-7) ainda usam o extension.
-- **`vitest.config.ts` exclude `e2e/**` não declarado** — funcionalmente OK pelo include guard, mas Task 1 da Story 7-4 pedia exclude explícito. Adicionar para defesa em profundidade.
-- **ESLint ignora `apps/web/e2e/**` totalmente** — dívida intencional; quando `@playwright/test` for tracked como devDep raiz, restaurar lint sobre specs E2E.
-- **`apps/web/e2e/fixtures/auth.fixture.ts` código morto** — fixture `adminPage` exportada mas não consumida pelo spec atual. Próximas suites E2E (Stories 7-5+) devem usar ou remover.
-- **`apiPost` E2E consome `${E2E_API_URL}` (3001) bypassando rewrites Next** — não exercita CORS/rewrite real. Avaliar mudança para `${E2E_BASE_URL}/api/v1/...` quando rewrite estiver estável.
-- **Cleanup E2E faz DELETE → controller faz revoke (soft delete)** — invites do run ficam como rows revoked. Mitigação: reset diário do demo seed em CI; long-term: hard-delete via Prisma client em fixture.
-- **`getRequestContext()` optional chaining inconsistente em `tenant-selection.service`** — cosmético; remover `?.` quando refactor de RequestContext rodar.
-- **`realignPgUserId` pode invalidar Redis cache de sessão em ambiente compartilhado** — improvável em CI; documentar guard ou flush sessões `session:*` no fim do seed.
-- **Seed Keycloak sem retry/backoff em chamadas REST** — falha mid-loop deixa users sem role. Wrapper `retryWithBackoff` em chamadas `findUserByEmail/createUser/ensureRealmRole`.
-- **Playwright `retries: 2` em CI** — mascara flakes em vez de expô-las. Reduzir para 0/1 após estabilização da suite.
-- ~~**`ON UPDATE CASCADE` em todas as FKs `users.id` assumido sem teste** — adicionar teste de migration que valida CASCADE em todas as referências; Story 7-5.~~ ✅ Resolvido em Story 7-5 (`apps/api/test/migrations/cascade-users-id.spec.ts`).
+- ~~**`vitest.config.ts` exclude `e2e/**` não declarado** — funcionalmente OK pelo include guard.~~ ✅ Resolvido em Story 7-6 (exclude explícito `['e2e/**', 'node_modules/**', '.next/**']`).
+- ~~**ESLint ignora `apps/web/e2e/**` totalmente** — dívida intencional; quando `@playwright/test` for tracked como devDep raiz, restaurar lint.~~ ✅ Resolvido em Story 7-6 (`@playwright/test` promovido para devDep raiz + ignores removidos).
+- ~~**`apps/web/e2e/fixtures/auth.fixture.ts` código morto** — fixture `adminPage` exportada mas não consumida.~~ ✅ Resolvido em Story 7-6 (fixture removida; mantido apenas `loginAs`).
+- ~~**`apiPost` E2E consome `${E2E_API_URL}` (3001) bypassando rewrites Next**.~~ ✅ Resolvido em Story 7-6 (`E2E_BASE_URL` em api-client + cleanup + spec guard; `E2E_API_URL` removido de env.ts e workflow CI).
+- **Cleanup E2E faz DELETE → controller faz revoke (soft delete)** — invites do run ficam como rows revoked. Mitigação atual: reset diário do demo seed em CI. **Deferido para Release 1b** (Story 7-6 dev notes documenta a decisão).
+- ~~**`getRequestContext()` optional chaining inconsistente em `tenant-selection.service`** — cosmético; remover `?.`.~~ ✅ Resolvido em Story 7-6 (`ctx?.userId/tenantId` → `ctx.userId/tenantId`).
+- **`realignPgUserId` pode invalidar Redis cache de sessão em ambiente compartilhado** — improvável em CI (Redis volátil); só roda em seed (não em prod). **Deferido** com nota no Story 7-6 dev notes.
+- ~~**Seed Keycloak sem retry/backoff em chamadas REST**.~~ ✅ Resolvido em Story 7-6 (`retryWithBackoff` em `prisma/seeds/_retry.ts` + 6 callsites top-level envolvidos; `realignPgUserId` e `getAdminToken` deliberadamente fora).
+- ~~**Playwright `retries: 2` em CI** — mascara flakes em vez de expô-las.~~ ✅ Resolvido em Story 7-6 (`retries: 1`).
+- ~~**`ON UPDATE CASCADE` em todas as FKs `users.id` assumido sem teste**.~~ ✅ Resolvido em Story 7-5 (`apps/api/test/migrations/cascade-users-id.spec.ts`).
 
 ## Deferred from: implementation of story 7-5 (2026-05-10)
 
