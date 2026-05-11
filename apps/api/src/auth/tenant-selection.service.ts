@@ -46,7 +46,7 @@ export class TenantSelectionService {
 
   async listMyTenants(): Promise<MyTenantItem[]> {
     const ctx = getRequestContext();
-    const userId = ctx?.userId;
+    const userId = ctx.userId;
     if (!userId) {
       throw new ForbiddenException('userId missing from request context');
     }
@@ -65,7 +65,7 @@ export class TenantSelectionService {
     // Note: pre-tenant-context paths (when ctx.tenantId is missing) fall
     // through to the raw client because withTenantTx requires a tenantId.
     // This branch keeps the pre-existing behavior for that edge case.
-    const result = ctx?.tenantId
+    const result = ctx.tenantId
       ? await withTenantTx(this.prisma, async (tx) => {
           const memberships = await tx.userTenant.findMany({
             where: { userId },
