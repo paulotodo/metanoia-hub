@@ -104,7 +104,7 @@ development_status:
   5-2-integracao-agnostica-com-livekit: done                            # PR #107 (2026-05-12)
   5-3-pipeline-de-presenca-automatica: done                             # PR #108 (2026-05-12)
   5-4-telemetria-basica-de-engajamento: ready-for-dev
-  5-5-banner-de-transparencia-lista-de-presenca-real-time: ready-for-dev
+  5-5-banner-de-transparencia-lista-de-presenca-real-time: in-review
   5-6-relatorio-pos-reuniao-notificacoes: ready-for-dev
   epic-5-retrospective: optional
 
