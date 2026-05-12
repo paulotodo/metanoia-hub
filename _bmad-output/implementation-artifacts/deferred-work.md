@@ -29,13 +29,13 @@ Itens implicitamente resolvidos pelo `withTenantTx` (Story 7-5/7-7) marcados `~~
 
 ## Deferred from: code review of story-1-5 (2026-04-09)
 
-- Adicionar header X-Request-Id na response do middleware — melhoria de observabilidade para clientes → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
+- ~~Adicionar header X-Request-Id na response do middleware — melhoria de observabilidade para clientes~~ ✅ Resolvido em Story 1-9 (`apps/api/src/common/context/request-context.middleware.ts:24` seta `X-Request-Id` + `X-Correlation-Id` via `res.setHeader` antes do `requestContext.run`).
 - Store mutable no guard — considerar Object.freeze() após população para segurança → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md))**
-- LoggerModule.forRoot avaliado em load time — migrar para forRootAsync com ConfigService → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
+- ~~LoggerModule.forRoot avaliado em load time — migrar para forRootAsync com ConfigService~~ ✅ Resolvido em Story 1-9 (`app.module.ts:42` usa `LoggerModule.forRootAsync` injetando `ConfigService<EnvConfig, true>`; `pinoLoggerConfig` lê `NODE_ENV` via schema Zod validado).
 - tenantId inicializado como '' ao invés de null — alinhar com regra de null explícito → **Release 1b (tactical em qualquer story)**
 - ~~SET LOCAL sem transaction boundary no Prisma extension — verificar eficácia do RLS sem $transaction~~ ✅ Resolvido em Story 7-5 (helper `withTenantTx` envolve SET LOCAL e a query no mesmo `$transaction` → mesma conexão garantida) e Story 7-7 (extension legacy `withMultiTenant` deletado, 48 callsites migrados).
-- tracesSampleRate hardcoded — tornar configurável via env var SENTRY_TRACES_SAMPLE_RATE → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
-- redact config só cobre authorization header — expandir para cookies e outros headers sensíveis → **Sprint 8 (Story [1-9 config-hardening](./1-9-config-hardening.md))**
+- ~~tracesSampleRate hardcoded — tornar configurável via env var SENTRY_TRACES_SAMPLE_RATE~~ ✅ Resolvido em Story 1-9 (helper `parseTracesSampleRate` em `apps/api/src/common/sentry/parse-traces-sample-rate.ts` + entrada `SENTRY_TRACES_SAMPLE_RATE` em `env.validation.ts` e `.env.example`).
+- ~~redact config só cobre authorization header — expandir para cookies e outros headers sensíveis~~ ✅ Resolvido em Story 1-9 (`logger.config.ts` redact agora cobre `authorization`, `cookie`, `set-cookie` (req+res), `x-api-key`, `x-csrf-token` — integration test em `test/observability/logger-redact.integration-spec.ts`).
 
 ## Deferred from: code review of story 1-8 (2026-04-09)
 

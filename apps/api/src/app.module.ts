@@ -1,9 +1,9 @@
 import { join } from 'node:path';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
-import { validateEnv } from './config/env.validation';
+import { validateEnv, type EnvConfig } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { HealthModule } from './health/health.module';
@@ -39,7 +39,12 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
       validate: validateEnv,
     }),
     EventEmitterModule.forRoot(),
-    LoggerModule.forRoot(pinoLoggerConfig()),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<EnvConfig, true>) =>
+        pinoLoggerConfig(config),
+    }),
     AuthModule,
     PrismaModule,
     RedisModule,

@@ -15,12 +15,15 @@ function sanitizeCorrelationId(raw: string | undefined, fallback: string): strin
 
 @Injectable()
 export class RequestContextMiddleware implements NestMiddleware {
-  use(req: Request, _res: Response, next: NextFunction): void {
+  use(req: Request, res: Response, next: NextFunction): void {
     const requestId = uuidv7();
     const correlationId = sanitizeCorrelationId(
       req.headers['x-correlation-id'] as string | undefined,
       requestId,
     );
+
+    res.setHeader('X-Request-Id', requestId);
+    res.setHeader('X-Correlation-Id', correlationId);
 
     const store: RequestContext = {
       tenantId: '',
