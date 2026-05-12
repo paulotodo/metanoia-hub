@@ -30,6 +30,7 @@ async function request<T>(
   path: string,
   schema: Schema<T>,
   options: RequestOptions = {},
+  opts: { unwrap?: boolean } = { unwrap: true },
 ): Promise<T> {
   const token = getAccessToken();
 
@@ -66,14 +67,27 @@ async function request<T>(
     return undefined as T;
   }
 
-  const json = (await response.json()) as { data: unknown };
-  return schema.parse(json.data);
+  const json = await response.json();
+  if (opts.unwrap === false) {
+    return schema.parse(json);
+  }
+  return schema.parse((json as { data: unknown }).data);
 }
 
 export const apiClient = {
   get: <T>(path: string, schema: Schema<T>) =>
     request(path, schema, { method: 'GET' }),
 
+  /** GET that parses the full `{ data, meta }` envelope instead of just `data`. */
+  getEnvelope: <T>(path: string, schema: Schema<T>) =>
+    request(path, schema, { method: 'GET' }, { unwrap: false }),
+
   post: <T>(path: string, schema: Schema<T>, body: unknown) =>
     request(path, schema, { method: 'POST', body }),
+
+  patch: <T>(path: string, schema: Schema<T>, body: unknown) =>
+    request(path, schema, { method: 'PATCH', body }),
+
+  delete: (path: string) =>
+    request(path, { parse: () => undefined as unknown }, { method: 'DELETE' }),
 };

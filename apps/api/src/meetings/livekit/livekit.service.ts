@@ -47,6 +47,11 @@ export class LivekitService {
     return `${tenantId}:${meetingId}`;
   }
 
+  /** Public LiveKit URL handed back to clients alongside join tokens. */
+  getLivekitUrl(): string {
+    return this.livekitUrl;
+  }
+
   async openRoom(tenantId: string, meetingId: string, leaderUserId: string, leaderName: string): Promise<OpenedRoom> {
     const roomName = this.roomNameFor(tenantId, meetingId);
     const created = await this.roomClient.createRoom({ name: roomName });
