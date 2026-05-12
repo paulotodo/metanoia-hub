@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -25,7 +26,10 @@ import {
   type ConfirmedResponse,
 } from '@metanoia/types';
 import { getRequestContext } from '../common/context/request-context';
-import { LivekitService } from './livekit/livekit.service';
+import {
+  VIDEO_PROVIDER_ADAPTER,
+  type VideoProviderAdapter,
+} from './adapters/video-provider.adapter';
 import { MeetingsRepository } from './meetings.repository';
 
 @Injectable()
@@ -34,7 +38,8 @@ export class MeetingsService {
 
   constructor(
     private readonly repository: MeetingsRepository,
-    private readonly livekit: LivekitService,
+    @Inject(VIDEO_PROVIDER_ADAPTER)
+    private readonly videoProvider: VideoProviderAdapter,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -81,12 +86,20 @@ export class MeetingsService {
       throw new ForbiddenException('Missing user identity');
     }
 
-    const room = await this.livekit.openRoom(
-      ctx.tenantId,
-      meetingId,
-      leaderUserId,
-      leaderUserId, // participant display name: leaderUserId until we wire profile lookup
-    );
+    const roomName = this.videoProvider.roomNameFor(ctx.tenantId, meetingId);
+    const room = await this.videoProvider.createRoom({
+      roomName,
+      metadata: { tenantId: ctx.tenantId, meetingId },
+    });
+
+    const joinToken = await this.videoProvider.generateToken({
+      roomName,
+      identity: leaderUserId,
+      participantName: leaderUserId,
+      metadata: { tenantId: ctx.tenantId, meetingId },
+      canPublish: true,
+      canSubscribe: true,
+    });
 
     const startedAt = new Date();
     await this.repository.markRoomOpened(meetingId, room.roomId, startedAt);
@@ -102,7 +115,7 @@ export class MeetingsService {
     return {
       roomId: room.roomId,
       roomName: room.roomName,
-      joinToken: room.joinToken,
+      joinToken,
       livekitUrl: room.livekitUrl,
       startedAt: startedAt.toISOString(),
     };
@@ -118,7 +131,8 @@ export class MeetingsService {
       throw new ForbiddenException('Meeting already ended');
     }
 
-    await this.livekit.closeRoom(ctx.tenantId, meetingId);
+    const roomName = this.videoProvider.roomNameFor(ctx.tenantId, meetingId);
+    await this.videoProvider.deleteRoom(roomName);
 
     const endedAt = new Date();
     await this.repository.markRoomEnded(meetingId, endedAt);
@@ -252,11 +266,12 @@ export class MeetingsService {
     const userId = ctx.userId ?? '';
     if (!userId) throw new ForbiddenException('Missing user identity');
 
-    const roomName = this.livekit.roomNameFor(ctx.tenantId, meetingId);
-    const joinToken = await this.livekit.generateJoinToken({
+    const roomName = this.videoProvider.roomNameFor(ctx.tenantId, meetingId);
+    const joinToken = await this.videoProvider.generateToken({
       roomName,
-      userId,
+      identity: userId,
       participantName: userId,
+      metadata: { tenantId: ctx.tenantId, meetingId },
       canPublish: true,
       canSubscribe: true,
     });
@@ -265,7 +280,7 @@ export class MeetingsService {
       meetingId,
       roomName,
       joinToken,
-      livekitUrl: this.livekit.getLivekitUrl(),
+      livekitUrl: this.videoProvider.getProviderUrl(),
     };
   }
 
