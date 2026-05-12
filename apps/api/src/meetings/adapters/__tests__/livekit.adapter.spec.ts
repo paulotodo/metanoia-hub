@@ -141,8 +141,9 @@ describe('LiveKitAdapter', () => {
       ).rejects.toBeInstanceOf(VideoProviderSignatureError);
     });
 
-    it('parses participant_joined into typed event', async () => {
+    it('parses participant_joined into typed event with providerEventId', async () => {
       webhookReceiveMock.mockResolvedValue({
+        id: 'ev-lk-1',
         event: 'participant_joined',
         room: { name: `${TENANT}:${MEETING}`, sid: 'RM_sid' },
         participant: { identity: 'user-1', sid: 'PA_sid' },
@@ -150,6 +151,7 @@ describe('LiveKitAdapter', () => {
       const result = await buildAdapter().handleWebhook('Bearer xyz', '{}');
       expect(result).toMatchObject({
         type: 'participant.joined',
+        providerEventId: 'ev-lk-1',
         tenantId: TENANT,
         meetingId: MEETING,
         participantIdentity: 'user-1',

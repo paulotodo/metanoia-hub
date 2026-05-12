@@ -1,7 +1,9 @@
 # Story 5.2: Integração Agnóstica com LiveKit
 
-Status: in-review
+Status: done
 baseline_commit: c6ceacc
+merged_commit: 1b2f30a
+pr: 107
 
 ## Story
 

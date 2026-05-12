@@ -12,6 +12,7 @@ const MEETING = '01912345-6789-7000-8000-000000000100';
 function build() {
   const meetingEventService = {
     handleParticipantJoined: vi.fn().mockResolvedValue(undefined),
+    handleParticipantLeft: vi.fn().mockResolvedValue(undefined),
   };
   const videoProvider = {
     handleWebhook: vi.fn(),
@@ -63,6 +64,7 @@ describe('LiveKitWebhookController', () => {
       roomName: `${TENANT}:${MEETING}`,
       tenantId: TENANT,
       meetingId: MEETING,
+      providerEventId: 'ev-test',
       timestamp: '2026-04-20T19:30:00.000Z',
       roomId: 'RM',
     });
@@ -80,6 +82,7 @@ describe('LiveKitWebhookController', () => {
       roomName: 'bad-room',
       tenantId: null,
       meetingId: null,
+      providerEventId: 'ev-test',
       timestamp: '2026-04-20T19:30:00.000Z',
       participantIdentity: 'u',
       participantSid: null,
@@ -95,6 +98,7 @@ describe('LiveKitWebhookController', () => {
       roomName: `${TENANT}:${MEETING}`,
       tenantId: TENANT,
       meetingId: MEETING,
+      providerEventId: 'ev-test',
       timestamp: '2026-04-20T19:30:00.000Z',
       participantIdentity: 'user-1',
       participantSid: 'PA',
@@ -108,7 +112,32 @@ describe('LiveKitWebhookController', () => {
         userId: 'user-1',
         eventType: 'meetings.participant.joined',
         payload: { participantSid: 'PA' },
+        providerEventId: 'ev-test',
       }),
     );
+  });
+
+  it('forwards participant.left events to handleParticipantLeft (Story 5.3)', async () => {
+    env.videoProvider.handleWebhook.mockResolvedValue({
+      type: 'participant.left',
+      providerEventId: 'ev-left',
+      roomName: `${TENANT}:${MEETING}`,
+      tenantId: TENANT,
+      meetingId: MEETING,
+      timestamp: '2026-04-20T19:30:00.000Z',
+      participantIdentity: 'user-1',
+      participantSid: 'PA',
+    });
+
+    await env.controller.handleWebhook(Buffer.from('{}'), 'Bearer ok');
+
+    expect(env.meetingEventService.handleParticipantLeft).toHaveBeenCalledWith(
+      expect.objectContaining({
+        meetingId: MEETING,
+        userId: 'user-1',
+        providerEventId: 'ev-left',
+      }),
+    );
+    expect(env.meetingEventService.handleParticipantJoined).not.toHaveBeenCalled();
   });
 });

@@ -56,8 +56,11 @@ export class LiveKitWebhookController {
       throw error;
     }
 
-    if (event.type !== 'participant.joined') {
-      this.logger.log({ eventType: event.type }, 'ignoring non-join event');
+    if (
+      event.type !== 'participant.joined' &&
+      event.type !== 'participant.left'
+    ) {
+      this.logger.log({ eventType: event.type }, 'ignoring non-participant event');
       return { data: { received: true } };
     }
 
@@ -83,14 +86,22 @@ export class LiveKitWebhookController {
         correlationId: generateId(),
       },
       async () => {
-        await this.meetingEventService.handleParticipantJoined({
-          meetingId,
-          userId: participantIdentity,
-          eventType: 'meetings.participant.joined',
-          payload: {
-            participantSid,
-          },
-        });
+        if (event.type === 'participant.joined') {
+          await this.meetingEventService.handleParticipantJoined({
+            meetingId,
+            userId: participantIdentity,
+            eventType: 'meetings.participant.joined',
+            payload: { participantSid },
+            providerEventId: event.providerEventId,
+          });
+        } else {
+          await this.meetingEventService.handleParticipantLeft({
+            meetingId,
+            userId: participantIdentity,
+            payload: { participantSid },
+            providerEventId: event.providerEventId,
+          });
+        }
       },
     );
 

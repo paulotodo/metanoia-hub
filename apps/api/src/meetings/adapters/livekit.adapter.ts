@@ -139,11 +139,13 @@ export class LiveKitAdapter implements VideoProviderAdapter {
     const roomName = event.room?.name ?? '';
     const { tenantId, meetingId } = parseRoomName(roomName);
     const timestamp = new Date().toISOString();
+    const providerEventId = event.id ?? `${event.event}-${timestamp}`;
 
     switch (event.event) {
       case 'room_started':
         return {
           type: 'room.started',
+          providerEventId,
           roomName,
           tenantId,
           meetingId,
@@ -153,6 +155,7 @@ export class LiveKitAdapter implements VideoProviderAdapter {
       case 'room_finished':
         return {
           type: 'room.finished',
+          providerEventId,
           roomName,
           tenantId,
           meetingId,
@@ -162,6 +165,7 @@ export class LiveKitAdapter implements VideoProviderAdapter {
       case 'participant_joined':
         return {
           type: 'participant.joined',
+          providerEventId,
           roomName,
           tenantId,
           meetingId,
@@ -172,6 +176,7 @@ export class LiveKitAdapter implements VideoProviderAdapter {
       case 'participant_left':
         return {
           type: 'participant.left',
+          providerEventId,
           roomName,
           tenantId,
           meetingId,
@@ -182,6 +187,7 @@ export class LiveKitAdapter implements VideoProviderAdapter {
       default:
         return {
           type: 'unknown',
+          providerEventId,
           roomName,
           tenantId,
           meetingId,

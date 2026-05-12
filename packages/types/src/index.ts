@@ -360,6 +360,21 @@ export {
   type ResetPasswordResponse,
 } from './auth/password-recovery';
 export {
+  PRESENCE_INTEGRAL_THRESHOLD,
+  RECONNECTION_TOLERANCE_SECONDS,
+  PresenceTypeSchema,
+  type PresenceType,
+  PresenceSegmentSchema,
+  type PresenceSegment,
+  MeetingAttendanceSchema,
+  type MeetingAttendance,
+  MeetingSnapshotSchema,
+  type MeetingSnapshot,
+  computeAttendance,
+  type ComputeAttendanceInput,
+  type ComputeAttendanceResult,
+} from './presence';
+export {
   CreateRoomOptionsSchema,
   type CreateRoomOptions,
   GenerateTokenOptionsSchema,

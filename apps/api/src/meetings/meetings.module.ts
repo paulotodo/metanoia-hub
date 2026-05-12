@@ -13,6 +13,9 @@ import { ReflectionsService } from './reflections.service';
 import { ReflectionsRepository } from './reflections.repository';
 import { LiveKitAdapter } from './adapters/livekit.adapter';
 import { VIDEO_PROVIDER_ADAPTER } from './adapters/video-provider.adapter';
+import { PresenceService } from './presence/presence.service';
+import { PresenceRepository } from './presence/presence.repository';
+import { PresenceCheckpointService } from './presence/presence-checkpoint.service';
 
 @Module({
   imports: [PrismaModule],
@@ -32,11 +35,15 @@ import { VIDEO_PROVIDER_ADAPTER } from './adapters/video-provider.adapter';
     ReflectionsRepository,
     LiveKitAdapter,
     { provide: VIDEO_PROVIDER_ADAPTER, useExisting: LiveKitAdapter },
+    PresenceService,
+    PresenceRepository,
+    PresenceCheckpointService,
   ],
   exports: [
     MeetingsService,
     LiveKitAdapter,
     VIDEO_PROVIDER_ADAPTER,
+    PresenceService,
   ],
 })
 export class MeetingsModule {}
