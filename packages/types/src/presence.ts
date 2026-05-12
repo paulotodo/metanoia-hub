@@ -98,13 +98,17 @@ export function computeAttendance(
 
   let totalSeconds = 0;
   let reconnections = 0;
-  let segmentStart = new Date(sorted[0]!.joinedAt).getTime();
-  let segmentEnd = sorted[0]!.leftAt
-    ? new Date(sorted[0]!.leftAt).getTime()
+  const first = sorted[0];
+  // `sorted` was just checked for empty above; narrow for the type-checker.
+  if (!first) return null;
+  let segmentStart = new Date(first.joinedAt).getTime();
+  let segmentEnd = first.leftAt
+    ? new Date(first.leftAt).getTime()
     : segmentStart;
 
   for (let i = 1; i < sorted.length; i++) {
-    const current = sorted[i]!;
+    const current = sorted[i];
+    if (!current) continue;
     const joinMs = new Date(current.joinedAt).getTime();
     const leaveMs = current.leftAt ? new Date(current.leftAt).getTime() : joinMs;
     const gapSeconds = (joinMs - segmentEnd) / 1000;
@@ -122,7 +126,7 @@ export function computeAttendance(
   }
   totalSeconds += Math.max(0, (segmentEnd - segmentStart) / 1000);
 
-  const earliestJoin = new Date(sorted[0]!.joinedAt).toISOString();
+  const earliestJoin = new Date(first.joinedAt).toISOString();
   const latestLeave = new Date(segmentEnd).toISOString();
   const rounded = Math.round(totalSeconds);
 
