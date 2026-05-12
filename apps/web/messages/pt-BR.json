@@ -682,6 +682,26 @@
       "retry": "Tentar novamente"
     }
   },
+  "meetingTransparency": {
+    "banner": {
+      "base": "Sinais de presença e engajamento estão sendo registrados para acompanhamento pastoral.",
+      "focusActive": "O indicador de foco de aba também está ativo."
+    },
+    "live": {
+      "title": "Quem está na sala agora",
+      "empty": "Aguardando participantes entrarem.",
+      "status": {
+        "naSala": "Na sala",
+        "saiu": "Saiu"
+      },
+      "camera": {
+        "on": "Câmera ligada",
+        "off": "Câmera desligada"
+      },
+      "duration": "{minutes} min",
+      "error": "Não foi possível carregar a lista em tempo real. Tentando reconectar..."
+    }
+  },
   "mygroup": {
     "back": "Meus Grupos",
     "leader": {

@@ -5,6 +5,7 @@ const mockTenantMe: TenantMeResponse = {
   id: '019756b0-0001-7000-8000-000000000001',
   tenantId: '019756b0-1000-7000-8000-000000000001',
   name: 'Igreja Demo',
+  focusIndicatorEnabled: false,
   createdAt: '2026-04-14T14:42:00.000Z',
 };
 

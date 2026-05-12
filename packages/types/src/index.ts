@@ -360,6 +360,18 @@ export {
   type ResetPasswordResponse,
 } from './auth/password-recovery';
 export {
+  LiveParticipantStatusSchema,
+  type LiveParticipantStatus,
+  LiveParticipantSchema,
+  type LiveParticipant,
+  AttendanceLiveSnapshotSchema,
+  type AttendanceLiveSnapshot,
+  AttendanceLiveDeltaSchema,
+  type AttendanceLiveDelta,
+  AttendanceLiveEventSchema,
+  type AttendanceLiveEvent,
+} from './attendance-live';
+export {
   PRESENCE_INTEGRAL_THRESHOLD,
   RECONNECTION_TOLERANCE_SECONDS,
   PresenceTypeSchema,

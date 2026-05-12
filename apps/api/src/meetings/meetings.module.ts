@@ -5,6 +5,9 @@ import { MeetingEventService } from './events/meeting-event.service';
 import { MeetingEventWorker } from './events/meeting-event.worker';
 import { MeetingSseController } from './sse/meeting-sse.controller';
 import { MeetingSseService } from './sse/meeting-sse.service';
+import { AttendanceLiveController } from './sse/attendance-live.controller';
+import { AttendanceLiveService } from './sse/attendance-live.service';
+import { MeetingRoleGuard } from './guards/meeting-role.guard';
 import { MeetingsController } from './meetings.controller';
 import { MeetingsService } from './meetings.service';
 import { MeetingsRepository } from './meetings.repository';
@@ -22,6 +25,7 @@ import { PresenceCheckpointService } from './presence/presence-checkpoint.servic
   controllers: [
     LiveKitWebhookController,
     MeetingSseController,
+    AttendanceLiveController,
     MeetingsController,
     ReflectionsController,
   ],
@@ -38,6 +42,8 @@ import { PresenceCheckpointService } from './presence/presence-checkpoint.servic
     PresenceService,
     PresenceRepository,
     PresenceCheckpointService,
+    AttendanceLiveService,
+    MeetingRoleGuard,
   ],
   exports: [
     MeetingsService,
