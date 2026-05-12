@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { generateId } from '@metanoia/types';
 import { MeetingsService } from './meetings.service';
 import { requestContext } from '../common/context/request-context';
@@ -10,12 +14,18 @@ function createMocks() {
     findById: vi.fn(),
     markRoomOpened: vi.fn(),
     markRoomEnded: vi.fn(),
+    createMeeting: vi.fn(),
+    list: vi.fn(),
+    update: vi.fn(),
+    markCancelled: vi.fn(),
   };
 
   const livekit = {
     roomNameFor: vi.fn((t: string, m: string) => `${t}:${m}`),
     openRoom: vi.fn(),
     closeRoom: vi.fn(),
+    generateJoinToken: vi.fn(),
+    getLivekitUrl: vi.fn(() => 'ws://localhost:7880'),
   };
 
   const eventEmitter = {
@@ -29,6 +39,28 @@ function createMocks() {
   );
 
   return { service, repository, livekit, eventEmitter };
+}
+
+function meetingRow(overrides: Record<string, unknown> = {}) {
+  const now = new Date('2026-04-20T19:00:00.000Z');
+  return {
+    id: '01912345-6789-7000-8000-000000000100',
+    tenantId: '01912345-6789-7000-8000-000000000001',
+    groupId: '01912345-6789-7000-8000-000000000200',
+    title: null,
+    scheduledFor: new Date('2026-04-20T19:30:00.000Z'),
+    durationMinutes: null,
+    status: 'scheduled',
+    topic: null,
+    livekitRoomId: null,
+    startedAt: null,
+    endedAt: null,
+    cancelledAt: null,
+    createdBy: null,
+    createdAt: now,
+    updatedAt: now,
+    ...overrides,
+  };
 }
 
 const TENANT = '01912345-6789-7000-8000-000000000001';
@@ -163,6 +195,160 @@ describe('MeetingsService', () => {
       );
       expect(result.meetingId).toBe(MEETING);
       expect(typeof result.endedAt).toBe('string');
+    });
+  });
+
+  describe('create (Story 5.1)', () => {
+    it('persists meeting with createdBy from RequestContext and emits domain event', async () => {
+      mocks.repository.createMeeting.mockResolvedValue(
+        meetingRow({ groupId: GROUP, title: 'Encontro', durationMinutes: 90, createdBy: USER }),
+      );
+
+      const result = await withCtx(() =>
+        mocks.service.create({
+          groupId: GROUP,
+          title: 'Encontro',
+          scheduledFor: '2026-04-20T19:30:00.000Z',
+          durationMinutes: 90,
+        }),
+      );
+
+      expect(mocks.repository.createMeeting).toHaveBeenCalledWith(
+        expect.objectContaining({
+          groupId: GROUP,
+          title: 'Encontro',
+          durationMinutes: 90,
+          createdBy: USER,
+        }),
+      );
+      expect(mocks.eventEmitter.emit).toHaveBeenCalledWith(
+        'meetings.meeting.created',
+        expect.objectContaining({ tenantId: TENANT }),
+      );
+      expect(result.title).toBe('Encontro');
+      expect(result.durationMinutes).toBe(90);
+      expect(result.status).toBe('scheduled');
+    });
+  });
+
+  describe('list (Story 5.1)', () => {
+    it('returns paginated meetings with meta', async () => {
+      mocks.repository.list.mockResolvedValue({
+        rows: [meetingRow(), meetingRow({ id: '01912345-6789-7000-8000-000000000101' })],
+        total: 2,
+      });
+
+      const result = await withCtx(() =>
+        mocks.service.list({ page: 1, perPage: 20 }),
+      );
+
+      expect(result.data).toHaveLength(2);
+      expect(result.meta).toEqual({ page: 1, perPage: 20, total: 2, totalPages: 1 });
+    });
+
+    it('computes totalPages with ceil division', async () => {
+      mocks.repository.list.mockResolvedValue({ rows: [], total: 25 });
+
+      const result = await withCtx(() =>
+        mocks.service.list({ page: 2, perPage: 10 }),
+      );
+
+      expect(result.meta.totalPages).toBe(3);
+    });
+  });
+
+  describe('findById (Story 5.1)', () => {
+    it('returns 404 when meeting missing', async () => {
+      mocks.repository.findById.mockResolvedValue(null);
+      await expect(
+        withCtx(() => mocks.service.findById(MEETING)),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('update (Story 5.1)', () => {
+    it('applies partial patch with new Date for scheduledFor', async () => {
+      mocks.repository.update.mockResolvedValue(
+        meetingRow({ title: 'Atualizado', scheduledFor: new Date('2026-05-01T20:00:00.000Z') }),
+      );
+      await withCtx(() =>
+        mocks.service.update(MEETING, {
+          title: 'Atualizado',
+          scheduledFor: '2026-05-01T20:00:00.000Z',
+        }),
+      );
+      const call = mocks.repository.update.mock.calls[0]!;
+      expect(call[0]).toBe(MEETING);
+      expect(call[1]).toEqual({
+        title: 'Atualizado',
+        scheduledFor: new Date('2026-05-01T20:00:00.000Z'),
+      });
+    });
+
+    it('throws 404 when meeting missing', async () => {
+      mocks.repository.update.mockResolvedValue(null);
+      await expect(
+        withCtx(() => mocks.service.update(MEETING, { title: 'X' })),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('cancel (Story 5.1)', () => {
+    it('rejects cancelling a live meeting', async () => {
+      mocks.repository.findById.mockResolvedValue(meetingRow({ status: 'live' }));
+      await expect(
+        withCtx(() => mocks.service.cancel(MEETING)),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(mocks.repository.markCancelled).not.toHaveBeenCalled();
+    });
+
+    it('is idempotent for already-cancelled meetings', async () => {
+      mocks.repository.findById.mockResolvedValue(meetingRow({ status: 'cancelled' }));
+      const result = await withCtx(() => mocks.service.cancel(MEETING));
+      expect(mocks.repository.markCancelled).not.toHaveBeenCalled();
+      expect(result.status).toBe('cancelled');
+    });
+
+    it('marks scheduled meeting cancelled and emits event', async () => {
+      mocks.repository.findById.mockResolvedValue(meetingRow({ status: 'scheduled' }));
+      mocks.repository.markCancelled.mockResolvedValue(
+        meetingRow({ status: 'cancelled', cancelledAt: new Date() }),
+      );
+      const result = await withCtx(() => mocks.service.cancel(MEETING));
+      expect(mocks.repository.markCancelled).toHaveBeenCalledWith(
+        MEETING,
+        expect.any(Date),
+      );
+      expect(mocks.eventEmitter.emit).toHaveBeenCalledWith(
+        'meetings.meeting.cancelled',
+        expect.objectContaining({ tenantId: TENANT }),
+      );
+      expect(result.status).toBe('cancelled');
+    });
+  });
+
+  describe('join (Story 5.1)', () => {
+    it('generates a join token only for live meetings', async () => {
+      mocks.repository.findById.mockResolvedValue(meetingRow({ status: 'scheduled' }));
+      await expect(
+        withCtx(() => mocks.service.join(MEETING)),
+      ).rejects.toBeInstanceOf(ForbiddenException);
+    });
+
+    it('returns roomName + token + livekitUrl for live meetings', async () => {
+      mocks.repository.findById.mockResolvedValue(meetingRow({ status: 'live' }));
+      mocks.livekit.generateJoinToken.mockResolvedValue('jwt-join-token');
+
+      const result = await withCtx(() => mocks.service.join(MEETING));
+
+      expect(mocks.livekit.generateJoinToken).toHaveBeenCalledWith(
+        expect.objectContaining({
+          roomName: `${TENANT}:${MEETING}`,
+          userId: USER,
+        }),
+      );
+      expect(result.joinToken).toBe('jwt-join-token');
+      expect(result.livekitUrl).toBe('ws://localhost:7880');
     });
   });
 });

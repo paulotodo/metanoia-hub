@@ -266,6 +266,18 @@ export {
   type OpenRoomResponse,
   EndRoomResponseSchema,
   type EndRoomResponse,
+  MeetingResponseSchema,
+  type MeetingResponse,
+  CreateMeetingRequestSchema,
+  type CreateMeetingRequest,
+  UpdateMeetingRequestSchema,
+  type UpdateMeetingRequest,
+  MeetingsListResponseSchema,
+  type MeetingsListResponse,
+  MeetingsListQuerySchema,
+  type MeetingsListQuery,
+  JoinMeetingResponseSchema,
+  type JoinMeetingResponse,
 } from './meeting';
 export {
   CreateReflectionInputSchema,

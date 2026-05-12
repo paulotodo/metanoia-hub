@@ -4,18 +4,27 @@ import {
   MeetingDetailSchema,
   OpenRoomResponseSchema,
   EndRoomResponseSchema,
+  MeetingResponseSchema,
+  CreateMeetingRequestSchema,
+  UpdateMeetingRequestSchema,
+  MeetingsListResponseSchema,
+  MeetingsListQuerySchema,
+  JoinMeetingResponseSchema,
 } from '../meeting';
 
 describe('MeetingStatusSchema snapshot', () => {
   it('freezes success and failure shapes', () => {
     const successCase = MeetingStatusSchema.safeParse('live');
-    const failureCase = MeetingStatusSchema.safeParse('cancelled');
+    const cancelledCase = MeetingStatusSchema.safeParse('cancelled');
+    const failureCase = MeetingStatusSchema.safeParse('unknown');
     expect({
       success: successCase.success,
       data: successCase.success ? successCase.data : null,
+      cancelledAccepted: cancelledCase.success,
       failure: !failureCase.success,
     }).toMatchInlineSnapshot(`
       {
+        "cancelledAccepted": true,
         "data": "live",
         "failure": true,
         "success": true,
@@ -149,5 +158,102 @@ describe('EndRoomResponseSchema snapshot', () => {
       endedAt: '2026-04-16T23:30:00.000Z',
     });
     expect(successCase.success).toBe(true);
+  });
+});
+
+// --- Story 5.1 CRUD snapshots ------------------------------------------------
+
+describe('MeetingResponseSchema snapshot (Story 5.1)', () => {
+  it('freezes the full meeting response shape including nullable fields', () => {
+    const successCase = MeetingResponseSchema.safeParse({
+      id: '019756c0-0002-7000-8000-000000000001',
+      tenantId: '019756c0-0002-7000-8000-000000000aaa',
+      groupId: '019756c0-0002-7000-8000-000000000002',
+      title: 'Encontro semanal',
+      scheduledFor: '2026-04-20T19:30:00.000Z',
+      durationMinutes: 60,
+      status: 'scheduled',
+      topic: null,
+      providerRoomId: null,
+      startedAt: null,
+      endedAt: null,
+      cancelledAt: null,
+      createdBy: '019756c0-0002-7000-8000-000000000bbb',
+      createdAt: '2026-04-19T12:00:00.000Z',
+      updatedAt: '2026-04-19T12:00:00.000Z',
+    });
+    expect(successCase.success).toBe(true);
+  });
+});
+
+describe('CreateMeetingRequestSchema snapshot (Story 5.1)', () => {
+  it('accepts minimum required fields and rejects bad scheduledFor', () => {
+    const ok = CreateMeetingRequestSchema.safeParse({
+      groupId: '019756c0-0002-7000-8000-000000000002',
+      scheduledFor: '2026-04-20T19:30:00.000Z',
+    });
+    const bad = CreateMeetingRequestSchema.safeParse({
+      groupId: '019756c0-0002-7000-8000-000000000002',
+      scheduledFor: 'not-a-date',
+    });
+    expect({ ok: ok.success, bad: !bad.success }).toEqual({
+      ok: true,
+      bad: true,
+    });
+  });
+
+  it('rejects durationMinutes > 720', () => {
+    const tooLong = CreateMeetingRequestSchema.safeParse({
+      groupId: '019756c0-0002-7000-8000-000000000002',
+      scheduledFor: '2026-04-20T19:30:00.000Z',
+      durationMinutes: 999,
+    });
+    expect(tooLong.success).toBe(false);
+  });
+});
+
+describe('UpdateMeetingRequestSchema snapshot (Story 5.1)', () => {
+  it('requires at least one field', () => {
+    const empty = UpdateMeetingRequestSchema.safeParse({});
+    expect(empty.success).toBe(false);
+  });
+
+  it('accepts nullable title for clearing', () => {
+    const ok = UpdateMeetingRequestSchema.safeParse({ title: null });
+    expect(ok.success).toBe(true);
+  });
+});
+
+describe('MeetingsListQuerySchema snapshot (Story 5.1)', () => {
+  it('coerces string query params and defaults pagination', () => {
+    const parsed = MeetingsListQuerySchema.parse({});
+    expect(parsed).toEqual({ page: 1, perPage: 20 });
+  });
+
+  it('rejects perPage > 100', () => {
+    const result = MeetingsListQuerySchema.safeParse({ perPage: 500 });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('MeetingsListResponseSchema snapshot (Story 5.1)', () => {
+  it('freezes envelope with pagination meta', () => {
+    const result = MeetingsListResponseSchema.safeParse({
+      data: [],
+      meta: { page: 1, perPage: 20, total: 0, totalPages: 0 },
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('JoinMeetingResponseSchema snapshot (Story 5.1)', () => {
+  it('freezes join payload', () => {
+    const result = JoinMeetingResponseSchema.safeParse({
+      meetingId: '019756c0-0002-7000-8000-000000000001',
+      roomName: 'tenant-a:meeting-1',
+      joinToken: 'jwt.body.sig',
+      livekitUrl: 'wss://livekit.example.com',
+    });
+    expect(result.success).toBe(true);
   });
 });

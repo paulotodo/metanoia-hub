@@ -31,24 +31,29 @@ model MeetingEvent {
   @@map("meeting_events")
 }
 
-/// Meeting — a scheduled gathering for a discipleship group; lifecycle scheduled → live → ended
+/// Meeting — a scheduled gathering for a discipleship group; lifecycle scheduled → live → ended → cancelled
 model Meeting {
-  id             String    @id @db.Uuid
-  tenantId       String    @map("tenant_id") @db.Uuid
-  groupId        String    @map("group_id") @db.Uuid
-  scheduledFor   DateTime  @map("scheduled_for") @db.Timestamptz
-  status         String    @default("scheduled") @db.VarChar(16)
-  topic          String?   @db.VarChar(500)
-  livekitRoomId  String?   @map("livekit_room_id") @db.VarChar(200)
-  startedAt      DateTime? @map("started_at") @db.Timestamptz
-  endedAt        DateTime? @map("ended_at") @db.Timestamptz
-  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  id              String    @id @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  groupId         String    @map("group_id") @db.Uuid
+  title           String?   @db.VarChar(200)
+  scheduledFor    DateTime  @map("scheduled_for") @db.Timestamptz
+  durationMinutes Int?      @map("duration_minutes")
+  status          String    @default("scheduled") @db.VarChar(16)
+  topic           String?   @db.VarChar(500)
+  livekitRoomId   String?   @map("livekit_room_id") @db.VarChar(200)
+  startedAt       DateTime? @map("started_at") @db.Timestamptz
+  endedAt         DateTime? @map("ended_at") @db.Timestamptz
+  cancelledAt     DateTime? @map("cancelled_at") @db.Timestamptz
+  createdBy       String?   @map("created_by") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
   participants MeetingParticipantRecord[]
   reflections  Reflection[]
 
   @@index([tenantId, groupId, scheduledFor])
+  @@index([tenantId, status, scheduledFor])
   @@map("meetings")
 }
 

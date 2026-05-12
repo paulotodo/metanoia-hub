@@ -6,6 +6,7 @@ export const MeetingStatusSchema = z.enum([
   'scheduled',
   'live',
   'ended',
+  'cancelled',
 ]);
 export type MeetingStatus = z.infer<typeof MeetingStatusSchema>;
 
@@ -71,3 +72,74 @@ export const EndRoomResponseSchema = z.object({
   endedAt: z.string().datetime(),
 });
 export type EndRoomResponse = z.infer<typeof EndRoomResponseSchema>;
+
+// --- Story 5.1 CRUD contracts -----------------------------------------------
+
+export const MeetingResponseSchema = z.object({
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
+  groupId: z.string().uuid(),
+  title: z.string().nullable(),
+  scheduledFor: z.string().datetime(),
+  durationMinutes: z.number().int().positive().nullable(),
+  status: MeetingStatusSchema,
+  topic: z.string().nullable(),
+  providerRoomId: z.string().nullable(),
+  startedAt: z.string().datetime().nullable(),
+  endedAt: z.string().datetime().nullable(),
+  cancelledAt: z.string().datetime().nullable(),
+  createdBy: z.string().uuid().nullable(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+export type MeetingResponse = z.infer<typeof MeetingResponseSchema>;
+
+export const CreateMeetingRequestSchema = z.object({
+  groupId: z.string().uuid(),
+  title: z.string().min(1).max(200).optional(),
+  scheduledFor: z.string().datetime(),
+  durationMinutes: z.number().int().positive().max(720).optional(),
+  topic: z.string().max(500).optional(),
+});
+export type CreateMeetingRequest = z.infer<typeof CreateMeetingRequestSchema>;
+
+export const UpdateMeetingRequestSchema = z
+  .object({
+    title: z.string().min(1).max(200).nullable().optional(),
+    scheduledFor: z.string().datetime().optional(),
+    durationMinutes: z.number().int().positive().max(720).nullable().optional(),
+    topic: z.string().max(500).nullable().optional(),
+  })
+  .refine((v) => Object.keys(v).length > 0, {
+    message: 'at_least_one_field_required',
+  });
+export type UpdateMeetingRequest = z.infer<typeof UpdateMeetingRequestSchema>;
+
+const PaginationMetaSchema = z.object({
+  page: z.number().int().positive(),
+  perPage: z.number().int().positive(),
+  total: z.number().int().nonnegative(),
+  totalPages: z.number().int().nonnegative(),
+});
+
+export const MeetingsListResponseSchema = z.object({
+  data: z.array(MeetingResponseSchema),
+  meta: PaginationMetaSchema,
+});
+export type MeetingsListResponse = z.infer<typeof MeetingsListResponseSchema>;
+
+export const MeetingsListQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  perPage: z.coerce.number().int().positive().max(100).default(20),
+  status: MeetingStatusSchema.optional(),
+  groupId: z.string().uuid().optional(),
+});
+export type MeetingsListQuery = z.infer<typeof MeetingsListQuerySchema>;
+
+export const JoinMeetingResponseSchema = z.object({
+  meetingId: z.string().uuid(),
+  roomName: z.string(),
+  joinToken: z.string(),
+  livekitUrl: z.string(),
+});
+export type JoinMeetingResponse = z.infer<typeof JoinMeetingResponseSchema>;

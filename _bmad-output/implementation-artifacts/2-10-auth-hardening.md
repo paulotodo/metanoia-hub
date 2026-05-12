@@ -1,7 +1,9 @@
 # Story 2.10: Auth Hardening (Audience JWT, Secret Rotation, Immutable Guard State)
 
-Status: in-review
+Status: done
 baseline_commit: 8606067008a8005709a2fd6332fd3409d5f1b7f9
+merged_commit: 2f35b11
+pr: 105
 
 ## Story
 
