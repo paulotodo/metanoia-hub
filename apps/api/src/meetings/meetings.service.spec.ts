@@ -34,17 +34,29 @@ function createMocks() {
     emit: vi.fn(),
   };
 
+  const presence = {
+    flushAttendance: vi.fn().mockResolvedValue([]),
+    checkpointSnapshot: vi.fn().mockResolvedValue(undefined),
+    listAttendance: vi.fn().mockResolvedValue([]),
+  };
+  const checkpoint = {
+    registerActiveMeeting: vi.fn().mockResolvedValue(undefined),
+    unregisterActiveMeeting: vi.fn().mockResolvedValue(undefined),
+  };
+
   const service = new MeetingsService(
     repository as any,
     videoProvider as any,
     eventEmitter as any,
+    presence as any,
+    checkpoint as any,
   );
 
   // Alias kept for backwards compatibility with assertions written for the
   // pre-adapter API surface (Story 5.1 spec).
   const livekit = videoProvider;
 
-  return { service, repository, videoProvider, livekit, eventEmitter };
+  return { service, repository, videoProvider, livekit, eventEmitter, presence, checkpoint };
 }
 
 function meetingRow(overrides: Record<string, unknown> = {}) {

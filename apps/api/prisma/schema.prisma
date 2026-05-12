@@ -77,6 +77,37 @@ model MeetingParticipantRecord {
   @@map("meeting_participants")
 }
 
+/// MeetingAttendance — final aggregated presence record after meeting end (Story 5.3)
+model MeetingAttendance {
+  id                    String   @id @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  meetingId             String   @map("meeting_id") @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  joinTime              DateTime @map("join_time") @db.Timestamptz
+  leaveTime             DateTime @map("leave_time") @db.Timestamptz
+  totalDurationSeconds  Int      @map("total_duration_seconds")
+  presenceType          String   @map("presence_type") @db.VarChar(16)
+  reconnections         Int      @default(0)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([meetingId, userId])
+  @@index([tenantId, meetingId])
+  @@index([tenantId, userId])
+  @@map("meeting_attendance")
+}
+
+/// MeetingSnapshot — periodic state checkpoint for crash recovery (Story 5.3)
+model MeetingSnapshot {
+  id           String   @id @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  meetingId    String   @map("meeting_id") @db.Uuid
+  snapshotData Json     @map("snapshot_data") @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([tenantId, meetingId, createdAt])
+  @@map("meeting_snapshots")
+}
+
 /// Reflection — post-meeting narrative capture by the leader (1–280 chars, Zod enforced)
 model Reflection {
   id         String   @id @db.Uuid

@@ -31,6 +31,8 @@ import {
   type VideoProviderAdapter,
 } from './adapters/video-provider.adapter';
 import { MeetingsRepository } from './meetings.repository';
+import { PresenceCheckpointService } from './presence/presence-checkpoint.service';
+import { PresenceService } from './presence/presence.service';
 
 @Injectable()
 export class MeetingsService {
@@ -41,6 +43,8 @@ export class MeetingsService {
     @Inject(VIDEO_PROVIDER_ADAPTER)
     private readonly videoProvider: VideoProviderAdapter,
     private readonly eventEmitter: EventEmitter2,
+    private readonly presence: PresenceService,
+    private readonly checkpoint: PresenceCheckpointService,
   ) {}
 
   async getDetail(meetingId: string): Promise<MeetingDetail> {
@@ -103,6 +107,8 @@ export class MeetingsService {
 
     const startedAt = new Date();
     await this.repository.markRoomOpened(meetingId, room.roomId, startedAt);
+    // Story 5.3 — register meeting for periodic presence checkpoint.
+    await this.checkpoint.registerActiveMeeting(ctx.tenantId, meetingId);
 
     this.eventEmitter.emit('meetings.room.opened', {
       tenantId: ctx.tenantId,
@@ -136,6 +142,16 @@ export class MeetingsService {
 
     const endedAt = new Date();
     await this.repository.markRoomEnded(meetingId, endedAt);
+    // Story 5.3 — final attendance flush + remove from active set.
+    await this.checkpoint.unregisterActiveMeeting(meetingId);
+    try {
+      await this.presence.flushAttendance(meetingId);
+    } catch (err) {
+      this.logger.error(
+        { meetingId, error: (err as Error).message },
+        'final attendance flush failed (non-blocking)',
+      );
+    }
 
     this.eventEmitter.emit('meetings.room.ended', {
       tenantId: ctx.tenantId,

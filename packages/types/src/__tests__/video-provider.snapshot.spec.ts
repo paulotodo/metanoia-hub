@@ -12,6 +12,7 @@ import {
 describe('CreateRoomOptionsSchema snapshot', () => {
   it('accepts minimum required fields and rejects bad input', () => {
     const ok = CreateRoomOptionsSchema.safeParse({
+      providerEventId: 'ev-1',
       roomName: 'tenant-a:meeting-1',
     });
     const empty = CreateRoomOptionsSchema.safeParse({ roomName: '' });
@@ -27,6 +28,7 @@ describe('CreateRoomOptionsSchema snapshot', () => {
 describe('GenerateTokenOptionsSchema snapshot', () => {
   it('accepts metadata as Record<string,string>', () => {
     const ok = GenerateTokenOptionsSchema.safeParse({
+      providerEventId: 'ev-1',
       roomName: 'tenant-a:meeting-1',
       identity: 'user-1',
       metadata: { tenantId: 'tenant-a', meetingId: 'meeting-1' },
@@ -47,6 +49,7 @@ describe('ProviderRoomSchema snapshot', () => {
   it('freezes the room shape', () => {
     const ok = ProviderRoomSchema.safeParse({
       roomId: 'RM_sid',
+      providerEventId: 'ev-1',
       roomName: 'tenant-a:meeting-1',
       livekitUrl: 'ws://localhost:7880',
     });
@@ -70,6 +73,7 @@ describe('VideoProviderEventSchema snapshot', () => {
   it('parses participant.joined event', () => {
     const ok = VideoProviderEventSchema.safeParse({
       type: 'participant.joined',
+      providerEventId: 'ev-1',
       roomName: 'tenant-a:meeting-1',
       tenantId: '019756c0-0002-7000-8000-000000000001',
       meetingId: '019756c0-0002-7000-8000-000000000002',
@@ -83,6 +87,7 @@ describe('VideoProviderEventSchema snapshot', () => {
   it('parses room.started event', () => {
     const ok = VideoProviderEventSchema.safeParse({
       type: 'room.started',
+      providerEventId: 'ev-1',
       roomName: 'tenant-a:meeting-1',
       tenantId: '019756c0-0002-7000-8000-000000000001',
       meetingId: '019756c0-0002-7000-8000-000000000002',
@@ -95,6 +100,7 @@ describe('VideoProviderEventSchema snapshot', () => {
   it('parses unknown event', () => {
     const ok = VideoProviderEventSchema.safeParse({
       type: 'unknown',
+      providerEventId: 'ev-1',
       roomName: 'tenant-a:meeting-1',
       tenantId: null,
       meetingId: null,

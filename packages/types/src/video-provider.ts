@@ -58,6 +58,9 @@ export type VideoProviderEventType = z.infer<typeof VideoProviderEventTypeSchema
 
 const BaseEvent = z.object({
   type: VideoProviderEventTypeSchema,
+  /** Provider-side stable event id (e.g. LiveKit `event.id`) — used for
+   * idempotency via Redis SETNX `webhook:{providerEventId}` (Story 5.3). */
+  providerEventId: z.string(),
   roomName: z.string(),
   tenantId: z.string().uuid().nullable(),
   meetingId: z.string().uuid().nullable(),
