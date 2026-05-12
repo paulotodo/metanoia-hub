@@ -184,6 +184,28 @@ export class LiveKitAdapter implements VideoProviderAdapter {
           participantIdentity: event.participant?.identity ?? 'anonymous',
           participantSid: event.participant?.sid ?? null,
         };
+      case 'track_published':
+        return {
+          type: 'track.published',
+          providerEventId,
+          roomName,
+          tenantId,
+          meetingId,
+          timestamp,
+          participantIdentity: event.participant?.identity ?? 'anonymous',
+          trackKind: trackKind(event),
+        };
+      case 'track_unpublished':
+        return {
+          type: 'track.unpublished',
+          providerEventId,
+          roomName,
+          tenantId,
+          meetingId,
+          timestamp,
+          participantIdentity: event.participant?.identity ?? 'anonymous',
+          trackKind: trackKind(event),
+        };
       default:
         return {
           type: 'unknown',
@@ -196,6 +218,16 @@ export class LiveKitAdapter implements VideoProviderAdapter {
         };
     }
   }
+}
+
+/** LiveKit webhook payload carries `track.type` numeric enum + `track.source`;
+ * normalise to lower-case kind strings (`video`/`audio`/`unknown`). */
+function trackKind(event: { track?: { type?: unknown; source?: unknown } }): string {
+  const t = event.track;
+  if (!t) return 'unknown';
+  if (typeof t.type === 'string') return t.type.toLowerCase();
+  if (typeof t.source === 'string') return t.source.toLowerCase();
+  return 'unknown';
 }
 
 const UUID_RE =

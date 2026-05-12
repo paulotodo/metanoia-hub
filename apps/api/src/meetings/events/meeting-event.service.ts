@@ -91,6 +91,50 @@ export class MeetingEventService {
     this.logger.log({ tenantId, meetingId, eventId, jobId: job.id }, 'bullmq job enqueued');
   }
 
+  /**
+   * Story 5.4 — track lifecycle events (`track.published`, `track.unpublished`).
+   * Same dedup + Redis publish + BullMQ flush path as the join/left flows, so
+   * the generic worker writes them into `meeting_events` for downstream
+   * telemetry compute.
+   */
+  async handleTrackEvent(data: {
+    meetingId: string;
+    userId: string;
+    eventType: 'meetings.track.published' | 'meetings.track.unpublished';
+    payload: Record<string, unknown>;
+    providerEventId?: string;
+  }): Promise<void> {
+    const ctx = getRequestContext();
+    const { tenantId } = ctx;
+    const isFirst = await this.claimWebhook(data.providerEventId);
+    if (!isFirst) {
+      this.logger.warn(
+        { tenantId, meetingId: data.meetingId, providerEventId: data.providerEventId },
+        'webhook dedup: duplicate track event skipped',
+      );
+      return;
+    }
+
+    const channelKey = `rt:meeting:${tenantId}:${data.meetingId}:events`;
+    const eventId = generateId();
+    const event = {
+      eventId,
+      eventType: data.eventType,
+      version: 1,
+      tenantId,
+      meetingId: data.meetingId,
+      userId: data.userId,
+      timestamp: new Date().toISOString(),
+      data: data.payload,
+    };
+    await this.redis.publish(channelKey, JSON.stringify(event));
+    const job = await this.queue.add(data.eventType, event);
+    this.logger.log(
+      { tenantId, meetingId: data.meetingId, eventId, jobId: job.id, eventType: data.eventType },
+      'bullmq track event job enqueued',
+    );
+  }
+
   async handleParticipantLeft(data: ParticipantLeftData): Promise<void> {
     const ctx = getRequestContext();
     const { tenantId } = ctx;

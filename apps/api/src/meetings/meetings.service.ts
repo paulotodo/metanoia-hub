@@ -33,6 +33,9 @@ import {
 import { MeetingsRepository } from './meetings.repository';
 import { PresenceCheckpointService } from './presence/presence-checkpoint.service';
 import { PresenceService } from './presence/presence.service';
+import { TelemetryService } from './telemetry/telemetry.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 
 @Injectable()
 export class MeetingsService {
@@ -45,6 +48,8 @@ export class MeetingsService {
     private readonly eventEmitter: EventEmitter2,
     private readonly presence: PresenceService,
     private readonly checkpoint: PresenceCheckpointService,
+    private readonly telemetry: TelemetryService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async getDetail(meetingId: string): Promise<MeetingDetail> {
@@ -150,6 +155,26 @@ export class MeetingsService {
       this.logger.error(
         { meetingId, error: (err as Error).message },
         'final attendance flush failed (non-blocking)',
+      );
+    }
+
+    // Story 5.4 — telemetry flush (camera + duration + focus). Reads the
+    // tenant's focus toggle to decide whether focus_score is computed.
+    try {
+      const tenant = await withTenantTx(this.prisma, (tx) =>
+        tx.tenant.findUnique({
+          where: { id: ctx.tenantId },
+          select: { focusIndicatorEnabled: true },
+        }),
+      );
+      await this.telemetry.flushTelemetry(
+        meetingId,
+        tenant?.focusIndicatorEnabled ?? false,
+      );
+    } catch (err) {
+      this.logger.error(
+        { meetingId, error: (err as Error).message },
+        'final telemetry flush failed (non-blocking)',
       );
     }
 

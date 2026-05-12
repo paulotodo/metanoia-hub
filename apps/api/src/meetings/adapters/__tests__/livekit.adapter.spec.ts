@@ -194,6 +194,48 @@ describe('LiveKitAdapter', () => {
       expect(result).toMatchObject({ type: 'unknown', rawEvent: 'egress_started' });
     });
 
+    it('parses track_published (video) into typed event with trackKind', async () => {
+      webhookReceiveMock.mockResolvedValue({
+        id: 'ev-tp',
+        event: 'track_published',
+        room: { name: `${TENANT}:${MEETING}` },
+        participant: { identity: 'user-1' },
+        track: { type: 'VIDEO' },
+      });
+      const result = await buildAdapter().handleWebhook('h', '{}');
+      expect(result).toMatchObject({
+        type: 'track.published',
+        providerEventId: 'ev-tp',
+        participantIdentity: 'user-1',
+        trackKind: 'video',
+      });
+    });
+
+    it('parses track_unpublished into typed event', async () => {
+      webhookReceiveMock.mockResolvedValue({
+        id: 'ev-tu',
+        event: 'track_unpublished',
+        room: { name: `${TENANT}:${MEETING}` },
+        participant: { identity: 'user-1' },
+        track: { type: 'AUDIO' },
+      });
+      const result = await buildAdapter().handleWebhook('h', '{}');
+      expect(result).toMatchObject({
+        type: 'track.unpublished',
+        trackKind: 'audio',
+      });
+    });
+
+    it('falls back to "unknown" trackKind when track field is missing', async () => {
+      webhookReceiveMock.mockResolvedValue({
+        event: 'track_published',
+        room: { name: `${TENANT}:${MEETING}` },
+        participant: { identity: 'user-1' },
+      });
+      const result = await buildAdapter().handleWebhook('h', '{}');
+      expect(result).toMatchObject({ type: 'track.published', trackKind: 'unknown' });
+    });
+
     it('returns null tenantId/meetingId when room name is malformed', async () => {
       webhookReceiveMock.mockResolvedValue({
         event: 'participant_joined',

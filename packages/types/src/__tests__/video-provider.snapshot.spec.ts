@@ -130,6 +130,8 @@ describe('VideoProviderEventTypeSchema snapshot', () => {
         "room.finished",
         "participant.joined",
         "participant.left",
+        "track.published",
+        "track.unpublished",
         "unknown",
       ]
     `);

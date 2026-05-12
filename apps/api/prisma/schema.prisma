@@ -96,6 +96,22 @@ model MeetingAttendance {
   @@map("meeting_attendance")
 }
 
+/// MeetingTelemetry — per-user engagement signals captured during a meeting (Story 5.4)
+model MeetingTelemetry {
+  id                   String   @id @db.Uuid
+  tenantId             String   @map("tenant_id") @db.Uuid
+  meetingId            String   @map("meeting_id") @db.Uuid
+  userId               String   @map("user_id") @db.Uuid
+  cameraOnSeconds      Int      @map("camera_on_seconds") @default(0)
+  roomDurationSeconds  Int      @map("room_duration_seconds") @default(0)
+  focusScore           Decimal? @map("focus_score") @db.Decimal(3, 2)
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([meetingId, userId])
+  @@index([tenantId, meetingId])
+  @@map("meeting_telemetry")
+}
+
 /// MeetingSnapshot — periodic state checkpoint for crash recovery (Story 5.3)
 model MeetingSnapshot {
   id           String   @id @db.Uuid
