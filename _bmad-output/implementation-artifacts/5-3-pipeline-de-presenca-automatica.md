@@ -1,7 +1,9 @@
 # Story 5.3: Pipeline de Presença Automática
 
-Status: in-review
+Status: done
 baseline_commit: 1b2f30a
+merged_commit: 8a9724a
+pr: 108
 
 ## Story
 
