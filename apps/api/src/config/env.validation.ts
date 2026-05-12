@@ -12,6 +12,7 @@ export const envSchema = z.object({
   KEYCLOAK_CLIENT_ID: z.string().default('metanoia-web'),
   KEYCLOAK_API_CLIENT_ID: z.string().default('metanoia-api'),
   KEYCLOAK_API_CLIENT_SECRET: z.string().default('dev-secret-only-not-for-production'),
+  KEYCLOAK_EXPECTED_AUDIENCE: z.string().min(1).default('metanoia-api'),
   MINIO_ENDPOINT: z.string().url().default('http://localhost:9000'),
   MINIO_ACCESS_KEY: z.string().default('minioadmin'),
   MINIO_SECRET_KEY: z.string().default('minioadmin'),

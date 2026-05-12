@@ -17,11 +17,14 @@ import type { AuthenticatedUser } from './interfaces/authenticated-user.interfac
 import type { EnvConfig } from '../config/env.validation';
 import { RedisService } from '../redis/redis.service';
 
+const IMMUTABLE_INIT_FIELDS = ['issuer', 'jwks', 'expectedAudience'] as const;
+
 @Injectable()
 export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
   private readonly logger = new Logger(KeycloakAuthGuard.name);
   private jwks!: JWTVerifyGetKey;
   private issuer!: string;
+  private expectedAudience!: string;
 
   constructor(
     private readonly reflector: Reflector,
@@ -33,10 +36,28 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
     const keycloakUrl = this.config.get('KEYCLOAK_URL', { infer: true });
     const realm = this.config.get('KEYCLOAK_REALM', { infer: true });
     this.issuer = `${keycloakUrl}/realms/${realm}`;
+    this.expectedAudience = this.config.get('KEYCLOAK_EXPECTED_AUDIENCE', {
+      infer: true,
+    });
 
     const jwksUrl = new URL(`${this.issuer}/protocol/openid-connect/certs`);
     this.jwks = createRemoteJWKSet(jwksUrl);
-    this.logger.log(`JWKS endpoint configured: ${jwksUrl.toString()}`);
+    this.logger.log(
+      `JWKS endpoint configured: ${jwksUrl.toString()} (audience: ${this.expectedAudience})`,
+    );
+
+    this.freezeInitState();
+  }
+
+  private freezeInitState(): void {
+    for (const key of IMMUTABLE_INIT_FIELDS) {
+      Object.defineProperty(this, key, {
+        value: this[key],
+        writable: false,
+        configurable: false,
+        enumerable: true,
+      });
+    }
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -76,12 +97,13 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
       store.userId = userId;
     }
 
-    const user: AuthenticatedUser = {
+    const roles = Object.freeze([...(payload.realm_roles ?? [])]);
+    const user: AuthenticatedUser = Object.freeze({
       userId,
       tenantId: activeTenantId,
-      roles: payload.realm_roles ?? [],
+      roles,
       email: payload.email,
-    };
+    }) as AuthenticatedUser;
 
     request.user = user;
     return true;
@@ -122,12 +144,22 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
     try {
       const { payload } = await jwtVerify(token, this.jwks, {
         issuer: this.issuer,
+        audience: this.expectedAudience,
       });
       return payload as unknown as KeycloakJwtPayload;
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('expired')) {
           throw new UnauthorizedException('Token has expired');
+        }
+        if (
+          error.message.includes('audience') ||
+          error.message.toLowerCase().includes('aud')
+        ) {
+          this.logger.warn(
+            `JWT audience mismatch (expected '${this.expectedAudience}'): ${error.message}`,
+          );
+          throw new UnauthorizedException('Invalid authentication token');
         }
         if (error.message.includes('ECONNREFUSED') || error.message.includes('fetch')) {
           this.logger.error(`JWKS endpoint unreachable: ${error.message}`);
