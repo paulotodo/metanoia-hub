@@ -19,6 +19,7 @@ const mockConfig = {
     const map: Record<string, string> = {
       KEYCLOAK_URL: 'http://localhost:8080',
       KEYCLOAK_REALM: 'metanoia',
+      KEYCLOAK_EXPECTED_AUDIENCE: 'metanoia-api',
     };
     return map[key];
   }),
@@ -33,7 +34,7 @@ const validPayload = {
   email_verified: true,
   preferred_username: 'lider@metanoia.dev',
   iss: 'http://localhost:8080/realms/metanoia',
-  aud: 'metanoia-web',
+  aud: ['metanoia-web', 'metanoia-api'],
   exp: Math.floor(Date.now() / 1000) + 300,
   iat: Math.floor(Date.now() / 1000),
 };
@@ -265,5 +266,114 @@ describe('KeycloakAuthGuard', () => {
     await expect(guard.canActivate(ctx as any)).rejects.toThrow(
       'Authentication service unavailable',
     );
+  });
+
+  describe('audience validation', () => {
+    it('passes when jwtVerify is invoked with the expected audience and resolves', async () => {
+      vi.mocked(jwtVerify).mockResolvedValue({
+        payload: validPayload,
+        protectedHeader: { alg: 'RS256' },
+      } as any);
+
+      const ctx = createMockExecutionContext({
+        authorization: 'Bearer aud-metanoia-api',
+      });
+
+      await guard.canActivate(ctx as any);
+
+      expect(jwtVerify).toHaveBeenCalledWith(
+        'aud-metanoia-api',
+        'mock-jwks',
+        expect.objectContaining({
+          issuer: 'http://localhost:8080/realms/metanoia',
+          audience: 'metanoia-api',
+        }),
+      );
+    });
+
+    it('rejects when jose throws audience claim check failed (token aud=metanoia-web only)', async () => {
+      vi.mocked(jwtVerify).mockRejectedValue(
+        new Error("\"aud\" claim check failed"),
+      );
+
+      const ctx = createMockExecutionContext({
+        authorization: 'Bearer web-only-token',
+      });
+
+      await expect(guard.canActivate(ctx as any)).rejects.toThrow(
+        'Invalid authentication token',
+      );
+    });
+
+    it('passes for multi-audience token containing metanoia-api', async () => {
+      vi.mocked(jwtVerify).mockResolvedValue({
+        payload: { ...validPayload, aud: ['metanoia-web', 'metanoia-api'] },
+        protectedHeader: { alg: 'RS256' },
+      } as any);
+
+      const ctx = createMockExecutionContext({
+        authorization: 'Bearer multi-aud-token',
+      });
+
+      const result = await guard.canActivate(ctx as any);
+      expect(result).toBe(true);
+    });
+
+    it('rejects token whose aud is a different client', async () => {
+      vi.mocked(jwtVerify).mockRejectedValue(
+        new Error("audience claim check failed"),
+      );
+
+      const ctx = createMockExecutionContext({
+        authorization: 'Bearer other-client-token',
+      });
+
+      await expect(guard.canActivate(ctx as any)).rejects.toThrow(
+        'Invalid authentication token',
+      );
+    });
+  });
+
+  describe('immutable post-init state', () => {
+    it('throws TypeError when issuer is reassigned after onModuleInit', () => {
+      expect(() => {
+        (guard as any).issuer = 'http://evil/realms/metanoia';
+      }).toThrow(TypeError);
+    });
+
+    it('throws TypeError when expectedAudience is reassigned after onModuleInit', () => {
+      expect(() => {
+        (guard as any).expectedAudience = 'attacker-controlled';
+      }).toThrow(TypeError);
+    });
+
+    it('throws TypeError when jwks is reassigned after onModuleInit', () => {
+      expect(() => {
+        (guard as any).jwks = 'rogue-jwks';
+      }).toThrow(TypeError);
+    });
+
+    it('freezes request.user so handlers cannot mutate roles or tenantId', async () => {
+      vi.mocked(jwtVerify).mockResolvedValue({
+        payload: validPayload,
+        protectedHeader: { alg: 'RS256' },
+      } as any);
+
+      const ctx = createMockExecutionContext({
+        authorization: 'Bearer valid-token',
+      });
+
+      await guard.canActivate(ctx as any);
+      const user = ctx._request.user as any;
+
+      expect(Object.isFrozen(user)).toBe(true);
+      expect(Object.isFrozen(user.roles)).toBe(true);
+      expect(() => {
+        user.tenantId = 'evil-tenant';
+      }).toThrow(TypeError);
+      expect(() => {
+        user.roles.push('admin_tenant');
+      }).toThrow(TypeError);
+    });
   });
 });

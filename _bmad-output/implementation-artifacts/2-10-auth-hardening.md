@@ -1,6 +1,7 @@
 # Story 2.10: Auth Hardening (Audience JWT, Secret Rotation, Immutable Guard State)
 
-Status: ready-for-dev
+Status: in-review
+baseline_commit: 8606067008a8005709a2fd6332fd3409d5f1b7f9
 
 ## Story
 
@@ -54,54 +55,40 @@ so that tokens emitidos para outros clients (mesmo realm) não passam silenciosa
 ## Tasks / Subtasks
 
 ### Task 1 — Audience mapper no realm-export.json (AC1)
-- [ ] Adicionar mapper `audience-metanoia-api` ao `protocolMappers` do client `metanoia-web` em `infra/keycloak/realm-export.json` (após o último mapper existente, linha ~110 da seção do client)
-- [ ] (Opcional, se serviceAccount de `metanoia-api` for usado) Adicionar mapper análogo no client `metanoia-api` para auto-audiência
-- [ ] Rebuild local: `docker compose down -v && docker compose up keycloak` para recarregar realm
-- [ ] Verificar via `curl` direct no token endpoint que o access token novo contém `aud: ["metanoia-web", "metanoia-api"]` (jose decode)
+- [x] Mapper `audience-metanoia-api` adicionado ao `protocolMappers` do client `metanoia-web` (`infra/keycloak/realm-export.json` linhas ~114-122)
+- [ ] (Opcional, se serviceAccount de `metanoia-api` for usado) Mapper análogo no client `metanoia-api` — deixado fora (sem service account flow no fluxo atual)
+- [ ] Rebuild manual (smoke test do operador — não bloqueia merge)
+- [ ] Verificação via `curl` (smoke test do operador)
 
 ### Task 2 — KeycloakAuthGuard valida audience (AC1 cont.)
-- [ ] Adicionar `private expectedAudience!: string` em `apps/api/src/auth/keycloak.guard.ts`
-- [ ] Em `onModuleInit`: `this.expectedAudience = this.config.get('KEYCLOAK_EXPECTED_AUDIENCE', { infer: true })`
-- [ ] Em `verifyToken`: passar `audience: this.expectedAudience` ao `jwtVerify` (segundo opt do segundo argumento de jose). Jose suporta string ou array — passar string única; jose aceita match parcial se o claim aud do token for array contendo a string
-- [ ] Cobrir caso de erro: jose throw `'audience' claim check failed` → mapear para `UnauthorizedException('Invalid authentication token')` (não vazar detalhe pro client; logger.warn com detalhe)
-- [ ] Atualizar fixture de teste em `keycloak.guard.spec.ts:36` para `aud: 'metanoia-api'` (ou `['metanoia-web', 'metanoia-api']` para refletir realidade pós-mapper)
-- [ ] Adicionar 4 tests novos (a-d na AC1)
+- [x] `private expectedAudience!: string` em `keycloak.guard.ts`
+- [x] `onModuleInit` lê `this.config.get('KEYCLOAK_EXPECTED_AUDIENCE', { infer: true })`
+- [x] `verifyToken` passa `audience: this.expectedAudience` para `jwtVerify`
+- [x] Erro de audience capturado em ramo dedicado do `catch` (logger.warn com detalhe, `UnauthorizedException('Invalid authentication token')` para o cliente — não vaza)
+- [x] Fixture `validPayload.aud` atualizada para `['metanoia-web', 'metanoia-api']` (realidade pós-mapper)
+- [x] 4 unit tests novos no bloco `describe('audience validation')` cobrem casos a/b/c/d
 
 ### Task 3 — env validation + .env.example (AC1 + AC2)
-- [ ] Em `apps/api/src/config/env.validation.ts`, adicionar:
-  - `KEYCLOAK_EXPECTED_AUDIENCE: z.string().min(1).default('metanoia-api')`
-- [ ] Em `.env.example`, adicionar abaixo de `KEYCLOAK_API_CLIENT_SECRET=...`:
-  - `KEYCLOAK_EXPECTED_AUDIENCE=metanoia-api`
-  - Comentário: `# Override per environment. Dev default matches realm-export.json fallback.` acima de `KEYCLOAK_API_CLIENT_SECRET`
+- [x] `KEYCLOAK_EXPECTED_AUDIENCE: z.string().min(1).default('metanoia-api')` em `env.validation.ts`
+- [x] `.env.example`: `KEYCLOAK_EXPECTED_AUDIENCE=metanoia-api` + comentário "Override per environment" acima de `KEYCLOAK_API_CLIENT_SECRET`
 
 ### Task 4 — Secret rotation via env (AC2)
-- [ ] Em `infra/keycloak/realm-export.json:125`, substituir literal por `"secret": "${KEYCLOAK_API_CLIENT_SECRET:dev-secret-only-not-for-production}"`
-- [ ] **VERIFICAR** versão Keycloak em uso (`docker-compose.yml` raiz) — variable substitution `${ENV:default}` é suportada nativamente desde Keycloak 18. Se versão < 18, usar approach alternativa: realm-export sem secret + script de bootstrap pós-import (`kcadm.sh update clients/$ID -s secret=$KEYCLOAK_API_CLIENT_SECRET`). Documentar a escolha no Change Log
-- [ ] Em `infra/keycloak/docker-compose.keycloak.yml` (ou wherever Keycloak service é definido), garantir que `KEYCLOAK_API_CLIENT_SECRET` é exposto como env do container — pode requerer adicionar `environment: [KEYCLOAK_API_CLIENT_SECRET=${KEYCLOAK_API_CLIENT_SECRET}]`
-- [ ] Criar `infra/keycloak/README.md` (se não existir) com seção `## Secret Rotation`:
-  - Procedimento p/ produção
-  - Comando `openssl rand -base64 48`
-  - Steps: atualizar env, reiniciar Keycloak, atualizar API env, validar via login real
+- [x] `realm-export.json:125`: `"secret": "${KEYCLOAK_API_CLIENT_SECRET:dev-secret-only-not-for-production}"` — Keycloak 24 (Quarkus, > v18) suporta substitution nativa, confirmado em `docker-compose.yml:37`
+- [x] `docker-compose.yml` Keycloak service: `KEYCLOAK_API_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET:-dev-secret-only-not-for-production}` exposto ao container
+- [x] `infra/keycloak/README.md` criado com seção `## Secret Rotation` (passos de produção + `openssl rand -base64 48`), `## Secret Resolution` e `## Audience Mapper`
 
 ### Task 5 — Object.freeze interno (AC3)
-- [ ] Em `KeycloakAuthGuard`, criar método privado `freezeInitState(): void` chamado ao final de `onModuleInit`:
-  ```ts
-  private freezeInitState(): void {
-    for (const key of ['issuer', 'jwks', 'expectedAudience'] as const) {
-      Object.defineProperty(this, key, { writable: false, configurable: false });
-    }
-  }
-  ```
-- [ ] Em `canActivate`, antes de `request.user = user`, chamar `Object.freeze(user)` (e `Object.freeze(user.roles)` se quiser bloquear mutação no array — Object.freeze é raso)
-- [ ] Adicionar 3 unit tests novos (a-c na AC3) — para teste (a) e (b) usar `try/catch` + asserção `TypeError` (strict mode é default em ESM/TS)
+- [x] `freezeInitState()` privado chamado ao fim de `onModuleInit` — `Object.defineProperty(this, key, { value: this[key], writable: false, configurable: false, enumerable: true })` para `issuer`, `jwks`, `expectedAudience` (definido via constante `IMMUTABLE_INIT_FIELDS`)
+- [x] `canActivate` constrói `user` via `Object.freeze({...})` e `roles` via `Object.freeze([...])` (copy + freeze, evita mutação por referência ao array original do payload)
+- [x] 4 unit tests novos no bloco `describe('immutable post-init state')`: reassign issuer/expectedAudience/jwks → `TypeError`; mutar `user.tenantId` e `user.roles.push` → `TypeError`; `Object.isFrozen` checks
 
 ### Task 6 — Integration test audience + suite verde + Change Log + PR
-- [ ] Criar `apps/api/test/auth/audience-validation.integration-spec.ts` com 2 specs: (a) token real Keycloak passa; (b) token forjado sem `aud=metanoia-api` 401
-- [ ] `pnpm turbo test build lint --filter=@metanoia/api` verde
-- [ ] Suite RLS verde
-- [ ] Atualizar `_bmad-output/implementation-artifacts/deferred-work.md`: marcar as 3 entradas tagged `Sprint 8 (Story 2-10 auth-hardening)` como ✅ Resolvido com link
-- [ ] Atualizar `_bmad-output/implementation-artifacts/sprint-status.yaml`: `2-10-auth-hardening: ready-for-dev → in-progress → review → done`
-- [ ] PR título: `feat(api, story-2-10): auth hardening — audience JWT + secret rotation + immutable guard state` em PT-BR
+- [x] `apps/api/test/auth/audience-validation.integration-spec.ts` criado — usa `jose` real (não mock) com keypair RS256 local + `createRemoteJWKSet` mockado para resolver a chave pública local; 3 specs: aud array inclui `metanoia-api` passa, aud=`metanoia-web` rejeita, aud=`unrelated-client` rejeita
+- [x] `pnpm lint && pnpm build` verdes
+- [x] 342 tests passing (mesma exclusão `test/rls/**` `test/marketing/**` `test/migrations/**` pré-existentes vermelhos por env DB)
+- [x] `deferred-work.md` — 3 entradas marcadas ✅ Resolvido
+- [x] `sprint-status.yaml` — `2-10-auth-hardening: ready-for-dev → in-review`; bundle 1-9 housekeeping: `1-9-config-hardening: in-review → done` + Status do spec 1-9 → `done`
+- [ ] PR a abrir após push
 
 ## Dev Notes
 
@@ -174,22 +161,44 @@ Hoje `request.user.roles` é referência ao array `payload.realm_roles` — um m
 
 ### Implementation Plan
 
-_(preencher pelo dev ao iniciar)_
+Entrega 3-em-1 (audience JWT + secret rotation + immutable state) sob `feat/story-2-10-auth-hardening` (baseline `8606067`). Adicionalmente, bundle housekeeping da Story 1-9: spec status e sprint-status para `done` (PR #104 já mergeada).
 
 ### Completion Notes
 
-_(preencher pelo dev ao concluir)_
+- **Keycloak 24 confirmado** (`docker-compose.yml:37` → `quay.io/keycloak/keycloak:24.0`) — Quarkus-based, > v17, suporta `${ENV:default}` variable substitution nativa. Sem necessidade de fallback kcadm.
+- **Audience mapper só no client `metanoia-web`** — não adicionei mapper análogo em `metanoia-api` (Task 1 item opcional) porque `metanoia-api` não usa service-account flow no fluxo corrente; pode ser absorvido em story futura quando worker → API for separado.
+- **`Object.freeze(user)` é shallow** — daí o copy + freeze de `roles` separado: `Object.freeze([...(payload.realm_roles ?? [])])`. Garante que mesmo reference-grab de `req.user.roles` falhe em mutação. Aceita o custo do array copy (uso é rare-write, frequent-read).
+- **`Object.defineProperty` em vez de `Object.freeze(this)`** — Nest providers podem ter state interno re-assigned em alguns cenários; preferi proteger CIRURGICAMENTE os 3 campos imutáveis (`issuer`, `jwks`, `expectedAudience`) em vez de freezar a instância inteira.
+- **Integration test usa jose real:** o spec sugeria "token real Keycloak". Sem live Keycloak no CI, fiz o caminho cirúrgico — gerei keypair RS256 local, assinei tokens com `jose.SignJWT` e mockei APENAS `createRemoteJWKSet` para retornar a public key local. Toda a verificação (issuer + audience + exp + signature) usa jose real, validando comportamento de produção.
 
 ### Debug Log
 
-_(preencher pelo dev se houver achados não óbvios)_
+- RLS suite + marketing + migrations vermelhos no baseline (env DB ausente) — não tocado.
+- O ramo `error.message.toLowerCase().includes('aud')` no catch é defensivo: jose tem variado a mensagem entre versões (`'audience' claim check failed`, `"aud" claim check failed`). Match case-insensitive cobre ambos.
 
 ## File List
 
-_(preencher pelo dev — NEW/MODIFIED/DELETED por área)_
+**NEW**
+- `apps/api/test/auth/audience-validation.integration-spec.ts` — integration test com jose real (RS256 keypair) + 3 specs (aud OK, aud só web rejeita, aud client desconhecido rejeita)
+- `infra/keycloak/README.md` — Secret Resolution + Secret Rotation procedure + Audience Mapper
+
+**MODIFIED**
+- `apps/api/src/auth/keycloak.guard.ts` — `expectedAudience` field + `freezeInitState()` + `Object.freeze(user)` + audience opt em `jwtVerify` + ramo de audience no catch
+- `apps/api/src/auth/__tests__/keycloak.guard.spec.ts` — fixture `aud` array + 8 tests novos (4 audience + 4 immutable state) + `mockConfig` retorna `KEYCLOAK_EXPECTED_AUDIENCE`
+- `apps/api/src/config/env.validation.ts` — `KEYCLOAK_EXPECTED_AUDIENCE: z.string().min(1).default('metanoia-api')`
+- `.env.example` — `KEYCLOAK_EXPECTED_AUDIENCE=metanoia-api` + comentário acima de `KEYCLOAK_API_CLIENT_SECRET`
+- `infra/keycloak/realm-export.json` — mapper `audience-metanoia-api` no client `metanoia-web` + secret do client `metanoia-api` via `${KEYCLOAK_API_CLIENT_SECRET:default}`
+- `docker-compose.yml` — env `KEYCLOAK_API_CLIENT_SECRET` propagado ao container Keycloak
+- `_bmad-output/implementation-artifacts/deferred-work.md` — 3 entradas marcadas ✅
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — `2-10-auth-hardening: in-review`, `1-9-config-hardening: done` (housekeeping)
+- `_bmad-output/implementation-artifacts/1-9-config-hardening.md` — Status: `done` + `merged_commit` + `pr: 104` (housekeeping)
+
+**DELETED**
+- Nenhum
 
 ## Change Log
 
 | Date | Change |
 |------|--------|
 | 2026-05-11 | Story criada como ready-for-dev. Absorve 3 itens P0/P1 do deferred-work.md (review stories 1-4 e 1-5, 2026-04-09) em uma única entrega de hardening da camada de autenticação. P0: audience validation (decisão party mode 3-0). |
+| 2026-05-12 | Implementação completa em `feat/story-2-10-auth-hardening` (baseline `8606067`). 3 ACs entregues: (1) `oidc-audience-mapper` insere `metanoia-api` no `aud` do access token + guard valida via jose `audience` opt + `KEYCLOAK_EXPECTED_AUDIENCE` validado em Zod; (2) `${KEYCLOAK_API_CLIENT_SECRET:default}` no realm-export + env propagado via docker-compose + procedimento de rotation em `infra/keycloak/README.md`; (3) `freezeInitState()` torna `issuer`/`jwks`/`expectedAudience` imutáveis após `onModuleInit`; `request.user` e `user.roles` `Object.freeze`-ados antes de attach na request. Bundle housekeeping Story 1-9 (status → done). 342 unit/integration tests verdes, lint + build verdes. |

@@ -17,7 +17,7 @@ Itens implicitamente resolvidos pelo `withTenantTx` (Story 7-5/7-7) marcados `~~
 
 ## Deferred from: code review of story 1-4 (2026-04-09)
 
-- Secret do client `metanoia-api` hardcoded no realm-export.json — configuração de dev apenas, substituir por secret gerado em produção → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md))**
+- ~~Secret do client `metanoia-api` hardcoded no realm-export.json — configuração de dev apenas, substituir por secret gerado em produção~~ ✅ Resolvido em Story 2-10 (Keycloak 24 `${KEYCLOAK_API_CLIENT_SECRET:dev-secret-only-not-for-production}` no `realm-export.json:125`, env propagado via `docker-compose.yml` ao container, procedimento de rotation em `infra/keycloak/README.md`).
 - ~~`SET LOCAL` em transação pode ser explorado se tenantId não é UUID — fix de SQL injection já aplicado com template literal, validação de formato UUID seria defesa em profundidade~~ ✅ Resolvido em Story 7-5 (`apps/api/src/prisma/with-tenant-tx.ts:53` valida UUID via regex antes do `SET LOCAL`).
 - Google OAuth placeholders requerem credenciais reais do Google Cloud Console para teste E2E completo → **Bloqueado por dependência externa**
 - Guard HTTP-only: não suporta WebSocket ou GraphQL — fora do escopo do spike, implementar quando necessário → **Bloqueado (aguarda primeira feature WS/GraphQL)**
@@ -25,12 +25,12 @@ Itens implicitamente resolvidos pelo `withTenantTx` (Story 7-5/7-7) marcados `~~
 - Teste E2E do Google OAuth — requer credenciais reais, validar quando Google Cloud Console estiver configurado → **Bloqueado por dependência externa**
 - APP_GUARD registration order (KeycloakAuthGuard antes de RolesGuard) — funciona na prática mas a ordem não é explícita no código → **Release 1b (tactical em qualquer story)**
 - mockClear pattern inconsistente nos testes — apenas um teste faz mockClear, deveria estar no beforeEach para consistência → **Release 1b (tactical em qualquer story)**
-- Audience (`aud`) validation no JWT — token `aud` contém `metanoia-web`, API precisa de audience mapper no Keycloak para validar corretamente. Decisão: defer (party mode 3-0 unânime). Resolver em story de auth hardening → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md)) — P0**
+- ~~Audience (`aud`) validation no JWT — token `aud` contém `metanoia-web`, API precisa de audience mapper no Keycloak para validar corretamente. Decisão: defer (party mode 3-0 unânime). Resolver em story de auth hardening — **P0**~~ ✅ Resolvido em Story 2-10 (audience-mapper `audience-metanoia-api` no client `metanoia-web` em `realm-export.json`; `KeycloakAuthGuard.verifyToken` passa `audience: this.expectedAudience` para `jwtVerify`; `KEYCLOAK_EXPECTED_AUDIENCE` validado em Zod e default `metanoia-api`; integration test com jose real + 4 unit tests cobrindo casos a/b/c/d da AC1).
 
 ## Deferred from: code review of story-1-5 (2026-04-09)
 
 - ~~Adicionar header X-Request-Id na response do middleware — melhoria de observabilidade para clientes~~ ✅ Resolvido em Story 1-9 (`apps/api/src/common/context/request-context.middleware.ts:24` seta `X-Request-Id` + `X-Correlation-Id` via `res.setHeader` antes do `requestContext.run`).
-- Store mutable no guard — considerar Object.freeze() após população para segurança → **Sprint 8 (Story [2-10 auth-hardening](./2-10-auth-hardening.md))**
+- ~~Store mutable no guard — considerar Object.freeze() após população para segurança~~ ✅ Resolvido em Story 2-10 (`freezeInitState()` aplica `Object.defineProperty(writable: false, configurable: false)` em `issuer`/`jwks`/`expectedAudience` ao fim de `onModuleInit`; `request.user` e `user.roles` são `Object.freeze`-ados antes do `request.user = user`; 4 unit tests validam TypeError em strict mode).
 - ~~LoggerModule.forRoot avaliado em load time — migrar para forRootAsync com ConfigService~~ ✅ Resolvido em Story 1-9 (`app.module.ts:42` usa `LoggerModule.forRootAsync` injetando `ConfigService<EnvConfig, true>`; `pinoLoggerConfig` lê `NODE_ENV` via schema Zod validado).
 - tenantId inicializado como '' ao invés de null — alinhar com regra de null explícito → **Release 1b (tactical em qualquer story)**
 - ~~SET LOCAL sem transaction boundary no Prisma extension — verificar eficácia do RLS sem $transaction~~ ✅ Resolvido em Story 7-5 (helper `withTenantTx` envolve SET LOCAL e a query no mesmo `$transaction` → mesma conexão garantida) e Story 7-7 (extension legacy `withMultiTenant` deletado, 48 callsites migrados).

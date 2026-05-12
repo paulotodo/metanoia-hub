@@ -1,7 +1,9 @@
 # Story 1.9: Config Hardening (Logger, Sentry, Observability)
 
-Status: in-review
+Status: done
 baseline_commit: 9ab7a49de87ce1a11c9c73f67d9404861605d481
+merged_commit: 8606067008a8005709a2fd6332fd3409d5f1b7f9
+pr: 104
 
 ## Story
 
