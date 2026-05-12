@@ -1,8 +1,12 @@
+import { ConfigService } from '@nestjs/config';
 import type { Params } from 'nestjs-pino';
+import type { EnvConfig } from '../../config/env.validation';
 import { requestContext } from '../context/request-context';
 
-export function pinoLoggerConfig(): Params {
-  const isProduction = process.env.NODE_ENV === 'production';
+export function pinoLoggerConfig(
+  config: ConfigService<EnvConfig, true>,
+): Params {
+  const isProduction = config.get('NODE_ENV', { infer: true }) === 'production';
 
   return {
     pinoHttp: {
@@ -23,7 +27,14 @@ export function pinoLoggerConfig(): Params {
         const store = requestContext.getStore();
         return store?.requestId ?? 'no-context';
       },
-      redact: ['req.headers.authorization'],
+      redact: [
+        'req.headers.authorization',
+        'req.headers.cookie',
+        'req.headers["set-cookie"]',
+        'req.headers["x-api-key"]',
+        'req.headers["x-csrf-token"]',
+        'res.headers["set-cookie"]',
+      ],
     },
   };
 }

@@ -21,6 +21,7 @@ export const envSchema = z.object({
   LIVEKIT_API_SECRET: z.string().default('secret_dev_only_not_for_production'),
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
   SENTRY_DSN: z.string().url().optional(),
+  SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

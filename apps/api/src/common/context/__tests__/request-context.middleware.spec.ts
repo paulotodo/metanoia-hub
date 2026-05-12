@@ -6,6 +6,10 @@ vi.mock('uuidv7', () => ({
   uuidv7: vi.fn(() => '019078ab-0000-7000-8000-000000000001'),
 }));
 
+function makeRes() {
+  return { setHeader: vi.fn() } as any;
+}
+
 describe('RequestContextMiddleware', () => {
   let middleware: RequestContextMiddleware;
 
@@ -15,7 +19,7 @@ describe('RequestContextMiddleware', () => {
 
   it('should create a store with a valid requestId', async () => {
     const req = { headers: {} } as any;
-    const res = {} as any;
+    const res = makeRes();
 
     await new Promise<void>((resolve) => {
       middleware.use(req, res, () => {
@@ -29,7 +33,7 @@ describe('RequestContextMiddleware', () => {
 
   it('should default correlationId to requestId when header is absent', async () => {
     const req = { headers: {} } as any;
-    const res = {} as any;
+    const res = makeRes();
 
     await new Promise<void>((resolve) => {
       middleware.use(req, res, () => {
@@ -44,7 +48,7 @@ describe('RequestContextMiddleware', () => {
     const req = {
       headers: { 'x-correlation-id': 'external-corr-id-999' },
     } as any;
-    const res = {} as any;
+    const res = makeRes();
 
     await new Promise<void>((resolve) => {
       middleware.use(req, res, () => {
@@ -58,7 +62,7 @@ describe('RequestContextMiddleware', () => {
 
   it('should initialize tenantId as empty string', async () => {
     const req = { headers: {} } as any;
-    const res = {} as any;
+    const res = makeRes();
 
     await new Promise<void>((resolve) => {
       middleware.use(req, res, () => {
@@ -72,7 +76,7 @@ describe('RequestContextMiddleware', () => {
 
   it('should propagate errors thrown by next()', () => {
     const req = { headers: {} } as any;
-    const res = {} as any;
+    const res = makeRes();
 
     expect(() => {
       middleware.use(req, res, () => {
@@ -81,10 +85,42 @@ describe('RequestContextMiddleware', () => {
     }).toThrow('downstream failure');
   });
 
+  it('should set X-Request-Id response header with the generated requestId', async () => {
+    const req = { headers: {} } as any;
+    const res = makeRes();
+
+    await new Promise<void>((resolve) => {
+      middleware.use(req, res, () => {
+        expect(res.setHeader).toHaveBeenCalledWith(
+          'X-Request-Id',
+          expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
+        );
+        resolve();
+      });
+    });
+  });
+
+  it('should mirror sanitized correlationId in X-Correlation-Id response header', async () => {
+    const req = {
+      headers: { 'x-correlation-id': 'external-corr-id-999' },
+    } as any;
+    const res = makeRes();
+
+    await new Promise<void>((resolve) => {
+      middleware.use(req, res, () => {
+        expect(res.setHeader).toHaveBeenCalledWith(
+          'X-Correlation-Id',
+          'external-corr-id-999',
+        );
+        resolve();
+      });
+    });
+  });
+
   it('should isolate context between concurrent requests', async () => {
     const req1 = { headers: {} } as any;
     const req2 = { headers: {} } as any;
-    const res = {} as any;
+    const res = makeRes();
 
     const { uuidv7 } = await import('uuidv7');
     let callCount = 0;
@@ -127,7 +163,7 @@ describe('getRequestContext', () => {
   it('should return the store when called inside middleware scope', async () => {
     const middleware = new RequestContextMiddleware();
     const req = { headers: {} } as any;
-    const res = {} as any;
+    const res = { setHeader: vi.fn() } as any;
 
     await new Promise<void>((resolve) => {
       middleware.use(req, res, () => {
