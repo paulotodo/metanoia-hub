@@ -1,7 +1,8 @@
 # Sprint Roadmap — metanoia-hub
 
 > Gerado em: 2026-04-09
-> Total: 22 sprints | 90 stories | 16 epics | ~44 semanas
+> Atualizado em: 2026-05-11 (+ Sprint 7 Estabilizacao + 2 stories deferred-work cleanup no Sprint 8)
+> Total: 22 sprints | 96 stories | 16 epics | ~44 semanas
 > Cadencia: sprints de 2 semanas
 
 ---
@@ -10,8 +11,8 @@
 
 | Release | Sprints | Stories | Epics | Foco |
 |---------|---------|---------|-------|------|
-| **1a MVP Core** | 0-7 | 23 | 1, 2, 3, 4, 7 | Infra, Auth, Multi-tenancy, Grupos, Onboarding |
-| **1a-beta** | 8-11 | 12 | 5, 6 | Reunioes ao Vivo, Radar Pastoral |
+| **1a MVP Core** | 0-7 | 27 | 1, 2, 3, 4, 7 | Infra, Auth, Multi-tenancy, Grupos, Onboarding, Estabilizacao |
+| **1a-beta** | 8-11 | 14 | 5, 6 | Reunioes ao Vivo, Radar Pastoral, Hardening cleanup |
 | **1b Extended** | 12-17 | 28 | 8, 9, 10, 11, 12 | Trilhas, LGPD, Planos, Acessibilidade |
 | **Release 2** | 18-21 | 23 | 13, 14, 15, 16 | Analytics, Notificacoes, Resiliencia |
 
@@ -141,17 +142,19 @@
 
 ## RELEASE 1a-beta — Reunioes & Radar Pastoral
 
-### Sprint 8 — Reunioes ao Vivo (Infraestrutura)
+### Sprint 8 — Reunioes ao Vivo (Infraestrutura) + Deferred-Work Cleanup
 
-**Meta:** CRUD de reunioes, integracao LiveKit e pipeline de presenca automatica.
+**Meta:** CRUD de reunioes, integracao LiveKit, pipeline de presenca automatica + 2 stories de hardening absorvendo itens P0/P1 do deferred-work.md.
 
 | Story | Titulo | Deps |
 |-------|--------|------|
 | 5-1 | CRUD de Reunioes Vinculadas a Grupo | 4-1 |
 | 5-2 | Integracao Agnostica com LiveKit | 1-6, 5-1 |
 | 5-3 | Pipeline de Presenca Automatica | 5-2 |
+| 1-9 | Config Hardening — LoggerModule.forRootAsync, Sentry sample rate env, Pino redact expandido, X-Request-Id header | 1-5 |
+| 2-10 | Auth Hardening — JWT audience validation + audience mapper Keycloak, secret rotation realm-export, Object.freeze guard store | 1-4, 2-4 |
 
-**Rationale:** O pipeline real-time validado em 1-6 e implementado para producao. 5-3 (classificacao automatica de presenca) e a story mais complexa.
+**Rationale:** O pipeline real-time validado em 1-6 e implementado para producao. 5-3 (classificacao automatica de presenca) e a story mais complexa. 1-9 e 2-10 absorvem itens P0/P1 do deferred-work.md acumulados nos Sprints 0-1; 2-10 inclui audience JWT (decisao party mode 3-0 unanime em 2026-04-09). Stories de hardening sao independentes de 5-1/5-2/5-3 e podem rodar em paralelo.
 
 ---
 
