@@ -1,6 +1,6 @@
 # Sprint Status — metanoia-hub
 # Generated: 2026-04-08
-# Last Updated: 2026-04-09T19:10:00Z
+# Last Updated: 2026-05-11T22:00:00Z
 # Total: 90 stories across 16 epics
 
 # STATUS DEFINITIONS:
@@ -54,7 +54,7 @@ development_status:
   1-6-spike-tecnico-pipeline-real-time-livekit-redis-bullmq-s: done
   1-7-design-tokens-tipografia-espacamento-e-shadcnui-base: done
   1-8-layout-base-navigationconfig-sidebar-e-bottom-tabs: done
-  1-9-config-hardening: backlog
+  1-9-config-hardening: ready-for-dev
   epic-1-retrospective: optional
 
   # Epic 2: Identidade, Acesso & Multi-tenancy
@@ -71,7 +71,7 @@ development_status:
   2-7-gestao-de-usuarios-e-papeis-pelo-admin-tenant: done               # PR #89 (2026-04-30)
   2-8-consentimento-lgpd-e-termos-de-uso-middleware: done               # PR #90 (2026-04-30)
   2-9-recuperacao-de-senha-via-email-keycloak-nativo: ready-for-dev
-  2-10-auth-hardening: backlog
+  2-10-auth-hardening: ready-for-dev
   epic-2-retrospective: optional
 
   # Epic 3: Provisionamento de Tenant & Configuração Básica
