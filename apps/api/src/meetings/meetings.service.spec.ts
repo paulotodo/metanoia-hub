@@ -20,12 +20,14 @@ function createMocks() {
     markCancelled: vi.fn(),
   };
 
-  const livekit = {
+  const videoProvider = {
     roomNameFor: vi.fn((t: string, m: string) => `${t}:${m}`),
-    openRoom: vi.fn(),
-    closeRoom: vi.fn(),
-    generateJoinToken: vi.fn(),
-    getLivekitUrl: vi.fn(() => 'ws://localhost:7880'),
+    getProviderUrl: vi.fn(() => 'ws://localhost:7880'),
+    createRoom: vi.fn(),
+    deleteRoom: vi.fn(),
+    generateToken: vi.fn(),
+    getActiveParticipants: vi.fn(),
+    handleWebhook: vi.fn(),
   };
 
   const eventEmitter = {
@@ -34,11 +36,15 @@ function createMocks() {
 
   const service = new MeetingsService(
     repository as any,
-    livekit as any,
+    videoProvider as any,
     eventEmitter as any,
   );
 
-  return { service, repository, livekit, eventEmitter };
+  // Alias kept for backwards compatibility with assertions written for the
+  // pre-adapter API surface (Story 5.1 spec).
+  const livekit = videoProvider;
+
+  return { service, repository, videoProvider, livekit, eventEmitter };
 }
 
 function meetingRow(overrides: Record<string, unknown> = {}) {
@@ -140,17 +146,29 @@ describe('MeetingsService', () => {
         tenantId: TENANT,
         status: 'scheduled',
       });
-      mocks.livekit.openRoom.mockResolvedValue({
+      mocks.videoProvider.createRoom.mockResolvedValue({
         roomId: 'RM_abc',
         roomName: `${TENANT}:${MEETING}`,
-        joinToken: 'jwt-token',
         livekitUrl: 'ws://localhost:7880',
       });
+      mocks.videoProvider.generateToken.mockResolvedValue('jwt-token');
       mocks.repository.markRoomOpened.mockResolvedValue({});
 
       const result = await withCtx(() => mocks.service.openRoom(MEETING));
 
-      expect(mocks.livekit.openRoom).toHaveBeenCalledWith(TENANT, MEETING, USER, USER);
+      expect(mocks.videoProvider.createRoom).toHaveBeenCalledWith(
+        expect.objectContaining({
+          roomName: `${TENANT}:${MEETING}`,
+          metadata: { tenantId: TENANT, meetingId: MEETING },
+        }),
+      );
+      expect(mocks.videoProvider.generateToken).toHaveBeenCalledWith(
+        expect.objectContaining({
+          roomName: `${TENANT}:${MEETING}`,
+          identity: USER,
+          metadata: { tenantId: TENANT, meetingId: MEETING },
+        }),
+      );
       expect(mocks.repository.markRoomOpened).toHaveBeenCalledWith(
         MEETING,
         'RM_abc',
@@ -173,7 +191,7 @@ describe('MeetingsService', () => {
       await expect(withCtx(() => mocks.service.openRoom(MEETING))).rejects.toBeInstanceOf(
         ForbiddenException,
       );
-      expect(mocks.livekit.openRoom).not.toHaveBeenCalled();
+      expect(mocks.videoProvider.createRoom).not.toHaveBeenCalled();
     });
   });
 
@@ -188,7 +206,9 @@ describe('MeetingsService', () => {
 
       const result = await withCtx(() => mocks.service.endRoom(MEETING));
 
-      expect(mocks.livekit.closeRoom).toHaveBeenCalledWith(TENANT, MEETING);
+      expect(mocks.videoProvider.deleteRoom).toHaveBeenCalledWith(
+        `${TENANT}:${MEETING}`,
+      );
       expect(mocks.eventEmitter.emit).toHaveBeenCalledWith(
         'meetings.room.ended',
         expect.objectContaining({ tenantId: TENANT, meetingId: MEETING }),
@@ -337,14 +357,15 @@ describe('MeetingsService', () => {
 
     it('returns roomName + token + livekitUrl for live meetings', async () => {
       mocks.repository.findById.mockResolvedValue(meetingRow({ status: 'live' }));
-      mocks.livekit.generateJoinToken.mockResolvedValue('jwt-join-token');
+      mocks.videoProvider.generateToken.mockResolvedValue('jwt-join-token');
 
       const result = await withCtx(() => mocks.service.join(MEETING));
 
-      expect(mocks.livekit.generateJoinToken).toHaveBeenCalledWith(
+      expect(mocks.videoProvider.generateToken).toHaveBeenCalledWith(
         expect.objectContaining({
           roomName: `${TENANT}:${MEETING}`,
-          userId: USER,
+          identity: USER,
+          metadata: { tenantId: TENANT, meetingId: MEETING },
         }),
       );
       expect(result.joinToken).toBe('jwt-join-token');

@@ -359,3 +359,18 @@ export {
   ResetPasswordResponseSchema,
   type ResetPasswordResponse,
 } from './auth/password-recovery';
+export {
+  CreateRoomOptionsSchema,
+  type CreateRoomOptions,
+  GenerateTokenOptionsSchema,
+  type GenerateTokenOptions,
+  ProviderRoomSchema,
+  type ProviderRoom,
+  ProviderParticipantSchema,
+  type ProviderParticipant,
+  VideoProviderEventTypeSchema,
+  type VideoProviderEventType,
+  VideoProviderEventSchema,
+  type VideoProviderEvent,
+  VideoProviderSignatureError,
+} from './video-provider';

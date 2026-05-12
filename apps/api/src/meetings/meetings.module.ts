@@ -11,7 +11,8 @@ import { MeetingsRepository } from './meetings.repository';
 import { ReflectionsController } from './reflections.controller';
 import { ReflectionsService } from './reflections.service';
 import { ReflectionsRepository } from './reflections.repository';
-import { LivekitService } from './livekit/livekit.service';
+import { LiveKitAdapter } from './adapters/livekit.adapter';
+import { VIDEO_PROVIDER_ADAPTER } from './adapters/video-provider.adapter';
 
 @Module({
   imports: [PrismaModule],
@@ -29,8 +30,13 @@ import { LivekitService } from './livekit/livekit.service';
     MeetingsRepository,
     ReflectionsService,
     ReflectionsRepository,
-    LivekitService,
+    LiveKitAdapter,
+    { provide: VIDEO_PROVIDER_ADAPTER, useExisting: LiveKitAdapter },
   ],
-  exports: [MeetingsService, LivekitService],
+  exports: [
+    MeetingsService,
+    LiveKitAdapter,
+    VIDEO_PROVIDER_ADAPTER,
+  ],
 })
 export class MeetingsModule {}

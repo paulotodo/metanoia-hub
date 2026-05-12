@@ -1,7 +1,9 @@
 # Story 5.1: CRUD de Reuniões Vinculadas a Grupo
 
-Status: in-review
+Status: done
 baseline_commit: 2f35b110
+merged_commit: c6ceacc
+pr: 106
 
 ## Story
 
