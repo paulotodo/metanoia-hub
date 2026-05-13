@@ -11,6 +11,10 @@ import { MeetingRoleGuard } from './guards/meeting-role.guard';
 import { TelemetryService } from './telemetry/telemetry.service';
 import { TelemetryRepository } from './telemetry/telemetry.repository';
 import { FocusHeartbeatController } from './telemetry/focus-heartbeat.controller';
+import { ReportService } from './reports/report.service';
+import { ReportRepository } from './reports/report.repository';
+import { ReportController } from './reports/report.controller';
+import { MeetingReminderService } from './notifications/meeting-reminder.service';
 import { MeetingsController } from './meetings.controller';
 import { MeetingsService } from './meetings.service';
 import { MeetingsRepository } from './meetings.repository';
@@ -30,6 +34,7 @@ import { PresenceCheckpointService } from './presence/presence-checkpoint.servic
     MeetingSseController,
     AttendanceLiveController,
     FocusHeartbeatController,
+    ReportController,
     MeetingsController,
     ReflectionsController,
   ],
@@ -50,6 +55,9 @@ import { PresenceCheckpointService } from './presence/presence-checkpoint.servic
     MeetingRoleGuard,
     TelemetryService,
     TelemetryRepository,
+    ReportService,
+    ReportRepository,
+    MeetingReminderService,
   ],
   exports: [
     MeetingsService,

@@ -360,6 +360,20 @@ export {
   type ResetPasswordResponse,
 } from './auth/password-recovery';
 export {
+  MEETING_REMINDER_MINUTES,
+  MeetingReportAttendeeSchema,
+  type MeetingReportAttendee,
+  MeetingReportSummarySchema,
+  type MeetingReportSummary,
+  MeetingReportSchema,
+  type MeetingReport,
+  MeetingReportPersonalSchema,
+  type MeetingReportPersonal,
+  computeReportSummary,
+  type ReportInputRow,
+  type ReportComputeInput,
+} from './meeting-report';
+export {
   FocusHeartbeatSchema,
   type FocusHeartbeat,
   MeetingTelemetrySchema,

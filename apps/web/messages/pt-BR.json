@@ -682,6 +682,33 @@
       "retry": "Tentar novamente"
     }
   },
+  "postMeetingReport": {
+    "title": "Resumo da reunião",
+    "loading": "Carregando relatório...",
+    "error": "Não foi possível carregar o relatório.",
+    "personalTitle": "Sua presença",
+    "metrics": {
+      "duration": "Duração total",
+      "engagement": "Engajamento médio",
+      "present": "Presença integral",
+      "partial": "Presença parcial",
+      "absent": "Ausente"
+    },
+    "table": {
+      "name": "Participante",
+      "presence": "Presença",
+      "duration": "Duração",
+      "camera": "Câmera",
+      "focus": "Foco"
+    },
+    "presence": {
+      "integral": "Integral",
+      "parcial": "Parcial",
+      "ausente": "Ausente"
+    },
+    "noFocus": "—",
+    "minutes": "{minutes} min"
+  },
   "meetingTransparency": {
     "banner": {
       "base": "Sinais de presença e engajamento estão sendo registrados para acompanhamento pastoral.",

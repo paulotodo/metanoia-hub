@@ -1,7 +1,9 @@
 # Story 5.4: Telemetria Básica de Engajamento
 
-Status: in-review
+Status: done
 baseline_commit: ce3647e
+merged_commit: e5b619b
+pr: 111
 
 ## Story
 
