@@ -360,6 +360,16 @@ export {
   type ResetPasswordResponse,
 } from './auth/password-recovery';
 export {
+  FocusHeartbeatSchema,
+  type FocusHeartbeat,
+  MeetingTelemetrySchema,
+  type MeetingTelemetry,
+  computeTelemetry,
+  type CameraSegment,
+  type TelemetryComputeInput,
+  type TelemetryComputeResult,
+} from './telemetry';
+export {
   LiveParticipantStatusSchema,
   type LiveParticipantStatus,
   LiveParticipantSchema,

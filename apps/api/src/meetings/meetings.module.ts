@@ -8,6 +8,9 @@ import { MeetingSseService } from './sse/meeting-sse.service';
 import { AttendanceLiveController } from './sse/attendance-live.controller';
 import { AttendanceLiveService } from './sse/attendance-live.service';
 import { MeetingRoleGuard } from './guards/meeting-role.guard';
+import { TelemetryService } from './telemetry/telemetry.service';
+import { TelemetryRepository } from './telemetry/telemetry.repository';
+import { FocusHeartbeatController } from './telemetry/focus-heartbeat.controller';
 import { MeetingsController } from './meetings.controller';
 import { MeetingsService } from './meetings.service';
 import { MeetingsRepository } from './meetings.repository';
@@ -26,6 +29,7 @@ import { PresenceCheckpointService } from './presence/presence-checkpoint.servic
     LiveKitWebhookController,
     MeetingSseController,
     AttendanceLiveController,
+    FocusHeartbeatController,
     MeetingsController,
     ReflectionsController,
   ],
@@ -44,6 +48,8 @@ import { PresenceCheckpointService } from './presence/presence-checkpoint.servic
     PresenceCheckpointService,
     AttendanceLiveService,
     MeetingRoleGuard,
+    TelemetryService,
+    TelemetryRepository,
   ],
   exports: [
     MeetingsService,

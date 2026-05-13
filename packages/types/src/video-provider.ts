@@ -52,6 +52,8 @@ export const VideoProviderEventTypeSchema = z.enum([
   'room.finished',
   'participant.joined',
   'participant.left',
+  'track.published',
+  'track.unpublished',
   'unknown',
 ]);
 export type VideoProviderEventType = z.infer<typeof VideoProviderEventTypeSchema>;
@@ -85,6 +87,17 @@ export const VideoProviderEventSchema = z.discriminatedUnion('type', [
     type: z.literal('participant.left'),
     participantIdentity: z.string(),
     participantSid: z.string().nullable(),
+  }),
+  BaseEvent.extend({
+    type: z.literal('track.published'),
+    participantIdentity: z.string(),
+    /** Track kind reported by provider — `video`/`audio`/`data` etc. */
+    trackKind: z.string(),
+  }),
+  BaseEvent.extend({
+    type: z.literal('track.unpublished'),
+    participantIdentity: z.string(),
+    trackKind: z.string(),
   }),
   BaseEvent.extend({
     type: z.literal('unknown'),

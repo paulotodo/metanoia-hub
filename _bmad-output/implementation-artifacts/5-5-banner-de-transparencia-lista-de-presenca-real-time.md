@@ -1,7 +1,9 @@
 # Story 5.5: Banner de Transparência & Lista de Presença Real-Time
 
-Status: in-review
+Status: done
 baseline_commit: e8c05dd
+merged_commit: ce3647e
+pr: 110
 
 ## Story
 

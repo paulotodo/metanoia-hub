@@ -56,11 +56,14 @@ export class LiveKitWebhookController {
       throw error;
     }
 
-    if (
-      event.type !== 'participant.joined' &&
-      event.type !== 'participant.left'
-    ) {
-      this.logger.log({ eventType: event.type }, 'ignoring non-participant event');
+    const routableTypes = new Set([
+      'participant.joined',
+      'participant.left',
+      'track.published',
+      'track.unpublished',
+    ]);
+    if (!routableTypes.has(event.type)) {
+      this.logger.log({ eventType: event.type }, 'ignoring non-routable event');
       return { data: { received: true } };
     }
 
@@ -70,7 +73,9 @@ export class LiveKitWebhookController {
       );
     }
 
-    const { tenantId, meetingId, participantIdentity, participantSid } = event;
+    const { tenantId, meetingId } = event;
+    const participantIdentity =
+      'participantIdentity' in event ? event.participantIdentity : 'anonymous';
 
     this.logger.log(
       { tenantId, meetingId, userId: participantIdentity, eventType: event.type },
@@ -91,14 +96,28 @@ export class LiveKitWebhookController {
             meetingId,
             userId: participantIdentity,
             eventType: 'meetings.participant.joined',
-            payload: { participantSid },
+            payload: { participantSid: event.participantSid },
             providerEventId: event.providerEventId,
           });
-        } else {
+        } else if (event.type === 'participant.left') {
           await this.meetingEventService.handleParticipantLeft({
             meetingId,
             userId: participantIdentity,
-            payload: { participantSid },
+            payload: { participantSid: event.participantSid },
+            providerEventId: event.providerEventId,
+          });
+        } else if (
+          event.type === 'track.published' ||
+          event.type === 'track.unpublished'
+        ) {
+          await this.meetingEventService.handleTrackEvent({
+            meetingId,
+            userId: participantIdentity,
+            eventType:
+              event.type === 'track.published'
+                ? 'meetings.track.published'
+                : 'meetings.track.unpublished',
+            payload: { trackKind: event.trackKind },
             providerEventId: event.providerEventId,
           });
         }
