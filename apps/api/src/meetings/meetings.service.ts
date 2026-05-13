@@ -34,6 +34,8 @@ import { MeetingsRepository } from './meetings.repository';
 import { PresenceCheckpointService } from './presence/presence-checkpoint.service';
 import { PresenceService } from './presence/presence.service';
 import { TelemetryService } from './telemetry/telemetry.service';
+import { ReportService } from './reports/report.service';
+import { MeetingReminderService } from './notifications/meeting-reminder.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { withTenantTx } from '../prisma/with-tenant-tx';
 
@@ -49,6 +51,8 @@ export class MeetingsService {
     private readonly presence: PresenceService,
     private readonly checkpoint: PresenceCheckpointService,
     private readonly telemetry: TelemetryService,
+    private readonly report: ReportService,
+    private readonly reminder: MeetingReminderService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -178,6 +182,16 @@ export class MeetingsService {
       );
     }
 
+    // Story 5.6 — generate post-meeting report from attendance + telemetry.
+    try {
+      await this.report.flushReport(meetingId);
+    } catch (err) {
+      this.logger.error(
+        { meetingId, error: (err as Error).message },
+        'final report flush failed (non-blocking)',
+      );
+    }
+
     this.eventEmitter.emit('meetings.room.ended', {
       tenantId: ctx.tenantId,
       userId: ctx.userId,
@@ -214,6 +228,21 @@ export class MeetingsService {
       data: { meetingId: meeting.id, groupId: meeting.groupId },
       metadata: { userId: ctx.userId ?? null },
     });
+
+    // Story 5.6 — schedule stub reminder (BullMQ delayed). Non-blocking.
+    try {
+      await this.reminder.scheduleReminder({
+        tenantId: ctx.tenantId,
+        meetingId: meeting.id,
+        groupId: meeting.groupId,
+        scheduledFor: meeting.scheduledFor.toISOString(),
+      });
+    } catch (err) {
+      this.logger.error(
+        { meetingId: meeting.id, error: (err as Error).message },
+        'reminder schedule failed (non-blocking)',
+      );
+    }
 
     return this.toResponse(meeting);
   }

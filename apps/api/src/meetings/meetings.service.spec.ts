@@ -43,6 +43,26 @@ function createMocks() {
     registerActiveMeeting: vi.fn().mockResolvedValue(undefined),
     unregisterActiveMeeting: vi.fn().mockResolvedValue(undefined),
   };
+  const telemetry = {
+    flushTelemetry: vi.fn().mockResolvedValue([]),
+  };
+  const report = {
+    flushReport: vi.fn().mockResolvedValue(null),
+  };
+  const reminder = {
+    scheduleReminder: vi.fn().mockResolvedValue('job-1'),
+  };
+  const prisma = {
+    client: {
+      $transaction: async (cb: (tx: unknown) => Promise<unknown>) =>
+        cb({
+          $executeRawUnsafe: vi.fn().mockResolvedValue(undefined),
+          tenant: {
+            findUnique: vi.fn().mockResolvedValue({ focusIndicatorEnabled: false }),
+          },
+        }),
+    },
+  };
 
   const service = new MeetingsService(
     repository as any,
@@ -50,13 +70,29 @@ function createMocks() {
     eventEmitter as any,
     presence as any,
     checkpoint as any,
+    telemetry as any,
+    report as any,
+    reminder as any,
+    prisma as any,
   );
 
   // Alias kept for backwards compatibility with assertions written for the
   // pre-adapter API surface (Story 5.1 spec).
   const livekit = videoProvider;
 
-  return { service, repository, videoProvider, livekit, eventEmitter, presence, checkpoint };
+  return {
+    service,
+    repository,
+    videoProvider,
+    livekit,
+    eventEmitter,
+    presence,
+    checkpoint,
+    telemetry,
+    report,
+    reminder,
+    prisma,
+  };
 }
 
 function meetingRow(overrides: Record<string, unknown> = {}) {

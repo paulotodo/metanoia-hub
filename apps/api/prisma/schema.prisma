@@ -112,6 +112,19 @@ model MeetingTelemetry {
   @@map("meeting_telemetry")
 }
 
+/// MeetingReport — post-meeting aggregated report (attendees + metrics) (Story 5.6)
+model MeetingReport {
+  id          String   @id @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  meetingId   String   @map("meeting_id") @db.Uuid
+  summary     Json     @default("{}")
+  generatedAt DateTime @default(now()) @map("generated_at") @db.Timestamptz
+
+  @@unique([meetingId])
+  @@index([tenantId, meetingId])
+  @@map("meeting_reports")
+}
+
 /// MeetingSnapshot — periodic state checkpoint for crash recovery (Story 5.3)
 model MeetingSnapshot {
   id           String   @id @db.Uuid
