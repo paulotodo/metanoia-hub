@@ -23,12 +23,13 @@ import {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { SuperAdminTenantsService } from './super-admin-tenants.service';
 
 @Controller('api/v1/admin/super/tenants')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('super_admin')
+@Roles(Role.SUPER_ADMIN)
 export class SuperAdminTenantsController {
   constructor(private readonly service: SuperAdminTenantsService) {}
 

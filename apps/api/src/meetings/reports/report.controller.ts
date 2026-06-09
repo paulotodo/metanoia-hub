@@ -12,6 +12,7 @@ import type { AuthenticatedUser } from '../../auth/interfaces/authenticated-user
 import { KeycloakAuthGuard } from '../../auth/keycloak.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
+import { Role } from '../../auth/enums/role.enum';
 import { getRequestContext } from '../../common/context/request-context';
 import { PrismaService } from '../../prisma/prisma.service';
 import { withTenantTx } from '../../prisma/with-tenant-tx';
@@ -27,7 +28,8 @@ import { ReportService } from './report.service';
  */
 @Controller('api/v1/meetings')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('lider', 'pastor', 'admin', 'admin_tenant', 'participante')
+// TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
+@Roles(Role.LIDER, 'pastor', 'admin', Role.ADMIN_TENANT, Role.PARTICIPANTE)
 export class ReportController {
   constructor(
     private readonly reports: ReportService,

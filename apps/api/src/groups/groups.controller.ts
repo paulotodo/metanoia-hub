@@ -21,6 +21,7 @@ import {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { PlanLimit } from '../common/plan-limits/plan-limit.decorator';
 import { PlanLimitsGuard } from '../common/plan-limits/plan-limits.guard';
@@ -28,7 +29,7 @@ import { GroupsService } from './groups.service';
 
 @Controller('api/v1/groups')
 @UseGuards(KeycloakAuthGuard, RolesGuard, PlanLimitsGuard)
-@Roles('admin_tenant')
+@Roles(Role.ADMIN_TENANT)
 export class GroupsController {
   constructor(private readonly service: GroupsService) {}
 

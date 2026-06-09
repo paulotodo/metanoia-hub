@@ -11,6 +11,7 @@ import type { AttendanceLiveEvent } from '@metanoia/types';
 import { KeycloakAuthGuard } from '../../auth/keycloak.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
+import { Role } from '../../auth/enums/role.enum';
 import { getRequestContext } from '../../common/context/request-context';
 import { MeetingRoleGuard } from '../guards/meeting-role.guard';
 import { AttendanceLiveService } from './attendance-live.service';
@@ -25,7 +26,8 @@ import { MeetingSseService } from './meeting-sse.service';
  */
 @Controller('api/v1/meetings')
 @UseGuards(KeycloakAuthGuard, RolesGuard, MeetingRoleGuard)
-@Roles('lider', 'admin_tenant', 'pastor', 'admin')
+// TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
+@Roles(Role.LIDER, Role.ADMIN_TENANT, 'pastor', 'admin')
 export class AttendanceLiveController {
   constructor(
     private readonly attendance: AttendanceLiveService,

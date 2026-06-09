@@ -23,12 +23,13 @@ import type {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { AdminPastoralService } from './admin-pastoral.service';
 
 @Controller('api/v1/admin/church')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('admin_tenant')
+@Roles(Role.ADMIN_TENANT)
 export class ChurchController {
   constructor(private readonly service: AdminPastoralService) {}
 
@@ -54,7 +55,7 @@ export class ChurchController {
 
 @Controller('api/v1/admin/outreach-intents')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('admin_tenant')
+@Roles(Role.ADMIN_TENANT)
 export class OutreachIntentController {
   constructor(private readonly service: AdminPastoralService) {}
 

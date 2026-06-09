@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { KeycloakAuthGuard } from './keycloak.guard';
 import { RolesGuard } from './roles.guard';
+import { TenantGuard } from './guards/tenant.guard';
 import { KeycloakAdminService } from './keycloak-admin.service';
 import { PasswordCheckerService } from './password-checker.service';
 import { RegisterController } from './register.controller';
@@ -31,8 +32,11 @@ import { RecoveryEmailWorker } from './recovery-email.worker';
   providers: [
     KeycloakAuthGuard,
     RolesGuard,
+    TenantGuard,
+    // Order matters: KeycloakAuthGuard (JWT) → RolesGuard (roles) → TenantGuard (tenant isolation)
     { provide: APP_GUARD, useClass: KeycloakAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: TenantGuard },
     KeycloakAdminService,
     PasswordCheckerService,
     RegisterService,

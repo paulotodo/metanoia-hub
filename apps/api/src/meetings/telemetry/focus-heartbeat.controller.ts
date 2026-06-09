@@ -13,6 +13,7 @@ import { FocusHeartbeatSchema, type FocusHeartbeat } from '@metanoia/types';
 import { KeycloakAuthGuard } from '../../auth/keycloak.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
+import { Role } from '../../auth/enums/role.enum';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { getRequestContext } from '../../common/context/request-context';
 import { TelemetryService } from './telemetry.service';
@@ -29,7 +30,8 @@ import { TelemetryService } from './telemetry.service';
  */
 @Controller('api/v1/meetings')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('lider', 'pastor', 'admin', 'admin_tenant', 'participante')
+// TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
+@Roles(Role.LIDER, 'pastor', 'admin', Role.ADMIN_TENANT, Role.PARTICIPANTE)
 export class FocusHeartbeatController {
   constructor(private readonly telemetry: TelemetryService) {}
 
