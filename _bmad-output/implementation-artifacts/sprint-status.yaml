@@ -67,7 +67,7 @@ development_status:
   2-3-mfa-obrigatorio-para-super-admin-e-admin-tenant: done            # PR #88 (2026-04-30)
   2-4-autorizacao-por-papeis-e-guards-nestjs-3-camadas: ready-for-dev
   2-5-selecao-de-tenant-ativo-e-associacao-multi-tenant: ready-for-dev
-  2-6-isolamento-de-dados-por-tenant-rls: ready-for-dev
+  2-6-isolamento-de-dados-por-tenant-rls: done                         # coberta por 7-5/7-7 (RLS NULLIF + withTenantTx); reconciliação 2026-06-09
   2-7-gestao-de-usuarios-e-papeis-pelo-admin-tenant: done               # PR #89 (2026-04-30)
   2-8-consentimento-lgpd-e-termos-de-uso-middleware: done               # PR #90 (2026-04-30)
   2-9-recuperacao-de-senha-via-email-keycloak-nativo: ready-for-dev
