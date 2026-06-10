@@ -13,6 +13,9 @@ function makeRepo(overrides?: Partial<AlertsRepository>): AlertsRepository {
     findActiveByGroup: vi.fn().mockResolvedValue([]),
     markRead: vi.fn().mockResolvedValue(undefined),
     dismiss: vi.fn().mockResolvedValue(undefined),
+    createStatusImproved: vi.fn().mockResolvedValue('improved-id-123'),
+    findRecentPositiveTransitions: vi.fn().mockResolvedValue([]),
+    markStatusImprovedSeen: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   } as unknown as AlertsRepository;
 }
