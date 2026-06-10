@@ -594,6 +594,20 @@ export {
   type UpdateTenantContentConfigRequest,
 } from './content/tenant-content-config.schema';
 export {
+  TrailAccessModeSchema,
+  type TrailAccessMode,
+  LessonAccessModeSchema,
+  type LessonAccessMode,
+} from './content/access-mode.enum';
+export {
+  SetPrerequisitesRequestSchema,
+  type SetPrerequisitesRequest,
+  ModulePrerequisiteResponseSchema,
+  type ModulePrerequisiteResponse,
+  PrerequisitesListResponseSchema,
+  type PrerequisitesListResponse,
+} from './content/module-prerequisite.schema';
+export {
   CreateRoomOptionsSchema,
   type CreateRoomOptions,
   GenerateTokenOptionsSchema,

@@ -495,6 +495,18 @@ enum TrailStatus {
   archived
 }
 
+/// TrailAccessMode — sequential enforces module order; free allows any module
+enum TrailAccessMode {
+  sequential
+  free
+}
+
+/// LessonAccessMode — sequential enforces lesson order within a module; free allows any lesson
+enum LessonAccessMode {
+  sequential
+  free
+}
+
 /// LessonContentType — type of media/content for a lesson
 enum LessonContentType {
   video
@@ -505,15 +517,16 @@ enum LessonContentType {
 
 /// Trail — top-level discipleship trail owned by a tenant
 model Trail {
-  id          String      @id @db.Uuid
-  tenantId    String      @map("tenant_id") @db.Uuid
-  name        String      @db.VarChar(255)
-  description String?     @db.VarChar(1000)
-  status      TrailStatus @default(draft)
-  createdBy   String      @map("created_by") @db.Uuid
-  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime    @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt   DateTime?   @map("deleted_at") @db.Timestamptz
+  id          String          @id @db.Uuid
+  tenantId    String          @map("tenant_id") @db.Uuid
+  name        String          @db.VarChar(255)
+  description String?         @db.VarChar(1000)
+  status      TrailStatus     @default(draft)
+  accessMode  TrailAccessMode @default(free) @map("access_mode")
+  createdBy   String          @map("created_by") @db.Uuid
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt   DateTime?       @map("deleted_at") @db.Timestamptz
 
   modules Module[]
 
@@ -524,21 +537,40 @@ model Trail {
 
 /// Module — ordered module within a trail
 model Module {
-  id        String    @id @db.Uuid
-  tenantId  String    @map("tenant_id") @db.Uuid
-  trailId   String    @map("trail_id") @db.Uuid
-  name      String    @db.VarChar(255)
-  order     Int
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+  id               String          @id @db.Uuid
+  tenantId         String          @map("tenant_id") @db.Uuid
+  trailId          String          @map("trail_id") @db.Uuid
+  name             String          @db.VarChar(255)
+  order            Int
+  lessonAccessMode LessonAccessMode @default(free) @map("lesson_access_mode")
+  createdAt        DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime?       @map("deleted_at") @db.Timestamptz
 
-  trail   Trail    @relation(fields: [trailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  lessons Lesson[]
+  trail               Trail               @relation(fields: [trailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessons             Lesson[]
+  prerequisites       ModulePrerequisite[] @relation("ModulePrerequisites")
+  isPrerequisiteFor   ModulePrerequisite[] @relation("PrerequisiteModule")
 
   @@index([tenantId])
   @@index([trailId])
   @@map("modules")
+}
+
+/// ModulePrerequisite — join table enforcing that a module requires another module to be completed first
+model ModulePrerequisite {
+  tenantId              String @map("tenant_id") @db.Uuid
+  moduleId              String @map("module_id") @db.Uuid
+  prerequisiteModuleId  String @map("prerequisite_module_id") @db.Uuid
+
+  module              Module @relation("ModulePrerequisites", fields: [moduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  prerequisiteModule  Module @relation("PrerequisiteModule", fields: [prerequisiteModuleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([moduleId, prerequisiteModuleId])
+  @@unique([tenantId, moduleId, prerequisiteModuleId])
+  @@index([tenantId])
+  @@index([moduleId])
+  @@map("module_prerequisites")
 }
 
 /// Lesson — ordered lesson within a module

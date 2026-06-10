@@ -40,6 +40,7 @@ export class ContentService {
       name: body.name,
       description: body.description ?? null,
       status: body.status ?? 'draft',
+      accessMode: body.accessMode ?? 'free',
       // userId is guaranteed present by KeycloakAuthGuard on this route
       createdBy: ctx.userId as string,
     });
@@ -72,6 +73,7 @@ export class ContentService {
       ...(body.name !== undefined ? { name: body.name } : {}),
       ...(body.description !== undefined ? { description: body.description } : {}),
       ...(body.status !== undefined ? { status: body.status } : {}),
+      ...(body.accessMode !== undefined ? { accessMode: body.accessMode } : {}),
     });
     if (!updated) throw new NotFoundException('Trilha não encontrada');
     return this.trailToResponse(updated);
@@ -93,6 +95,7 @@ export class ContentService {
         trailId,
         name: body.name,
         order: count,
+        lessonAccessMode: body.lessonAccessMode ?? 'free',
       })
       .catch((err: Error) => {
         if (err.message === 'TRAIL_NOT_FOUND') {
@@ -119,6 +122,7 @@ export class ContentService {
   ): Promise<ModuleResponse> {
     const updated = await this.repository.updateModule(moduleId, trailId, {
       ...(body.name !== undefined ? { name: body.name } : {}),
+      ...(body.lessonAccessMode !== undefined ? { lessonAccessMode: body.lessonAccessMode } : {}),
     });
     if (!updated) throw new NotFoundException('Módulo não encontrado');
     return this.moduleToResponse(updated);
@@ -254,6 +258,7 @@ export class ContentService {
       name: trail.name,
       description: trail.description ?? null,
       status: trail.status,
+      accessMode: trail.accessMode,
       createdBy: trail.createdBy,
       createdAt: trail.createdAt.toISOString(),
       updatedAt: trail.updatedAt.toISOString(),
@@ -268,6 +273,7 @@ export class ContentService {
       trailId: mod.trailId,
       name: mod.name,
       order: mod.order,
+      lessonAccessMode: mod.lessonAccessMode,
       createdAt: mod.createdAt.toISOString(),
       updatedAt: mod.updatedAt.toISOString(),
       deletedAt: mod.deletedAt ? mod.deletedAt.toISOString() : null,

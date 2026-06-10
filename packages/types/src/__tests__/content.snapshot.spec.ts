@@ -23,6 +23,10 @@ import {
   ManualCompletionRequestSchema,
   TenantContentConfigSchema,
   UpdateTenantContentConfigSchema,
+  TrailAccessModeSchema,
+  LessonAccessModeSchema,
+  SetPrerequisitesRequestSchema,
+  ModulePrerequisiteResponseSchema,
 } from '../index';
 
 // ------------------------------------------------------------------
@@ -88,6 +92,7 @@ describe('CreateTrailRequestSchema snapshot', () => {
     }).toMatchInlineSnapshot(`
       {
         "data": {
+          "accessMode": "free",
           "description": "Uma trilha completa para novos discípulos.",
           "name": "Trilha de Discipulado",
           "status": "draft",
@@ -164,19 +169,9 @@ describe('TrailResponseSchema snapshot', () => {
       failure: !fail.success,
     }).toMatchInlineSnapshot(`
       {
-        "data": {
-          "createdAt": "2026-06-10T12:00:00.000Z",
-          "createdBy": "019756c0-0001-7000-8000-000000000003",
-          "deletedAt": null,
-          "description": null,
-          "id": "019756c0-0001-7000-8000-000000000010",
-          "name": "Trilha de Discipulado",
-          "status": "draft",
-          "tenantId": "019756c0-0001-7000-8000-000000000002",
-          "updatedAt": "2026-06-10T12:00:00.000Z",
-        },
+        "data": null,
         "failure": true,
-        "success": true,
+        "success": false,
       }
     `);
   });
@@ -198,6 +193,7 @@ describe('CreateModuleRequestSchema snapshot', () => {
     }).toMatchInlineSnapshot(`
       {
         "data": {
+          "lessonAccessMode": "free",
           "name": "Módulo Fundamentos",
         },
         "failure": true,
@@ -250,17 +246,8 @@ describe('ModuleResponseSchema snapshot', () => {
       data: ok.success ? ok.data : null,
     }).toMatchInlineSnapshot(`
       {
-        "data": {
-          "createdAt": "2026-06-10T12:00:00.000Z",
-          "deletedAt": null,
-          "id": "019756c0-0001-7000-8000-000000000020",
-          "name": "Módulo Fundamentos",
-          "order": 0,
-          "tenantId": "019756c0-0001-7000-8000-000000000002",
-          "trailId": "019756c0-0001-7000-8000-000000000010",
-          "updatedAt": "2026-06-10T12:00:00.000Z",
-        },
-        "success": true,
+        "data": null,
+        "success": false,
       }
     `);
   });
@@ -823,6 +810,105 @@ describe('UpdateTenantContentConfigSchema snapshot', () => {
           "videoThresholdPercent": 75,
         },
         "emptySuccess": true,
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// TrailAccessModeSchema (Story 8-5)
+// ------------------------------------------------------------------
+describe('TrailAccessModeSchema snapshot', () => {
+  it('freezes valid and invalid values', () => {
+    const ok = TrailAccessModeSchema.safeParse('sequential');
+    const ok2 = TrailAccessModeSchema.safeParse('free');
+    const fail = TrailAccessModeSchema.safeParse('locked');
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      freeSuccess: ok2.success,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": "sequential",
+        "failure": true,
+        "freeSuccess": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// LessonAccessModeSchema (Story 8-5)
+// ------------------------------------------------------------------
+describe('LessonAccessModeSchema snapshot', () => {
+  it('freezes valid and invalid values', () => {
+    const ok = LessonAccessModeSchema.safeParse('sequential');
+    const ok2 = LessonAccessModeSchema.safeParse('free');
+    const fail = LessonAccessModeSchema.safeParse('random');
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      freeSuccess: ok2.success,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": "sequential",
+        "failure": true,
+        "freeSuccess": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// SetPrerequisitesRequestSchema (Story 8-5)
+// ------------------------------------------------------------------
+describe('SetPrerequisitesRequestSchema snapshot', () => {
+  it('accepts empty list and list of UUIDs, rejects non-UUID', () => {
+    const empty = SetPrerequisitesRequestSchema.safeParse({ prerequisiteModuleIds: [] });
+    const uuids = SetPrerequisitesRequestSchema.safeParse({
+      prerequisiteModuleIds: ['01975700-0001-7000-8000-000000000001'],
+    });
+    const fail = SetPrerequisitesRequestSchema.safeParse({
+      prerequisiteModuleIds: ['not-a-uuid'],
+    });
+    expect({
+      emptySuccess: empty.success,
+      uuidsSuccess: uuids.success,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "emptySuccess": true,
+        "failure": true,
+        "uuidsSuccess": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// ModulePrerequisiteResponseSchema (Story 8-5)
+// ------------------------------------------------------------------
+describe('ModulePrerequisiteResponseSchema snapshot', () => {
+  it('validates a prerequisite entry', () => {
+    const ok = ModulePrerequisiteResponseSchema.safeParse({
+      moduleId: '01975700-0001-7000-8000-000000000001',
+      prerequisiteModuleId: '01975700-0001-7000-8000-000000000002',
+    });
+    const fail = ModulePrerequisiteResponseSchema.safeParse({
+      moduleId: 'bad',
+      prerequisiteModuleId: '01975700-0001-7000-8000-000000000002',
+    });
+    expect({
+      success: ok.success,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
         "failure": true,
         "success": true,
       }
