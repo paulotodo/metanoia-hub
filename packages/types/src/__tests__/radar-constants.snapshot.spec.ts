@@ -17,6 +17,9 @@ describe('RADAR_CONSTANTS snapshot', () => {
     expect(RADAR_CONSTANTS).toMatchInlineSnapshot(`
       {
         "activeDays": 14,
+        "aggregateCacheKeyPrefix": "cache:radar-aggregate",
+        "aggregateCacheTtlSeconds": 30,
+        "aggregateQueueName": "radar-aggregate",
         "cacheKeyPrefix": "cache:radar",
         "cacheTtlSeconds": 300,
         "greenThreshold": 0.75,

@@ -22,6 +22,8 @@ export {
   mockParticipantProfileEmpty,
   mockCareActionResponse,
 } from "./participant-detail";
+
+export { mockRadarDashboard } from "./dashboard";
 export type {
   SignalDetail,
   ObservedFact,
