@@ -145,7 +145,7 @@ development_status:
   # Sprint 14: 8-7, 8-8, 8-9, 8-10
   epic-8: in-progress
   8-1-crud-de-trilhas-modulos-aulas-com-repository-pattern: done
-  8-2-tipos-de-conteudo-upload-visualizacao-inline: ready-for-dev
+  8-2-tipos-de-conteudo-upload-visualizacao-inline: done
   8-3-progresso-individual-percentual-de-conclusao: ready-for-dev
   8-4-regras-de-conclusao-por-tipo-de-conteudo: ready-for-dev
   8-5-acesso-sequencial-pre-requisitos-entre-modulos-e-aulas: ready-for-dev
