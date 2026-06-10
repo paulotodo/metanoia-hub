@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import type {
   RadarPageData,
   SignalDetail,
@@ -10,13 +10,23 @@ import type {
   SignalType,
   SignalVariant,
 } from '@metanoia/types';
+import { RADAR_CACHE_KEY_PREFIX } from '@metanoia/types';
 import type { PastoralNote } from '@prisma/client';
 import { PastoralRepository } from './pastoral.repository';
 import { requestContext } from '../common/context/request-context';
+import { RadarStatusRepository } from './radar/radar-status.repository';
+import { RadarJobService } from './radar/radar-job.service';
+import type { ParticipantCalculationResult } from './radar/radar-calculator.service';
 
 @Injectable()
 export class PastoralService {
-  constructor(private readonly repository: PastoralRepository) {}
+  private readonly logger = new Logger(PastoralService.name);
+
+  constructor(
+    private readonly repository: PastoralRepository,
+    private readonly radarStatusRepo: RadarStatusRepository,
+    private readonly radarJobService: RadarJobService,
+  ) {}
 
   async getRadarPage(groupId?: string): Promise<RadarPageData> {
     const [alerts, groups] = await Promise.all([
@@ -151,7 +161,7 @@ export class PastoralService {
       throw new NotFoundException('User context not available');
     }
 
-    return this.repository.createCareAction({
+    const result = await this.repository.createCareAction({
       participantId,
       groupId: dto.groupId,
       performedBy: ctx.userId,
@@ -160,5 +170,43 @@ export class PastoralService {
       note: dto.note,
       tenantId: ctx.tenantId,
     });
+
+    // Trigger async radar recalculation after a care action
+    void this.radarJobService.enqueueRadarCalculation(ctx.tenantId, dto.groupId).catch((err) => {
+      this.logger.warn({ error: (err as Error).message }, 'radar recalculation enqueue failed (non-blocking)');
+    });
+
+    return result;
+  }
+
+  /**
+   * Returns radar status for all participants in a group.
+   * Cache-first: reads from Redis; falls back to DB if cache is empty.
+   */
+  async getRadarStatus(
+    groupId: string,
+    redis: { get: (key: string) => Promise<string | null> },
+  ): Promise<ParticipantCalculationResult[]> {
+    const ctx = requestContext.getStore();
+    if (!ctx?.tenantId) {
+      throw new NotFoundException('Tenant context not available');
+    }
+
+    const cacheKey = `${RADAR_CACHE_KEY_PREFIX}:${ctx.tenantId}:${groupId}`;
+    const cached = await redis.get(cacheKey);
+
+    if (cached) {
+      return JSON.parse(cached) as ParticipantCalculationResult[];
+    }
+
+    // Fallback to DB (stale or first load)
+    const rows = await this.radarStatusRepo.findByGroup(groupId);
+    return rows.map((r) => ({
+      participantId: r.participantId,
+      status: r.status,
+      trend: r.trend,
+      presencePercentage: r.presencePercentage.toNumber(),
+      lastActiveAt: r.lastActiveAt,
+    }));
   }
 }

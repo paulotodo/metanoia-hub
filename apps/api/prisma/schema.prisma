@@ -169,6 +169,7 @@ model User {
   pastoralAlerts   PastoralAlert[]  @relation("alerts")
   pastoralActions  PastoralAction[] @relation("actions")
   pastoralNotes    PastoralNote[]   @relation("notes")
+  radarStatuses    ParticipantRadarStatus[] @relation("radarStatuses")
 
   @@index([tenantId])
   @@map("users")
@@ -222,8 +223,9 @@ model Tenant {
   createdAt               DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt               DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  groups  Group[]
-  invites Invite[]
+  groups        Group[]
+  invites       Invite[]
+  radarStatuses ParticipantRadarStatus[]
 
   @@index([tenantId])
   @@index([status])
@@ -267,10 +269,11 @@ model Group {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  tenant  Tenant        @relation(fields: [tenantId], references: [id])
-  members GroupMember[]
-  alerts  PastoralAlert[]
-  actions PastoralAction[]
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  members       GroupMember[]
+  alerts        PastoralAlert[]
+  actions       PastoralAction[]
+  radarStatuses ParticipantRadarStatus[]
 
   @@index([tenantId])
   @@map("groups")
@@ -371,6 +374,46 @@ model OutreachIntent {
   @@index([tenantId])
   @@index([targetLeaderId])
   @@map("outreach_intents")
+}
+
+// ---------------------------------------------------------------------------
+// Radar — Async pastoral status engine (Story 6-2)
+// ---------------------------------------------------------------------------
+
+/// RadarStatus — traffic-light pastoral status for a participant
+enum RadarStatus {
+  verde
+  amarelo
+  vermelho
+}
+
+/// RadarTrend — trend direction since last calculation
+enum RadarTrend {
+  melhorando
+  estavel
+  declinio
+}
+
+/// ParticipantRadarStatus — materialized async-calculated radar status per participant per group
+model ParticipantRadarStatus {
+  id                  String      @id @db.Uuid
+  tenantId            String      @map("tenant_id") @db.Uuid
+  groupId             String      @map("group_id") @db.Uuid
+  participantId       String      @map("participant_id") @db.Uuid
+  status              RadarStatus
+  trend               RadarTrend  @default(estavel)
+  presencePercentage  Decimal     @map("presence_percentage") @db.Decimal(5, 4)
+  lastActiveAt        DateTime?   @map("last_active_at") @db.Timestamptz
+  calculatedAt        DateTime    @default(now()) @map("calculated_at") @db.Timestamptz
+
+  tenant      Tenant @relation(fields: [tenantId], references: [id])
+  group       Group  @relation(fields: [groupId], references: [id])
+  participant User   @relation("radarStatuses", fields: [participantId], references: [id])
+
+  @@unique([tenantId, groupId, participantId])
+  @@index([tenantId, groupId])
+  @@index([participantId])
+  @@map("participant_radar_status")
 }
 
 /// Public marketing funnel — no tenant_id, no RLS by design.
