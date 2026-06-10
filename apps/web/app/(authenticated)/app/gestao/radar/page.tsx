@@ -2,8 +2,14 @@
 
 import { useState, useMemo } from "react";
 import type { RadarParticipant, SignalType } from "@metanoia/types";
-import { useRadarPage } from "@/lib/api/hooks/use-radar";
+import {
+  useRadarPage,
+  useRadarNudges,
+  useRadarCelebrations,
+} from "@/lib/api/hooks/use-radar";
 import { SaudacaoContextual } from "./_components/saudacao-contextual";
+import { NudgePastoral } from "./_components/nudge-pastoral";
+import { CelebrationBannerList } from "./_components/celebration-banner";
 import { SemaforoPill } from "./_components/semaforo-pill";
 import { GrupoPillFilter } from "./_components/grupo-pill";
 import { SectionDivider } from "./_components/section-divider";
@@ -18,6 +24,12 @@ type PillFilter = SignalType | null;
 export default function RadarPage() {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const { data, isLoading, error, refetch } = useRadarPage(selectedGroupId ?? undefined);
+  // Story 6-5: proactive nudges + positive-transition celebrations.
+  // Group-scoped like the main page so the GrupoPill filter applies uniformly.
+  const { data: nudges } = useRadarNudges(selectedGroupId ?? undefined);
+  const { data: celebrations } = useRadarCelebrations(
+    selectedGroupId ?? undefined,
+  );
   const [activePill, setActivePill] = useState<PillFilter>(null);
 
   // Compute counts from participants
@@ -101,6 +113,12 @@ export default function RadarPage() {
         attentionCount={counts.attention.length}
       />
 
+      {/* Story 6-5: CelebrationBanner — positive transitions at the top.
+          Renders nothing when there are no recent improvements. */}
+      {celebrations && celebrations.length > 0 && (
+        <CelebrationBannerList events={celebrations} />
+      )}
+
       {/* 01.2-R1: ReturnBanner (conditional) */}
       {data.lastSeenAt && (
         <ReturnBanner lastSeenAt={data.lastSeenAt} />
@@ -140,6 +158,14 @@ export default function RadarPage() {
         selectedGroupId={selectedGroupId}
         onSelect={setSelectedGroupId}
       />
+
+      {/* Story 6-5: NudgePastoral — proactive outreach suggestions.
+          Shown above the participant sections; only when the panorama is
+          unfiltered (activePill === null) and there are nudges, to avoid
+          competing with an active semáforo filter or cluttering InboxZero. */}
+      {activePill === null && nudges && nudges.length > 0 && (
+        <NudgePastoral nudges={nudges} />
+      )}
 
       {/* 01.2-L5: InboxZeroState (when all ok) */}
       {isInboxZero && shouldShowSection("care-ok") ? (

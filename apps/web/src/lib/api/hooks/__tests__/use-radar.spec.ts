@@ -7,6 +7,8 @@ import {
   useSignalDetail,
   useParticipantProfile,
   useRecordCareAction,
+  useRadarNudges,
+  useRadarCelebrations,
 } from '../use-radar';
 
 function createWrapper() {
@@ -81,6 +83,38 @@ describe('useParticipantProfile', () => {
     expect(data).toBeDefined();
     expect(data?.memory).toBeDefined();
     expect(data?.presenceDots).toBeInstanceOf(Array);
+  });
+});
+
+describe('useRadarNudges', () => {
+  it('fetches and returns validated pastoral nudges (radar wire-up)', async () => {
+    const { result } = renderHook(() => useRadarNudges(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const data = result.current.data;
+    expect(data).toBeInstanceOf(Array);
+    expect((data?.length ?? 0) > 0).toBe(true);
+    expect(data?.[0]?.participantName).toBeDefined();
+    expect(['call', 'visit', 'message']).toContain(data?.[0]?.suggestion);
+  });
+});
+
+describe('useRadarCelebrations', () => {
+  it('fetches and returns validated celebration events (radar wire-up)', async () => {
+    const { result } = renderHook(() => useRadarCelebrations(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const data = result.current.data;
+    expect(data).toBeInstanceOf(Array);
+    expect((data?.length ?? 0) > 0).toBe(true);
+    expect(data?.[0]?.participantName).toBeDefined();
+    expect(data?.[0]?.trend).toBeDefined();
   });
 });
 
