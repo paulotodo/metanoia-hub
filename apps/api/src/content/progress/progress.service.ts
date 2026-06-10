@@ -35,6 +35,7 @@ export class ProgressService implements OnModuleInit {
     lessonId: string,
     progressPercent: number,
     eventType: LessonProgressJobPayload['eventType'],
+    completedBy?: LessonProgressJobPayload['completedBy'],
   ): Promise<void> {
     const ctx = getRequestContext();
     const { tenantId } = ctx;
@@ -49,6 +50,7 @@ export class ProgressService implements OnModuleInit {
       tenantId,
       progressPercent,
       eventType,
+      ...(completedBy && { completedBy }),
     };
 
     await this.queue.add('update-progress', payload, {

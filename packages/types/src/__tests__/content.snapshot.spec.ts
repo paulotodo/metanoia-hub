@@ -17,6 +17,12 @@ import {
   ReportProgressRequestSchema,
   LessonProgressJobPayloadSchema,
   TrailProgressUpdatedEventSchema,
+  VideoIntervalSchema,
+  VideoProgressPayloadSchema,
+  CompletedBySchema,
+  ManualCompletionRequestSchema,
+  TenantContentConfigSchema,
+  UpdateTenantContentConfigSchema,
 } from '../index';
 
 // ------------------------------------------------------------------
@@ -652,5 +658,174 @@ describe('TrailProgressUpdatedEventSchema snapshot (domain event contract)', () 
       metadata: { correlationId: 'x' },
     });
     expect(fail.success).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------
+// VideoIntervalSchema (Story 8-4)
+// ------------------------------------------------------------------
+describe('VideoIntervalSchema snapshot', () => {
+  it('freezes valid and invalid interval', () => {
+    const ok = VideoIntervalSchema.safeParse({ start: 0, end: 30 });
+    const fail = VideoIntervalSchema.safeParse({ start: -1, end: 30 });
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": {
+          "end": 30,
+          "start": 0,
+        },
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// VideoProgressPayloadSchema (Story 8-4)
+// ------------------------------------------------------------------
+describe('VideoProgressPayloadSchema snapshot', () => {
+  it('freezes valid payload shape', () => {
+    const ok = VideoProgressPayloadSchema.safeParse({
+      watchedIntervals: [{ start: 0, end: 90 }],
+      totalDurationSeconds: 100,
+      uniqueWatchedPercent: 90,
+    });
+    const fail = VideoProgressPayloadSchema.safeParse({
+      watchedIntervals: [{ start: 0, end: 30 }],
+      totalDurationSeconds: 0, // must be positive
+      uniqueWatchedPercent: 30,
+    });
+    expect({
+      success: ok.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "totalDurationSeconds",
+          "uniqueWatchedPercent",
+          "watchedIntervals",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// CompletedBySchema (Story 8-4)
+// ------------------------------------------------------------------
+describe('CompletedBySchema snapshot', () => {
+  it('accepts participant and leader only', () => {
+    expect(CompletedBySchema.safeParse('participant').success).toBe(true);
+    expect(CompletedBySchema.safeParse('leader').success).toBe(true);
+    expect(CompletedBySchema.safeParse('admin').success).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------
+// ManualCompletionRequestSchema (Story 8-4)
+// ------------------------------------------------------------------
+describe('ManualCompletionRequestSchema snapshot', () => {
+  it('freezes manual completion request shape', () => {
+    const ok = ManualCompletionRequestSchema.safeParse({ completedBy: 'participant' });
+    const fail = ManualCompletionRequestSchema.safeParse({ completedBy: 'system' });
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": {
+          "completedBy": "participant",
+        },
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// TenantContentConfigSchema (Story 8-4)
+// ------------------------------------------------------------------
+describe('TenantContentConfigSchema snapshot', () => {
+  it('freezes valid config shape', () => {
+    const ok = TenantContentConfigSchema.safeParse({
+      id: '019758a0-0001-7000-8000-000000000001',
+      tenantId: '01912345-6789-7000-8000-000000000001',
+      videoThresholdPercent: 90,
+      docScrollThresholdPercent: 80,
+      allowManualVideoCompletion: false,
+      allowManualDocCompletion: false,
+      createdAt: '2026-06-13T10:00:00.000Z',
+      updatedAt: '2026-06-13T10:00:00.000Z',
+    });
+    const failThreshold = TenantContentConfigSchema.safeParse({
+      id: '019758a0-0001-7000-8000-000000000001',
+      tenantId: '01912345-6789-7000-8000-000000000001',
+      videoThresholdPercent: 30, // below 50 minimum
+      docScrollThresholdPercent: 80,
+      allowManualVideoCompletion: false,
+      allowManualDocCompletion: false,
+      createdAt: '2026-06-13T10:00:00.000Z',
+      updatedAt: '2026-06-13T10:00:00.000Z',
+    });
+    expect({
+      success: ok.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+      failure: !failThreshold.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "allowManualDocCompletion",
+          "allowManualVideoCompletion",
+          "createdAt",
+          "docScrollThresholdPercent",
+          "id",
+          "tenantId",
+          "updatedAt",
+          "videoThresholdPercent",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// UpdateTenantContentConfigSchema (Story 8-4)
+// ------------------------------------------------------------------
+describe('UpdateTenantContentConfigSchema snapshot', () => {
+  it('accepts partial updates', () => {
+    const ok = UpdateTenantContentConfigSchema.safeParse({
+      videoThresholdPercent: 75,
+    });
+    const empty = UpdateTenantContentConfigSchema.safeParse({});
+    const failRange = UpdateTenantContentConfigSchema.safeParse({
+      videoThresholdPercent: 101, // above 100
+    });
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      emptySuccess: empty.success,
+      failure: !failRange.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": {
+          "videoThresholdPercent": 75,
+        },
+        "emptySuccess": true,
+        "failure": true,
+        "success": true,
+      }
+    `);
   });
 });

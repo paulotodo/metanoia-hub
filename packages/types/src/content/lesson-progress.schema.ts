@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { LessonStatusSchema } from './lesson-status.schema';
+import { CompletedBySchema } from './completion-rules.schema';
 
 // ---------------------------------------------------------------------------
 // Request schemas
@@ -16,6 +17,8 @@ export type LessonProgressEventType = z.infer<typeof LessonProgressEventTypeSche
 export const ReportProgressRequestSchema = z.object({
   progressPercent: z.number().int().min(0).max(100),
   eventType: LessonProgressEventTypeSchema,
+  /** Required when eventType = manual_mark */
+  completedBy: z.enum(['participant', 'leader']).optional(),
 });
 export type ReportProgressRequest = z.infer<typeof ReportProgressRequestSchema>;
 
@@ -29,6 +32,8 @@ export const LessonProgressJobPayloadSchema = z.object({
   tenantId: z.string().uuid(),
   progressPercent: z.number().int().min(0).max(100),
   eventType: LessonProgressEventTypeSchema,
+  /** Set when eventType = manual_mark */
+  completedBy: z.enum(['participant', 'leader']).optional(),
 });
 export type LessonProgressJobPayload = z.infer<typeof LessonProgressJobPayloadSchema>;
 
@@ -43,6 +48,7 @@ export const LessonProgressSchema = z.object({
   lessonId: z.string().uuid(),
   status: LessonStatusSchema,
   progressPercent: z.number().int().min(0).max(100),
+  completedBy: CompletedBySchema.nullable().optional(),
   startedAt: z.string().datetime().nullable(),
   completedAt: z.string().datetime().nullable(),
   lastAccessedAt: z.string().datetime(),
