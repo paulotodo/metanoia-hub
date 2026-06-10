@@ -50,12 +50,17 @@ function createMocks() {
     set: vi.fn().mockResolvedValue('OK'),
   };
 
+  const eventEmitter = {
+    emit: vi.fn(),
+  };
+
   const service = new ParticipantGroupsService(
     repository as any,
     redis as any,
+    eventEmitter as any,
   );
 
-  return { service, repository, redis };
+  return { service, repository, redis, eventEmitter };
 }
 
 async function withContext<T>(fn: () => Promise<T>): Promise<T> {
@@ -126,6 +131,32 @@ describe('ParticipantGroupsService.list', () => {
       '1',
       'NX',
     );
+  });
+
+  it('emits participant.group.first_view domain event on first visit', async () => {
+    mocks.repository.findGroupsForUser.mockResolvedValue([]);
+    mocks.redis.set.mockResolvedValueOnce('OK');
+
+    await withContext(() => mocks.service.list());
+
+    expect(mocks.eventEmitter.emit).toHaveBeenCalledOnce();
+    const [eventName, payload] = mocks.eventEmitter.emit.mock.calls[0] as [string, Record<string, unknown>];
+    expect(eventName).toBe('participant.group.first_view');
+    expect(payload.eventType).toBe('participant.group.first_view');
+    expect(payload.tenantId).toBe(TENANT_ID);
+    expect(payload.version).toBe(1);
+    expect((payload.data as Record<string, unknown>).userId).toBe(USER_ID);
+    expect(typeof payload.eventId).toBe('string');
+    expect(typeof payload.timestamp).toBe('string');
+  });
+
+  it('does NOT emit domain event on subsequent visits', async () => {
+    mocks.repository.findGroupsForUser.mockResolvedValue([]);
+    mocks.redis.set.mockResolvedValueOnce(null);
+
+    await withContext(() => mocks.service.list());
+
+    expect(mocks.eventEmitter.emit).not.toHaveBeenCalled();
   });
 });
 

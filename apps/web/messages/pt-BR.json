@@ -677,7 +677,7 @@
       "schedule": "{schedule}",
       "view": "Ver meu grupo →"
     },
-    "empty": "Você ainda não participa de nenhum grupo. Quando alguém te convidar, ele vai aparecer aqui.",
+    "empty": "Ainda não tem grupo por aqui. Assim que um líder te confirmar num grupo, ele aparece aqui.",
     "error": {
       "network": "Não conseguimos carregar seus grupos. Tenta de novo?",
       "retry": "Tentar novamente"
@@ -749,6 +749,10 @@
       "inPerson": "Presencial",
       "online": "Online",
       "hybrid": "Híbrido"
+    },
+    "peers": {
+      "label": "Outros participantes",
+      "empty": "Você é o único participante por enquanto."
     },
     "closing": "Sem pressa. Quando você vier, a gente tá aqui.",
     "error": {

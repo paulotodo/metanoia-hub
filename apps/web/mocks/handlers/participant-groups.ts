@@ -62,6 +62,7 @@ const mockParticipantGroupDetail: ParticipantGroupDetailResponse = {
     },
     format: 'in_person',
     duration: '1h30',
+    peers: [{ firstName: 'Ana' }, { firstName: 'Carlos' }],
   },
 };
 
@@ -78,6 +79,7 @@ const mockParticipantGroupDetailMinimal: ParticipantGroupDetailResponse = {
     nextMeeting: null,
     format: null,
     duration: null,
+    peers: [],
   },
 };
 
