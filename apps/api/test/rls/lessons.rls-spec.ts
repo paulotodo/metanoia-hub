@@ -96,7 +96,7 @@ describe('RLS Isolation: lessons table', () => {
     await ensureUser(prisma, USER_B, 'b');
   });
 
-  beforeEach(cleanup.bind(null, prisma));
+  beforeEach(() => cleanup(prisma));
   afterAll(async () => {
     await cleanup(prisma);
     await prisma.$disconnect();
