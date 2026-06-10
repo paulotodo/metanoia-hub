@@ -118,8 +118,17 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
       const override = await this.redis.get(`user:${userId}:active-tenant`);
       return override ?? fallback;
     } catch (error) {
-      this.logger.warn(
-        `Failed to read active tenant override for ${userId}: ${String(error)}`,
+      // Resilience policy (FR-005, FR-008):
+      // When Redis is unavailable, the JWT `tenant_id` claim is used as the
+      // authoritative fallback. This is safe because the JWT is
+      // cryptographically signed and `tenant_id` always reflects the user's
+      // primary (onboarding) tenant. The only data quality risk is a recently-
+      // switched user reverting to their primary tenant for the duration of the
+      // Redis outage — this is an accepted trade-off documented in
+      // docs/specs/2-5-tenant-select-residual/data-model.md.
+      // Logged at ERROR (not warn) so on-call operators are alerted promptly.
+      this.logger.error(
+        `Redis unavailable; falling back to JWT tenant for userId=${userId}: ${String(error)}`,
       );
       return fallback;
     }
