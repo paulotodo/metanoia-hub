@@ -6,7 +6,6 @@ import {
   E2E_BASE_URL,
   E2E_DEMO_ADMIN_EMAIL,
   E2E_DEMO_PASSWORD,
-  E2E_DEMO_TENANT_ID,
 } from '../setup/env';
 
 /**
@@ -65,7 +64,12 @@ test.describe('Release 1a happy path', () => {
         await page.locator('#login-email').fill(E2E_DEMO_ADMIN_EMAIL);
         await page.locator('#login-password').fill(E2E_DEMO_PASSWORD);
         await page.locator('form button[type="submit"]').click();
-        await page.waitForURL(/\/selecionar-igreja/, { timeout: 15_000 });
+        // Story 2-5: the demo admin belongs to a single tenant, so the
+        // tenant-selection screen auto-selects and forwards straight to the
+        // authenticated home. Login briefly lands on /selecionar-igreja and
+        // the client-side auto-select redirects to /app/. Accept either as
+        // the post-login URL to stay robust against the redirect timing.
+        await page.waitForURL(/\/selecionar-igreja|\/app\//, { timeout: 15_000 });
 
         // Read the bearer from sessionStorage (the login form persists it
         // there before redirecting). Reading the network response body is
@@ -82,14 +86,11 @@ test.describe('Release 1a happy path', () => {
         bearerToken = token as string;
       });
 
-      await test.step('3. Selecionar tenant demo', async () => {
-        await expect(page.getByTestId('church-select-list')).toBeVisible({
-          timeout: 15_000,
-        });
-        await page.getByTestId(`church-card-${E2E_DEMO_TENANT_ID}`).click();
-        // Tenant selection redirects to the authenticated home — currently
-        // `/app/gestao` (admin-tenant default landing). The exact route can
-        // shift with onboarding logic, so accept any /app/ path.
+      await test.step('3. Auto-seleção de tenant único (Story 2-5)', async () => {
+        // Single-tenant users skip the church-select screen entirely: the
+        // auto-select redirects to the authenticated home (currently
+        // `/app/gestao`). The exact route can shift with onboarding logic,
+        // so accept any /app/ path.
         await page.waitForURL(/\/app\//, { timeout: 15_000 });
       });
 
