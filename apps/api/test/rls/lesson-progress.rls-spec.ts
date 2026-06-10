@@ -90,6 +90,10 @@ async function readLessonProgress(prisma: PrismaClient, tenantCtx: string) {
   });
 }
 
+// beforeEach cleanup: only the mutable per-test data (lesson_progress).
+// The trail→module→lesson chain is stable setup (seeded once in beforeAll,
+// torn down in afterAll) — deleting it here would break the FK referenced by
+// lesson_progress seeded in each test.
 async function cleanup(prisma: PrismaClient) {
   for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
     await prisma.$transaction(async (tx) => {
@@ -101,6 +105,16 @@ async function cleanup(prisma: PrismaClient) {
           '${PROGRESS_A_USER2}'::uuid
         )`,
       );
+    });
+  }
+}
+
+// afterAll teardown: mutable data + the stable trail chain.
+async function teardownChain(prisma: PrismaClient) {
+  await cleanup(prisma);
+  for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
+    await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
       await tx.$executeRawUnsafe(`DELETE FROM lessons WHERE id = '${LESSON_ID_A}'::uuid`);
       await tx.$executeRawUnsafe(`DELETE FROM lessons WHERE id = '${LESSON_ID_B}'::uuid`);
       await tx.$executeRawUnsafe(`DELETE FROM modules WHERE id = '${MODULE_ID_A}'::uuid`);
@@ -134,7 +148,7 @@ describe('RLS Isolation: lesson_progress table', () => {
   });
 
   afterAll(async () => {
-    await cleanup(prisma);
+    await teardownChain(prisma);
     await prisma.$disconnect();
   });
 

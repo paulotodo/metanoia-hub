@@ -66,39 +66,23 @@ CREATE UNIQUE INDEX "trail_progress_tenant_user_trail_key" ON "trail_progress"("
 CREATE INDEX "trail_progress_tenant_user_idx" ON "trail_progress"("tenant_id", "user_id");
 
 -- RLS: lesson_progress
+-- Tenant isolation only. Per-user isolation is enforced at the application
+-- layer: ProgressService always scopes lessonProgress queries to the
+-- RequestContext userId. NULLIF guards the empty-string case so a missing
+-- SET LOCAL yields zero rows instead of `invalid input syntax for type uuid`.
 ALTER TABLE "lesson_progress" ENABLE ROW LEVEL SECURITY;
 
--- Tenant isolation: only see records from your tenant
 CREATE POLICY "lesson_progress_tenant_isolation" ON "lesson_progress"
-  USING (tenant_id = current_setting('app.current_tenant_id', true)::uuid);
-
--- Cross-user isolation: participants only see their own progress
-CREATE POLICY "lesson_progress_user_isolation" ON "lesson_progress"
-  USING (
-    user_id::text = current_setting('app.current_user_id', true)
-    OR current_setting('app.current_role', true) IN ('admin_tenant', 'lider', 'super_admin')
-  );
+  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);
 
 -- RLS: module_progress
 ALTER TABLE "module_progress" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "module_progress_tenant_isolation" ON "module_progress"
-  USING (tenant_id = current_setting('app.current_tenant_id', true)::uuid);
-
-CREATE POLICY "module_progress_user_isolation" ON "module_progress"
-  USING (
-    user_id::text = current_setting('app.current_user_id', true)
-    OR current_setting('app.current_role', true) IN ('admin_tenant', 'lider', 'super_admin')
-  );
+  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);
 
 -- RLS: trail_progress
 ALTER TABLE "trail_progress" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "trail_progress_tenant_isolation" ON "trail_progress"
-  USING (tenant_id = current_setting('app.current_tenant_id', true)::uuid);
-
-CREATE POLICY "trail_progress_user_isolation" ON "trail_progress"
-  USING (
-    user_id::text = current_setting('app.current_user_id', true)
-    OR current_setting('app.current_role', true) IN ('admin_tenant', 'lider', 'super_admin')
-  );
+  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);
