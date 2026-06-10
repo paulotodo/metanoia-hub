@@ -82,8 +82,8 @@ async function ensureGroupMember(
   await prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
     await tx.$executeRawUnsafe(
-      `INSERT INTO group_members (id, tenant_id, group_id, user_id, role, updated_at)
-       VALUES ('${memberId}'::uuid, '${tenantId}'::uuid, '${groupId}'::uuid, '${userId}'::uuid, '${role}', now())
+      `INSERT INTO group_members (id, tenant_id, group_id, user_id, role)
+       VALUES ('${memberId}'::uuid, '${tenantId}'::uuid, '${groupId}'::uuid, '${userId}'::uuid, '${role}')
        ON CONFLICT (id) DO NOTHING`,
     );
   });
