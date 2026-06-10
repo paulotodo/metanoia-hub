@@ -244,6 +244,8 @@ export {
   type DemoRadarParticipant,
   DemoRadarResponseSchema,
   type DemoRadarResponse,
+  OnboardingCompleteResponseSchema,
+  type OnboardingCompleteResponse,
 } from './onboarding';
 export {
   TenantMeResponseSchema,
