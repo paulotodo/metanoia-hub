@@ -49,9 +49,11 @@ export function useAssociateTrails(groupId: string) {
 export function useUnassignTrail(groupId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, { trailId: string }>({
-    mutationFn: ({ trailId }) =>
-      envelopeClient.delete(`/groups/${groupId}/trails/${trailId}`),
+  return useMutation<undefined, Error, { trailId: string }>({
+    mutationFn: async ({ trailId }) => {
+      await envelopeClient.delete(`/groups/${groupId}/trails/${trailId}`);
+      return undefined;
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: groupTrailsKeys.byGroup(groupId),
