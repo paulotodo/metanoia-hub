@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 import { useSignalDetail, useRecordCareAction } from "@/lib/api/hooks/use-radar";
 import { SignalDetailSkeleton } from "../../_components/radar-skeleton";
 import { RadarError } from "../../_components/radar-error";
+import { useUndoableAction } from "@/hooks/use-undoable-action";
 
 type PageState = "form" | "saving" | "confirmation" | "error";
 
@@ -20,13 +21,17 @@ export default function CareActionPage({
 
   const [note, setNote] = useState("");
   const [pageState, setPageState] = useState<PageState>("form");
-  const [undoCountdown, setUndoCountdown] = useState(5);
   const [showAbandonDialog, setShowAbandonDialog] = useState(false);
-  const undoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data, isLoading, error, refetch } = useSignalDetail(participantId);
   const mutation = useRecordCareAction(participantId);
   const nextMeetingDay = "quinta"; // TODO: derive from radar page data
+
+  // Story 6-5: undo logic extracted to reusable hook
+  const undo = useUndoableAction({
+    countdownSeconds: 5,
+    onCommit: () => router.push("/app/gestao/radar"),
+  });
 
   // Auto-focus textarea on mount
   useEffect(() => {
@@ -47,28 +52,16 @@ export default function CareActionPage({
       });
 
       setPageState("confirmation");
-
-      // Start undo countdown
-      let count = 5;
-      setUndoCountdown(count);
-      undoTimerRef.current = setInterval(() => {
-        count -= 1;
-        setUndoCountdown(count);
-        if (count <= 0) {
-          if (undoTimerRef.current) clearInterval(undoTimerRef.current);
-          router.push("/app/gestao/radar");
-        }
-      }, 1000);
+      undo.start();
     } catch {
       setPageState("error");
     }
-  }, [note, data, participantId, mutation, router]);
+  }, [note, data, participantId, mutation, undo]);
 
   const handleUndo = useCallback(() => {
-    if (undoTimerRef.current) clearInterval(undoTimerRef.current);
+    undo.cancel();
     setPageState("form");
-    setUndoCountdown(5);
-  }, []);
+  }, [undo]);
 
   const handleBack = useCallback(() => {
     if (note.trim() && pageState === "form") {
@@ -77,13 +70,6 @@ export default function CareActionPage({
       router.push(`/app/gestao/radar/${participantId}`);
     }
   }, [note, pageState, participantId, router]);
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (undoTimerRef.current) clearInterval(undoTimerRef.current);
-    };
-  }, []);
 
   if (isLoading) return <SignalDetailSkeleton />;
   if (error) return <RadarError error={error} onRetry={() => refetch()} />;
@@ -104,7 +90,7 @@ export default function CareActionPage({
         {/* Undo toast */}
         <div className="flex items-center gap-3 rounded-lg border border-border-default bg-surface-elevated px-4 py-3">
           <span className="text-sm text-text-secondary">
-            Desfazer ({undoCountdown}s)
+            Desfazer ({undo.countdown}s)
           </span>
           <button
             type="button"

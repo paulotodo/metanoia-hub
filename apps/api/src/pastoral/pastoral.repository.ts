@@ -7,6 +7,17 @@ import type {
 import { PrismaService } from '../prisma/prisma.service';
 import { withTenantTx } from '../prisma/with-tenant-tx';
 
+export interface NudgeCandidate {
+  participantId: string;
+  participantName: string;
+  groupId: string;
+  status: string;
+  trend: string;
+  presenceDots: string[];
+  lastActiveAt: Date | null;
+  calculatedAt: Date;
+}
+
 @Injectable()
 export class PastoralRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -95,6 +106,56 @@ export class PastoralRepository {
         orderBy: { name: 'asc' },
       }),
     );
+  }
+
+  /**
+   * Returns radar status rows with participant name for nudge computation.
+   * Fetches all participants with their radar status + last active + presence dots.
+   * Story 6-5 — NudgePastoral.
+   */
+  async findNudgeCandidates(groupId?: string): Promise<NudgeCandidate[]> {
+    const rows = await withTenantTx(this.prisma, (tx) =>
+      tx.participantRadarStatus.findMany({
+        where: groupId ? { groupId } : {},
+        include: {
+          participant: { select: { name: true } },
+        },
+        orderBy: { calculatedAt: 'desc' },
+      }),
+    );
+
+    // Get presence dots from the most recent active alert per participant
+    const alertsByParticipant = await withTenantTx(this.prisma, (tx) =>
+      tx.pastoralAlert.findMany({
+        where: {
+          ...(groupId ? { groupId } : {}),
+          active: true,
+        },
+        select: {
+          participantId: true,
+          presenceDots: true,
+        },
+        orderBy: { updatedAt: 'desc' },
+      }),
+    );
+
+    const presenceDotsMap = new Map<string, string[]>();
+    for (const alert of alertsByParticipant) {
+      if (!presenceDotsMap.has(alert.participantId)) {
+        presenceDotsMap.set(alert.participantId, alert.presenceDots as string[]);
+      }
+    }
+
+    return rows.map((r) => ({
+      participantId: r.participantId,
+      participantName: (r as typeof r & { participant: { name: string } }).participant.name,
+      groupId: r.groupId,
+      status: r.status,
+      trend: r.trend,
+      presenceDots: presenceDotsMap.get(r.participantId) ?? [],
+      lastActiveAt: r.lastActiveAt,
+      calculatedAt: r.calculatedAt,
+    }));
   }
 
   async createCareAction(data: {

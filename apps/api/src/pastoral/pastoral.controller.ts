@@ -36,6 +36,35 @@ export class PastoralController {
     return { data };
   }
 
+  /**
+   * GET /api/v1/radar/nudges
+   * Returns pastoral nudge suggestions for participants needing proactive care.
+   * Trigger rules (Story 6-5):
+   *   - 2+ consecutive absences → suggest 'call'
+   *   - status = vermelho → suggest 'visit'
+   *   - 7+ days inactive → suggest 'message'
+   */
+  @Get('nudges')
+  async getNudges(
+    @Query(new ZodValidationPipe(RadarQuerySchema)) query: { groupId?: string },
+  ) {
+    const data = await this.service.getNudges(query.groupId);
+    return { data };
+  }
+
+  /**
+   * GET /api/v1/radar/celebrations
+   * Returns recent unseen positive status transitions for CelebrationBanner.
+   * Story 6-5 — transitions from the last 24 h.
+   */
+  @Get('celebrations')
+  async getCelebrations(
+    @Query(new ZodValidationPipe(RadarQuerySchema)) query: { groupId?: string },
+  ) {
+    const data = await this.service.getRecentPositiveTransitions(query.groupId);
+    return { data };
+  }
+
   @Get(':id')
   async getSignalDetail(@Param('id', ParseUUIDPipe) id: string) {
     const data = await this.service.getSignalDetail(id);

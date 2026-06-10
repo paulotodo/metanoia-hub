@@ -6,6 +6,8 @@ import {
   mockCareActionResponse,
   mockRadarDashboard,
   mockParticipantTimeline,
+  mockNudges,
+  mockCelebrations,
 } from '../../__mocks__/radar';
 
 export const radarHandlers = [
@@ -16,6 +18,16 @@ export const radarHandlers = [
   // Story 6-6 — aggregate dashboard (admin_tenant & lider)
   http.get('*/api/v1/radar/dashboard', () =>
     HttpResponse.json(mockRadarDashboard),
+  ),
+
+  // Story 6-5 — pastoral nudge suggestions
+  http.get('*/api/v1/radar/nudges', () =>
+    HttpResponse.json({ data: mockNudges }),
+  ),
+
+  // Story 6-5 — recent positive transitions for CelebrationBanner
+  http.get('*/api/v1/radar/celebrations', () =>
+    HttpResponse.json({ data: mockCelebrations }),
   ),
 
   http.get('*/api/v1/radar/:id', () =>

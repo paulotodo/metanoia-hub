@@ -11,6 +11,9 @@ import type {
   SignalVariant,
   ParticipantTimeline,
   ParticipantTimelineEvent,
+  PastoralNudge,
+  NudgeSuggestion,
+  StatusImprovedItem,
 } from '@metanoia/types';
 import {
   RADAR_CACHE_KEY_PREFIX,
@@ -23,6 +26,7 @@ import { requestContext } from '../common/context/request-context';
 import { RadarStatusRepository } from './radar/radar-status.repository';
 import { RadarJobService } from './radar/radar-job.service';
 import type { ParticipantCalculationResult } from './radar/radar-calculator.service';
+import { AlertsService } from './alerts/alerts.service';
 
 @Injectable()
 export class PastoralService {
@@ -32,6 +36,7 @@ export class PastoralService {
     private readonly repository: PastoralRepository,
     private readonly radarStatusRepo: RadarStatusRepository,
     private readonly radarJobService: RadarJobService,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async getRadarPage(groupId?: string): Promise<RadarPageData> {
@@ -232,6 +237,88 @@ export class PastoralService {
     });
 
     return result;
+  }
+
+  /**
+   * Returns pastoral nudges for participants in the leader's groups.
+   * Trigger rules (Story 6-5):
+   *   - 2+ consecutive absences (from presenceDots) → suggest 'call'
+   *   - status = vermelho → suggest 'visit'
+   *   - 7+ days inactive (lastActiveAt) → suggest 'message'
+   * Only the highest-priority nudge per participant is returned.
+   * Priority: vermelho > consecutive_absences >= inactive_7d.
+   */
+  async getNudges(groupId?: string): Promise<PastoralNudge[]> {
+    const candidates = await this.repository.findNudgeCandidates(groupId);
+
+    const nudges: PastoralNudge[] = [];
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    for (const c of candidates) {
+      const consecutiveAbsences = this.countConsecutiveAbsences(c.presenceDots);
+
+      let suggestion: NudgeSuggestion | null = null;
+      let reason = '';
+
+      if (c.status === 'vermelho') {
+        suggestion = 'visit';
+        reason = 'status_vermelho';
+      } else if (consecutiveAbsences >= 2) {
+        suggestion = 'call';
+        reason = `${consecutiveAbsences}_consecutive_absences`;
+      } else if (c.lastActiveAt && c.lastActiveAt < sevenDaysAgo) {
+        suggestion = 'message';
+        reason = 'inactive_7d';
+      } else if (!c.lastActiveAt) {
+        suggestion = 'message';
+        reason = 'never_active';
+      }
+
+      if (suggestion) {
+        nudges.push({
+          participantId: c.participantId,
+          participantName: c.participantName,
+          groupId: c.groupId,
+          suggestion,
+          reason,
+        });
+      }
+    }
+
+    return nudges;
+  }
+
+  /**
+   * Counts trailing consecutive 'absent' dots from the end of the presenceDots array.
+   * presenceDots are ordered oldest→newest; last items are most recent meetings.
+   */
+  private countConsecutiveAbsences(dots: string[]): number {
+    let count = 0;
+    for (let i = dots.length - 1; i >= 0; i--) {
+      if (dots[i] === 'absent') {
+        count++;
+      } else {
+        break;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Returns recent unseen positive status transitions for CelebrationBanner.
+   * Story 6-5 — transitions from the last 24 h, not yet dismissed by the leader.
+   */
+  async getRecentPositiveTransitions(groupId?: string): Promise<StatusImprovedItem[]> {
+    const rows = await this.alertsService.findRecentPositiveTransitions(groupId);
+    return rows.map((r) => ({
+      id: r.id,
+      participantId: r.participantId,
+      participantName: r.participantName,
+      previousStatus: r.previousStatus,
+      newStatus: r.newStatus,
+      trend: r.trend,
+      createdAt: r.createdAt.toISOString(),
+    }));
   }
 
   /**

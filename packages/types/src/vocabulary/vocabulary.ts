@@ -57,6 +57,41 @@ export const PASTORAL_TIMELINE_EVENT_PRESENCE = 'Reunião' as const;
 export const PASTORAL_TIMELINE_EVENT_ACTION = 'Ação pastoral' as const;
 
 // ---------------------------------------------------------------------------
+// NudgePastoral — sugestões proativas de cuidado (Story 6-5)
+// ---------------------------------------------------------------------------
+
+/** Título da seção de sugestões pastorais proativas */
+export const PASTORAL_NUDGE_SECTION_TITLE = 'Sugestões de cuidado' as const;
+
+/** Mensagem quando não há sugestões de cuidado no momento */
+export const PASTORAL_NUDGE_EMPTY_STATE = 'Todos os participantes estão em dia.' as const;
+
+/** Texto do CTA de nudge: registrar ação pastoral */
+export const PASTORAL_NUDGE_CTA_LABEL = 'Registrar cuidado' as const;
+
+/** Mapa de sugestão de nudge → texto pastoral para o líder */
+export const PASTORAL_NUDGE_SUGGESTION_LABELS = {
+  call: 'Sugestão: ligar para {{name}}',
+  visit: 'Sugestão: visitar {{name}}',
+  message: 'Sugestão: enviar mensagem para {{name}}',
+} as const;
+
+export type NudgeSuggestionKey = keyof typeof PASTORAL_NUDGE_SUGGESTION_LABELS;
+
+// ---------------------------------------------------------------------------
+// CelebrationBanner — transições positivas de status (Story 6-5)
+// ---------------------------------------------------------------------------
+
+/** Título do banner de celebração de melhoria de status */
+export const PASTORAL_CELEBRATION_TITLE = 'Boa notícia!' as const;
+
+/** Mensagem do banner de celebração — {{name}} é substituído pelo nome */
+export const PASTORAL_CELEBRATION_MESSAGE = '{{name}} está melhorando!' as const;
+
+/** Texto do botão de fechar o banner de celebração */
+export const PASTORAL_CELEBRATION_DISMISS = 'Entendido' as const;
+
+// ---------------------------------------------------------------------------
 // Mapa completo de termos pastorais (para referência e snapshot)
 // ---------------------------------------------------------------------------
 export const PASTORAL_VOCABULARY = {
@@ -74,6 +109,13 @@ export const PASTORAL_VOCABULARY = {
   careHistoryLabel: PASTORAL_CARE_HISTORY_LABEL,
   timelineEventPresence: PASTORAL_TIMELINE_EVENT_PRESENCE,
   timelineEventAction: PASTORAL_TIMELINE_EVENT_ACTION,
+  nudgeSectionTitle: PASTORAL_NUDGE_SECTION_TITLE,
+  nudgeEmptyState: PASTORAL_NUDGE_EMPTY_STATE,
+  nudgeCtaLabel: PASTORAL_NUDGE_CTA_LABEL,
+  nudgeSuggestionLabels: PASTORAL_NUDGE_SUGGESTION_LABELS,
+  celebrationTitle: PASTORAL_CELEBRATION_TITLE,
+  celebrationMessage: PASTORAL_CELEBRATION_MESSAGE,
+  celebrationDismiss: PASTORAL_CELEBRATION_DISMISS,
 } as const;
 
 export type PastoralVocabulary = typeof PASTORAL_VOCABULARY;

@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import type { RadarStatus, RadarTrend } from '@prisma/client';
-import { AlertsRepository, type PastoralAlertRow } from './alerts.repository';
+import { AlertsRepository, type PastoralAlertRow, type StatusImprovedRow } from './alerts.repository';
 
 /** Domain event emitted on positive status transitions (for Story 6-5 CelebrationBanner). */
 export interface StatusImprovedEvent {
@@ -86,7 +86,16 @@ export class AlertsService {
 
     if (newWeight > prevWeight) {
       // Positive transition: vermelho→amarelo or amarelo→verde
-      // Do NOT create alert — emit domain event for Story 6-5 CelebrationBanner
+      // Persist to participant_status_improved for CelebrationBanner (Story 6-5)
+      await this.repo.createStatusImproved({
+        tenantId,
+        groupId,
+        participantId,
+        previousStatus,
+        newStatus,
+        trend,
+      });
+
       const event: StatusImprovedEvent = {
         eventType: 'pastoral.participant.status_improved',
         version: 1,
@@ -101,7 +110,7 @@ export class AlertsService {
 
       this.logger.log(
         { tenantId, groupId, participantId, previousStatus, newStatus },
-        'pastoral.participant.status_improved emitted (Story 6-5 consumer pending)',
+        'pastoral.participant.status_improved persisted for CelebrationBanner',
       );
 
       return { direction: 'positive', alertId: null, event };
@@ -137,6 +146,25 @@ export class AlertsService {
       await this.repo.dismiss(alertId);
     } catch {
       throw new NotFoundException(`Alerta ${alertId} não encontrado`);
+    }
+  }
+
+  /**
+   * Returns recent unseen positive transitions for CelebrationBanner.
+   * Delegates to repository which filters by tenant context (RLS) + last 24h + seenAt IS NULL.
+   */
+  async findRecentPositiveTransitions(groupId?: string): Promise<StatusImprovedRow[]> {
+    return this.repo.findRecentPositiveTransitions(groupId);
+  }
+
+  /**
+   * Marks a status_improved event as seen (CelebrationBanner dismissed).
+   */
+  async markStatusImprovedSeen(id: string): Promise<void> {
+    try {
+      await this.repo.markStatusImprovedSeen(id);
+    } catch {
+      throw new NotFoundException(`Evento de melhoria ${id} não encontrado`);
     }
   }
 }

@@ -6,8 +6,15 @@ import {
   CareActionResponseSchema,
   RadarDashboardResponseSchema,
   ParticipantTimelineSchema,
+  NudgeListResponseSchema,
+  StatusImprovedListResponseSchema,
 } from '@metanoia/types';
-import type { CareActionRequest, RadarDashboardResponse } from '@metanoia/types';
+import type {
+  CareActionRequest,
+  RadarDashboardResponse,
+  NudgeListResponse,
+  StatusImprovedListResponse,
+} from '@metanoia/types';
 import { apiClient } from '../client';
 import { envelopeClient } from '../envelope';
 
@@ -24,6 +31,10 @@ export const radarKeys = {
     [...radarKeys.all, 'profile', participantId] as const,
   timeline: (participantId: string) =>
     [...radarKeys.all, 'timeline', participantId] as const,
+  nudges: (groupId?: string) =>
+    [...radarKeys.all, 'nudges', groupId ?? 'all'] as const,
+  celebrations: (groupId?: string) =>
+    [...radarKeys.all, 'celebrations', groupId ?? 'all'] as const,
 };
 
 // --- GET /radar ---
@@ -89,6 +100,36 @@ export function useParticipantTimeline(participantId: string) {
         ParticipantTimelineSchema,
       ),
     enabled: !!participantId,
+  });
+}
+
+// --- GET /radar/nudges (Story 6-5) ---
+
+export function useRadarNudges(groupId?: string) {
+  return useQuery<NudgeListResponse>({
+    queryKey: radarKeys.nudges(groupId),
+    queryFn: () => {
+      const params = groupId ? `?groupId=${groupId}` : '';
+      return apiClient.get(`/radar/nudges${params}`, NudgeListResponseSchema);
+    },
+  });
+}
+
+// --- GET /radar/celebrations (Story 6-5) ---
+
+export function useRadarCelebrations(groupId?: string) {
+  return useQuery<StatusImprovedListResponse>({
+    queryKey: radarKeys.celebrations(groupId),
+    queryFn: () => {
+      const params = groupId ? `?groupId=${groupId}` : '';
+      return apiClient.get(
+        `/radar/celebrations${params}`,
+        StatusImprovedListResponseSchema,
+      );
+    },
+    // Refresh every 2 minutes — celebration events are short-lived (24h window)
+    refetchInterval: 2 * 60 * 1000,
+    staleTime: 90 * 1000,
   });
 }
 
