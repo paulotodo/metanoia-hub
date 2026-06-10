@@ -11,6 +11,8 @@ import {
   CreateLessonRequestSchema,
   UpdateLessonRequestSchema,
   LessonResponseSchema,
+  UploadResponseSchema,
+  SignedUrlResponseSchema,
 } from '../index';
 
 // ------------------------------------------------------------------
@@ -304,38 +306,152 @@ describe('UpdateLessonRequestSchema snapshot', () => {
 // LessonResponseSchema
 // ------------------------------------------------------------------
 describe('LessonResponseSchema snapshot', () => {
-  it('freezes success shape', () => {
+  it('freezes success shape with all fields (8-2 upload metadata)', () => {
     const ok = LessonResponseSchema.safeParse({
       id: '019756c0-0001-7000-8000-000000000030',
       tenantId: '019756c0-0001-7000-8000-000000000002',
       moduleId: '019756c0-0001-7000-8000-000000000020',
       name: 'Aula Introdução',
       contentType: 'video',
-      contentUrl: null,
+      contentUrl: 'content/t/trail/lesson/video.mp4',
+      contentBody: null,
+      tags: ['discipleship', 'foundational'],
+      originalName: 'video.mp4',
+      mimeType: 'video/mp4',
+      sizeBytes: 10485760,
+      uploadedBy: '019756c0-0001-7000-8000-000000000003',
+      uploadedAt: '2026-06-11T10:00:00.000Z',
       order: 0,
       estimatedDurationMinutes: 30,
+      createdAt: '2026-06-10T12:00:00.000Z',
+      updatedAt: '2026-06-11T10:00:00.000Z',
+      deletedAt: null,
+    });
+    const fail = LessonResponseSchema.safeParse({
+      id: 'not-a-uuid',
+    });
+    expect({
+      success: ok.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "contentBody",
+          "contentType",
+          "contentUrl",
+          "createdAt",
+          "deletedAt",
+          "estimatedDurationMinutes",
+          "id",
+          "mimeType",
+          "moduleId",
+          "name",
+          "order",
+          "originalName",
+          "sizeBytes",
+          "tags",
+          "tenantId",
+          "updatedAt",
+          "uploadedAt",
+          "uploadedBy",
+        ],
+        "success": true,
+      }
+    `);
+  });
+
+  it('accepts lesson with no upload metadata (nullable fields null)', () => {
+    const ok = LessonResponseSchema.safeParse({
+      id: '019756c0-0001-7000-8000-000000000030',
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      moduleId: '019756c0-0001-7000-8000-000000000020',
+      name: 'Aula Texto',
+      contentType: 'rich_text',
+      contentUrl: null,
+      contentBody: '<p>Conteúdo pastoral</p>',
+      tags: [],
+      originalName: null,
+      mimeType: null,
+      sizeBytes: null,
+      uploadedBy: null,
+      uploadedAt: null,
+      order: 1,
+      estimatedDurationMinutes: null,
       createdAt: '2026-06-10T12:00:00.000Z',
       updatedAt: '2026-06-10T12:00:00.000Z',
       deletedAt: null,
     });
+    expect(ok.success).toBe(true);
+    if (ok.success) {
+      expect(ok.data.contentBody).toBe('<p>Conteúdo pastoral</p>');
+      expect(ok.data.tags).toEqual([]);
+    }
+  });
+});
+
+// ------------------------------------------------------------------
+// UploadResponseSchema
+// ------------------------------------------------------------------
+describe('UploadResponseSchema snapshot', () => {
+  it('freezes upload response shape', () => {
+    const ok = UploadResponseSchema.safeParse({
+      lessonId: '019756c0-0001-7000-8000-000000000030',
+      objectKey: 'content/t/trail/lesson/video.mp4',
+      originalName: 'video.mp4',
+      mimeType: 'video/mp4',
+      sizeBytes: 10485760,
+      uploadedAt: '2026-06-11T10:00:00.000Z',
+    });
+    const fail = UploadResponseSchema.safeParse({
+      lessonId: 'bad-id',
+      objectKey: '',
+    });
     expect({
       success: ok.success,
       data: ok.success ? ok.data : null,
+      failure: !fail.success,
     }).toMatchInlineSnapshot(`
       {
         "data": {
-          "contentType": "video",
-          "contentUrl": null,
-          "createdAt": "2026-06-10T12:00:00.000Z",
-          "deletedAt": null,
-          "estimatedDurationMinutes": 30,
-          "id": "019756c0-0001-7000-8000-000000000030",
-          "moduleId": "019756c0-0001-7000-8000-000000000020",
-          "name": "Aula Introdução",
-          "order": 0,
-          "tenantId": "019756c0-0001-7000-8000-000000000002",
-          "updatedAt": "2026-06-10T12:00:00.000Z",
+          "lessonId": "019756c0-0001-7000-8000-000000000030",
+          "mimeType": "video/mp4",
+          "objectKey": "content/t/trail/lesson/video.mp4",
+          "originalName": "video.mp4",
+          "sizeBytes": 10485760,
+          "uploadedAt": "2026-06-11T10:00:00.000Z",
         },
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// SignedUrlResponseSchema
+// ------------------------------------------------------------------
+describe('SignedUrlResponseSchema snapshot', () => {
+  it('freezes signed URL response shape', () => {
+    const ok = SignedUrlResponseSchema.safeParse({
+      lessonId: '019756c0-0001-7000-8000-000000000030',
+      signedUrl: 'https://minio.example.com/metanoia-storage/content/t/trail/lesson/video.mp4?X-Amz-Signature=abc123',
+      expiresInSeconds: 14400,
+    });
+    const fail = SignedUrlResponseSchema.safeParse({
+      lessonId: 'bad-id',
+      signedUrl: 'not-a-url',
+      expiresInSeconds: -1,
+    });
+    expect({
+      success: ok.success,
+      expiresInSeconds: ok.success ? ok.data.expiresInSeconds : null,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "expiresInSeconds": 14400,
+        "failure": true,
         "success": true,
       }
     `);

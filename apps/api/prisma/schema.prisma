@@ -549,6 +549,13 @@ model Lesson {
   name                     String            @db.VarChar(255)
   contentType              LessonContentType @map("content_type")
   contentUrl               String?           @map("content_url") @db.VarChar(2048)
+  contentBody              String?           @map("content_body") @db.Text
+  tags                     String[]          @default([])
+  originalName             String?           @map("original_name") @db.VarChar(512)
+  mimeType                 String?           @map("mime_type") @db.VarChar(255)
+  sizeBytes                BigInt?           @map("size_bytes")
+  uploadedBy               String?           @map("uploaded_by") @db.Uuid
+  uploadedAt               DateTime?         @map("uploaded_at") @db.Timestamptz
   order                    Int
   estimatedDurationMinutes Int?              @map("estimated_duration_minutes")
   createdAt                DateTime          @default(now()) @map("created_at") @db.Timestamptz

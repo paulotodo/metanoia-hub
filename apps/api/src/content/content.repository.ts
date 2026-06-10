@@ -53,7 +53,14 @@ export interface UpdateLessonInput {
   name?: string;
   contentType?: 'video' | 'rich_text' | 'pdf_doc' | 'external_link';
   contentUrl?: string | null;
+  contentBody?: string | null;
+  tags?: string[];
   estimatedDurationMinutes?: number | null;
+  originalName?: string | null;
+  mimeType?: string | null;
+  sizeBytes?: number | null;
+  uploadedBy?: string | null;
+  uploadedAt?: Date | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -277,7 +284,14 @@ export class ContentRepository {
     return withTenantTx(this.prisma, async (tx) => {
       const existing = await tx.lesson.findFirst({ where: { id, moduleId, deletedAt: null } });
       if (!existing) return null;
-      return tx.lesson.update({ where: { id }, data: patch });
+      const { sizeBytes, ...rest } = patch;
+      return tx.lesson.update({
+        where: { id },
+        data: {
+          ...rest,
+          ...(sizeBytes !== undefined ? { sizeBytes: sizeBytes !== null ? BigInt(sizeBytes) : null } : {}),
+        },
+      });
     });
   }
 
@@ -287,6 +301,39 @@ export class ContentRepository {
       if (!existing) return null;
       return tx.lesson.update({ where: { id }, data: { deletedAt: new Date() } });
     });
+  }
+
+  /** Find lesson by id only (without requiring moduleId — for read-path like signed URL) */
+  async findLessonByIdOnly(id: string): Promise<Lesson | null> {
+    return withTenantTx(this.prisma, (tx) =>
+      tx.lesson.findFirst({ where: { id, deletedAt: null } }),
+    );
+  }
+
+  /**
+   * Eager-load trail with all modules and lessons in a SINGLE query.
+   * Prevents N+1 — modules and lessons are fetched with a single Prisma include.
+   */
+  async findTrailWithModulesAndLessons(
+    trailId: string,
+  ): Promise<(Trail & { modules: (import('@prisma/client').Module & { lessons: Lesson[] })[] }) | null> {
+    return withTenantTx(this.prisma, (tx) =>
+      tx.trail.findFirst({
+        where: { id: trailId, deletedAt: null },
+        include: {
+          modules: {
+            where: { deletedAt: null },
+            orderBy: { order: 'asc' },
+            include: {
+              lessons: {
+                where: { deletedAt: null },
+                orderBy: { order: 'asc' },
+              },
+            },
+          },
+        },
+      }),
+    ) as Promise<(Trail & { modules: (import('@prisma/client').Module & { lessons: Lesson[] })[] }) | null>;
   }
 
   async reorderLessons(moduleId: string, lessonIds: string[]): Promise<Lesson[]> {

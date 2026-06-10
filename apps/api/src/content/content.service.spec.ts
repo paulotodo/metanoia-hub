@@ -56,6 +56,13 @@ function makeLesson(overrides = {}) {
     name: 'Aula 1',
     contentType: 'video' as const,
     contentUrl: null,
+    contentBody: null,
+    tags: [] as string[],
+    originalName: null,
+    mimeType: null,
+    sizeBytes: null,
+    uploadedBy: null,
+    uploadedAt: null,
     order: 0,
     estimatedDurationMinutes: null,
     createdAt: new Date('2026-06-10T12:00:00.000Z'),
@@ -86,6 +93,8 @@ function makeMockRepo() {
     updateLesson: vi.fn(),
     softDeleteLesson: vi.fn(),
     reorderLessons: vi.fn(),
+    findLessonByIdOnly: vi.fn(),
+    findTrailWithModulesAndLessons: vi.fn(),
   } as unknown as ContentRepository;
 }
 

@@ -13,6 +13,8 @@ export const UpdateLessonRequestSchema = z.object({
   name: z.string().min(2).max(255).optional(),
   contentType: LessonContentTypeSchema.optional(),
   contentUrl: z.string().url().max(2048).nullable().optional(),
+  contentBody: z.string().nullable().optional(),
+  tags: z.array(z.string().max(100)).optional(),
   estimatedDurationMinutes: z.number().int().positive().nullable().optional(),
 });
 export type UpdateLessonRequest = z.infer<typeof UpdateLessonRequestSchema>;
@@ -24,6 +26,13 @@ export const LessonResponseSchema = z.object({
   name: z.string(),
   contentType: LessonContentTypeSchema,
   contentUrl: z.string().nullable(),
+  contentBody: z.string().nullable(),
+  tags: z.array(z.string()),
+  originalName: z.string().nullable(),
+  mimeType: z.string().nullable(),
+  sizeBytes: z.number().nullable(),
+  uploadedBy: z.string().uuid().nullable(),
+  uploadedAt: z.string().datetime().nullable(),
   order: z.number().int().nonnegative(),
   estimatedDurationMinutes: z.number().int().nullable(),
   createdAt: z.string().datetime(),
