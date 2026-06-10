@@ -491,6 +491,50 @@ export {
   type ComputeAttendanceResult,
 } from './presence';
 export {
+  TrailStatusSchema,
+  type TrailStatus,
+  LessonContentTypeSchema,
+  type LessonContentType,
+} from './content/content-type.enum';
+export {
+  CreateTrailRequestSchema,
+  type CreateTrailRequest,
+  UpdateTrailRequestSchema,
+  type UpdateTrailRequest,
+  TrailResponseSchema,
+  type TrailResponse,
+  TrailsListMetaSchema,
+  type TrailsListMeta,
+  TrailsListResponseSchema,
+  type TrailsListResponse,
+  TrailsListQuerySchema,
+  type TrailsListQuery,
+} from './content/trail.schema';
+export {
+  CreateModuleRequestSchema,
+  type CreateModuleRequest,
+  UpdateModuleRequestSchema,
+  type UpdateModuleRequest,
+  ModuleResponseSchema,
+  type ModuleResponse,
+  ModulesListResponseSchema,
+  type ModulesListResponse,
+  ReorderModulesRequestSchema,
+  type ReorderModulesRequest,
+} from './content/module.schema';
+export {
+  CreateLessonRequestSchema,
+  type CreateLessonRequest,
+  UpdateLessonRequestSchema,
+  type UpdateLessonRequest,
+  LessonResponseSchema,
+  type LessonResponse,
+  LessonsListResponseSchema,
+  type LessonsListResponse,
+  ReorderLessonsRequestSchema,
+  type ReorderLessonsRequest,
+} from './content/lesson.schema';
+export {
   CreateRoomOptionsSchema,
   type CreateRoomOptions,
   GenerateTokenOptionsSchema,

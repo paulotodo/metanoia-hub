@@ -26,6 +26,7 @@ import { OnboardingModule } from './onboarding/onboarding.module';
 import { UsersModule } from './users/users.module';
 import { MarketingModule } from './marketing/marketing.module';
 import { ObservabilityModule } from './observability/observability.module';
+import { ContentModule } from './content/content.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -69,6 +70,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     UsersModule,
     MarketingModule,
     ObservabilityModule,
+    ContentModule,
   ],
 })
 export class AppModule implements NestModule {

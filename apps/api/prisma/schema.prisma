@@ -483,3 +483,81 @@ model ContactMessage {
   @@index([createdAt])
   @@map("contact_messages")
 }
+
+// ---------------------------------------------------------------------------
+// Content — Trilhas, Módulos e Aulas (Story 8-1)
+// ---------------------------------------------------------------------------
+
+/// TrailStatus — lifecycle state of a discipleship trail
+enum TrailStatus {
+  draft
+  published
+  archived
+}
+
+/// LessonContentType — type of media/content for a lesson
+enum LessonContentType {
+  video
+  rich_text
+  pdf_doc
+  external_link
+}
+
+/// Trail — top-level discipleship trail owned by a tenant
+model Trail {
+  id          String      @id @db.Uuid
+  tenantId    String      @map("tenant_id") @db.Uuid
+  name        String      @db.VarChar(255)
+  description String?     @db.VarChar(1000)
+  status      TrailStatus @default(draft)
+  createdBy   String      @map("created_by") @db.Uuid
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt   DateTime?   @map("deleted_at") @db.Timestamptz
+
+  modules Module[]
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@map("trails")
+}
+
+/// Module — ordered module within a trail
+model Module {
+  id        String    @id @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  trailId   String    @map("trail_id") @db.Uuid
+  name      String    @db.VarChar(255)
+  order     Int
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+
+  trail   Trail    @relation(fields: [trailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessons Lesson[]
+
+  @@index([tenantId])
+  @@index([trailId])
+  @@map("modules")
+}
+
+/// Lesson — ordered lesson within a module
+model Lesson {
+  id                       String            @id @db.Uuid
+  tenantId                 String            @map("tenant_id") @db.Uuid
+  moduleId                 String            @map("module_id") @db.Uuid
+  name                     String            @db.VarChar(255)
+  contentType              LessonContentType @map("content_type")
+  contentUrl               String?           @map("content_url") @db.VarChar(2048)
+  order                    Int
+  estimatedDurationMinutes Int?              @map("estimated_duration_minutes")
+  createdAt                DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt                DateTime?         @map("deleted_at") @db.Timestamptz
+
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([moduleId])
+  @@map("lessons")
+}
