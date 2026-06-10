@@ -104,6 +104,13 @@ describe('RLS Isolation: reflections table', () => {
 
   beforeEach(async () => {
     await cleanupReflections(prisma, [textA, textB]);
+    // Re-ensure the FK parents (meetings) before each test. Other RLS specs
+    // running in the same suite can wipe the meetings table between this
+    // suite's beforeAll and its tests, causing an intermittent
+    // `reflections_meeting_id_fkey` violation. ensureMeeting is idempotent
+    // (ON CONFLICT DO NOTHING), so this is a cheap, self-healing guard.
+    await ensureMeeting(prisma, TENANT_A_ID, meetingAId);
+    await ensureMeeting(prisma, TENANT_B_ID, meetingBId);
   });
 
   afterAll(async () => {
