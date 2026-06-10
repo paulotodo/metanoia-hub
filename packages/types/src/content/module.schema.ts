@@ -1,12 +1,15 @@
 import { z } from 'zod';
+import { LessonAccessModeSchema } from './access-mode.enum';
 
 export const CreateModuleRequestSchema = z.object({
   name: z.string().min(2).max(255),
+  lessonAccessMode: LessonAccessModeSchema.optional().default('free'),
 });
 export type CreateModuleRequest = z.infer<typeof CreateModuleRequestSchema>;
 
 export const UpdateModuleRequestSchema = z.object({
   name: z.string().min(2).max(255).optional(),
+  lessonAccessMode: LessonAccessModeSchema.optional(),
 });
 export type UpdateModuleRequest = z.infer<typeof UpdateModuleRequestSchema>;
 
@@ -16,6 +19,7 @@ export const ModuleResponseSchema = z.object({
   trailId: z.string().uuid(),
   name: z.string(),
   order: z.number().int().nonnegative(),
+  lessonAccessMode: LessonAccessModeSchema,
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   deletedAt: z.string().datetime().nullable(),

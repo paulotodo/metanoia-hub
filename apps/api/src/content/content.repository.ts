@@ -12,6 +12,7 @@ export interface CreateTrailInput {
   name: string;
   description: string | null;
   status: 'draft' | 'published' | 'archived';
+  accessMode?: 'sequential' | 'free';
   createdBy: string;
 }
 
@@ -19,6 +20,7 @@ export interface UpdateTrailInput {
   name?: string;
   description?: string | null;
   status?: 'draft' | 'published' | 'archived';
+  accessMode?: 'sequential' | 'free';
 }
 
 // ---------------------------------------------------------------------------
@@ -29,10 +31,12 @@ export interface CreateModuleInput {
   trailId: string;
   name: string;
   order: number;
+  lessonAccessMode?: 'sequential' | 'free';
 }
 
 export interface UpdateModuleInput {
   name?: string;
+  lessonAccessMode?: 'sequential' | 'free';
 }
 
 // ---------------------------------------------------------------------------
@@ -82,6 +86,7 @@ export class ContentRepository {
           name: input.name,
           description: input.description,
           status: input.status,
+          accessMode: input.accessMode ?? 'free',
           createdBy: input.createdBy,
         },
       }),
@@ -162,6 +167,7 @@ export class ContentRepository {
           trailId: input.trailId,
           name: input.name,
           order: input.order,
+          lessonAccessMode: input.lessonAccessMode ?? 'free',
         },
       });
     });

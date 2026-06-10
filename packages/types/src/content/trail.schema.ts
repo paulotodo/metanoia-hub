@@ -1,10 +1,12 @@
 import { z } from 'zod';
 import { TrailStatusSchema } from './content-type.enum';
+import { TrailAccessModeSchema } from './access-mode.enum';
 
 export const CreateTrailRequestSchema = z.object({
   name: z.string().min(2).max(255),
   description: z.string().max(1000).optional(),
   status: TrailStatusSchema.optional().default('draft'),
+  accessMode: TrailAccessModeSchema.optional().default('free'),
 });
 export type CreateTrailRequest = z.infer<typeof CreateTrailRequestSchema>;
 
@@ -12,6 +14,7 @@ export const UpdateTrailRequestSchema = z.object({
   name: z.string().min(2).max(255).optional(),
   description: z.string().max(1000).nullable().optional(),
   status: TrailStatusSchema.optional(),
+  accessMode: TrailAccessModeSchema.optional(),
 });
 export type UpdateTrailRequest = z.infer<typeof UpdateTrailRequestSchema>;
 
@@ -21,6 +24,7 @@ export const TrailResponseSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   status: TrailStatusSchema,
+  accessMode: TrailAccessModeSchema,
   createdBy: z.string().uuid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
