@@ -20,6 +20,10 @@ import {
   TrailPublishedEventSchema,
   TrailVersionResponseSchema,
   GroupTrailResponseSchema,
+  AssociateTrailsRequestSchema,
+  AssociateTrailsResponseSchema,
+  GroupTrailsListResponseSchema,
+  InvalidTrailIdsResponseSchema,
   VideoIntervalSchema,
   VideoProgressPayloadSchema,
   CompletedBySchema,
@@ -1107,6 +1111,128 @@ describe('GroupTrailResponseSchema snapshot', () => {
           "id",
           "tenantId",
           "trailId",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// AssociateTrailsRequestSchema (Story 4-4)
+// ------------------------------------------------------------------
+describe('AssociateTrailsRequestSchema snapshot', () => {
+  it('accepts array with at least one UUID', () => {
+    const ok = AssociateTrailsRequestSchema.safeParse({
+      trailIds: [
+        '019756c0-0001-7000-8000-000000000010',
+        '019756c0-0001-7000-8000-000000000011',
+      ],
+    });
+    const failEmpty = AssociateTrailsRequestSchema.safeParse({ trailIds: [] });
+    const failBad = AssociateTrailsRequestSchema.safeParse({ trailIds: ['not-uuid'] });
+    expect({
+      success: ok.success,
+      count: ok.success ? ok.data.trailIds.length : 0,
+      failEmpty: !failEmpty.success,
+      failBad: !failBad.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "count": 2,
+        "failBad": true,
+        "failEmpty": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// AssociateTrailsResponseSchema (Story 4-4)
+// ------------------------------------------------------------------
+describe('AssociateTrailsResponseSchema snapshot', () => {
+  it('freezes bulk response shape', () => {
+    const ok = AssociateTrailsResponseSchema.safeParse({
+      data: [
+        {
+          id: '019756c0-0001-7000-8000-000000000060',
+          tenantId: '019756c0-0001-7000-8000-000000000002',
+          groupId: '019756c0-0001-7000-8000-000000000070',
+          trailId: '019756c0-0001-7000-8000-000000000010',
+          assignedBy: '019756c0-0001-7000-8000-000000000003',
+          assignedAt: '2026-06-15T10:00:00.000Z',
+        },
+      ],
+      meta: { created: 1 },
+    });
+    expect({
+      success: ok.success,
+      metaKeys: ok.success ? Object.keys(ok.data.meta).sort() : [],
+      dataLength: ok.success ? ok.data.data.length : 0,
+    }).toMatchInlineSnapshot(`
+      {
+        "dataLength": 1,
+        "metaKeys": [
+          "created",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// GroupTrailsListResponseSchema (Story 4-4)
+// ------------------------------------------------------------------
+describe('GroupTrailsListResponseSchema snapshot', () => {
+  it('freezes list response shape', () => {
+    const ok = GroupTrailsListResponseSchema.safeParse({
+      data: [],
+      meta: { total: 0 },
+    });
+    expect({
+      success: ok.success,
+      metaKeys: ok.success ? Object.keys(ok.data.meta).sort() : [],
+    }).toMatchInlineSnapshot(`
+      {
+        "metaKeys": [
+          "total",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// InvalidTrailIdsResponseSchema (Story 4-4 — 422)
+// ------------------------------------------------------------------
+describe('InvalidTrailIdsResponseSchema snapshot', () => {
+  it('freezes 422 body shape', () => {
+    const ok = InvalidTrailIdsResponseSchema.safeParse({
+      statusCode: 422,
+      error: 'Unprocessable Entity',
+      message: 'One or more trail IDs do not exist in this tenant',
+      invalidTrailIds: ['019756c0-0001-7000-8000-000000000099'],
+    });
+    const fail = InvalidTrailIdsResponseSchema.safeParse({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'nope',
+      invalidTrailIds: [],
+    });
+    expect({
+      success: ok.success,
+      failure: !fail.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "error",
+          "invalidTrailIds",
+          "message",
+          "statusCode",
         ],
         "success": true,
       }

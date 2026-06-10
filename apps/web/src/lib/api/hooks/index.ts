@@ -20,3 +20,9 @@ export {
   useMyTenants,
   useSelectTenant,
 } from './use-tenant-selection';
+export {
+  groupTrailsKeys,
+  useGroupTrails,
+  useAssociateTrails,
+  useUnassignTrail,
+} from './use-group-trails';

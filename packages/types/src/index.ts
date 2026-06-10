@@ -594,6 +594,14 @@ export {
   type GroupTrailResponse,
   AssignTrailToGroupRequestSchema,
   type AssignTrailToGroupRequest,
+  AssociateTrailsRequestSchema,
+  type AssociateTrailsRequest,
+  AssociateTrailsResponseSchema,
+  type AssociateTrailsResponse,
+  GroupTrailsListResponseSchema,
+  type GroupTrailsListResponse,
+  InvalidTrailIdsResponseSchema,
+  type InvalidTrailIdsResponse,
 } from './content/group-trail.schema';
 export {
   VideoIntervalSchema,
