@@ -111,14 +111,14 @@ development_status:
   # Epic 6: Radar Pastoral & Visibilidade MVP
   # Sprint 10: 6-1, 6-2, 6-3
   # Sprint 11: 6-4, 6-5, 6-6
-  epic-6: in-progress
+  epic-6: done                                                           # 🎯 EPIC 6 (Radar Pastoral) FECHADO 2026-06-10 — 6/6 stories done (6-1..6-6); W1b.4a+W1b.4b+W1b.5
   6-1-vocabulario-pastoral-governanca: done                              # PR #118 (0dc478b) — vocabulary.ts + ESLint no-surveillance-terms + CODEOWNERS + refactor semaforo-pill/section-divider; W1b.4a
 
   6-2-calculo-assincrono-do-semaforo-dashboard: done                     # PR #119 (d73860f) — model ParticipantRadarStatus +RLS, thresholds packages/types, processor BullMQ queue:radar-calculation + cache Redis 5min, a11y SemaforoPill; fixes CI: ON UPDATE CASCADE FK + updated_at em RLS spec; W1b.4a
 
   6-3-indicadores-de-tendencia-alertas: done                             # PR #120 (eea8a2e) — trend calc no motor BullMQ + PastoralAlert additive (previous/new_status, trend, read_at, dismissed_at) + dedup + evento transição positiva; endpoints alerts read/dismiss; TrendIndicator FE; Zod TrendType/PastoralAlertWithTrend; fixes CI RLS spec: PrismaPg adapter + users globais + UUIDs fixos; W1b.4b
   6-4-perfil-consolidado-acoes-de-cuidado-pastoral: done                  # PR #122 (998aac2) — residual: TimelineCuidado individual no perfil /gestao/radar/[participantId]/perfil (mescla sinais presença + ações cuidado, ordem reversa) + endpoint GET /radar/:id/timeline (repository withTenantTx) + empty state pastoral via vocabulary.ts + Zod ParticipantTimeline + RLS spec participant-timeline (pastoral_actions + meeting_attendance); AC#4 trail progress DEFERIDO (Epic 8); fixes CI RLS spec: groups NOT NULL cols (day_of_week/time/recurrence/updated_at) + presence_type válido 'integral'; flake reflections re-run; W1b.5
-  6-5-componentes-ux-do-radar-pastoral: ready-for-dev
+  6-5-componentes-ux-do-radar-pastoral: done                             # PR #123 (5dcae29) — residual: NudgePastoral (component + endpoint GET /radar/nudges + triggers: vermelho→visita, 2+ ausências→ligação, 7+d inativo→mensagem) integrado na página radar; CelebrationBanner consome evento status_improved da 6-3 (nova tabela participant_status_improved +RLS + GET /radar/celebrations); useUndoableAction extraído de cuidado/page.tsx; vocabulary.ts; fixes CI: snapshot vocabulary + mock AlertsRepository (createStatusImproved/findRecentPositiveTransitions/markStatusImprovedSeen); dismiss server-side deferido; W1b.5 — FECHA Epic 6
   6-6-dashboard-agregado-para-admin-tenant: done                         # PR #121 (719640c) — endpoint GET /radar/dashboard admin(todos)/líder(só seus, guardrail server-side via JOIN group_members role=lider+user_id); agregação BullMQ + cache Redis cache:radar-aggregate:{tenantId} TTL 30s; summary cards + distribuição + trend geral; polling 30s; fixes CI RLS spec: group_members sem updated_at + UUIDs hex válidos + cleanup só radar_status; W1b.4b
   epic-6-retrospective: optional
 
