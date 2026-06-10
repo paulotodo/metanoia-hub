@@ -26,8 +26,8 @@ async function ensureGroup(
   await prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
     await tx.$executeRawUnsafe(
-      `INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence)
-       VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, '${name}', 'domingo', '10:00', 'weekly')
+      `INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence, updated_at)
+       VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, '${name}', 'domingo', '10:00', 'weekly', now())
        ON CONFLICT (id) DO NOTHING`,
     );
   });
