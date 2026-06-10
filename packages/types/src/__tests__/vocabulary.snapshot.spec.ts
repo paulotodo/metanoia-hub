@@ -26,7 +26,18 @@ describe('PASTORAL_VOCABULARY snapshot', () => {
         "care": "cuidado",
         "careHistoryLabel": "Histórico de cuidado",
         "careSignal": "sinal de cuidado",
+        "celebrationDismiss": "Entendido",
+        "celebrationMessage": "{{name}} está melhorando!",
+        "celebrationTitle": "Boa notícia!",
         "journey": "jornada",
+        "nudgeCtaLabel": "Registrar cuidado",
+        "nudgeEmptyState": "Todos os participantes estão em dia.",
+        "nudgeSectionTitle": "Sugestões de cuidado",
+        "nudgeSuggestionLabels": {
+          "call": "Sugestão: ligar para {{name}}",
+          "message": "Sugestão: enviar mensagem para {{name}}",
+          "visit": "Sugestão: visitar {{name}}",
+        },
         "presence": "presença",
         "semaforo": "semáforo",
         "semaforoStatusLabels": {

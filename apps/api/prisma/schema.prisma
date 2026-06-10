@@ -169,7 +169,8 @@ model User {
   pastoralAlerts   PastoralAlert[]  @relation("alerts")
   pastoralActions  PastoralAction[] @relation("actions")
   pastoralNotes    PastoralNote[]   @relation("notes")
-  radarStatuses    ParticipantRadarStatus[] @relation("radarStatuses")
+  radarStatuses         ParticipantRadarStatus[]     @relation("radarStatuses")
+  statusImprovements    ParticipantStatusImproved[]  @relation("statusImprovements")
 
   @@index([tenantId])
   @@map("users")
@@ -223,9 +224,10 @@ model Tenant {
   createdAt               DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt               DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  groups        Group[]
-  invites       Invite[]
-  radarStatuses ParticipantRadarStatus[]
+  groups               Group[]
+  invites              Invite[]
+  radarStatuses        ParticipantRadarStatus[]
+  statusImprovements   ParticipantStatusImproved[]
 
   @@index([tenantId])
   @@index([status])
@@ -269,11 +271,12 @@ model Group {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  tenant        Tenant        @relation(fields: [tenantId], references: [id])
-  members       GroupMember[]
-  alerts        PastoralAlert[]
-  actions       PastoralAction[]
-  radarStatuses ParticipantRadarStatus[]
+  tenant               Tenant        @relation(fields: [tenantId], references: [id])
+  members              GroupMember[]
+  alerts               PastoralAlert[]
+  actions              PastoralAction[]
+  radarStatuses        ParticipantRadarStatus[]
+  statusImprovements   ParticipantStatusImproved[]
 
   @@index([tenantId])
   @@map("groups")
@@ -421,6 +424,30 @@ model ParticipantRadarStatus {
   @@index([tenantId, groupId])
   @@index([participantId])
   @@map("participant_radar_status")
+}
+
+/// ParticipantStatusImproved — positive transition events for CelebrationBanner (Story 6-5).
+/// Persists each positive radar status transition (vermelho→amarelo, amarelo→verde).
+/// Auto-dismissed after 24 h via query filter on createdAt.
+model ParticipantStatusImproved {
+  id               String      @id @db.Uuid
+  tenantId         String      @map("tenant_id") @db.Uuid
+  groupId          String      @map("group_id") @db.Uuid
+  participantId    String      @map("participant_id") @db.Uuid
+  previousStatus   RadarStatus @map("previous_status")
+  newStatus        RadarStatus @map("new_status")
+  trend            RadarTrend  @default(estavel)
+  seenAt           DateTime?   @map("seen_at") @db.Timestamptz
+  createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group       Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  participant User   @relation("statusImprovements", fields: [participantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId, groupId])
+  @@index([participantId])
+  @@index([tenantId, createdAt])
+  @@map("participant_status_improved")
 }
 
 /// Public marketing funnel — no tenant_id, no RLS by design.

@@ -194,3 +194,43 @@ export const CareActionResponseSchema = z.object({
   recordedAt: z.string().datetime(),
 });
 export type CareActionResponse = z.infer<typeof CareActionResponseSchema>;
+
+// --- Pastoral Nudges (Story 6-5) ---
+
+/**
+ * Nudge suggestion type:
+ *   - 'call'    → 2+ consecutive absences
+ *   - 'visit'   → status = vermelho
+ *   - 'message' → 7+ days inactive or never active
+ */
+export const NudgeSuggestionSchema = z.enum(['call', 'visit', 'message']);
+export type NudgeSuggestion = z.infer<typeof NudgeSuggestionSchema>;
+
+export const PastoralNudgeSchema = z.object({
+  participantId: z.string().uuid(),
+  participantName: z.string(),
+  groupId: z.string().uuid(),
+  suggestion: NudgeSuggestionSchema,
+  /** Machine-readable reason code for the nudge trigger */
+  reason: z.string(),
+});
+export type PastoralNudge = z.infer<typeof PastoralNudgeSchema>;
+
+export const NudgeListResponseSchema = z.array(PastoralNudgeSchema);
+export type NudgeListResponse = z.infer<typeof NudgeListResponseSchema>;
+
+// --- Status Improved (CelebrationBanner, Story 6-5) ---
+
+export const StatusImprovedItemSchema = z.object({
+  id: z.string().uuid(),
+  participantId: z.string().uuid(),
+  participantName: z.string(),
+  previousStatus: z.enum(['verde', 'amarelo', 'vermelho']),
+  newStatus: z.enum(['verde', 'amarelo', 'vermelho']),
+  trend: z.enum(['melhorando', 'estavel', 'declinio']),
+  createdAt: z.string().datetime(),
+});
+export type StatusImprovedItem = z.infer<typeof StatusImprovedItemSchema>;
+
+export const StatusImprovedListResponseSchema = z.array(StatusImprovedItemSchema);
+export type StatusImprovedListResponse = z.infer<typeof StatusImprovedListResponseSchema>;

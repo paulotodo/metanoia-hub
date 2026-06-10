@@ -27,6 +27,28 @@ export interface PastoralAlertRow {
   updatedAt: Date;
 }
 
+export interface CreateStatusImprovedData {
+  tenantId: string;
+  groupId: string;
+  participantId: string;
+  previousStatus: RadarStatus;
+  newStatus: RadarStatus;
+  trend: RadarTrend;
+}
+
+export interface StatusImprovedRow {
+  id: string;
+  tenantId: string;
+  groupId: string;
+  participantId: string;
+  participantName: string;
+  previousStatus: RadarStatus;
+  newStatus: RadarStatus;
+  trend: RadarTrend;
+  seenAt: Date | null;
+  createdAt: Date;
+}
+
 @Injectable()
 export class AlertsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -127,6 +149,75 @@ export class AlertsRepository {
       tx.pastoralAlert.update({
         where: { id },
         data: { dismissedAt: new Date() },
+      }),
+    );
+  }
+
+  /**
+   * Persists a positive status transition event.
+   * Used by CelebrationBanner (Story 6-5).
+   */
+  async createStatusImproved(data: CreateStatusImprovedData): Promise<string> {
+    const id = generateId();
+    await withTenantTx(this.prisma, (tx) =>
+      tx.participantStatusImproved.create({
+        data: {
+          id,
+          tenantId: data.tenantId,
+          groupId: data.groupId,
+          participantId: data.participantId,
+          previousStatus: data.previousStatus,
+          newStatus: data.newStatus,
+          trend: data.trend,
+        },
+      }),
+    );
+    return id;
+  }
+
+  /**
+   * Returns unseen positive transitions from the last 24h for a tenant.
+   * Used to populate CelebrationBanner in the radar page.
+   */
+  async findRecentPositiveTransitions(groupId?: string): Promise<StatusImprovedRow[]> {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return withTenantTx(this.prisma, (tx) =>
+      tx.participantStatusImproved.findMany({
+        where: {
+          ...(groupId ? { groupId } : {}),
+          seenAt: null,
+          createdAt: { gte: since },
+        },
+        include: {
+          participant: { select: { name: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      }),
+    ).then((rows) =>
+      rows.map((r) => ({
+        id: r.id,
+        tenantId: r.tenantId,
+        groupId: r.groupId,
+        participantId: r.participantId,
+        participantName: (r as typeof r & { participant: { name: string } }).participant.name,
+        previousStatus: r.previousStatus,
+        newStatus: r.newStatus,
+        trend: r.trend,
+        seenAt: r.seenAt,
+        createdAt: r.createdAt,
+      })),
+    );
+  }
+
+  /**
+   * Marks a positive transition as seen (CelebrationBanner dismissed).
+   */
+  async markStatusImprovedSeen(id: string): Promise<void> {
+    await withTenantTx(this.prisma, (tx) =>
+      tx.participantStatusImproved.update({
+        where: { id },
+        data: { seenAt: new Date() },
       }),
     );
   }
