@@ -6,6 +6,7 @@ export {
   useRecordCareAction,
 } from './use-radar';
 export { onboardingKeys, useDemoRadar } from './use-onboarding';
+export { usersKeys, useOnboardingStatus, useCompleteOnboarding } from './use-users';
 export { groupKeys, useCreateGroup } from './use-groups';
 export {
   meetingsKeys,

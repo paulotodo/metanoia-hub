@@ -1,5 +1,6 @@
 import { AppQueryProvider } from "@/lib/query";
 import { NavigationShell } from "./_components/navigation-shell";
+import { OnboardingRedirectGuard } from "./_components/onboarding-redirect-guard";
 
 export default function AuthenticatedLayout({
   children,
@@ -8,7 +9,9 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <AppQueryProvider>
-      <NavigationShell>{children}</NavigationShell>
+      <NavigationShell>
+        <OnboardingRedirectGuard>{children}</OnboardingRedirectGuard>
+      </NavigationShell>
     </AppQueryProvider>
   );
 }

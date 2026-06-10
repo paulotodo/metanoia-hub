@@ -224,16 +224,23 @@ async function main() {
   // membership lives in `user_tenants`. Setting tenantId here would hide the
   // user from the unauthenticated login lookup (RLS on `users` requires
   // tenant_id = current_setting OR IS NULL).
+  // Demo users skip the first-access onboarding screen — they are pre-seeded
+  // with onboarding_completed_at set so the redirect guard doesn't intercept
+  // them. This also protects the E2E happy-path (Story 7-4) which logs in as
+  // the demo admin and expects to land directly on an /app/ route.
+  const DEMO_ONBOARDING_AT = new Date('2026-01-01T00:00:00.000Z');
+
   for (const u of users) {
     await prisma.user.upsert({
       where: { id: u.id },
-      update: { name: u.name, status: 'active', tenantId: null },
+      update: { name: u.name, status: 'active', tenantId: null, onboardingCompletedAt: DEMO_ONBOARDING_AT },
       create: {
         id: u.id,
         email: u.email,
         name: u.name,
         status: 'active',
         tenantId: null,
+        onboardingCompletedAt: DEMO_ONBOARDING_AT,
       },
     });
   }

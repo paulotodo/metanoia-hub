@@ -32,3 +32,11 @@ export const DemoRadarResponseSchema = z.object({
   signals: z.array(DemoRadarSignalSchema),
 });
 export type DemoRadarResponse = z.infer<typeof DemoRadarResponseSchema>;
+
+// --- PATCH /api/v1/users/me/onboarding-complete ---
+
+export const OnboardingCompleteResponseSchema = z.object({
+  userId: z.string().uuid(),
+  onboardingCompletedAt: z.string().datetime(),
+});
+export type OnboardingCompleteResponse = z.infer<typeof OnboardingCompleteResponseSchema>;

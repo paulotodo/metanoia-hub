@@ -9,6 +9,7 @@ import { authTenantSelectionHandlers } from './auth-tenant-selection';
 import { authRecoveryHandlers } from './auth-recovery';
 import { participantGroupsHandlers } from './participant-groups';
 import { superAdminTenantsHandlers } from './super-admin-tenants';
+import { usersHandlers } from './users';
 
 export const handlers = [
   ...radarHandlers,
@@ -22,4 +23,5 @@ export const handlers = [
   ...authRecoveryHandlers,
   ...participantGroupsHandlers,
   ...superAdminTenantsHandlers,
+  ...usersHandlers,
 ];

@@ -154,13 +154,14 @@ model Reflection {
 
 /// Platform user — created at registration, tenant assigned later
 model User {
-  id        String   @id @db.Uuid
-  email     String   @unique
-  name      String
-  status    String   @default("pending_verification")
-  tenantId  String?  @map("tenant_id") @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                   String    @id @db.Uuid
+  email                String    @unique
+  name                 String
+  status               String    @default("pending_verification")
+  tenantId             String?   @map("tenant_id") @db.Uuid
+  onboardingCompletedAt DateTime? @map("onboarding_completed_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
 
   userTenants      UserTenant[]
   consents         Consent[]

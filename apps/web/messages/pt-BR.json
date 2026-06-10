@@ -44,6 +44,23 @@
     },
     "demo": {
       "disclaimer": "Isto e uma demonstracao. Seu radar real aparece quando voce tiver seu primeiro grupo com participantes."
+    },
+    "firstAccess": {
+      "admin": {
+        "heading": "Bem-vindo, {name}! Sua jornada pastoral começa aqui.",
+        "body": "Crie seu primeiro grupo e convide participantes para o cuidado comunitário.",
+        "cta": "Criar Grupo"
+      },
+      "lider": {
+        "heading": "Bem-vindo, {name}! Seu grupo está pronto para florescer.",
+        "body": "Explore o Radar Pastoral e acompanhe como cada membro está no caminho da fé.",
+        "cta": "Abrir Radar"
+      },
+      "participante": {
+        "heading": "Bem-vindo, {name}! Você faz parte desta comunidade.",
+        "body": "Veja seus grupos e comece a participar dos encontros e reflexões.",
+        "cta": "Ver Meus Grupos"
+      }
     }
   },
   "onboarding": {

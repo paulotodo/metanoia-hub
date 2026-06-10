@@ -3,6 +3,7 @@ import {
   DemoRadarSignalSchema,
   DemoRadarParticipantSchema,
   DemoRadarResponseSchema,
+  OnboardingCompleteResponseSchema,
 } from '../onboarding';
 
 describe('DemoRadarSignalSchema snapshot', () => {
@@ -101,5 +102,34 @@ describe('DemoRadarResponseSchema snapshot', () => {
         "success": true,
       }
     `);
+  });
+});
+
+describe('OnboardingCompleteResponseSchema snapshot', () => {
+  it('accepts valid onboarding-complete response', () => {
+    const result = OnboardingCompleteResponseSchema.safeParse({
+      userId: '019756c0-0001-7000-8000-000000000001',
+      onboardingCompletedAt: '2026-06-10T12:00:00.000Z',
+    });
+    expect({
+      success: result.success,
+      data: result.success ? result.data : null,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": {
+          "onboardingCompletedAt": "2026-06-10T12:00:00.000Z",
+          "userId": "019756c0-0001-7000-8000-000000000001",
+        },
+        "success": true,
+      }
+    `);
+  });
+
+  it('rejects invalid uuid and non-datetime string', () => {
+    const result = OnboardingCompleteResponseSchema.safeParse({
+      userId: 'not-a-uuid',
+      onboardingCompletedAt: 'not-a-datetime',
+    });
+    expect(result.success).toBe(false);
   });
 });
