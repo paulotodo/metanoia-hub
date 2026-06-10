@@ -201,6 +201,51 @@ export default function ParticipantGroupDetailPage() {
         </section>
       ) : null}
 
+      {group.peers !== undefined && group.peers.length > 0 ? (
+        <section
+          id="mygroup-peers"
+          role="region"
+          aria-labelledby="mygroup-peers-h"
+          className="flex flex-col gap-2"
+          data-testid="mygroup-peers"
+        >
+          <h3
+            id="mygroup-peers-h"
+            className="text-[18px] font-semibold text-[var(--color-text-primary)]"
+          >
+            {t.peers.label}
+          </h3>
+          <ul role="list" className="flex flex-wrap gap-2">
+            {group.peers.map((peer, idx) => (
+              <li
+                key={`${peer.firstName}-${idx}`}
+                className="rounded-full bg-[var(--muted)] px-3 py-1 text-sm text-[var(--color-text-primary)]"
+              >
+                {peer.firstName}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : group.peers !== undefined ? (
+        <section
+          id="mygroup-peers"
+          role="region"
+          aria-labelledby="mygroup-peers-h"
+          className="flex flex-col gap-2"
+          data-testid="mygroup-peers-empty"
+        >
+          <h3
+            id="mygroup-peers-h"
+            className="text-[18px] font-semibold text-[var(--color-text-primary)]"
+          >
+            {t.peers.label}
+          </h3>
+          <p className="text-sm text-[var(--color-text-muted)]">
+            {t.peers.empty}
+          </p>
+        </section>
+      ) : null}
+
       <section id="mygroup-closing">
         <p className="text-center text-[var(--color-text-muted)]">
           {t.closing}

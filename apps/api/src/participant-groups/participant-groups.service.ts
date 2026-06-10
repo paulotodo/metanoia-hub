@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { generateId } from '@metanoia/types';
 import type {
   ParticipantGroupsListResponse,
   ParticipantGroupDetailResponse,
@@ -15,6 +17,7 @@ export class ParticipantGroupsService {
   constructor(
     private readonly repository: ParticipantGroupsRepository,
     private readonly redis: RedisService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -43,6 +46,19 @@ export class ParticipantGroupsService {
     );
 
     const firstVisit = await this.consumeFirstVisitFlag(userId);
+
+    if (firstVisit) {
+      const { tenantId } = getRequestContext();
+      this.eventEmitter.emit('participant.group.first_view', {
+        eventId: generateId(),
+        eventType: 'participant.group.first_view',
+        version: 1,
+        tenantId,
+        timestamp: new Date().toISOString(),
+        data: { userId },
+        metadata: {},
+      });
+    }
 
     return { data, meta: { firstVisit } };
   }

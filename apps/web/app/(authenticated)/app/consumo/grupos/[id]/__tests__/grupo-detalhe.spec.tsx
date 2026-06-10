@@ -46,12 +46,22 @@ describe('ParticipantGroupDetailPage — full fixture', () => {
     ).toBeTruthy();
   });
 
-  it('does not render peers section nor a "entrar na reunião" button', async () => {
+  it('renders the peers section with first-name chips', async () => {
     await renderPage('019756c0-2000-7000-8000-000000000001');
     await waitFor(() =>
       expect(screen.getByText('Fundamentos da Fé')).toBeTruthy(),
     );
-    expect(screen.queryByText(/outros participantes/i)).toBeNull();
+    expect(screen.getByTestId('mygroup-peers')).toBeTruthy();
+    expect(screen.getByText('Outros participantes')).toBeTruthy();
+    expect(screen.getByText('Ana')).toBeTruthy();
+    expect(screen.getByText('Carlos')).toBeTruthy();
+  });
+
+  it('does not render a "entrar na reunião" button', async () => {
+    await renderPage('019756c0-2000-7000-8000-000000000001');
+    await waitFor(() =>
+      expect(screen.getByText('Fundamentos da Fé')).toBeTruthy(),
+    );
     expect(screen.queryByRole('button', { name: /entrar na reunião/i })).toBeNull();
   });
 });
@@ -67,6 +77,18 @@ describe('ParticipantGroupDetailPage — minimal fixture', () => {
     expect(screen.queryByTestId('mygroup-format')).toBeNull();
     expect(
       screen.getByText('Sem pressa. Quando você vier, a gente tá aqui.'),
+    ).toBeTruthy();
+  });
+
+  it('renders peers empty state when peers array is empty', async () => {
+    await renderPage('019756c0-2000-7000-8000-000000000002');
+    await waitFor(() =>
+      expect(screen.getByText('Caminhada em Cristo')).toBeTruthy(),
+    );
+    expect(screen.getByTestId('mygroup-peers-empty')).toBeTruthy();
+    expect(screen.getByText('Outros participantes')).toBeTruthy();
+    expect(
+      screen.getByText('Você é o único participante por enquanto.'),
     ).toBeTruthy();
   });
 });
