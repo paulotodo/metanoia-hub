@@ -65,7 +65,7 @@ development_status:
   2-1-cadastro-de-usuario-com-email-e-senha: done
   2-2-login-via-emailsenha-e-google-oauth: done
   2-3-mfa-obrigatorio-para-super-admin-e-admin-tenant: done            # PR #88 (2026-04-30)
-  2-4-autorizacao-por-papeis-e-guards-nestjs-3-camadas: ready-for-dev
+  2-4-autorizacao-por-papeis-e-guards-nestjs-3-camadas: done               # PR #113 (escopo residual pós-reconciliação: TenantGuard+Role enum+Pino)
   2-5-selecao-de-tenant-ativo-e-associacao-multi-tenant: ready-for-dev
   2-6-isolamento-de-dados-por-tenant-rls: done                         # coberta por 7-5/7-7 (RLS NULLIF + withTenantTx); reconciliação 2026-06-09
   2-7-gestao-de-usuarios-e-papeis-pelo-admin-tenant: done               # PR #89 (2026-04-30)
