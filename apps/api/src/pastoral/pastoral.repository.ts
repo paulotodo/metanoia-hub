@@ -60,6 +60,34 @@ export class PastoralRepository {
     );
   }
 
+  /**
+   * Fetches all pastoral care actions for a participant, ordered chronologically descending.
+   * Used to build the merged individual timeline (Story 6-4).
+   */
+  async findCareActionsByParticipant(participantId: string) {
+    return withTenantTx(this.prisma, (tx) =>
+      tx.pastoralAction.findMany({
+        where: { participantId },
+        orderBy: { recordedAt: 'desc' },
+      }),
+    );
+  }
+
+  /**
+   * Fetches meeting attendance records for a participant (presence signals),
+   * ordered chronologically descending.
+   * MeetingAttendance has no Prisma relation to Meeting — meetingId is a raw FK.
+   * Used to build the merged individual timeline (Story 6-4).
+   */
+  async findAttendanceByParticipant(participantId: string) {
+    return withTenantTx(this.prisma, (tx) =>
+      tx.meetingAttendance.findMany({
+        where: { userId: participantId },
+        orderBy: { joinTime: 'desc' },
+      }),
+    );
+  }
+
   async findGroupsByTenant() {
     return withTenantTx(this.prisma, (tx) =>
       tx.group.findMany({

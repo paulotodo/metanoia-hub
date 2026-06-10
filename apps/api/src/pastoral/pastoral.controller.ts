@@ -48,6 +48,18 @@ export class PastoralController {
     return { data };
   }
 
+  /**
+   * GET /api/v1/radar/:id/timeline
+   * Returns merged individual timeline: presence signals + pastoral care actions,
+   * sorted chronologically descending (most recent first).
+   * Story 6-4 — individual care history for leader view.
+   */
+  @Get(':id/timeline')
+  async getParticipantTimeline(@Param('id', ParseUUIDPipe) id: string) {
+    const data = await this.service.getParticipantTimeline(id);
+    return { data };
+  }
+
   @Post(':id/actions')
   @HttpCode(HttpStatus.CREATED)
   @UsePipes(new ZodValidationPipe(CareActionRequestSchema))

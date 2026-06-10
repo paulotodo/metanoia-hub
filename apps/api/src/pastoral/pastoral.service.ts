@@ -9,8 +9,14 @@ import type {
   CareActionType,
   SignalType,
   SignalVariant,
+  ParticipantTimeline,
+  ParticipantTimelineEvent,
 } from '@metanoia/types';
-import { RADAR_CACHE_KEY_PREFIX } from '@metanoia/types';
+import {
+  RADAR_CACHE_KEY_PREFIX,
+  PASTORAL_TIMELINE_EVENT_PRESENCE,
+  PASTORAL_TIMELINE_EVENT_ACTION,
+} from '@metanoia/types';
 import type { PastoralNote } from '@prisma/client';
 import { PastoralRepository } from './pastoral.repository';
 import { requestContext } from '../common/context/request-context';
@@ -150,6 +156,55 @@ export class PastoralService {
           : null,
       },
     };
+  }
+
+  /**
+   * Builds the merged individual timeline for a participant:
+   * presence/attendance signals + pastoral care actions, sorted chronologically descending.
+   * Story 6-4 — endpoint GET /api/v1/radar/:id/timeline
+   */
+  async getParticipantTimeline(participantId: string): Promise<ParticipantTimeline> {
+    // Verify participant exists (throws 404 if not)
+    const alert = await this.repository.findAlertByParticipant(participantId);
+    if (!alert) {
+      throw new NotFoundException('Participant not found');
+    }
+
+    const [careActions, attendanceRecords] = await Promise.all([
+      this.repository.findCareActionsByParticipant(participantId),
+      this.repository.findAttendanceByParticipant(participantId),
+    ]);
+
+    const events: ParticipantTimelineEvent[] = [];
+
+    for (const action of careActions) {
+      events.push({
+        id: action.id,
+        eventType: 'action',
+        occurredAt: action.recordedAt.toISOString(),
+        presenceType: null,
+        actionType: action.actionType,
+        note: action.note ?? null,
+        label: PASTORAL_TIMELINE_EVENT_ACTION,
+      });
+    }
+
+    for (const att of attendanceRecords) {
+      events.push({
+        id: att.id,
+        eventType: 'signal',
+        occurredAt: att.joinTime.toISOString(),
+        presenceType: att.presenceType,
+        actionType: null,
+        note: null,
+        label: PASTORAL_TIMELINE_EVENT_PRESENCE,
+      });
+    }
+
+    // Sort descending by occurredAt
+    events.sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime());
+
+    return { participantId, events };
   }
 
   async recordCareAction(
