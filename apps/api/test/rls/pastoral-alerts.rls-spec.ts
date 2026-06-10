@@ -11,6 +11,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { generateId } from '@metanoia/types';
 import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
 
@@ -43,8 +44,8 @@ async function setupFixtures(prisma: PrismaClient): Promise<void> {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
       await tx.$executeRawUnsafe(`
-        INSERT INTO users (id, tenant_id, email, role, updated_at)
-        VALUES ('${userId}'::uuid, '${tenantId}'::uuid, '${email}', 'membro', NOW())
+        INSERT INTO users (id, tenant_id, email, name, updated_at)
+        VALUES ('${userId}'::uuid, '${tenantId}'::uuid, '${email}', 'RLS PA User', NOW())
         ON CONFLICT (id) DO NOTHING
       `);
     });
@@ -106,7 +107,9 @@ describe('pastoral_alerts RLS isolation', () => {
   let prisma: PrismaClient;
 
   beforeAll(async () => {
-    prisma = new PrismaClient();
+    const connectionString = process.env.DATABASE_APP_URL!;
+    const adapter = new PrismaPg({ connectionString });
+    prisma = new PrismaClient({ adapter });
     await setupFixtures(prisma);
   });
 
