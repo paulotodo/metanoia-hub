@@ -4,14 +4,17 @@ import {
   SignalDetailSchema,
   ParticipantProfileSchema,
   CareActionResponseSchema,
+  RadarDashboardResponseSchema,
 } from '@metanoia/types';
-import type { CareActionRequest } from '@metanoia/types';
+import type { CareActionRequest, RadarDashboardResponse } from '@metanoia/types';
 import { apiClient } from '../client';
+import { envelopeClient } from '../envelope';
 
 // --- Query Keys ---
 
 export const radarKeys = {
   all: ['radar'] as const,
+  dashboard: () => [...radarKeys.all, 'dashboard'] as const,
   page: (groupId?: string) =>
     [...radarKeys.all, 'page', groupId ?? 'all'] as const,
   detail: (participantId: string) =>
@@ -54,6 +57,20 @@ export function useParticipantProfile(participantId: string) {
         ParticipantProfileSchema,
       ),
     enabled: !!participantId,
+  });
+}
+
+// --- GET /radar/dashboard (Story 6-6) ---
+// Polling a cada 30s: vista analítica não usa SSE, atualiza por intervalo.
+// Admin vê todos os grupos; líder vê apenas os seus (guardrail server-side).
+
+export function useRadarDashboard() {
+  return useQuery<RadarDashboardResponse>({
+    queryKey: radarKeys.dashboard(),
+    queryFn: () =>
+      envelopeClient.get('/radar/dashboard', RadarDashboardResponseSchema),
+    refetchInterval: 30_000,
+    staleTime: 25_000,
   });
 }
 

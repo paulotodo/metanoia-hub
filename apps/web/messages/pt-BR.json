@@ -962,5 +962,34 @@
     "unknown": {
       "generic": "Aconteceu um imprevisto. Tente novamente em instantes."
     }
+  },
+  "dashboard": {
+    "title": "Visão Geral Pastoral",
+    "subtitle": "Vista analítica de {groupCount} grupos",
+    "trend": {
+      "melhora": "Tendência positiva",
+      "estavel": "Situação estável",
+      "piora": "Requer atenção pastoral"
+    },
+    "status": {
+      "verde": "Em acompanhamento regular",
+      "amarelo": "Vale conversar",
+      "vermelho": "Cuidado urgente"
+    },
+    "summary": {
+      "title": "Resumo da Semana",
+      "total": "{total} participantes"
+    },
+    "byGroup": {
+      "title": "Por Grupo",
+      "noData": "Sem dados de participação ainda"
+    },
+    "footer": {
+      "lastUpdated": "Atualizado em {timestamp}",
+      "autoRefresh": "Atualiza automaticamente a cada 30 segundos"
+    },
+    "error": {
+      "loading": "Não foi possível carregar a visão pastoral"
+    }
   }
 }

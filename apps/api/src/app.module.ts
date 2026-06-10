@@ -12,6 +12,7 @@ import { BullMqModule } from './bullmq/bullmq.module';
 import { MeetingsModule } from './meetings/meetings.module';
 import { PastoralModule } from './pastoral/pastoral.module';
 import { AdminPastoralModule } from './admin-pastoral/admin-pastoral.module';
+import { RadarDashboardModule } from './pastoral/dashboard/radar-dashboard.module';
 import { InvitesModule } from './invites/invites.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { GroupsModule } from './groups/groups.module';
@@ -54,6 +55,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     MeetingsModule,
     PastoralModule,
     AdminPastoralModule,
+    RadarDashboardModule,
     InvitesModule,
     TenantsModule,
     GroupsModule,

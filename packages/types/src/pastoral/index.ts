@@ -8,9 +8,23 @@ export {
   RADAR_CACHE_TTL_SECONDS,
   RADAR_CACHE_KEY_PREFIX,
   RADAR_QUEUE_NAME,
+  RADAR_AGGREGATE_CACHE_TTL_SECONDS,
+  RADAR_AGGREGATE_CACHE_KEY_PREFIX,
+  RADAR_AGGREGATE_QUEUE_NAME,
   RADAR_CONSTANTS,
   type RadarConstants,
 } from './radar-constants';
+
+export {
+  RadarStatusDistributionSchema,
+  RadarGroupSummarySchema,
+  DashboardTrendSchema,
+  RadarDashboardResponseSchema,
+  type RadarStatusDistribution,
+  type RadarGroupSummary,
+  type DashboardTrend,
+  type RadarDashboardResponse,
+} from './radar-dashboard';
 
 export {
   TrendTypeSchema,

@@ -47,6 +47,19 @@ export const RADAR_CACHE_KEY_PREFIX = 'cache:radar' as const;
 /** BullMQ queue name for radar recalculation jobs. */
 export const RADAR_QUEUE_NAME = 'radar-calculation' as const;
 
+// ---------------------------------------------------------------------------
+// Dashboard aggregate constants (Story 6-6)
+// ---------------------------------------------------------------------------
+
+/** Redis TTL for radar aggregate cache in seconds (30 seconds). */
+export const RADAR_AGGREGATE_CACHE_TTL_SECONDS = 30 as const;
+
+/** Redis cache key prefix for radar aggregate per tenant. */
+export const RADAR_AGGREGATE_CACHE_KEY_PREFIX = 'cache:radar-aggregate' as const;
+
+/** BullMQ queue name for radar aggregate jobs. */
+export const RADAR_AGGREGATE_QUEUE_NAME = 'radar-aggregate' as const;
+
 /** Frozen map of all radar constants for snapshot testing. */
 export const RADAR_CONSTANTS = {
   greenThreshold: RADAR_GREEN_THRESHOLD,
@@ -58,6 +71,9 @@ export const RADAR_CONSTANTS = {
   cacheTtlSeconds: RADAR_CACHE_TTL_SECONDS,
   cacheKeyPrefix: RADAR_CACHE_KEY_PREFIX,
   queueName: RADAR_QUEUE_NAME,
+  aggregateCacheTtlSeconds: RADAR_AGGREGATE_CACHE_TTL_SECONDS,
+  aggregateCacheKeyPrefix: RADAR_AGGREGATE_CACHE_KEY_PREFIX,
+  aggregateQueueName: RADAR_AGGREGATE_QUEUE_NAME,
 } as const;
 
 export type RadarConstants = typeof RADAR_CONSTANTS;
