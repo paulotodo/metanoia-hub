@@ -84,11 +84,11 @@ development_status:
 
   # Epic 4: Grupos, Membros & Convites
   # Sprint 5: 4-1, 4-2, 4-3, 4-4, 4-5
-  epic-4: in-progress
+  epic-4: done                                                         # fechado 2026-06-10 (PR #130 fecha 4-4; 5/5 stories done)
   4-1-crud-de-grupos: done                                             # PR #91 (2026-04-30)
   4-2-vincular-membros-lideres-a-grupo: done                           # PR #92 (2026-04-30)
   4-3-convite-via-e-mail-e-link: done                                  # PR #93 (2026-04-30)
-  4-4-associar-trilhas-a-grupo: ready-for-dev
+  4-4-associar-trilhas-a-grupo: done                                   # PR #130 (2026-06-10) — W1b.2; reusa group_trails da 8-6
   4-5-participante-visualiza-seus-grupos: done                          # Cenário 06 + PR #116 (residual: domain event first_view + peers UI + copy)
   epic-4-retrospective: optional
 
