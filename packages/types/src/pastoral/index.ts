@@ -11,3 +11,16 @@ export {
   RADAR_CONSTANTS,
   type RadarConstants,
 } from './radar-constants';
+
+export {
+  TrendTypeSchema,
+  RadarStatusTypeSchema,
+  PastoralAlertWithTrendSchema,
+  AlertListResponseSchema,
+  ALERT_SCHEMA_SHAPES,
+  type TrendType,
+  type RadarStatusType,
+  type PastoralAlertWithTrend,
+  type AlertListResponse,
+  type AlertSchemaShapes,
+} from './alert.schema';

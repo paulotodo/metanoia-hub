@@ -52,6 +52,7 @@ describe('RadarCalculatorService.calculateParticipant', () => {
     service = new RadarCalculatorService(
       {} as never, // RadarCalculatorRepository — not used in unit tests
       {} as never, // RadarStatusRepository — not used in unit tests
+      {} as never, // AlertsService — not used in unit tests for calculateParticipant
     );
   });
 

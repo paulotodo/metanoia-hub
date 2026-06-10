@@ -10,6 +10,7 @@ import {
 import { RadarCalculatorRepository } from './radar-calculator.repository';
 import { RadarStatusRepository } from './radar-status.repository';
 import type { RecentMeetingAttendance, MeetingWindow } from './radar-calculator.repository';
+import { AlertsService } from '../alerts/alerts.service';
 
 export interface ParticipantCalculationResult {
   participantId: string;
@@ -33,6 +34,7 @@ export class RadarCalculatorService {
   constructor(
     private readonly calculatorRepo: RadarCalculatorRepository,
     private readonly statusRepo: RadarStatusRepository,
+    private readonly alertsService: AlertsService,
   ) {}
 
   /**
@@ -70,8 +72,10 @@ export class RadarCalculatorService {
       return result;
     });
 
-    // 6. Persist all results
+    // 6. Persist all results and process status transitions (alerts)
     for (const result of results) {
+      const previousStatus = prevStatusMap.get(result.participantId) ?? null;
+
       await this.statusRepo.upsert({
         tenantId,
         groupId,
@@ -81,6 +85,16 @@ export class RadarCalculatorService {
         presencePercentage: result.presencePercentage,
         lastActiveAt: result.lastActiveAt,
       });
+
+      // 6b. Process status transition: create alert (negative) or emit event (positive)
+      await this.alertsService.processTransition(
+        tenantId,
+        groupId,
+        result.participantId,
+        previousStatus,
+        result.status,
+        result.trend,
+      );
     }
 
     this.logger.log(

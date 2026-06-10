@@ -298,25 +298,32 @@ model GroupMember {
 
 /// PastoralAlert — materialized signal per participant, written by signal engine, read by radar
 model PastoralAlert {
-  id              String   @id @db.Uuid
-  tenantId        String   @map("tenant_id") @db.Uuid
-  participantId   String   @map("participant_id") @db.Uuid
-  groupId         String   @map("group_id") @db.Uuid
-  signalType      String   @map("signal_type")
-  signalVariant   String?  @map("signal_variant")
-  contextPhrase   String?  @map("context_phrase")
-  observedFact    String?  @map("observed_fact")
-  systemLimitation String? @map("system_limitation")
-  presenceDots    Json     @default("[]") @map("presence_dots")
-  active          Boolean  @default(true)
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id               String      @id @db.Uuid
+  tenantId         String      @map("tenant_id") @db.Uuid
+  participantId    String      @map("participant_id") @db.Uuid
+  groupId          String      @map("group_id") @db.Uuid
+  signalType       String      @map("signal_type")
+  signalVariant    String?     @map("signal_variant")
+  contextPhrase    String?     @map("context_phrase")
+  observedFact     String?     @map("observed_fact")
+  systemLimitation String?     @map("system_limitation")
+  presenceDots     Json        @default("[]") @map("presence_dots")
+  active           Boolean     @default(true)
+  /// Story 6-3: status transition fields (additive)
+  previousStatus   RadarStatus? @map("previous_status")
+  newStatus        RadarStatus? @map("new_status")
+  trend            RadarTrend?  @map("trend")
+  readAt           DateTime?    @map("read_at")
+  dismissedAt      DateTime?    @map("dismissed_at")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
 
   participant User  @relation("alerts", fields: [participantId], references: [id])
   group       Group @relation(fields: [groupId], references: [id])
 
   @@index([tenantId, active])
   @@index([participantId])
+  @@index([tenantId, groupId, dismissedAt])
   @@map("pastoral_alerts")
 }
 

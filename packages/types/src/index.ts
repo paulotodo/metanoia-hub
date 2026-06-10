@@ -12,6 +12,16 @@ export {
   RADAR_QUEUE_NAME,
   RADAR_CONSTANTS,
   type RadarConstants,
+  TrendTypeSchema,
+  RadarStatusTypeSchema,
+  PastoralAlertWithTrendSchema,
+  AlertListResponseSchema,
+  ALERT_SCHEMA_SHAPES,
+  type TrendType,
+  type RadarStatusType,
+  type PastoralAlertWithTrend,
+  type AlertListResponse,
+  type AlertSchemaShapes,
 } from './pastoral';
 export {
   PASTORAL_CARE,
