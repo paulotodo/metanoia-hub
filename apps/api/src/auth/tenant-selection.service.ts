@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import type { UserTenantRole } from '@metanoia/types';
 import { getRequestContext } from '../common/context/request-context';
@@ -133,12 +134,29 @@ export class TenantSelectionService {
       );
     }
 
-    await this.redis.set(
-      `user:${userId}:active-tenant`,
-      tenantId,
-      'EX',
-      ACTIVE_TENANT_TTL_SECONDS,
-    );
+    // Resilience policy (FR-007, FR-008):
+    // If Redis is unavailable when the user selects a tenant, we fail
+    // explicitly (503) rather than proceeding silently. Proceeding would
+    // mean the selection is not persisted and subsequent requests would
+    // fall back to the JWT-embedded tenant, producing stale tenant context
+    // with no user-visible signal. An explicit failure lets the frontend
+    // surface a retry prompt.
+    try {
+      await this.redis.set(
+        `user:${userId}:active-tenant`,
+        tenantId,
+        'EX',
+        ACTIVE_TENANT_TTL_SECONDS,
+      );
+    } catch (error) {
+      this.logger.error(
+        { userId, tenantId, error: String(error) },
+        'Redis unavailable; tenant selection write failed',
+      );
+      throw new ServiceUnavailableException(
+        'Cache unavailable; tenant selection failed',
+      );
+    }
 
     this.logger.log({ userId, tenantId }, 'active tenant updated');
     return { tenantId };

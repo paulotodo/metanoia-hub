@@ -254,6 +254,54 @@ describe('KeycloakAuthGuard', () => {
     expect(mockStore.tenantId).toBe('tenant-001');
   });
 
+  it('should emit error-level log (FR-005) when Redis throws during tenant resolution', async () => {
+    // FR-005: error-level (not warn) so on-call operators are alerted.
+    vi.mocked(jwtVerify).mockResolvedValue({
+      payload: validPayload,
+      protectedHeader: { alg: 'RS256' },
+    } as any);
+    redis.get.mockRejectedValue(new Error('ECONNREFUSED 127.0.0.1:6379'));
+
+    const loggerErrorSpy = vi
+      .spyOn((guard as any).logger, 'error')
+      .mockImplementation(() => undefined);
+
+    const ctx = createMockExecutionContext({
+      authorization: 'Bearer valid-token',
+    });
+
+    await guard.canActivate(ctx as any);
+
+    // Guard still returns true (resilient), and error is logged (not warn).
+    expect(mockStore.tenantId).toBe('tenant-001');
+    expect(loggerErrorSpy).toHaveBeenCalledOnce();
+    expect(loggerErrorSpy.mock.calls[0][0]).toMatch(/userId=user-uuid-123/);
+    expect(loggerErrorSpy.mock.calls[0][0]).toMatch(/ECONNREFUSED/);
+  });
+
+  it('should NOT log error when Redis returns null (key absent — normal operation)', async () => {
+    // A missing key is normal: user has not yet selected a tenant.
+    // No error log expected; guard returns JWT tenant silently.
+    vi.mocked(jwtVerify).mockResolvedValue({
+      payload: validPayload,
+      protectedHeader: { alg: 'RS256' },
+    } as any);
+    redis.get.mockResolvedValue(null);
+
+    const loggerErrorSpy = vi
+      .spyOn((guard as any).logger, 'error')
+      .mockImplementation(() => undefined);
+
+    const ctx = createMockExecutionContext({
+      authorization: 'Bearer valid-token',
+    });
+
+    await guard.canActivate(ctx as any);
+
+    expect(mockStore.tenantId).toBe('tenant-001');
+    expect(loggerErrorSpy).not.toHaveBeenCalled();
+  });
+
   it('should handle JWKS endpoint unreachable errors', async () => {
     vi.mocked(jwtVerify).mockRejectedValue(
       new Error('request to http://localhost:8080 failed, reason: ECONNREFUSED'),

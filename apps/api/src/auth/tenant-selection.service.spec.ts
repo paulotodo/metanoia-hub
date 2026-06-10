@@ -1,6 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  NotFoundException,
+  ForbiddenException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { requestContext } from '../common/context/request-context';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
@@ -35,7 +39,7 @@ describe('TenantSelectionService', () => {
       $executeRawUnsafe: ReturnType<typeof vi.fn>;
     };
   };
-  let redis: { set: ReturnType<typeof vi.fn> };
+  let redis: { set: ReturnType<typeof vi.fn>; get?: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     prisma = {
@@ -162,6 +166,41 @@ describe('TenantSelectionService', () => {
       ).rejects.toThrow(NotFoundException);
 
       expect(redis.set).not.toHaveBeenCalled();
+    });
+
+    it('throws ServiceUnavailableException (503) when Redis write fails (FR-007)', async () => {
+      // FR-007: explicit failure when cache is unavailable at selection time.
+      // The frontend receives a stable 503 and can prompt the user to retry.
+      prisma.client.userTenant.findUnique.mockResolvedValue({
+        userId: USER_ID,
+        tenantId: TENANT_B,
+        role: 'leader',
+      });
+      redis.set.mockRejectedValue(new Error('ECONNREFUSED 127.0.0.1:6379'));
+
+      await expect(
+        withContext(() => service.selectTenant(TENANT_B)),
+      ).rejects.toThrow(ServiceUnavailableException);
+    });
+
+    it('happy path is unchanged when Redis is available', async () => {
+      // Regression guard: the try/catch must not break the nominal flow.
+      prisma.client.userTenant.findUnique.mockResolvedValue({
+        userId: USER_ID,
+        tenantId: TENANT_B,
+        role: 'admin_tenant',
+      });
+      redis.set.mockResolvedValue('OK');
+
+      const result = await withContext(() => service.selectTenant(TENANT_B));
+
+      expect(result).toEqual({ tenantId: TENANT_B });
+      expect(redis.set).toHaveBeenCalledWith(
+        `user:${USER_ID}:active-tenant`,
+        TENANT_B,
+        'EX',
+        expect.any(Number),
+      );
     });
   });
 });
