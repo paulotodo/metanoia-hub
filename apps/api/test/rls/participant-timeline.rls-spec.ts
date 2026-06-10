@@ -74,8 +74,8 @@ async function setupFixtures(prisma: PrismaClient): Promise<void> {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
       await tx.$executeRawUnsafe(`
-        INSERT INTO groups (id, tenant_id, name)
-        VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, '${gname}')
+        INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence, updated_at)
+        VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, '${gname}', 'mon', '19:00', 'weekly', NOW())
         ON CONFLICT (id) DO NOTHING
       `);
     });
