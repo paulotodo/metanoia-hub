@@ -67,6 +67,12 @@ escrever evidência), `PARCIAL` (escopo residual reduzido → spec menor), ou
 - **Regressão cross-story**: features que mudam fluxos (ex.: auto-select pula tela) quebram E2E de stories anteriores — esperar e corrigir o teste no mesmo PR.
 - **Git**: spawnar o orquestrador a partir de `dev` limpo (senão a feature-branch herda commits da branch atual, como ocorreu com #113 que absorveu o bootstrap). Pós-merge há um `tasks.md` não-commitado (status pós-onda) — `git stash` antes do `gh pr merge`.
 
+### Aprendizados W1a.2 (2026-06-10)
+- **Build (tsc) ≠ lint**: o orquestrador valida lint+test localmente mas NÃO roda `pnpm build`; erros de tipo (ex.: `Record<string,unknown>` vs `Prisma.InputJsonValue`) só aparecem no CI Build. SEMPRE rodar `pnpm turbo build` antes de confiar na PR.
+- **Prisma client stale local**: após mudar `schema.prisma`, rodar `pnpm exec prisma generate` (no apps/api) antes de buildar localmente — senão o tsc local diverge do CI.
+- **Flaky test**: `test/rls/reflections.rls-spec.ts` falha intermitente (P2003 FK violation / isolamento) sem relação com o PR — `gh run rerun --failed` confirma. Candidato a hardening de seed/teardown.
+- **Reconciliação rende muito**: na W1a.2, 2 de 3 stories já estavam 100% cobertas por WDS (3-1 Cenário 09, 2-9 Cenário 07). Só 3-2 teve PR (e mínimo). Sempre fazer pré-flight.
+
 ### Wave 0 — Bootstrap cstk (CONCLUÍDA 2026-06-09)
 Pré-requisito descoberto: `/feature-00c` exige `docs/01-briefing-discovery/briefing.md`
 + `docs/constitution.md` (formato cstk), que o projeto BMad não tinha. Gerados via

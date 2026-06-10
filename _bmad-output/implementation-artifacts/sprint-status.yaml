@@ -78,7 +78,7 @@ development_status:
   # Sprint 4: 3-1, 3-2, 3-3
   epic-3: in-progress
   3-1-provisionamento-transacional-de-tenant: done                       # coberta por Cenário 09 (PRs #82-#86): saga + retry + slug + RLS; reconciliação 2026-06-10
-  3-2-gestao-de-tenants-pelo-super-admin: ready-for-dev
+  3-2-gestao-de-tenants-pelo-super-admin: done                           # Cenário 09 (~85%) + PR #115 (AC#5 updated_at+metadata); AC#7 (sessões Keycloak)→Keycloak Admin real, AC#8 (audit)→9-3
   3-3-guard-de-limites-por-plano-hardcoded: done                       # PR #87 (2026-04-30)
   epic-3-retrospective: optional
 
