@@ -157,3 +157,76 @@ export const mockCareActionResponse: CareActionResponse = {
   careActionId: "019756a1-9001-7000-8000-000000000001",
   recordedAt: "2026-04-13T08:15:00Z",
 };
+
+// --- 6-4 Participant Timeline (merged presence + actions) ---
+
+export interface ParticipantTimelineEvent {
+  id: string;
+  eventType: "signal" | "action";
+  occurredAt: string;
+  presenceType: string | null;
+  actionType: string | null;
+  note: string | null;
+  label: string;
+}
+
+export interface ParticipantTimeline {
+  participantId: string;
+  events: ParticipantTimelineEvent[];
+}
+
+export const mockParticipantTimeline: ParticipantTimeline = {
+  participantId: "019756a1-1001-7000-8000-000000000001",
+  events: [
+    {
+      id: "019756a1-0001-7000-8000-000000000001",
+      eventType: "action",
+      occurredAt: "2026-03-20T10:30:00Z",
+      presenceType: null,
+      actionType: "message",
+      note: "Mandei mensagem perguntando se tava tudo bem.",
+      label: "Ação pastoral",
+    },
+    {
+      id: "019756a1-0002-7000-8000-000000000002",
+      eventType: "signal",
+      occurredAt: "2026-03-18T19:30:00Z",
+      presenceType: "absent",
+      actionType: null,
+      note: null,
+      label: "Reunião",
+    },
+    {
+      id: "019756a1-0003-7000-8000-000000000003",
+      eventType: "signal",
+      occurredAt: "2026-03-11T19:30:00Z",
+      presenceType: "absent",
+      actionType: null,
+      note: null,
+      label: "Reunião",
+    },
+    {
+      id: "019756a1-0004-7000-8000-000000000004",
+      eventType: "action",
+      occurredAt: "2026-03-13T19:45:00Z",
+      presenceType: null,
+      actionType: "prayer",
+      note: "Orei pelo Pedro no grupo.",
+      label: "Ação pastoral",
+    },
+    {
+      id: "019756a1-0005-7000-8000-000000000005",
+      eventType: "signal",
+      occurredAt: "2026-03-04T19:30:00Z",
+      presenceType: "present",
+      actionType: null,
+      note: null,
+      label: "Reunião",
+    },
+  ],
+};
+
+export const mockParticipantTimelineEmpty: ParticipantTimeline = {
+  participantId: "019756a1-1002-7000-8000-000000000002",
+  events: [],
+};
