@@ -1,4 +1,5 @@
 import { cn } from "@metanoia/ui";
+import { SEMAFORO_STATUS_LABELS } from "@metanoia/types";
 import type { SignalType } from "../../../../../../__mocks__/radar";
 
 interface SectionDividerProps {
@@ -7,9 +8,9 @@ interface SectionDividerProps {
 }
 
 const sectionLabels: Record<SignalType, string> = {
-  "care-urgent": "Precisam de cuidado",
-  "care-attention": "Atenção",
-  "care-ok": "Estão bem",
+  "care-urgent": SEMAFORO_STATUS_LABELS.urgent,
+  "care-attention": SEMAFORO_STATUS_LABELS.attention,
+  "care-ok": SEMAFORO_STATUS_LABELS.ok,
 };
 
 const sectionColors: Record<SignalType, string> = {

@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@metanoia/ui";
+import { SEMAFORO_STATUS_LABELS } from "@metanoia/types";
 import type { SignalType } from "../../../../../../__mocks__/radar";
 
 type PillState = "default" | "active" | "filter-active" | "dimmed" | "zero";
@@ -19,19 +20,19 @@ const pillConfig: Record<
   { label: string; colorClass: string; bgClass: string; solidClass: string }
 > = {
   "care-urgent": {
-    label: "Precisam de cuidado",
+    label: SEMAFORO_STATUS_LABELS.urgent,
     colorClass: "text-care-urgent",
     bgClass: "bg-care-urgent/10",
     solidClass: "bg-care-urgent text-text-inverse",
   },
   "care-attention": {
-    label: "Pedem atenção",
+    label: SEMAFORO_STATUS_LABELS.attention,
     colorClass: "text-care-attention",
     bgClass: "bg-care-attention/10",
     solidClass: "bg-care-attention text-text-inverse",
   },
   "care-ok": {
-    label: "Estão bem",
+    label: SEMAFORO_STATUS_LABELS.ok,
     colorClass: "text-care-ok",
     bgClass: "bg-care-ok/10",
     solidClass: "bg-care-ok text-text-inverse",
