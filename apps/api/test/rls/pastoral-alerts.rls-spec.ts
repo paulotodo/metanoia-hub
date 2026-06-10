@@ -15,10 +15,13 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { generateId } from '@metanoia/types';
 import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
 
-const GROUP_A_ID = generateId();
-const GROUP_B_ID = generateId();
-const USER_A_ID = generateId();
-const USER_B_ID = generateId();
+// Fixed UUIDs (not generateId()) so fixtures are idempotent across module
+// evaluations — mirrors radar-status.rls-spec. Non-deterministic ids would
+// re-insert the same email with a new id and break ON CONFLICT (id) dedup.
+const GROUP_A_ID = '01912345-6789-7000-8000-0000000063a1';
+const GROUP_B_ID = '01912345-6789-7000-8000-0000000063b1';
+const USER_A_ID = '01912345-6789-7000-8000-0000000063a2';
+const USER_B_ID = '01912345-6789-7000-8000-0000000063b2';
 
 async function setupFixtures(prisma: PrismaClient): Promise<void> {
   // Ensure tenants
