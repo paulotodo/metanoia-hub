@@ -70,7 +70,7 @@ escrever evidência), `PARCIAL` (escopo residual reduzido → spec menor), ou
 ### Aprendizados W1a.2 (2026-06-10)
 - **Build (tsc) ≠ lint**: o orquestrador valida lint+test localmente mas NÃO roda `pnpm build`; erros de tipo (ex.: `Record<string,unknown>` vs `Prisma.InputJsonValue`) só aparecem no CI Build. SEMPRE rodar `pnpm turbo build` antes de confiar na PR.
 - **Prisma client stale local**: após mudar `schema.prisma`, rodar `pnpm exec prisma generate` (no apps/api) antes de buildar localmente — senão o tsc local diverge do CI.
-- **Flaky test**: `test/rls/reflections.rls-spec.ts` falha intermitente (P2003 FK violation / isolamento) sem relação com o PR — `gh run rerun --failed` confirma. Candidato a hardening de seed/teardown.
+- **Flaky test CORRIGIDO** (W1a.3): `test/rls/reflections.rls-spec.ts` falhava com `reflections_meeting_id_fkey` intermitente (outras RLS specs limpavam `meetings` entre o beforeAll e os testes). Fix: re-garantir os meetings (idempotente) no `beforeEach`. Não recorreu desde então.
 - **Reconciliação rende muito**: na W1a.2, 2 de 3 stories já estavam 100% cobertas por WDS (3-1 Cenário 09, 2-9 Cenário 07). Só 3-2 teve PR (e mínimo). Sempre fazer pré-flight.
 
 ### Wave 0 — Bootstrap cstk (CONCLUÍDA 2026-06-09)

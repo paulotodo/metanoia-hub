@@ -123,8 +123,8 @@ development_status:
   # Epic 7: Onboarding Mínimo
   # Sprint 6: 7-1, 7-2, 7-3
   # Sprint 7 (Estabilização Release 1a): 7-4 (E2E happy path), 7-5 (deferred-work), 7-6 (bugs do E2E) — adicionadas fora do plano original
-  epic-7: in-progress
-  7-1-tela-de-boas-vindas-personalizada: ready-for-dev
+  epic-7: done
+  7-1-tela-de-boas-vindas-personalizada: done                          # PR #117 (onboarding_completed_at + endpoint + guard 1º acesso + telas admin/líder/participante)
   7-2-dados-de-demonstracao-realistas: done
   7-3-mensagens-de-erro-acionaveis: done
   7-4-e2e-happy-path-release-1a: done
