@@ -1,6 +1,21 @@
 export { PaginationSchema, type Pagination } from './pagination';
 export { generateId } from './id';
 export {
+  PASTORAL_CARE,
+  PASTORAL_ACCOMPANIMENT,
+  PASTORAL_PRESENCE,
+  PASTORAL_ATTENTION,
+  PASTORAL_VISIBILITY,
+  PASTORAL_JOURNEY,
+  PASTORAL_CARE_SIGNAL,
+  SEMAFORO_LABEL,
+  SEMAFORO_STATUS_LABELS,
+  PASTORAL_VOCABULARY,
+  type SemaforoStatus,
+  type SemaforoStatusLabel,
+  type PastoralVocabulary,
+} from './vocabulary';
+export {
   ClientErrorReportSchema,
   type ClientErrorReport,
 } from './observability';

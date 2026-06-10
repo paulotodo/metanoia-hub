@@ -1,0 +1,15 @@
+# CODEOWNERS — Revisões obrigatórias de PR por área do código
+#
+# Formato: <pattern> <@owner_or_team>
+# Documentação: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Nota: Atualmente o projeto tem um único desenvolvedor principal.
+# Quando o time crescer, substituir @squad1promoacao pelo time correspondente.
+
+# Vocabulário pastoral — toda mudança exige revisão cuidadosa
+# para garantir que os termos continuam alinhados com a identidade
+# pastoral da plataforma e não introduzem linguagem de vigilância.
+packages/types/src/vocabulary/ @squad1promoacao
+
+# Regras ESLint de governança de vocabulário
+packages/config/eslint/ @squad1promoacao
