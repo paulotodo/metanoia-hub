@@ -60,6 +60,13 @@ escrever evidência), `PARCIAL` (escopo residual reduzido → spec menor), ou
 
 ## 5. Mapa de ondas (waves pequenas, ≤4 stories, respeitando deps)
 
+### Aprendizados operacionais (W1a.1, 2026-06-09) — aplicar a toda wave
+- **Ambiente**: `jq` é obrigatório p/ o runtime cstk (instalado via `conda install -c conda-forge jq`); os scripts em `skills/agente-00c-runtime/scripts/` **não** estão no PATH — exportar em toda invocação Bash.
+- **Bug recorrente do orquestrador**: às vezes retorna após só 1 fase (ex.: specify) sem fechar a onda. Remédio (já no contrato do PAI): `state-ondas.sh reconcile-wave` avança `current_stage`; depois re-spawnar orquestrador em modo resume (SendMessage indisponível neste harness → re-spawn fresco lê o state + artefatos em disco).
+- **CI ≠ review local**: o orquestrador abre a PR antes do CI fechar e o `review-task` local não pega tudo. SEMPRE verificar `gh pr checks` e corrigir. Falhas reais vistas: import não-usado (lint `no-unused-vars`) e **regressão de E2E** (o auto-select da 2-5 quebrou o happy-path 7-4, que foi atualizado).
+- **Regressão cross-story**: features que mudam fluxos (ex.: auto-select pula tela) quebram E2E de stories anteriores — esperar e corrigir o teste no mesmo PR.
+- **Git**: spawnar o orquestrador a partir de `dev` limpo (senão a feature-branch herda commits da branch atual, como ocorreu com #113 que absorveu o bootstrap). Pós-merge há um `tasks.md` não-commitado (status pós-onda) — `git stash` antes do `gh pr merge`.
+
 ### Wave 0 — Bootstrap cstk (CONCLUÍDA 2026-06-09)
 Pré-requisito descoberto: `/feature-00c` exige `docs/01-briefing-discovery/briefing.md`
 + `docs/constitution.md` (formato cstk), que o projeto BMad não tinha. Gerados via
