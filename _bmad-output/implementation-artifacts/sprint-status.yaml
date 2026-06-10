@@ -45,7 +45,7 @@ development_status:
   # Sprint 0 (DONE): 1-1, 1-2, 1-3, 1-4
   # Sprint 1: 1-5, 1-6, 1-7, 1-8
   # Sprint 8 (deferred-work cleanup): 1-9
-  epic-1: in-progress
+  epic-1: done
   1-1-scaffold-do-monorepo-turborepo-com-nextjs-nestjs-prisma: done
   1-2-docker-compose-completo-com-keycloak-minio-e-livekit: done
   1-3-pipeline-cicd-com-github-actions: done
