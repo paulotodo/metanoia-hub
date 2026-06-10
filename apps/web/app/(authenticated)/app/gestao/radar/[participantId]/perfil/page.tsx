@@ -3,10 +3,11 @@
 import { use } from "react";
 import Link from "next/link";
 import { ArrowLeft, Heart, Calendar, MessageCircle, HandHeart } from "lucide-react";
-import { useParticipantProfile } from "@/lib/api/hooks/use-radar";
+import { useParticipantProfile, useParticipantTimeline } from "@/lib/api/hooks/use-radar";
 import { PresenceDots } from "../../_components/presence-dots";
 import { ProfileSkeleton } from "../../_components/radar-skeleton";
 import { RadarError } from "../../_components/radar-error";
+import { TimelineCuidado } from "../../_components/timeline-cuidado";
 
 function formatRelativeDate(isoDate: string): string {
   const diff = Date.now() - new Date(isoDate).getTime();
@@ -66,6 +67,7 @@ export default function ParticipantProfilePage({
 }) {
   const { participantId } = use(params);
   const { data, isLoading, error, refetch } = useParticipantProfile(participantId);
+  const { data: timelineData } = useParticipantTimeline(participantId);
 
   if (isLoading) return <ProfileSkeleton />;
   if (error) return <RadarError error={error} onRetry={() => refetch()} />;
@@ -152,6 +154,9 @@ export default function ParticipantProfilePage({
           </div>
         )}
       </section>
+
+      {/* Care timeline — merged presence signals + pastoral actions */}
+      <TimelineCuidado events={timelineData?.events ?? []} />
 
       {/* CTA */}
       <Link

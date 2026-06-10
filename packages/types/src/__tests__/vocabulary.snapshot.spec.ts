@@ -9,6 +9,11 @@ import {
   PASTORAL_CARE_SIGNAL,
   SEMAFORO_LABEL,
   SEMAFORO_STATUS_LABELS,
+  PASTORAL_TIMELINE_EMPTY_TITLE,
+  PASTORAL_TIMELINE_EMPTY_MESSAGE,
+  PASTORAL_CARE_HISTORY_LABEL,
+  PASTORAL_TIMELINE_EVENT_PRESENCE,
+  PASTORAL_TIMELINE_EVENT_ACTION,
   PASTORAL_VOCABULARY,
 } from '../vocabulary';
 
@@ -19,6 +24,7 @@ describe('PASTORAL_VOCABULARY snapshot', () => {
         "accompaniment": "acompanhamento",
         "attention": "atenção pastoral",
         "care": "cuidado",
+        "careHistoryLabel": "Histórico de cuidado",
         "careSignal": "sinal de cuidado",
         "journey": "jornada",
         "presence": "presença",
@@ -28,6 +34,10 @@ describe('PASTORAL_VOCABULARY snapshot', () => {
           "ok": "Estão bem",
           "urgent": "Precisam de cuidado",
         },
+        "timelineEmptyMessage": "Que tal começar com uma mensagem?",
+        "timelineEmptyTitle": "Nenhuma ação de cuidado registrada",
+        "timelineEventAction": "Ação pastoral",
+        "timelineEventPresence": "Reunião",
         "visibility": "visibilidade pastoral",
       }
     `);
@@ -56,5 +66,15 @@ describe('individual pastoral term constants', () => {
     expect(PASTORAL_JOURNEY).toBe('jornada');
     expect(PASTORAL_CARE_SIGNAL).toBe('sinal de cuidado');
     expect(SEMAFORO_LABEL).toBe('semáforo');
+  });
+});
+
+describe('Story 6-4 timeline vocabulary constants', () => {
+  it('empty state and timeline labels are correct PT-BR', () => {
+    expect(PASTORAL_TIMELINE_EMPTY_TITLE).toBe('Nenhuma ação de cuidado registrada');
+    expect(PASTORAL_TIMELINE_EMPTY_MESSAGE).toBe('Que tal começar com uma mensagem?');
+    expect(PASTORAL_CARE_HISTORY_LABEL).toBe('Histórico de cuidado');
+    expect(PASTORAL_TIMELINE_EVENT_PRESENCE).toBe('Reunião');
+    expect(PASTORAL_TIMELINE_EVENT_ACTION).toBe('Ação pastoral');
   });
 });

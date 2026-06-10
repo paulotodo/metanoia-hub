@@ -5,6 +5,7 @@ import {
   mockParticipantProfile,
   mockCareActionResponse,
   mockRadarDashboard,
+  mockParticipantTimeline,
 } from '../../__mocks__/radar';
 
 export const radarHandlers = [
@@ -23,6 +24,11 @@ export const radarHandlers = [
 
   http.get('*/api/v1/radar/:id/profile', () =>
     HttpResponse.json({ data: mockParticipantProfile }),
+  ),
+
+  // Story 6-4 — merged individual timeline (presence + pastoral actions)
+  http.get('*/api/v1/radar/:id/timeline', () =>
+    HttpResponse.json({ data: mockParticipantTimeline }),
   ),
 
   http.post('*/api/v1/radar/:id/actions', () =>

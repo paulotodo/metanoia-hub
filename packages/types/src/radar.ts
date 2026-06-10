@@ -147,6 +147,38 @@ export const ParticipantProfileSchema = z.object({
 });
 export type ParticipantProfile = z.infer<typeof ParticipantProfileSchema>;
 
+// --- Participant Timeline (Story 6-4) ---
+
+/**
+ * Single event in the merged individual timeline.
+ * eventType = 'signal'  → presence/attendance event
+ * eventType = 'action'  → pastoral care action recorded by leader
+ */
+export const TimelineEventTypeSchema = z.enum(['signal', 'action']);
+export type TimelineEventType = z.infer<typeof TimelineEventTypeSchema>;
+
+export const ParticipantTimelineEventSchema = z.object({
+  id: z.string().uuid(),
+  eventType: TimelineEventTypeSchema,
+  /** ISO 8601 — used for chronological sort (descending) */
+  occurredAt: z.string().datetime(),
+  /** For signal events: presenceType (present | absent | no-meeting) */
+  presenceType: z.string().nullable(),
+  /** For action events: actionType (message | call | visit | prayer) */
+  actionType: z.string().nullable(),
+  /** For action events: free-text note (may be null) */
+  note: z.string().nullable(),
+  /** Human-readable label derived from eventType */
+  label: z.string(),
+});
+export type ParticipantTimelineEvent = z.infer<typeof ParticipantTimelineEventSchema>;
+
+export const ParticipantTimelineSchema = z.object({
+  participantId: z.string().uuid(),
+  events: z.array(ParticipantTimelineEventSchema),
+});
+export type ParticipantTimeline = z.infer<typeof ParticipantTimelineSchema>;
+
 // --- Care Action (01.5) ---
 
 export const CareActionRequestSchema = z.object({

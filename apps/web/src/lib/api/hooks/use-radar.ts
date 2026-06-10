@@ -5,6 +5,7 @@ import {
   ParticipantProfileSchema,
   CareActionResponseSchema,
   RadarDashboardResponseSchema,
+  ParticipantTimelineSchema,
 } from '@metanoia/types';
 import type { CareActionRequest, RadarDashboardResponse } from '@metanoia/types';
 import { apiClient } from '../client';
@@ -21,6 +22,8 @@ export const radarKeys = {
     [...radarKeys.all, 'detail', participantId] as const,
   profile: (participantId: string) =>
     [...radarKeys.all, 'profile', participantId] as const,
+  timeline: (participantId: string) =>
+    [...radarKeys.all, 'timeline', participantId] as const,
 };
 
 // --- GET /radar ---
@@ -71,6 +74,21 @@ export function useRadarDashboard() {
       envelopeClient.get('/radar/dashboard', RadarDashboardResponseSchema),
     refetchInterval: 30_000,
     staleTime: 25_000,
+  });
+}
+
+// --- GET /radar/:id/timeline (Story 6-4) ---
+// Merged individual timeline: presence signals + pastoral care actions, descending.
+
+export function useParticipantTimeline(participantId: string) {
+  return useQuery({
+    queryKey: radarKeys.timeline(participantId),
+    queryFn: () =>
+      apiClient.get(
+        `/radar/${participantId}/timeline`,
+        ParticipantTimelineSchema,
+      ),
+    enabled: !!participantId,
   });
 }
 
