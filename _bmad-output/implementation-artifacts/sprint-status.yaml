@@ -116,7 +116,7 @@ development_status:
 
   6-2-calculo-assincrono-do-semaforo-dashboard: done                     # PR #119 (d73860f) — model ParticipantRadarStatus +RLS, thresholds packages/types, processor BullMQ queue:radar-calculation + cache Redis 5min, a11y SemaforoPill; fixes CI: ON UPDATE CASCADE FK + updated_at em RLS spec; W1b.4a
 
-  6-3-indicadores-de-tendencia-alertas: ready-for-dev
+  6-3-indicadores-de-tendencia-alertas: done                             # PR #120 (eea8a2e) — trend calc no motor BullMQ + PastoralAlert additive (previous/new_status, trend, read_at, dismissed_at) + dedup + evento transição positiva; endpoints alerts read/dismiss; TrendIndicator FE; Zod TrendType/PastoralAlertWithTrend; fixes CI RLS spec: PrismaPg adapter + users globais + UUIDs fixos; W1b.4b
   6-4-perfil-consolidado-acoes-de-cuidado-pastoral: ready-for-dev
   6-5-componentes-ux-do-radar-pastoral: ready-for-dev
   6-6-dashboard-agregado-para-admin-tenant: ready-for-dev
