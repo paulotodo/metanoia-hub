@@ -33,3 +33,31 @@ export type TrailProgressUpdatedEvent = z.infer<typeof TrailProgressUpdatedEvent
 // Queue name for the trail-progress-updated domain events bus
 export const LESSON_PROGRESS_QUEUE_NAME = 'lesson-progress';
 export const TRAIL_PROGRESS_EVENTS_QUEUE_NAME = 'trail-progress-events';
+
+// ---------------------------------------------------------------------------
+// Domain event: content.trail.published (Story 8-6)
+// Emitted when a trail is published (first publish or re-publish).
+// ---------------------------------------------------------------------------
+
+export const TrailPublishedDataSchema = z.object({
+  trailId: z.string().uuid(),
+  trailVersion: z.number().int().positive(),
+  publishedBy: z.string().uuid(),
+});
+export type TrailPublishedData = z.infer<typeof TrailPublishedDataSchema>;
+
+export const TrailPublishedMetadataSchema = z.object({
+  correlationId: z.string(),
+});
+export type TrailPublishedMetadata = z.infer<typeof TrailPublishedMetadataSchema>;
+
+export const TrailPublishedEventSchema = z.object({
+  eventId: z.string().uuid(),
+  eventType: z.literal('content.trail.published'),
+  version: z.literal(1),
+  tenantId: z.string().uuid(),
+  timestamp: z.string().datetime(),
+  data: TrailPublishedDataSchema,
+  metadata: TrailPublishedMetadataSchema,
+});
+export type TrailPublishedEvent = z.infer<typeof TrailPublishedEventSchema>;

@@ -10,6 +10,8 @@ import { UploadController } from './upload/upload.controller';
 import { ProgressController } from './progress/progress.controller';
 import { ContentConfigController } from './config/content-config.controller';
 import { PrerequisitesController } from './prerequisites/prerequisites.controller';
+import { PublishingController } from './publishing/publishing.controller';
+import { CatalogController } from './catalog/catalog.controller';
 import { ContentRepository } from './content.repository';
 import { ContentService } from './content.service';
 import { UploadService } from './upload/upload.service';
@@ -20,6 +22,9 @@ import { ContentConfigService } from './config/content-config.service';
 import { AccessControlService } from './access/access-control.service';
 import { CircularDependencyValidator } from './access/circular-dependency.validator';
 import { PrerequisitesService } from './prerequisites/prerequisites.service';
+import { PublishingService } from './publishing/publishing.service';
+import { CatalogService } from './catalog/catalog.service';
+import { VersionService } from './versioning/version.service';
 
 @Module({
   imports: [
@@ -37,6 +42,8 @@ import { PrerequisitesService } from './prerequisites/prerequisites.service';
     ProgressController,
     ContentConfigController,
     PrerequisitesController,
+    PublishingController,
+    CatalogController,
   ],
   providers: [
     ContentRepository,
@@ -49,7 +56,10 @@ import { PrerequisitesService } from './prerequisites/prerequisites.service';
     AccessControlService,
     CircularDependencyValidator,
     PrerequisitesService,
+    PublishingService,
+    CatalogService,
+    VersionService,
   ],
-  exports: [ContentService, UploadService, ProgressService, CompletionRulesService, AccessControlService],
+  exports: [ContentService, UploadService, ProgressService, CompletionRulesService, AccessControlService, PublishingService, CatalogService, VersionService],
 })
 export class ContentModule {}

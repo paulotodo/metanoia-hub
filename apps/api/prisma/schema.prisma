@@ -277,6 +277,7 @@ model Group {
   actions              PastoralAction[]
   radarStatuses        ParticipantRadarStatus[]
   statusImprovements   ParticipantStatusImproved[]
+  groupTrails          GroupTrail[]
 
   @@index([tenantId])
   @@map("groups")
@@ -517,22 +518,65 @@ enum LessonContentType {
 
 /// Trail — top-level discipleship trail owned by a tenant
 model Trail {
-  id          String          @id @db.Uuid
-  tenantId    String          @map("tenant_id") @db.Uuid
-  name        String          @db.VarChar(255)
-  description String?         @db.VarChar(1000)
-  status      TrailStatus     @default(draft)
-  accessMode  TrailAccessMode @default(free) @map("access_mode")
-  createdBy   String          @map("created_by") @db.Uuid
-  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime        @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt   DateTime?       @map("deleted_at") @db.Timestamptz
+  id             String          @id @db.Uuid
+  tenantId       String          @map("tenant_id") @db.Uuid
+  name           String          @db.VarChar(255)
+  description    String?         @db.VarChar(1000)
+  status         TrailStatus     @default(draft)
+  accessMode     TrailAccessMode @default(free) @map("access_mode")
+  /// Publishing fields (Story 8-6)
+  version        Int?
+  publishedAt    DateTime?       @map("published_at") @db.Timestamptz
+  publishedBy    String?         @map("published_by") @db.Uuid
+  catalogVisible Boolean         @default(false) @map("catalog_visible")
+  createdBy      String          @map("created_by") @db.Uuid
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt      DateTime?       @map("deleted_at") @db.Timestamptz
 
-  modules Module[]
+  modules       Module[]
+  trailVersions TrailVersion[]
+  groupTrails   GroupTrail[]
 
   @@index([tenantId])
   @@index([tenantId, status])
+  @@index([tenantId, catalogVisible])
   @@map("trails")
+}
+
+/// TrailVersion — immutable snapshot of a trail at publish time (Story 8-6)
+model TrailVersion {
+  id           String   @id @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  trailId      String   @map("trail_id") @db.Uuid
+  version      Int
+  snapshotData Json     @map("snapshot_data")
+  publishedAt  DateTime @map("published_at") @db.Timestamptz
+  publishedBy  String   @map("published_by") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  trail Trail @relation(fields: [trailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([trailId, version])
+  @@index([tenantId])
+  @@map("trail_versions")
+}
+
+/// GroupTrail — N:N join between groups and trails (owned by Story 8-6; endpoints in Story 4-4)
+model GroupTrail {
+  id         String   @id @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  groupId    String   @map("group_id") @db.Uuid
+  trailId    String   @map("trail_id") @db.Uuid
+  assignedBy String   @map("assigned_by") @db.Uuid
+  assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamptz
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  trail Trail @relation(fields: [trailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([groupId, trailId])
+  @@index([tenantId])
+  @@map("group_trails")
 }
 
 /// Module — ordered module within a trail
