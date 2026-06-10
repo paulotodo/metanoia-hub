@@ -70,14 +70,14 @@ development_status:
   2-6-isolamento-de-dados-por-tenant-rls: done                         # coberta por 7-5/7-7 (RLS NULLIF + withTenantTx); reconciliação 2026-06-09
   2-7-gestao-de-usuarios-e-papeis-pelo-admin-tenant: done               # PR #89 (2026-04-30)
   2-8-consentimento-lgpd-e-termos-de-uso-middleware: done               # PR #90 (2026-04-30)
-  2-9-recuperacao-de-senha-via-email-keycloak-nativo: ready-for-dev
+  2-9-recuperacao-de-senha-via-email-keycloak-nativo: done                # coberta por Cenário 07 (PRs #72-#75); ADR-002 (Redis vs Keycloak); email real → 14-3; reconciliação 2026-06-10
   2-10-auth-hardening: done                                             # PR #105 (2026-05-12)
   epic-2-retrospective: optional
 
   # Epic 3: Provisionamento de Tenant & Configuração Básica
   # Sprint 4: 3-1, 3-2, 3-3
   epic-3: in-progress
-  3-1-provisionamento-transacional-de-tenant: ready-for-dev
+  3-1-provisionamento-transacional-de-tenant: done                       # coberta por Cenário 09 (PRs #82-#86): saga + retry + slug + RLS; reconciliação 2026-06-10
   3-2-gestao-de-tenants-pelo-super-admin: ready-for-dev
   3-3-guard-de-limites-por-plano-hardcoded: done                       # PR #87 (2026-04-30)
   epic-3-retrospective: optional
