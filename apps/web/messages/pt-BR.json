@@ -280,6 +280,35 @@
       "notFound": "Grupo não encontrado"
     }
   },
+  "groupTrails": {
+    "title": "Trilhas do Grupo",
+    "description": "Conteúdos de formação associados a este grupo.",
+    "assign": {
+      "label": "Associar trilhas",
+      "placeholder": "Cole os IDs das trilhas separados por vírgula",
+      "button": "Associar",
+      "loading": "Associando...",
+      "success": "Trilha(s) associada(s) com sucesso.",
+      "error": "Não foi possível associar as trilhas. Verifique os IDs e tente novamente.",
+      "invalidIds": "IDs inválidos ou inexistentes: {ids}"
+    },
+    "list": {
+      "empty": "Nenhuma trilha associada a este grupo ainda.",
+      "trailId": "ID da trilha",
+      "assignedAt": "Associada em",
+      "assignedBy": "Pelo responsável"
+    },
+    "remove": {
+      "button": "Remover",
+      "loading": "Removendo...",
+      "success": "Trilha removida do grupo.",
+      "error": "Não foi possível remover a trilha."
+    },
+    "error": {
+      "load": "Não foi possível carregar as trilhas do grupo.",
+      "retry": "Tentar novamente"
+    }
+  },
   "leader": {
     "back": "Voltar para o grupo",
     "header": {
