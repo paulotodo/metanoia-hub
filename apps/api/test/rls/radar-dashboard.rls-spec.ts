@@ -189,9 +189,9 @@ describe('RLS + Guardrail: radar dashboard lider isolation (Story 6-6)', () => {
   beforeEach(async () => {
     await cleanup(prisma);
     // Re-seed radar statuses
-    await ensureRadarStatus(prisma, TENANT_A_ID, '01912345-6789-7000-8000-0066rs0a0001', GROUP_A_ID, PART_A1_ID, 'verde');
-    await ensureRadarStatus(prisma, TENANT_A_ID, '01912345-6789-7000-8000-0066rs0a0002', GROUP_A_ID, PART_A2_ID, 'amarelo');
-    await ensureRadarStatus(prisma, TENANT_A_ID, '01912345-6789-7000-8000-0066rs0b0001', GROUP_B_ID, PART_B1_ID, 'vermelho');
+    await ensureRadarStatus(prisma, TENANT_A_ID, '01912345-6789-7000-8000-006605a00001', GROUP_A_ID, PART_A1_ID, 'verde');
+    await ensureRadarStatus(prisma, TENANT_A_ID, '01912345-6789-7000-8000-006605a00002', GROUP_A_ID, PART_A2_ID, 'amarelo');
+    await ensureRadarStatus(prisma, TENANT_A_ID, '01912345-6789-7000-8000-006605b00001', GROUP_B_ID, PART_B1_ID, 'vermelho');
   });
 
   afterAll(async () => {
