@@ -36,16 +36,22 @@ async function setupFixtures(prisma: PrismaClient): Promise<void> {
     });
   }
 
-  // Ensure users
-  for (const [userId, tenantId, email] of [
-    [USER_A_ID, TENANT_A_ID, 'rls-pa-a@test.com'],
-    [USER_B_ID, TENANT_B_ID, 'rls-pa-b@test.com'],
+  // Ensure users — inserted as GLOBAL (no tenant_id) under the zero-tenant
+  // context, mirroring radar-status.rls-spec. Users are linked to tenants via
+  // UserTenant, not a tenant_id column; pastoral_alerts.participant_id only
+  // needs the user row to exist. Inserting tenant-scoped under RLS makes the
+  // existing row invisible to ON CONFLICT and breaks idempotency.
+  for (const [userId, email] of [
+    [USER_A_ID, 'rls-pa-a@test.com'],
+    [USER_B_ID, 'rls-pa-b@test.com'],
   ] as const) {
     await prisma.$transaction(async (tx) => {
-      await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
+      await tx.$executeRawUnsafe(
+        `SET LOCAL app.current_tenant_id = '00000000-0000-0000-0000-000000000000'`,
+      );
       await tx.$executeRawUnsafe(`
-        INSERT INTO users (id, tenant_id, email, name, updated_at)
-        VALUES ('${userId}'::uuid, '${tenantId}'::uuid, '${email}', 'RLS PA User', NOW())
+        INSERT INTO users (id, email, name, status, updated_at)
+        VALUES ('${userId}'::uuid, '${email}', 'RLS PA User', 'active', NOW())
         ON CONFLICT (id) DO NOTHING
       `);
     });
