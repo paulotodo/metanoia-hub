@@ -17,6 +17,9 @@ import {
   ReportProgressRequestSchema,
   LessonProgressJobPayloadSchema,
   TrailProgressUpdatedEventSchema,
+  TrailPublishedEventSchema,
+  TrailVersionResponseSchema,
+  GroupTrailResponseSchema,
   VideoIntervalSchema,
   VideoProgressPayloadSchema,
   CompletedBySchema,
@@ -139,41 +142,75 @@ describe('UpdateTrailRequestSchema snapshot', () => {
 });
 
 // ------------------------------------------------------------------
-// TrailResponseSchema
+// TrailResponseSchema (Story 8-6: added version, publishedAt, publishedBy, catalogVisible)
 // ------------------------------------------------------------------
 describe('TrailResponseSchema snapshot', () => {
-  it('freezes success and failure shapes', () => {
+  it('freezes success shape with all publishing fields', () => {
     const ok = TrailResponseSchema.safeParse({
       id: '019756c0-0001-7000-8000-000000000010',
       tenantId: '019756c0-0001-7000-8000-000000000002',
       name: 'Trilha de Discipulado',
       description: null,
+      status: 'published',
+      accessMode: 'free',
+      version: 1,
+      publishedAt: '2026-06-15T10:00:00.000Z',
+      publishedBy: '019756c0-0001-7000-8000-000000000003',
+      catalogVisible: false,
+      createdBy: '019756c0-0001-7000-8000-000000000003',
+      createdAt: '2026-06-10T12:00:00.000Z',
+      updatedAt: '2026-06-15T10:00:00.000Z',
+      deletedAt: null,
+    });
+    expect({
+      success: ok.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+    }).toMatchInlineSnapshot(`
+      {
+        "keys": [
+          "accessMode",
+          "catalogVisible",
+          "createdAt",
+          "createdBy",
+          "deletedAt",
+          "description",
+          "id",
+          "name",
+          "publishedAt",
+          "publishedBy",
+          "status",
+          "tenantId",
+          "updatedAt",
+          "version",
+        ],
+        "success": true,
+      }
+    `);
+  });
+
+  it('accepts draft trail with null publishing fields', () => {
+    const ok = TrailResponseSchema.safeParse({
+      id: '019756c0-0001-7000-8000-000000000010',
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      name: 'Trilha Rascunho',
+      description: null,
       status: 'draft',
+      accessMode: 'free',
+      version: null,
+      publishedAt: null,
+      publishedBy: null,
+      catalogVisible: false,
       createdBy: '019756c0-0001-7000-8000-000000000003',
       createdAt: '2026-06-10T12:00:00.000Z',
       updatedAt: '2026-06-10T12:00:00.000Z',
       deletedAt: null,
     });
-    const fail = TrailResponseSchema.safeParse({
-      id: 'not-a-uuid',
-      tenantId: 'not-a-uuid',
-      name: 'x',
-      status: 'unknown',
-      createdBy: 'not-a-uuid',
-      createdAt: 'bad',
-      updatedAt: 'bad',
-    });
-    expect({
-      success: ok.success,
-      data: ok.success ? ok.data : null,
-      failure: !fail.success,
-    }).toMatchInlineSnapshot(`
-      {
-        "data": null,
-        "failure": true,
-        "success": false,
-      }
-    `);
+    expect(ok.success).toBe(true);
+    if (ok.success) {
+      expect(ok.data.version).toBeNull();
+      expect(ok.data.publishedAt).toBeNull();
+      expect(ok.data.catalogVisible).toBe(false);
+    }
   });
 });
 
@@ -910,6 +947,167 @@ describe('ModulePrerequisiteResponseSchema snapshot', () => {
     }).toMatchInlineSnapshot(`
       {
         "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// TrailPublishedEventSchema — domain event contract (Story 8-6)
+// OBRIGATÓRIO: gate contra breaking changes silenciosas
+// ------------------------------------------------------------------
+describe('TrailPublishedEventSchema snapshot (domain event contract)', () => {
+  it('freezes the domain event shape', () => {
+    const ok = TrailPublishedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.published',
+      version: 1,
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-15T10:00:00.000Z',
+      data: {
+        trailId: '019756c0-0001-7000-8000-000000000010',
+        trailVersion: 1,
+        publishedBy: '019756c0-0001-7000-8000-000000000003',
+      },
+      metadata: {
+        correlationId: 'publish-abc123',
+      },
+    });
+
+    const fail = TrailPublishedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.archived', // wrong eventType
+      version: 1,
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-15T10:00:00.000Z',
+      data: {
+        trailId: '019756c0-0001-7000-8000-000000000010',
+        trailVersion: 1,
+        publishedBy: '019756c0-0001-7000-8000-000000000003',
+      },
+      metadata: { correlationId: 'x' },
+    });
+
+    expect({
+      success: ok.success,
+      eventType: ok.success ? ok.data.eventType : null,
+      version: ok.success ? ok.data.version : null,
+      dataKeys: ok.success ? Object.keys(ok.data.data).sort() : [],
+      metadataKeys: ok.success ? Object.keys(ok.data.metadata).sort() : [],
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "dataKeys": [
+          "publishedBy",
+          "trailId",
+          "trailVersion",
+        ],
+        "eventType": "content.trail.published",
+        "failure": true,
+        "metadataKeys": [
+          "correlationId",
+        ],
+        "success": true,
+        "version": 1,
+      }
+    `);
+  });
+
+  it('rejects trailVersion=0 (must be positive integer)', () => {
+    const fail = TrailPublishedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.published',
+      version: 1,
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-15T10:00:00.000Z',
+      data: {
+        trailId: '019756c0-0001-7000-8000-000000000010',
+        trailVersion: 0, // invalid: must be >=1
+        publishedBy: '019756c0-0001-7000-8000-000000000003',
+      },
+      metadata: { correlationId: 'x' },
+    });
+    expect(fail.success).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------
+// TrailVersionResponseSchema (Story 8-6)
+// ------------------------------------------------------------------
+describe('TrailVersionResponseSchema snapshot', () => {
+  it('freezes trail version response shape', () => {
+    const ok = TrailVersionResponseSchema.safeParse({
+      id: '019756c0-0001-7000-8000-000000000050',
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      trailId: '019756c0-0001-7000-8000-000000000010',
+      version: 2,
+      snapshotData: { modules: [], name: 'Trilha v2' },
+      publishedAt: '2026-06-15T10:00:00.000Z',
+      publishedBy: '019756c0-0001-7000-8000-000000000003',
+      createdAt: '2026-06-15T10:00:00.000Z',
+    });
+    const fail = TrailVersionResponseSchema.safeParse({
+      id: 'not-uuid',
+      trailId: 'not-uuid',
+      version: 0, // must be positive
+    });
+    expect({
+      failure: !fail.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+      success: ok.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "createdAt",
+          "id",
+          "publishedAt",
+          "publishedBy",
+          "snapshotData",
+          "tenantId",
+          "trailId",
+          "version",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// GroupTrailResponseSchema (Story 8-6)
+// ------------------------------------------------------------------
+describe('GroupTrailResponseSchema snapshot', () => {
+  it('freezes group trail response shape', () => {
+    const ok = GroupTrailResponseSchema.safeParse({
+      id: '019756c0-0001-7000-8000-000000000060',
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      groupId: '019756c0-0001-7000-8000-000000000070',
+      trailId: '019756c0-0001-7000-8000-000000000010',
+      assignedBy: '019756c0-0001-7000-8000-000000000003',
+      assignedAt: '2026-06-15T10:00:00.000Z',
+    });
+    const fail = GroupTrailResponseSchema.safeParse({
+      id: 'bad',
+      groupId: 'bad',
+      trailId: 'bad',
+    });
+    expect({
+      failure: !fail.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+      success: ok.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "assignedAt",
+          "assignedBy",
+          "groupId",
+          "id",
+          "tenantId",
+          "trailId",
+        ],
         "success": true,
       }
     `);

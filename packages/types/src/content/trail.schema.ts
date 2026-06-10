@@ -25,12 +25,20 @@ export const TrailResponseSchema = z.object({
   description: z.string().nullable(),
   status: TrailStatusSchema,
   accessMode: TrailAccessModeSchema,
+  version: z.number().int().positive().nullable(),
+  publishedAt: z.string().datetime().nullable(),
+  publishedBy: z.string().uuid().nullable(),
+  catalogVisible: z.boolean(),
   createdBy: z.string().uuid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   deletedAt: z.string().datetime().nullable(),
 });
 export type TrailResponse = z.infer<typeof TrailResponseSchema>;
+
+// Publish response (same as TrailResponse but status is always 'published')
+export const PublishTrailResponseSchema = TrailResponseSchema;
+export type PublishTrailResponse = TrailResponse;
 
 export const TrailsListMetaSchema = z.object({
   total: z.number().int().nonnegative(),

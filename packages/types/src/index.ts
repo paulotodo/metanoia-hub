@@ -503,6 +503,8 @@ export {
   type UpdateTrailRequest,
   TrailResponseSchema,
   type TrailResponse,
+  PublishTrailResponseSchema,
+  type PublishTrailResponse,
   TrailsListMetaSchema,
   type TrailsListMeta,
   TrailsListResponseSchema,
@@ -572,9 +574,27 @@ export {
   type TrailProgressUpdatedData,
   TrailProgressUpdatedEventSchema,
   type TrailProgressUpdatedEvent,
+  TrailPublishedDataSchema,
+  type TrailPublishedData,
+  TrailPublishedMetadataSchema,
+  type TrailPublishedMetadata,
+  TrailPublishedEventSchema,
+  type TrailPublishedEvent,
   LESSON_PROGRESS_QUEUE_NAME,
   TRAIL_PROGRESS_EVENTS_QUEUE_NAME,
 } from './content/content-events.schema';
+export {
+  TrailVersionResponseSchema,
+  type TrailVersionResponse,
+  TrailVersionsListResponseSchema,
+  type TrailVersionsListResponse,
+} from './content/trail-version.schema';
+export {
+  GroupTrailResponseSchema,
+  type GroupTrailResponse,
+  AssignTrailToGroupRequestSchema,
+  type AssignTrailToGroupRequest,
+} from './content/group-trail.schema';
 export {
   VideoIntervalSchema,
   type VideoInterval,
