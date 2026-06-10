@@ -37,8 +37,8 @@ async function ensureUser(prisma: PrismaClient, userId: string, email: string) {
   await prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '00000000-0000-0000-0000-000000000000'`);
     await tx.$executeRawUnsafe(
-      `INSERT INTO users (id, email, name, status)
-       VALUES ('${userId}'::uuid, '${email}', 'Test User', 'active')
+      `INSERT INTO users (id, email, name, status, updated_at)
+       VALUES ('${userId}'::uuid, '${email}', 'Test User', 'active', now())
        ON CONFLICT (id) DO NOTHING`,
     );
   });
