@@ -133,7 +133,7 @@ async function seedAttendance(
          total_duration_seconds, presence_type)
       VALUES
         ('${id}'::uuid, '${tenantId}'::uuid, '${meetingId}'::uuid, '${userId}'::uuid,
-         NOW() - INTERVAL '1 hour', NOW(), 3600, 'present')
+         NOW() - INTERVAL '1 hour', NOW(), 3600, 'integral')
     `);
   });
   return id;
