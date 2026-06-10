@@ -535,6 +535,12 @@ export {
   type ReorderLessonsRequest,
 } from './content/lesson.schema';
 export {
+  UploadResponseSchema,
+  type UploadResponse,
+  SignedUrlResponseSchema,
+  type SignedUrlResponse,
+} from './content/upload.schema';
+export {
   CreateRoomOptionsSchema,
   type CreateRoomOptions,
   GenerateTokenOptionsSchema,
