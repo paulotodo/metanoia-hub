@@ -136,21 +136,16 @@ async function queryGroupIdsForLider(
   return rows.map((r) => r.group_id);
 }
 
+// Cleanup removes ONLY the per-test mutable data (radar statuses). Groups,
+// group_members, users and tenants are stable fixtures seeded once in
+// beforeAll — deleting them here would break the FK on re-seed in beforeEach.
 async function cleanup(prisma: PrismaClient) {
   for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
       await tx.$executeRawUnsafe(
         `DELETE FROM participant_radar_status WHERE tenant_id = '${tenantId}'::uuid
-           AND group_id IN ('${GROUP_A_ID}', '${GROUP_B_ID}')`,
-      );
-      await tx.$executeRawUnsafe(
-        `DELETE FROM group_members WHERE tenant_id = '${tenantId}'::uuid
-           AND group_id IN ('${GROUP_A_ID}', '${GROUP_B_ID}')`,
-      );
-      await tx.$executeRawUnsafe(
-        `DELETE FROM groups WHERE tenant_id = '${tenantId}'::uuid
-           AND id IN ('${GROUP_A_ID}'::uuid, '${GROUP_B_ID}'::uuid)`,
+           AND group_id IN ('${GROUP_A_ID}'::uuid, '${GROUP_B_ID}'::uuid)`,
       );
     });
   }
