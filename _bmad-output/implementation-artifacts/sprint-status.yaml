@@ -99,13 +99,13 @@ development_status:
   # Epic 5: Reuniões ao Vivo & Presença MVP
   # Sprint 8: 5-1, 5-2, 5-3
   # Sprint 9: 5-4, 5-5, 5-6
-  epic-5: in-progress
+  epic-5: done
   5-1-crud-de-reunioes-vinculadas-a-grupo: done                        # PR #106 (2026-05-12)
   5-2-integracao-agnostica-com-livekit: done                            # PR #107 (2026-05-12)
   5-3-pipeline-de-presenca-automatica: done                             # PR #108 (2026-05-12)
   5-4-telemetria-basica-de-engajamento: done                            # PR #111 (2026-05-12)
   5-5-banner-de-transparencia-lista-de-presenca-real-time: done         # PR #110 (2026-05-12)
-  5-6-relatorio-pos-reuniao-notificacoes: in-review
+  5-6-relatorio-pos-reuniao-notificacoes: done                          # PR #112 (437ee66) — drift de tracking corrigido na reconciliação 2026-06-10
   epic-5-retrospective: optional
 
   # Epic 6: Radar Pastoral & Visibilidade MVP
