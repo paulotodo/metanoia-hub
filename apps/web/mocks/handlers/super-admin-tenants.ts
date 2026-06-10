@@ -57,6 +57,9 @@ const DETAIL_BY_ID = new Map<string, TenantDetail>(
       inviteStatus: t.status === 'active' ? 'accepted' : 'sent',
       groupCount: t.status === 'active' ? Math.max(1, Math.round(t.memberCount / 12)) : 0,
       leaderCount: t.status === 'active' ? Math.max(1, Math.round(t.memberCount / 30)) : 0,
+      // AC#5 residual Story 3-2: PATCH response includes updatedAt and metadata.
+      updatedAt: t.createdAt,
+      metadata: {},
     } satisfies TenantDetail,
   ]),
 );
@@ -165,12 +168,18 @@ export const superAdminTenantsHandlers = [
     const patch = (await request.json()) as {
       name?: string;
       status?: 'active' | 'suspended';
+      metadata?: Record<string, unknown>;
     };
     const updated: TenantDetail = {
       ...detail,
       ...(patch.name ? { name: patch.name } : {}),
       ...(patch.status ? { status: patch.status } : {}),
+      // metadata: shallow-merge to mirror server behaviour (Story 3-2 AC#5)
+      ...(patch.metadata ? { metadata: { ...detail.metadata, ...patch.metadata } } : {}),
+      // updatedAt: simulate server updating the timestamp on every PATCH
+      updatedAt: new Date().toISOString(),
     };
+    DETAIL_BY_ID.set(id, updated);
     const body: TenantPatchResponse = { data: updated };
     return HttpResponse.json(body);
   }),

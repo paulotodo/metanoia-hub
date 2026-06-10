@@ -114,6 +114,29 @@ export class SuperAdminTenantsRepository {
     return this.prisma.client.tenant.findUnique({ where: { slug } });
   }
 
+  /**
+   * Merges (shallow-patch) the supplied key-value pairs into the tenant's
+   * metadata JSONB column. Existing keys not present in `patch` are preserved.
+   */
+  async updateMetadata(id: string, patch: Record<string, unknown>) {
+    // Prisma raw JSON merge — read current value then shallow-merge via update.
+    // The DB column default is '{}' so the cast is always safe.
+    const current = await this.prisma.client.tenant.findUnique({
+      where: { id },
+      select: { metadata: true },
+    });
+    const merged = {
+      ...(typeof current?.metadata === 'object' && current.metadata !== null
+        ? (current.metadata as Record<string, unknown>)
+        : {}),
+      ...patch,
+    };
+    return this.prisma.client.tenant.update({
+      where: { id },
+      data: { metadata: merged as Prisma.InputJsonValue },
+    });
+  }
+
   async setProvisioningState(
     id: string,
     state: { step: number; status: string; failedAt: string | null; error: string | null },

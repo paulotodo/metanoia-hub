@@ -13,6 +13,8 @@ function makeTenantRow(overrides: Partial<{
   status: string;
   adminEmail: string;
   provisioningState: unknown;
+  metadata: Record<string, unknown> | null;
+  updatedAt: Date | null;
 }> = {}) {
   return {
     id: overrides.id ?? TENANT_A,
@@ -23,7 +25,9 @@ function makeTenantRow(overrides: Partial<{
     status: overrides.status ?? 'active',
     adminEmail: overrides.adminEmail ?? 'admin@caminho.org',
     provisioningState: overrides.provisioningState ?? null,
+    metadata: 'metadata' in overrides ? overrides.metadata : {},
     createdAt: new Date('2026-04-01T12:00:00.000Z'),
+    updatedAt: 'updatedAt' in overrides ? overrides.updatedAt : new Date('2026-04-01T14:00:00.000Z'),
   };
 }
 
@@ -36,6 +40,7 @@ function createMocks() {
     create: vi.fn(),
     updateStatus: vi.fn(),
     updateName: vi.fn(),
+    updateMetadata: vi.fn(),
     setProvisioningState: vi.fn(),
   };
   const service = new SuperAdminTenantsService(repo as never);
@@ -196,6 +201,72 @@ describe('SuperAdminTenantsService.patch', () => {
     const result = await service.patch(TENANT_A, { name: 'Igreja Renomeada' });
     expect(result.data.name).toBe('Igreja Renomeada');
     expect(repo.updateName).toHaveBeenCalledWith(TENANT_A, 'Igreja Renomeada');
+  });
+
+  it('returns updatedAt as ISO 8601 string in detail response', async () => {
+    const { service, repo } = createMocks();
+    const updatedAt = new Date('2026-06-10T10:30:00.000Z');
+    repo.findById
+      .mockResolvedValueOnce(makeTenantRow({ status: 'active' }))
+      .mockResolvedValueOnce(makeTenantRow({ updatedAt }));
+    repo.updateName.mockResolvedValue(undefined);
+    repo.aggregates.mockResolvedValue({
+      memberCount: 0,
+      groupCount: 0,
+      leaderCount: 0,
+    });
+
+    const result = await service.patch(TENANT_A, { name: 'Igreja Nova' });
+    expect(result.data.updatedAt).toBe('2026-06-10T10:30:00.000Z');
+  });
+
+  it('falls back to createdAt when updatedAt is absent (pre-migration row)', async () => {
+    const { service, repo } = createMocks();
+    const createdAt = new Date('2026-04-01T12:00:00.000Z');
+    const row = { ...makeTenantRow(), updatedAt: null, createdAt };
+    repo.findById
+      .mockResolvedValueOnce(row)
+      .mockResolvedValueOnce(row);
+    repo.aggregates.mockResolvedValue({
+      memberCount: 0,
+      groupCount: 0,
+      leaderCount: 0,
+    });
+
+    const result = await service.detail(TENANT_A);
+    expect(result.data.updatedAt).toBe('2026-04-01T12:00:00.000Z');
+  });
+
+  it('updates metadata and merges with existing data', async () => {
+    const { service, repo } = createMocks();
+    const existingMetadata = { support_tier: 'gold' };
+    const patchMetadata = { custom_flag: true };
+    repo.findById
+      .mockResolvedValueOnce(makeTenantRow({ metadata: existingMetadata }))
+      .mockResolvedValueOnce(makeTenantRow({ metadata: { ...existingMetadata, ...patchMetadata } }));
+    repo.updateMetadata.mockResolvedValue(undefined);
+    repo.aggregates.mockResolvedValue({
+      memberCount: 0,
+      groupCount: 0,
+      leaderCount: 0,
+    });
+
+    const result = await service.patch(TENANT_A, { metadata: patchMetadata });
+    expect(result.data.metadata).toMatchObject({ support_tier: 'gold', custom_flag: true });
+    expect(repo.updateMetadata).toHaveBeenCalledWith(TENANT_A, patchMetadata);
+  });
+
+  it('detail returns empty metadata object when metadata is null (pre-migration row)', async () => {
+    const { service, repo } = createMocks();
+    repo.findById.mockResolvedValue(makeTenantRow({ metadata: null }));
+    repo.aggregates.mockResolvedValue({
+      memberCount: 0,
+      groupCount: 0,
+      leaderCount: 0,
+    });
+
+    const result = await service.detail(TENANT_A);
+    expect(result.data.metadata).toEqual({});
   });
 });
 

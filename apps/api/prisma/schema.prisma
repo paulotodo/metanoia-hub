@@ -217,7 +217,9 @@ model Tenant {
   provisioningState Json?    @map("provisioning_state")
   isDemo                  Boolean  @default(false) @map("is_demo")
   focusIndicatorEnabled   Boolean  @default(false) @map("focus_indicator_enabled")
-  createdAt               DateTime @default(now()) @map("created_at")
+  metadata                Json     @default("{}") @map("metadata") @db.JsonB
+  createdAt               DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt               DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   groups  Group[]
   invites Invite[]
