@@ -97,11 +97,16 @@ export const TenantDetailSchema = z.object({
   plan: TenantPlanSchema,
   status: TenantStatusSchema,
   createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
   adminEmail: z.string().email(),
   inviteStatus: InviteDeliveryStatusSchema,
   memberCount: z.number().int().nonnegative(),
   groupCount: z.number().int().nonnegative(),
   leaderCount: z.number().int().nonnegative(),
+  // metadata: opaque JSONB bag — super_admin can read/write arbitrary key-value
+  // pairs for operational notes (e.g. support tier, custom flags).
+  // Returned as-is; never contains pastoral data.
+  metadata: z.record(z.string(), z.unknown()).default({}),
 });
 export type TenantDetail = z.infer<typeof TenantDetailSchema>;
 
@@ -184,9 +189,12 @@ export const TenantPatchInputSchema = z
   .object({
     name: z.string().trim().min(3).max(100).optional(),
     status: z.enum(['active', 'suspended']).optional(),
+    // metadata: opaque JSONB bag for operational notes; merged (not replaced)
+    // server-side — send only the keys you want to update.
+    metadata: z.record(z.string(), z.unknown()).optional(),
   })
   .refine(
-    (v) => v.name !== undefined || v.status !== undefined,
+    (v) => v.name !== undefined || v.status !== undefined || v.metadata !== undefined,
     { message: 'at_least_one_field_required' },
   );
 export type TenantPatchInput = z.infer<typeof TenantPatchInputSchema>;

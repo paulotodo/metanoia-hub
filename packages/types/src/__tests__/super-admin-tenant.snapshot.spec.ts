@@ -66,7 +66,69 @@ describe('TenantsListResponseSchema snapshot', () => {
 });
 
 describe('TenantDetailSchema', () => {
-  it('accepts full payload with aggregates and invite status', () => {
+  it('accepts full payload with aggregates, invite status, updatedAt, and metadata', () => {
+    const result = TenantDetailSchema.safeParse({
+      id: TENANT_ID,
+      name: 'Igreja Restauração',
+      slug: 'igreja-restauracao',
+      plan: 'free',
+      status: 'active',
+      createdAt: '2026-04-01T12:00:00.000Z',
+      updatedAt: '2026-06-10T10:30:00.000Z',
+      adminEmail: 'admin@restauracao.org',
+      inviteStatus: 'sent',
+      memberCount: 142,
+      groupCount: 12,
+      leaderCount: 5,
+      metadata: { support_tier: 'gold' },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.updatedAt).toBe('2026-06-10T10:30:00.000Z');
+      expect(result.data.metadata).toEqual({ support_tier: 'gold' });
+    }
+  });
+
+  it('defaults metadata to empty object when omitted', () => {
+    const result = TenantDetailSchema.safeParse({
+      id: TENANT_ID,
+      name: 'Igreja Restauração',
+      slug: 'igreja-restauracao',
+      plan: 'free',
+      status: 'active',
+      createdAt: '2026-04-01T12:00:00.000Z',
+      updatedAt: '2026-06-10T10:30:00.000Z',
+      adminEmail: 'admin@restauracao.org',
+      inviteStatus: 'sent',
+      memberCount: 142,
+      groupCount: 12,
+      leaderCount: 5,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.metadata).toEqual({});
+    }
+  });
+
+  it('rejects negative aggregate counts', () => {
+    const result = TenantDetailSchema.safeParse({
+      id: TENANT_ID,
+      name: 'X',
+      slug: 'x',
+      plan: 'free',
+      status: 'active',
+      createdAt: '2026-04-01T12:00:00.000Z',
+      updatedAt: '2026-06-10T10:30:00.000Z',
+      adminEmail: 'a@b.com',
+      inviteStatus: 'pending',
+      memberCount: -1,
+      groupCount: 0,
+      leaderCount: 0,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects missing updatedAt', () => {
     const result = TenantDetailSchema.safeParse({
       id: TENANT_ID,
       name: 'Igreja Restauração',
@@ -79,23 +141,6 @@ describe('TenantDetailSchema', () => {
       memberCount: 142,
       groupCount: 12,
       leaderCount: 5,
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it('rejects negative aggregate counts', () => {
-    const result = TenantDetailSchema.safeParse({
-      id: TENANT_ID,
-      name: 'X',
-      slug: 'x',
-      plan: 'free',
-      status: 'active',
-      createdAt: '2026-04-01T12:00:00.000Z',
-      adminEmail: 'a@b.com',
-      inviteStatus: 'pending',
-      memberCount: -1,
-      groupCount: 0,
-      leaderCount: 0,
     });
     expect(result.success).toBe(false);
   });
@@ -198,5 +243,20 @@ describe('TenantPatchInputSchema', () => {
       TenantPatchInputSchema.safeParse({ status: 'provisioning_failed' })
         .success,
     ).toBe(false);
+  });
+
+  it('accepts metadata only patch', () => {
+    expect(
+      TenantPatchInputSchema.safeParse({ metadata: { support_tier: 'gold' } }).success,
+    ).toBe(true);
+  });
+
+  it('accepts combined name + metadata patch', () => {
+    expect(
+      TenantPatchInputSchema.safeParse({
+        name: 'Igreja Nova',
+        metadata: { custom_flag: true },
+      }).success,
+    ).toBe(true);
   });
 });

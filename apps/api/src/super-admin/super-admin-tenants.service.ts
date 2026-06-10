@@ -92,11 +92,20 @@ export class SuperAdminTenantsService {
       plan: tenant.plan as TenantPlan,
       status: tenant.status as TenantStatus,
       createdAt: tenant.createdAt.toISOString(),
+      // updatedAt: exposed as ISO 8601 per AC#5 residual (Story 3-2).
+      // Falls back to createdAt for rows that pre-date this migration.
+      updatedAt: (tenant.updatedAt ?? tenant.createdAt).toISOString(),
       adminEmail: tenant.adminEmail ?? 'unknown@example.com',
       inviteStatus: 'sent', // TODO Sprint 2: derive from Keycloak invite state
       memberCount: aggregates.memberCount,
       groupCount: aggregates.groupCount,
       leaderCount: aggregates.leaderCount,
+      // metadata: opaque JSONB bag (default '{}'). Cast is safe — DB default
+      // guarantees a non-null object; null guard handles pre-migration rows.
+      metadata:
+        typeof tenant.metadata === 'object' && tenant.metadata !== null
+          ? (tenant.metadata as Record<string, unknown>)
+          : {},
     };
 
     return { data };
@@ -169,6 +178,10 @@ export class SuperAdminTenantsService {
 
     if (input.name) {
       await this.repo.updateName(id, input.name.trim());
+    }
+
+    if (input.metadata !== undefined) {
+      await this.repo.updateMetadata(id, input.metadata);
     }
 
     return this.detail(id);
