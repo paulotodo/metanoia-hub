@@ -15,12 +15,13 @@ import {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { ReflectionsService } from './reflections.service';
 
 @Controller('api/v1/meetings')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('lider')
+@Roles(Role.LIDER)
 export class ReflectionsController {
   constructor(private readonly service: ReflectionsService) {}
 

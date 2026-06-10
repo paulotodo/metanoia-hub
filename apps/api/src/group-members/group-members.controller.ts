@@ -21,12 +21,13 @@ import {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { GroupMembersService } from './group-members.service';
 
 @Controller('api/v1/groups/:groupId/members')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('admin_tenant')
+@Roles(Role.ADMIN_TENANT)
 export class GroupMembersController {
   constructor(private readonly service: GroupMembersService) {}
 

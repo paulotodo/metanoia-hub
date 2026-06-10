@@ -24,6 +24,7 @@ import {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { MeetingsService } from './meetings.service';
 
@@ -33,7 +34,8 @@ export class MeetingsController {
   constructor(private readonly service: MeetingsService) {}
 
   @Get()
-  @Roles('lider', 'pastor', 'admin', 'admin_tenant')
+  // TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
+  @Roles(Role.LIDER, 'pastor', 'admin', Role.ADMIN_TENANT)
   async list(
     @Query(new ZodValidationPipe(MeetingsListQuerySchema))
     query: MeetingsListQuery,
@@ -43,7 +45,7 @@ export class MeetingsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Roles('lider', 'admin_tenant')
+  @Roles(Role.LIDER, Role.ADMIN_TENANT)
   async create(
     @Body(new ZodValidationPipe(CreateMeetingRequestSchema))
     body: CreateMeetingRequest,
@@ -53,14 +55,15 @@ export class MeetingsController {
   }
 
   @Get(':meetingId')
-  @Roles('lider', 'pastor', 'admin', 'admin_tenant')
+  // TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
+  @Roles(Role.LIDER, 'pastor', 'admin', Role.ADMIN_TENANT)
   async getDetail(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     const data = await this.service.getDetail(meetingId);
     return { data };
   }
 
   @Patch(':meetingId')
-  @Roles('lider', 'admin_tenant')
+  @Roles(Role.LIDER, Role.ADMIN_TENANT)
   @UsePipes(new ZodValidationPipe(UpdateMeetingRequestSchema))
   async update(
     @Param('meetingId', ParseUUIDPipe) meetingId: string,
@@ -72,14 +75,14 @@ export class MeetingsController {
 
   @Delete(':meetingId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Roles('lider', 'admin_tenant')
+  @Roles(Role.LIDER, Role.ADMIN_TENANT)
   async cancel(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     await this.service.cancel(meetingId);
   }
 
   @Post(':meetingId/room')
   @HttpCode(HttpStatus.OK)
-  @Roles('lider')
+  @Roles(Role.LIDER)
   async openRoom(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     const data = await this.service.openRoom(meetingId);
     return { data };
@@ -87,7 +90,7 @@ export class MeetingsController {
 
   @Post(':meetingId/room/end')
   @HttpCode(HttpStatus.OK)
-  @Roles('lider')
+  @Roles(Role.LIDER)
   async endRoom(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     const data = await this.service.endRoom(meetingId);
     return { data };
@@ -97,7 +100,7 @@ export class MeetingsController {
   // `/room` and `/room/end` semantics (live ⇄ in_progress, ended ⇄ completed).
   @Post(':meetingId/start')
   @HttpCode(HttpStatus.OK)
-  @Roles('lider')
+  @Roles(Role.LIDER)
   async start(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     const data = await this.service.openRoom(meetingId);
     return { data };
@@ -105,7 +108,7 @@ export class MeetingsController {
 
   @Post(':meetingId/end')
   @HttpCode(HttpStatus.OK)
-  @Roles('lider')
+  @Roles(Role.LIDER)
   async end(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     const data = await this.service.endRoom(meetingId);
     return { data };
@@ -113,7 +116,8 @@ export class MeetingsController {
 
   @Post(':meetingId/join')
   @HttpCode(HttpStatus.OK)
-  @Roles('lider', 'pastor', 'admin', 'admin_tenant')
+  // TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
+  @Roles(Role.LIDER, 'pastor', 'admin', Role.ADMIN_TENANT)
   async join(@Param('meetingId', ParseUUIDPipe) meetingId: string) {
     const data = await this.service.join(meetingId);
     return { data };

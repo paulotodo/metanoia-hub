@@ -14,6 +14,7 @@ import {
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { CareActionRequestSchema } from './dto/care-action.dto';
 import type { CareActionRequest } from './dto/care-action.dto';
@@ -22,7 +23,8 @@ import { PastoralService } from './pastoral.service';
 
 @Controller('api/v1/radar')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
-@Roles('lider', 'pastor')
+// TODO: migrate 'pastor' to canonical Role enum when defined (Epic 11)
+@Roles(Role.LIDER, 'pastor')
 export class PastoralController {
   constructor(private readonly service: PastoralService) {}
 
