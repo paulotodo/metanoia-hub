@@ -93,8 +93,10 @@ o default seguro é sequencial para evitar conflito de migrations Prisma.
 - **W1b.1 — Trilhas core**: `8-1`, `8-2`, `8-3`
 - **W1b.2 — Trilhas regras**: `8-4`, `8-5`, `8-6`, **`4-4`** (agora desbloqueada)
 - **W1b.3 — Trilhas relatório/busca/UX**: `8-7`, `8-8`, `8-9`, `8-10`
-- **W1b.4 — Radar Pastoral A**: `6-1`, `6-2`, `6-3`
-- **W1b.5 — Radar Pastoral B**: `6-4`, `6-5`, `6-6`
+- **W1b.4 — Radar Pastoral** (pré-flight feito — ver `RECONCILIACAO-EPIC6.md`; trabalho NOVO substancial, reordenado por dependências):
+  - **W1b.4a**: `6-1` (vocabulary.ts — foundational), depois `6-2` (model `ParticipantRadarStatus` + engine BullMQ + cache — foundational)
+  - **W1b.4b**: `6-3` (trend/alertas, estende 6-2), `6-6` (agregação + guardrail líder, consome o model)
+  - **W1b.4c**: `6-4` (TimelineCuidado individual — residual), `6-5` (NudgePastoral + useUndoableAction)
 - **W1b.6 — LGPD**: `9-1`, `9-2`, `9-3`, `9-4`
 - **W1b.7 — Onboarding avançado**: `10-1`, `10-2`, `10-3`, `10-4`
 - **W1b.8 — Planos & gating**: `11-1`, `11-2`, `11-3`, `11-4`
