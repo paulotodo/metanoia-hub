@@ -406,9 +406,9 @@ model ParticipantRadarStatus {
   lastActiveAt        DateTime?   @map("last_active_at") @db.Timestamptz
   calculatedAt        DateTime    @default(now()) @map("calculated_at") @db.Timestamptz
 
-  tenant      Tenant @relation(fields: [tenantId], references: [id])
-  group       Group  @relation(fields: [groupId], references: [id])
-  participant User   @relation("radarStatuses", fields: [participantId], references: [id])
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  group       Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  participant User   @relation("radarStatuses", fields: [participantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([tenantId, groupId, participantId])
   @@index([tenantId, groupId])

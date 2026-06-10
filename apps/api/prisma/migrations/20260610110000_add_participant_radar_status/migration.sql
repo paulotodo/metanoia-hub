@@ -20,11 +20,11 @@ CREATE TABLE "participant_radar_status" (
 
   CONSTRAINT "participant_radar_status_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "participant_radar_status_tenant_id_fkey"
-    FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE,
+    FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "participant_radar_status_group_id_fkey"
-    FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE,
+    FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "participant_radar_status_participant_id_fkey"
-    FOREIGN KEY ("participant_id") REFERENCES "users"("id") ON DELETE CASCADE,
+    FOREIGN KEY ("participant_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "participant_radar_status_unique"
     UNIQUE ("tenant_id", "group_id", "participant_id")
 );
