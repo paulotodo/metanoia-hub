@@ -576,6 +576,24 @@ export {
   TRAIL_PROGRESS_EVENTS_QUEUE_NAME,
 } from './content/content-events.schema';
 export {
+  VideoIntervalSchema,
+  type VideoInterval,
+  VideoProgressPayloadSchema,
+  type VideoProgressPayload,
+  CompletedBySchema,
+  type CompletedBy,
+  ManualCompletionRequestSchema,
+  type ManualCompletionRequest,
+} from './content/completion-rules.schema';
+export {
+  TenantContentConfigSchema,
+  type TenantContentConfig,
+  TenantContentConfigResponseSchema,
+  type TenantContentConfigResponse,
+  UpdateTenantContentConfigSchema,
+  type UpdateTenantContentConfigRequest,
+} from './content/tenant-content-config.schema';
+export {
   CreateRoomOptionsSchema,
   type CreateRoomOptions,
   GenerateTokenOptionsSchema,

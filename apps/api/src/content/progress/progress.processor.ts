@@ -10,6 +10,7 @@ import { generateId } from '@metanoia/types';
 import { BullMqService } from '../../bullmq/bullmq.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { requestContext } from '../../common/context/request-context';
+import { CompletionRulesService } from '../completion/completion-rules.service';
 
 @Injectable()
 export class ProgressProcessor implements OnModuleInit {
@@ -19,6 +20,7 @@ export class ProgressProcessor implements OnModuleInit {
   constructor(
     private readonly bullMqService: BullMqService,
     private readonly prisma: PrismaService,
+    private readonly completionRules: CompletionRulesService,
   ) {}
 
   onModuleInit() {
@@ -51,7 +53,15 @@ export class ProgressProcessor implements OnModuleInit {
       },
       async () => {
         try {
-          await this.upsertLessonProgress(tenantId, userId, lessonId, progressPercent, correlationId);
+          await this.upsertLessonProgress(
+            tenantId,
+            userId,
+            lessonId,
+            progressPercent,
+            correlationId,
+            job.data.eventType,
+            job.data.completedBy,
+          );
         } catch (error) {
           this.logger.error(
             { tenantId, userId, lessonId, jobId: job.id, error: (error as Error).message },
@@ -69,10 +79,10 @@ export class ProgressProcessor implements OnModuleInit {
     lessonId: string,
     progressPercent: number,
     correlationId: string,
+    eventType?: string,
+    completedByOverride?: 'participant' | 'leader',
   ): Promise<void> {
     const now = new Date();
-
-    const status = progressPercent >= 100 ? 'completed' : progressPercent > 0 ? 'in_progress' : 'not_started';
 
     await this.prisma.client.$transaction(async (tx) => {
       await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
@@ -81,6 +91,18 @@ export class ProgressProcessor implements OnModuleInit {
       const existing = await tx.lessonProgress.findUnique({
         where: { tenantId_userId_lessonId: { tenantId, userId, lessonId } },
       });
+
+      // Completion immutability guard: already completed → skip recalculation
+      if (existing && this.completionRules.shouldSkipRecalculation(existing.status)) {
+        this.completionRules.logCompletionImmutableSkip(tenantId, lessonId, userId);
+        return;
+      }
+
+      const status = progressPercent >= 100 ? 'completed' : progressPercent > 0 ? 'in_progress' : 'not_started';
+
+      // For manual_mark events, capture completedBy
+      const completedBy =
+        eventType === 'manual_mark' ? (completedByOverride ?? 'participant') : null;
 
       const previousStatus = existing?.status ?? 'not_started';
 
@@ -93,6 +115,7 @@ export class ProgressProcessor implements OnModuleInit {
             lessonId,
             status,
             progressPercent,
+            completedBy: completedBy ?? undefined,
             startedAt: progressPercent > 0 ? now : null,
             completedAt: status === 'completed' ? now : null,
             lastAccessedAt: now,
@@ -106,6 +129,10 @@ export class ProgressProcessor implements OnModuleInit {
             data: {
               status,
               progressPercent,
+              // Only set completedBy when transitioning to completed
+              ...(status === 'completed' &&
+                !existing.completedAt &&
+                completedBy && { completedBy }),
               startedAt: existing.startedAt ?? (progressPercent > 0 ? now : null),
               completedAt: status === 'completed' && !existing.completedAt ? now : existing.completedAt,
               lastAccessedAt: now,

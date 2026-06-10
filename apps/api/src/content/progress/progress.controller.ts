@@ -30,6 +30,7 @@ export class ProgressController {
       lessonId,
       body.progressPercent,
       body.eventType,
+      body.completedBy,
     );
     return { data: { accepted: true } };
   }

@@ -574,6 +574,12 @@ model Lesson {
 // Progress Tracking — Story 8-3
 // ---------------------------------------------------------------------------
 
+/// CompletedBy — who triggered lesson completion
+enum CompletedBy {
+  participant
+  leader
+}
+
 /// LessonStatus — progress state of a lesson for a user
 enum LessonStatus {
   not_started
@@ -594,6 +600,8 @@ model LessonProgress {
   lastAccessedAt DateTime     @default(now()) @map("last_accessed_at") @db.Timestamptz
   createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+
+  completedBy    CompletedBy? @map("completed_by")
 
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -635,4 +643,23 @@ model TrailProgress {
   @@unique([tenantId, userId, trailId])
   @@index([tenantId, userId])
   @@map("trail_progress")
+}
+
+// ---------------------------------------------------------------------------
+// Tenant Content Config — Story 8-4 (completion rules per content type)
+// ---------------------------------------------------------------------------
+
+/// TenantContentConfig — per-tenant overrides for completion thresholds
+/// Convention over configuration: when absent, defaults apply (video 90%, doc 80%)
+model TenantContentConfig {
+  id                        String   @id @db.Uuid
+  tenantId                  String   @unique @map("tenant_id") @db.Uuid
+  videoThresholdPercent     Int      @default(90) @map("video_threshold_percent")
+  docScrollThresholdPercent Int      @default(80) @map("doc_scroll_threshold_percent")
+  allowManualVideoCompletion Boolean @default(false) @map("allow_manual_video_completion")
+  allowManualDocCompletion  Boolean  @default(false) @map("allow_manual_doc_completion")
+  createdAt                 DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                 DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("tenant_content_config")
 }
