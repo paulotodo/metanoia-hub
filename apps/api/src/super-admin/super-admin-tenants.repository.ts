@@ -133,7 +133,7 @@ export class SuperAdminTenantsRepository {
     };
     return this.prisma.client.tenant.update({
       where: { id },
-      data: { metadata: merged },
+      data: { metadata: merged as Prisma.InputJsonValue },
     });
   }
 
