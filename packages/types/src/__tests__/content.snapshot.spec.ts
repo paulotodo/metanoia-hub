@@ -13,6 +13,10 @@ import {
   LessonResponseSchema,
   UploadResponseSchema,
   SignedUrlResponseSchema,
+  LessonStatusSchema,
+  ReportProgressRequestSchema,
+  LessonProgressJobPayloadSchema,
+  TrailProgressUpdatedEventSchema,
 } from '../index';
 
 // ------------------------------------------------------------------
@@ -455,5 +459,198 @@ describe('SignedUrlResponseSchema snapshot', () => {
         "success": true,
       }
     `);
+  });
+});
+
+// ------------------------------------------------------------------
+// LessonStatusSchema (Story 8-3)
+// ------------------------------------------------------------------
+describe('LessonStatusSchema snapshot', () => {
+  it('freezes valid and invalid values', () => {
+    const ok = LessonStatusSchema.safeParse('in_progress');
+    const fail = LessonStatusSchema.safeParse('started');
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": "in_progress",
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+
+  it('accepts all three status values', () => {
+    expect(LessonStatusSchema.safeParse('not_started').success).toBe(true);
+    expect(LessonStatusSchema.safeParse('in_progress').success).toBe(true);
+    expect(LessonStatusSchema.safeParse('completed').success).toBe(true);
+    expect(LessonStatusSchema.safeParse('paused').success).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------
+// ReportProgressRequestSchema (Story 8-3)
+// ------------------------------------------------------------------
+describe('ReportProgressRequestSchema snapshot', () => {
+  it('freezes valid progress event shape', () => {
+    const ok = ReportProgressRequestSchema.safeParse({
+      progressPercent: 75,
+      eventType: 'video_time_update',
+    });
+    const fail = ReportProgressRequestSchema.safeParse({
+      progressPercent: 101, // out of range
+      eventType: 'video_time_update',
+    });
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": {
+          "eventType": "video_time_update",
+          "progressPercent": 75,
+        },
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// LessonProgressJobPayloadSchema (Story 8-3)
+// ------------------------------------------------------------------
+describe('LessonProgressJobPayloadSchema snapshot', () => {
+  it('freezes BullMQ job payload shape', () => {
+    const ok = LessonProgressJobPayloadSchema.safeParse({
+      userId: '019756c0-0001-7000-8000-000000000099',
+      lessonId: '019756c0-0001-7000-8000-000000000030',
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      progressPercent: 50,
+      eventType: 'scroll_position',
+    });
+    const fail = LessonProgressJobPayloadSchema.safeParse({
+      userId: 'not-a-uuid',
+      lessonId: 'not-a-uuid',
+      tenantId: 'not-a-uuid',
+      progressPercent: -1,
+      eventType: 'invalid',
+    });
+    expect({
+      success: ok.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "failure": true,
+        "keys": [
+          "eventType",
+          "lessonId",
+          "progressPercent",
+          "tenantId",
+          "userId",
+        ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// TrailProgressUpdatedEventSchema — domain event contract test (Story 8-3)
+// OBRIGATÓRIO: previne breaking changes silenciosas entre Content e Pastoral
+// ------------------------------------------------------------------
+describe('TrailProgressUpdatedEventSchema snapshot (domain event contract)', () => {
+  it('freezes the domain event shape — MUST NOT change without Story 6.9 coordination', () => {
+    const ok = TrailProgressUpdatedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.progress_updated',
+      version: 1,
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-12T10:00:00.000Z',
+      data: {
+        userId: '019756c0-0001-7000-8000-000000000099',
+        trailId: '019756c0-0001-7000-8000-000000000010',
+        progressPercent: 75,
+        previousPercent: 50,
+      },
+      metadata: {
+        correlationId: 'progress-job-abc123',
+      },
+    });
+
+    const fail = TrailProgressUpdatedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.progress_changed', // wrong eventType
+      version: 1,
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-12T10:00:00.000Z',
+      data: { userId: 'u', trailId: 't', progressPercent: 75, previousPercent: 50 },
+      metadata: { correlationId: 'x' },
+    });
+
+    expect({
+      success: ok.success,
+      eventType: ok.success ? ok.data.eventType : null,
+      version: ok.success ? ok.data.version : null,
+      dataKeys: ok.success ? Object.keys(ok.data.data).sort() : [],
+      metadataKeys: ok.success ? Object.keys(ok.data.metadata).sort() : [],
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "dataKeys": [
+          "previousPercent",
+          "progressPercent",
+          "trailId",
+          "userId",
+        ],
+        "eventType": "content.trail.progress_updated",
+        "failure": true,
+        "metadataKeys": [
+          "correlationId",
+        ],
+        "success": true,
+        "version": 1,
+      }
+    `);
+  });
+
+  it('rejects wrong version number', () => {
+    const fail = TrailProgressUpdatedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.progress_updated',
+      version: 2, // wrong — must be 1
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-12T10:00:00.000Z',
+      data: {
+        userId: '019756c0-0001-7000-8000-000000000099',
+        trailId: '019756c0-0001-7000-8000-000000000010',
+        progressPercent: 75,
+        previousPercent: 50,
+      },
+      metadata: { correlationId: 'x' },
+    });
+    expect(fail.success).toBe(false);
+  });
+
+  it('rejects progressPercent out of 0-100 range', () => {
+    const fail = TrailProgressUpdatedEventSchema.safeParse({
+      eventId: '019756c0-0001-7000-8000-000000000001',
+      eventType: 'content.trail.progress_updated',
+      version: 1,
+      tenantId: '019756c0-0001-7000-8000-000000000002',
+      timestamp: '2026-06-12T10:00:00.000Z',
+      data: {
+        userId: '019756c0-0001-7000-8000-000000000099',
+        trailId: '019756c0-0001-7000-8000-000000000010',
+        progressPercent: 150, // invalid
+        previousPercent: 50,
+      },
+      metadata: { correlationId: 'x' },
+    });
+    expect(fail.success).toBe(false);
   });
 });

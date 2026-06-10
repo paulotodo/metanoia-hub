@@ -562,9 +562,77 @@ model Lesson {
   updatedAt                DateTime          @updatedAt @map("updated_at") @db.Timestamptz
   deletedAt                DateTime?         @map("deleted_at") @db.Timestamptz
 
-  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  module          Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessonProgresses LessonProgress[]
 
   @@index([tenantId])
   @@index([moduleId])
   @@map("lessons")
+}
+
+// ---------------------------------------------------------------------------
+// Progress Tracking — Story 8-3
+// ---------------------------------------------------------------------------
+
+/// LessonStatus — progress state of a lesson for a user
+enum LessonStatus {
+  not_started
+  in_progress
+  completed
+}
+
+/// LessonProgress — async-persisted progress for a user on a specific lesson
+model LessonProgress {
+  id             String       @id @db.Uuid
+  tenantId       String       @map("tenant_id") @db.Uuid
+  userId         String       @map("user_id") @db.Uuid
+  lessonId       String       @map("lesson_id") @db.Uuid
+  status         LessonStatus @default(not_started)
+  progressPercent Int         @default(0) @map("progress_percent")
+  startedAt      DateTime?    @map("started_at") @db.Timestamptz
+  completedAt    DateTime?    @map("completed_at") @db.Timestamptz
+  lastAccessedAt DateTime     @default(now()) @map("last_accessed_at") @db.Timestamptz
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, userId, lessonId])
+  @@index([tenantId, userId])
+  @@index([lessonId])
+  @@map("lesson_progress")
+}
+
+/// ModuleProgress — aggregated progress for a user on a module (persisted for "Meu Progresso")
+model ModuleProgress {
+  id               String   @id @db.Uuid
+  tenantId         String   @map("tenant_id") @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  moduleId         String   @map("module_id") @db.Uuid
+  progressPercent  Int      @default(0) @map("progress_percent")
+  completedLessons Int      @default(0) @map("completed_lessons")
+  totalLessons     Int      @default(0) @map("total_lessons")
+  completedAt      DateTime? @map("completed_at") @db.Timestamptz
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([tenantId, userId, moduleId])
+  @@index([tenantId, userId])
+  @@map("module_progress")
+}
+
+/// TrailProgress — aggregated progress for a user on a trail (persisted for "Meu Progresso")
+model TrailProgress {
+  id               String   @id @db.Uuid
+  tenantId         String   @map("tenant_id") @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  trailId          String   @map("trail_id") @db.Uuid
+  progressPercent  Int      @default(0) @map("progress_percent")
+  completedModules Int      @default(0) @map("completed_modules")
+  totalModules     Int      @default(0) @map("total_modules")
+  completedAt      DateTime? @map("completed_at") @db.Timestamptz
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([tenantId, userId, trailId])
+  @@index([tenantId, userId])
+  @@map("trail_progress")
 }

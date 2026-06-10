@@ -540,6 +540,41 @@ export {
   SignedUrlResponseSchema,
   type SignedUrlResponse,
 } from './content/upload.schema';
+export { LessonStatusSchema, type LessonStatus } from './content/lesson-status.schema';
+export {
+  LessonProgressEventTypeSchema,
+  type LessonProgressEventType,
+  ReportProgressRequestSchema,
+  type ReportProgressRequest,
+  LessonProgressJobPayloadSchema,
+  type LessonProgressJobPayload,
+  LessonProgressSchema,
+  type LessonProgressData,
+  ModuleProgressSchema,
+  type ModuleProgressData,
+  TrailProgressSchema,
+  type TrailProgressData,
+  ResumeProgressResponseSchema,
+  type ResumeProgressResponse,
+  LessonStatusItemSchema,
+  type LessonStatusItem,
+  ModuleProgressDetailSchema,
+  type ModuleProgressDetail,
+  TrailProgressDetailSchema,
+  type TrailProgressDetail,
+  TrailProgressDetailResponseSchema,
+  type TrailProgressDetailResponse,
+  ProgressAcceptedResponseSchema,
+  type ProgressAcceptedResponse,
+} from './content/lesson-progress.schema';
+export {
+  TrailProgressUpdatedDataSchema,
+  type TrailProgressUpdatedData,
+  TrailProgressUpdatedEventSchema,
+  type TrailProgressUpdatedEvent,
+  LESSON_PROGRESS_QUEUE_NAME,
+  TRAIL_PROGRESS_EVENTS_QUEUE_NAME,
+} from './content/content-events.schema';
 export {
   CreateRoomOptionsSchema,
   type CreateRoomOptions,
