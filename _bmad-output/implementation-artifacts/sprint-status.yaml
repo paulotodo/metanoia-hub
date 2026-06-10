@@ -147,7 +147,7 @@ development_status:
   8-1-crud-de-trilhas-modulos-aulas-com-repository-pattern: done
   8-2-tipos-de-conteudo-upload-visualizacao-inline: done
   8-3-progresso-individual-percentual-de-conclusao: done
-  8-4-regras-de-conclusao-por-tipo-de-conteudo: ready-for-dev
+  8-4-regras-de-conclusao-por-tipo-de-conteudo: done                    # PR #127 (2026-06-10) — W1b.2
   8-5-acesso-sequencial-pre-requisitos-entre-modulos-e-aulas: ready-for-dev
   8-6-publicacao-versionamento-catalogo-tenant: ready-for-dev
   8-7-relatorio-por-trilha-exportacao-csv: ready-for-dev
