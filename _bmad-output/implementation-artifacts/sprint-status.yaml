@@ -89,7 +89,7 @@ development_status:
   4-2-vincular-membros-lideres-a-grupo: done                           # PR #92 (2026-04-30)
   4-3-convite-via-e-mail-e-link: done                                  # PR #93 (2026-04-30)
   4-4-associar-trilhas-a-grupo: ready-for-dev
-  4-5-participante-visualiza-seus-grupos: ready-for-dev
+  4-5-participante-visualiza-seus-grupos: done                          # Cenário 06 + PR #116 (residual: domain event first_view + peers UI + copy)
   epic-4-retrospective: optional
 
   # ============================================
