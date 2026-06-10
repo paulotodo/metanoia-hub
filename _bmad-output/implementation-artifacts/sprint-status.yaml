@@ -149,7 +149,7 @@ development_status:
   8-3-progresso-individual-percentual-de-conclusao: done
   8-4-regras-de-conclusao-por-tipo-de-conteudo: done                    # PR #127 (2026-06-10) — W1b.2
   8-5-acesso-sequencial-pre-requisitos-entre-modulos-e-aulas: done       # PR #128 (2026-06-10) — W1b.2
-  8-6-publicacao-versionamento-catalogo-tenant: ready-for-dev
+  8-6-publicacao-versionamento-catalogo-tenant: done                     # PR #129 (2026-06-10) — W1b.2; cria group_trails (4-4 reusa)
   8-7-relatorio-por-trilha-exportacao-csv: ready-for-dev
   8-8-busca-full-text-por-conteudo: ready-for-dev
   8-9-trailplaylist-skeletons-performance-ux: ready-for-dev
