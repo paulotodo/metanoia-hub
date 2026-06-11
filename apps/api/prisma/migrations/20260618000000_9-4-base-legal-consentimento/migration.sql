@@ -56,8 +56,11 @@ CREATE TABLE "consent_records" (
         CHECK ("consent_type" IN ('terms_of_service', 'privacy_policy', 'focus_monitoring')),
     CONSTRAINT "consent_records_action_check"
         CHECK ("action" = 'withdrawn'),
+    -- ON UPDATE CASCADE is mandatory: Story 7-4 realignPgUserId rewrites
+    -- users.id after OAuth onboarding; the cascade-users-id invariant test
+    -- enforces this on every FK referencing users(id).
     CONSTRAINT "consent_records_user_id_fkey"
-        FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
+        FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Indexes
