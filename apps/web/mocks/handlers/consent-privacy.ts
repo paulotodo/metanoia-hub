@@ -1,3 +1,9 @@
+/* eslint-disable @metanoia/no-surveillance-terms --
+ * MSW mock mirrors the canonical data_processing_registry seed and the
+ * `focus_monitoring` ConsentType enum value. The LGPD registry deliberately
+ * names the legal operation precisely ("Monitoramento de Foco em Reuniões");
+ * this is legal transparency copy, not general pastoral UI. No new user-facing
+ * surveillance vocabulary is introduced beyond the committed canonical labels. */
 import { http, HttpResponse } from 'msw';
 import type {
   DataProcessingRegistryResponse,

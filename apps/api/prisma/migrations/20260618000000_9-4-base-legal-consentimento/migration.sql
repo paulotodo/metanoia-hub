@@ -22,7 +22,7 @@
 -- ---------------------------------------------------------------------------
 
 CREATE TABLE "data_processing_registry" (
-    "id"                 TEXT        NOT NULL,
+    "id"                 UUID        NOT NULL,
     "operation_name"     TEXT        NOT NULL,
     "legal_basis"        TEXT        NOT NULL,
     "purpose"            TEXT        NOT NULL,
@@ -44,9 +44,9 @@ CREATE TABLE "data_processing_registry" (
 -- ---------------------------------------------------------------------------
 
 CREATE TABLE "consent_records" (
-    "id"           TEXT        NOT NULL,
-    "user_id"      TEXT        NOT NULL,
-    "tenant_id"    TEXT,
+    "id"           UUID        NOT NULL,
+    "user_id"      UUID        NOT NULL,
+    "tenant_id"    UUID,
     "consent_type" TEXT        NOT NULL,
     "action"       TEXT        NOT NULL DEFAULT 'withdrawn',
     "timestamp"    TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -66,6 +66,8 @@ CREATE INDEX "consent_records_tenant_idx"        ON "consent_records" ("tenant_i
 
 -- RLS — NULLIF pattern (consistent with audit_events, pastoral_care_notes, etc.)
 ALTER TABLE "consent_records" ENABLE ROW LEVEL SECURITY;
+-- Force RLS for the table owner too (prevents bypass via the migration role)
+ALTER TABLE "consent_records" FORCE ROW LEVEL SECURITY;
 
 -- SELECT: tenant isolation (NULL tenant_id = visible to all tenants)
 CREATE POLICY "consent_records_tenant_isolation_select"
@@ -74,7 +76,7 @@ CREATE POLICY "consent_records_tenant_isolation_select"
     USING (
         NULLIF(current_setting('app.current_tenant_id', true), '')::uuid IS NULL
         OR "tenant_id" IS NULL
-        OR "tenant_id" = NULLIF(current_setting('app.current_tenant_id', true), '')
+        OR "tenant_id" = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid
     );
 
 -- INSERT: must match current tenant (or be tenant-agnostic with null)
@@ -82,7 +84,7 @@ CREATE POLICY "consent_records_tenant_isolation_insert"
     ON "consent_records"
     FOR INSERT
     WITH CHECK (
-        "tenant_id" = NULLIF(current_setting('app.current_tenant_id', true), '')
+        "tenant_id" = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid
         OR "tenant_id" IS NULL
     );
 

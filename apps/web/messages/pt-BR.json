@@ -1202,5 +1202,35 @@
     "lesson": "aula",
     "lastActivity": "Última atividade",
     "loadingMore": "Carregando mais trilhas..."
+  },
+  "privacy": {
+    "title": "Privacidade & Consentimento",
+    "pageDescription": "Gerencie seus consentimentos e veja como usamos seus dados.",
+    "mandatory_tooltip": "Este consentimento é obrigatório para uso da plataforma e não pode ser revogado.",
+    "withdraw_confirm": "Tem certeza que deseja revogar este consentimento?",
+    "status_accepted": "Aceito",
+    "status_withdrawn": "Revogado",
+    "status_pending": "Pendente",
+    "data_processing_title": "Bases Legais para Tratamento de Dados",
+    "data_processing_description": "Em cumprimento à Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018), detalhamos abaixo as bases legais e finalidades do tratamento de seus dados pessoais.",
+    "legal_basis_consent": "Consentimento (Art. 7º, I)",
+    "legal_basis_contract": "Execução de Contrato (Art. 7º, IV)",
+    "legal_basis_legal_obligation": "Obrigação Legal (Art. 7º, II)",
+    "legal_basis_legitimate_interest": "Legítimo Interesse (Art. 7º, IX)",
+    "consentType_terms_of_service": "Termos de Uso",
+    "consentType_privacy_policy": "Política de Privacidade",
+    "consentType_focus_monitoring": "Monitoramento de Foco",
+    "withdraw_button": "Revogar",
+    "loading": "Carregando consentimentos...",
+    "error": "Erro ao carregar consentimentos. Tente novamente.",
+    "withdraw_error": "Erro ao revogar consentimento. Tente novamente.",
+    "table": {
+      "operation": "Operação",
+      "legal_basis": "Base Legal",
+      "purpose": "Finalidade",
+      "retention": "Retenção",
+      "third_party": "Compartilhamento",
+      "no_sharing": "Não compartilhado"
+    }
   }
 }

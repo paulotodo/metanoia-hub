@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -8,7 +9,13 @@ import {
   type AcceptConsentInput,
   type AcceptConsentResponse,
   type ConsentDocumentStatus,
+  type ConsentHistoryItem,
+  type ConsentHistoryResponse,
   type ConsentStatusResponse,
+  type ConsentType,
+  ConsentTypeSchema,
+  MANDATORY_CONSENT_TYPES,
+  type WithdrawConsentResponse,
 } from '@metanoia/types';
 import { getRequestContext } from '../common/context/request-context';
 import { ConsentRepository } from './consent.repository';
@@ -21,6 +28,14 @@ interface RequestMeta {
   ipAddress: string;
   userAgent: string;
 }
+
+// Map ConsentType -> ConsentDocumentType (1:1 for terms/privacy; not in Consent table for focus_monitoring)
+const CONSENT_TYPE_TO_DOCUMENT_TYPE: Partial<Record<ConsentType, 'terms_of_service' | 'privacy_policy'>> = {
+  terms_of_service: 'terms_of_service',
+  privacy_policy: 'privacy_policy',
+};
+
+const ALL_CONSENT_TYPES: ConsentType[] = ConsentTypeSchema.options;
 
 @Injectable()
 export class ConsentService {
@@ -47,6 +62,113 @@ export class ConsentService {
       data: {
         documents,
         allUpToDate: documents.every((d) => d.isUpToDate),
+      },
+    };
+  }
+
+  /**
+   * Returns the consolidated consent history for the authenticated user:
+   * one ConsentHistoryItem per ConsentType, merging acceptances (consents table)
+   * with withdrawals (consent_records table).
+   */
+  async getHistory(
+    userId: string,
+    tenantId: string | null,
+  ): Promise<ConsentHistoryResponse> {
+    const [acceptances, withdrawals] = await Promise.all([
+      this.repo.findAllAcceptancesByUser(userId),
+      this.repo.findWithdrawalsByUser(userId, tenantId),
+    ]);
+
+    // Index latest acceptance per document type
+    const latestAcceptance = new Map<string, { acceptedAt: Date; version: string }>();
+    for (const a of acceptances) {
+      const existing = latestAcceptance.get(a.documentType);
+      if (!existing || a.acceptedAt > existing.acceptedAt) {
+        latestAcceptance.set(a.documentType, { acceptedAt: a.acceptedAt, version: a.version });
+      }
+    }
+
+    // Index latest withdrawal per consent type
+    const latestWithdrawal = new Map<string, Date>();
+    for (const w of withdrawals) {
+      const existing = latestWithdrawal.get(w.consentType);
+      if (!existing || w.timestamp > existing) {
+        latestWithdrawal.set(w.consentType, w.timestamp);
+      }
+    }
+
+    const items: ConsentHistoryItem[] = ALL_CONSENT_TYPES.map((consentType) => {
+      const isMandatory = (MANDATORY_CONSENT_TYPES as readonly string[]).includes(consentType);
+      const docType = CONSENT_TYPE_TO_DOCUMENT_TYPE[consentType];
+      const acceptance = docType ? latestAcceptance.get(docType) : undefined;
+      const withdrawnAt = latestWithdrawal.get(consentType)?.toISOString() ?? null;
+
+      // Determine status:
+      // - withdrawn: most recent withdrawal exists and is after acceptance (or no acceptance)
+      // - accepted: acceptance exists and is after any withdrawal (or no withdrawal)
+      // - pending: neither acceptance nor withdrawal
+      let status: 'accepted' | 'withdrawn' | 'pending';
+      if (!acceptance && !withdrawnAt) {
+        status = 'pending';
+      } else if (!acceptance) {
+        status = 'withdrawn';
+      } else if (!withdrawnAt) {
+        status = 'accepted';
+      } else {
+        const withdrawnDate = new Date(withdrawnAt);
+        status = withdrawnDate > acceptance.acceptedAt ? 'withdrawn' : 'accepted';
+      }
+
+      return {
+        consentType,
+        status,
+        isMandatory,
+        acceptedAt: acceptance?.acceptedAt.toISOString() ?? null,
+        acceptedVersion: acceptance?.version ?? null,
+        withdrawnAt,
+      };
+    });
+
+    return { data: items };
+  }
+
+  /**
+   * Withdraws consent for a specific consent type.
+   * Mandatory types (terms_of_service, privacy_policy) cannot be withdrawn.
+   * Double-withdrawal is allowed (append-only, GAP-06).
+   * Audit is handled automatically by the global AuditInterceptor (PATCH → WRITE_METHODS).
+   */
+  async withdrawConsent(
+    userId: string,
+    tenantId: string | null,
+    consentType: ConsentType,
+  ): Promise<WithdrawConsentResponse> {
+    if ((MANDATORY_CONSENT_TYPES as readonly string[]).includes(consentType)) {
+      throw new BadRequestException(
+        `Consentimento obrigatório não pode ser revogado: ${consentType}`,
+      );
+    }
+
+    const id = uuidv7();
+    const record = await this.repo.createWithdrawal({
+      id,
+      userId,
+      tenantId,
+      consentType,
+      action: 'withdrawn',
+    });
+
+    this.logger.log(
+      `Consent withdrawn: user=${userId} type=${consentType} record=${record.id}`,
+    );
+
+    return {
+      data: {
+        recordId: record.id,
+        consentType: record.consentType as ConsentType,
+        action: 'withdrawn',
+        withdrawnAt: record.timestamp.toISOString(),
       },
     };
   }

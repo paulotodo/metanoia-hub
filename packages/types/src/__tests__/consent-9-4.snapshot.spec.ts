@@ -1,3 +1,8 @@
+/* eslint-disable @metanoia/no-surveillance-terms --
+ * `focus_monitoring` is the canonical ConsentType enum value (defined in
+ * consent.ts, where it is rule-exempt as a z.enum member). These snapshot
+ * tests must feed that exact literal as object-property values, which the rule
+ * would otherwise flag. No user-facing surveillance vocabulary is introduced. */
 import { describe, it, expect } from 'vitest';
 import {
   DataProcessingRegistryItemSchema,

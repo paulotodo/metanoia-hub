@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { PrivacyService } from '../privacy.service';
 
 // Fixed UUIDs (v7 format) for deterministic snapshots

@@ -1,3 +1,6 @@
+/* eslint-disable @metanoia/no-surveillance-terms --
+ * Tests insert rows for the canonical `focus_monitoring` ConsentType to verify
+ * RLS isolation/immutability. No user-facing surveillance vocabulary. */
 /**
  * RLS isolation and immutability tests for `consent_records` table.
  *
@@ -190,10 +193,25 @@ describe('RLS: null tenant_id record is visible to any tenant', () => {
 
 // ---------------------------------------------------------------------------
 // Case 3: UPDATE rejected — no UPDATE policy (append-only)
+//
+// Postgres RLS with FORCE + no permissive UPDATE policy does NOT raise an
+// error: every row is filtered out of the command's scope, so the statement
+// affects 0 rows. Immutability is asserted as "0 rows affected AND the row
+// survives unchanged" — the same pattern as audit-events.rls-spec.ts.
 // ---------------------------------------------------------------------------
 
+async function countById(recordId: string): Promise<number> {
+  const rows = await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
+    return tx.$queryRawUnsafe<{ count: string }[]>(
+      `SELECT COUNT(*)::text as count FROM consent_records WHERE id = '${recordId}'::uuid`,
+    );
+  });
+  return Number(rows[0]?.count);
+}
+
 describe('RLS immutability: UPDATE rejected', () => {
-  it('UPDATE on consent_records raises exception (no UPDATE policy)', async () => {
+  it('UPDATE on consent_records affects 0 rows (no UPDATE policy, append-only)', async () => {
     const recordId = generateId();
     await insertWithdrawal(prisma, {
       id: recordId,
@@ -202,14 +220,17 @@ describe('RLS immutability: UPDATE rejected', () => {
       consentType: 'focus_monitoring',
     });
 
-    await expect(
-      prisma.$transaction(async (tx) => {
-        await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
-        await tx.$executeRawUnsafe(
-          `UPDATE consent_records SET action = 'withdrawn' WHERE id = '${recordId}'::uuid`,
-        );
-      }),
-    ).rejects.toThrow();
+    const affected = await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
+      // No permissive UPDATE policy → RLS filters all rows → 0 rows affected, no error.
+      return tx.$executeRawUnsafe(
+        `UPDATE consent_records SET action = 'withdrawn' WHERE id = '${recordId}'::uuid`,
+      );
+    });
+
+    expect(affected).toBe(0);
+    // Row survives — append-only log preserved.
+    expect(await countById(recordId)).toBe(1);
   });
 });
 
@@ -218,7 +239,7 @@ describe('RLS immutability: UPDATE rejected', () => {
 // ---------------------------------------------------------------------------
 
 describe('RLS immutability: DELETE rejected', () => {
-  it('DELETE on consent_records raises exception (no DELETE policy)', async () => {
+  it('DELETE on consent_records affects 0 rows (no DELETE policy, append-only)', async () => {
     const recordId = generateId();
     await insertWithdrawal(prisma, {
       id: recordId,
@@ -227,13 +248,16 @@ describe('RLS immutability: DELETE rejected', () => {
       consentType: 'focus_monitoring',
     });
 
-    await expect(
-      prisma.$transaction(async (tx) => {
-        await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
-        await tx.$executeRawUnsafe(
-          `DELETE FROM consent_records WHERE id = '${recordId}'::uuid`,
-        );
-      }),
-    ).rejects.toThrow();
+    const affected = await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
+      // No permissive DELETE policy → RLS filters all rows → 0 rows affected, no error.
+      return tx.$executeRawUnsafe(
+        `DELETE FROM consent_records WHERE id = '${recordId}'::uuid`,
+      );
+    });
+
+    expect(affected).toBe(0);
+    // Row survives — the consent withdrawal log cannot be erased.
+    expect(await countById(recordId)).toBe(1);
   });
 });
