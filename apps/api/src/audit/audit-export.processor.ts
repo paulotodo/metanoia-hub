@@ -11,7 +11,6 @@ import {
   AUDIT_EXPORT_TTL_SECONDS,
   type AuditExportJobPayload,
   type AuditExportJobStatus,
-  AuditEventsQuerySchema,
 } from '@metanoia/types';
 import { BullMqService } from '../bullmq/bullmq.service';
 import { AuditService } from './audit.service';
@@ -46,11 +45,21 @@ export class AuditExportProcessor implements OnModuleInit {
     const { jobId, tenantId, query } = payload;
 
     try {
-      // Fetch all matching events (no pagination for export)
-      const result = await this.auditService.listEvents(
-        AuditEventsQuerySchema.parse({ ...query, page: 1, perPage: 10000 }),
-        tenantId ?? undefined,
-      );
+      // Fetch all matching events (no pagination for export).
+      // Bypass AuditEventsQuerySchema (which caps perPage at 100) by passing
+      // the query object directly — only filter fields are carried over.
+      const exportQuery = {
+        page: 1,
+        perPage: 10000,
+        action: query.action,
+        severity: query.severity,
+        userId: query.userId,
+        resource: query.resource,
+        q: query.q,
+        dateFrom: query.dateFrom,
+        dateTo: query.dateTo,
+      };
+      const result = await this.auditService.listEvents(exportQuery, tenantId ?? undefined);
 
       // Build CSV
       const headers = [
