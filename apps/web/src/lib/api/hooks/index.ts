@@ -26,3 +26,4 @@ export {
   useAssociateTrails,
   useUnassignTrail,
 } from './use-group-trails';
+export { searchKeys, useSearch } from './use-search';
