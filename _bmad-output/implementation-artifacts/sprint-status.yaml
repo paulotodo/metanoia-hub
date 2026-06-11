@@ -161,7 +161,7 @@ development_status:
   epic-9: in-progress
   9-1-exportacao-de-dados-pessoais-portabilidade-lgpd: ready-for-dev
   9-2-exclusao-de-dados-pessoais-eliminacao-lgpd: ready-for-dev
-  9-3-log-de-auditoria-imutavel: ready-for-dev
+  9-3-log-de-auditoria-imutavel: done                                  # PR #135 (fd229d3) — RLS append-only + interceptor + viewer; 2 hotfixes CI (RLS spec)
   9-4-base-legal-historico-de-consentimento: ready-for-dev
   epic-9-retrospective: optional
 
