@@ -22,7 +22,6 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AuditService, type CreateAuditEventDto } from './audit.service';
-import { AUDIT_EXPORT_QUEUE_NAME } from '@metanoia/types';
 
 // ─── Shared mocks ─────────────────────────────────────────────────────────────
 
