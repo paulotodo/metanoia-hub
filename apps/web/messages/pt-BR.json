@@ -1020,5 +1020,68 @@
     "error": {
       "loading": "Não foi possível carregar a visão pastoral"
     }
+  },
+  "trailReports": {
+    "summary": {
+      "title": "Relatórios de trilhas",
+      "subtitle": "Acompanhe o progresso das trilhas e exporte para a liderança.",
+      "empty": "Nenhuma trilha com participantes ainda.",
+      "loadError": "Não foi possível carregar os relatórios.",
+      "cols": {
+        "trail": "Trilha",
+        "participants": "Participantes",
+        "avgProgress": "Progresso médio",
+        "completed": "Concluíram",
+        "notStarted": "Não iniciaram"
+      },
+      "open": "Ver detalhes"
+    },
+    "detail": {
+      "back": "Voltar aos relatórios",
+      "title": "Relatório da trilha",
+      "metrics": {
+        "avgProgress": "Progresso médio",
+        "completed": "Concluíram",
+        "inProgress": "Em progresso",
+        "notStarted": "Não iniciaram"
+      },
+      "exportCsv": "Exportar CSV",
+      "exporting": "Exportando…",
+      "asyncStarted": "Exportação iniciada — preparando o arquivo.",
+      "asyncReady": "Arquivo pronto.",
+      "asyncDownload": "Baixar CSV",
+      "asyncFailed": "Falha na exportação. Tente novamente.",
+      "empty": "Nenhum participante encontrado para os filtros aplicados.",
+      "loadError": "Não foi possível carregar o relatório.",
+      "filters": {
+        "status": "Status",
+        "all": "Todos",
+        "notStarted": "Não iniciado",
+        "inProgress": "Em progresso",
+        "completed": "Concluído",
+        "after": "Atividade após",
+        "before": "Atividade antes",
+        "clear": "Limpar filtros"
+      },
+      "cols": {
+        "participant": "Participante",
+        "progress": "Progresso",
+        "modules": "Módulos",
+        "lessons": "Aulas",
+        "lastActivity": "Última atividade",
+        "status": "Status"
+      },
+      "status": {
+        "not_started": "Não iniciado",
+        "in_progress": "Em progresso",
+        "completed": "Concluído"
+      },
+      "never": "—",
+      "pagination": {
+        "prev": "Anterior",
+        "next": "Próxima",
+        "page": "Página {page} de {totalPages}"
+      }
+    }
   }
 }
