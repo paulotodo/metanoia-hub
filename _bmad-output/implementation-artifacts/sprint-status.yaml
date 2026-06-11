@@ -154,7 +154,7 @@ development_status:
   8-8-busca-full-text-por-conteudo: done                                 # PR #132 (c13e304) — W1b.3
   8-9-trailplaylist-skeletons-performance-ux: done                       # PR #133 (84c5e22) — W1b.3
   8-10-tela-minhas-trilhas-listagem-de-trilhas-do-participante: done     # PR #134 (1ce3bb0) — W1b.3; via feature-00c; recuperada de push direto em dev → PR limpo (CI verde)
-  epic-8-retrospective: optional
+  epic-8-retrospective: done                                             # 2026-06-11 — epic-8-retro-2026-06-11.md
 
   # Epic 9: Privacidade, LGPD & Compliance
   # Sprint 15: 9-1, 9-2, 9-3, 9-4
