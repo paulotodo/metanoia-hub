@@ -143,17 +143,17 @@ development_status:
   # Sprint 12: 8-1, 8-2, 8-3
   # Sprint 13: 8-4, 8-5, 8-6
   # Sprint 14: 8-7, 8-8, 8-9, 8-10
-  epic-8: in-progress
+  epic-8: done                                                           # 10/10 — fechado 2026-06-11 (W1b.3)
   8-1-crud-de-trilhas-modulos-aulas-com-repository-pattern: done
   8-2-tipos-de-conteudo-upload-visualizacao-inline: done
   8-3-progresso-individual-percentual-de-conclusao: done
   8-4-regras-de-conclusao-por-tipo-de-conteudo: done                    # PR #127 (2026-06-10) — W1b.2
   8-5-acesso-sequencial-pre-requisitos-entre-modulos-e-aulas: done       # PR #128 (2026-06-10) — W1b.2
   8-6-publicacao-versionamento-catalogo-tenant: done                     # PR #129 (2026-06-10) — W1b.2; cria group_trails (4-4 reusa)
-  8-7-relatorio-por-trilha-exportacao-csv: ready-for-dev
-  8-8-busca-full-text-por-conteudo: ready-for-dev
-  8-9-trailplaylist-skeletons-performance-ux: ready-for-dev
-  8-10-tela-minhas-trilhas-listagem-de-trilhas-do-participante: ready-for-dev
+  8-7-relatorio-por-trilha-exportacao-csv: done                          # PR #131 (4adbace) — W1b.3
+  8-8-busca-full-text-por-conteudo: done                                 # PR #132 (c13e304) — W1b.3
+  8-9-trailplaylist-skeletons-performance-ux: done                       # PR #133 (84c5e22) — W1b.3
+  8-10-tela-minhas-trilhas-listagem-de-trilhas-do-participante: done     # PR #134 (1ce3bb0) — W1b.3; via feature-00c; recuperada de push direto em dev → PR limpo (CI verde)
   epic-8-retrospective: optional
 
   # Epic 9: Privacidade, LGPD & Compliance
