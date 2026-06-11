@@ -29,95 +29,95 @@
 
 Ref: SEC-005 (checklist/security.md), plan.md §Reuso, research.md D3
 
-- [ ] 0.1.1 Ler `apps/api/src/super-admin/super-admin-tenants.repository.ts` e confirmar uso de `this.prisma.client` (não `this.prisma` com RLS)
-- [ ] 0.1.2 Confirmar que `@Roles(Role.SUPER_ADMIN)` é suficiente (sem SET LOCAL tenant) via grep no módulo super-admin
-- [ ] 0.1.3 Verificar que nenhum middleware Prisma intercepta `prisma.client` direto (checar `apps/api/src/prisma/prisma.service.ts`)
-- [ ] 0.1.4 Documentar resultado do spike em comentário no topo de `super-audit.controller.ts` (futuro)
-- [ ] 0.1.5 Registrar decisão: mecanismo confirmado → `prisma.client` direto é seguro para cross-tenant super-admin
+- [x] 0.1.1 Ler `apps/api/src/super-admin/super-admin-tenants.repository.ts` e confirmar uso de `this.prisma.client` (não `this.prisma` com RLS)
+- [x] 0.1.2 Confirmar que `@Roles(Role.SUPER_ADMIN)` é suficiente (sem SET LOCAL tenant) via grep no módulo super-admin
+- [x] 0.1.3 Verificar que nenhum middleware Prisma intercepta `prisma.client` direto (checar `apps/api/src/prisma/prisma.service.ts`)
+- [ ] 0.1.4 Documentar resultado do spike em comentário no topo de `super-audit.controller.ts` (futuro — FASE 2)
+- [x] 0.1.5 Registrar decisão: mecanismo confirmado → `prisma.client` direto é seguro para cross-tenant super-admin (dec-015)
 
 ### 0.2 Decisão técnica: estratégia de captura de `previousState` `[C]`
 
 Ref: SEC-011 (checklist/security.md) — ambiguidade HIGH PRIORITY
 
-- [ ] 0.2.1 Analisar interceptor NestJS: `callHandler.handle()` via RxJS `tap()` só executa APÓS o handler; ler o estado ANTES exigiria leitura extra ao DB
-- [ ] 0.2.2 Decidir: `previousState` será **opcionalmente preenchido pelo service** (não pelo interceptor) via `AuditContext` no `AsyncLocalStorage` quando disponível; interceptor usa `null` se ausente
-- [ ] 0.2.3 Documentar a decisão: interceptor intercepta somente o response (after hook); `previousState` disponível apenas quando o service o injeta explicitamente no contexto
-- [ ] 0.2.4 Registrar no plan.md como decisão técnica de escopo (reduz complexidade do interceptor, elimina latência extra de leitura de DB)
+- [x] 0.2.1 Analisar interceptor NestJS: `callHandler.handle()` via RxJS `tap()` só executa APÓS o handler; ler o estado ANTES exigiria leitura extra ao DB
+- [x] 0.2.2 Decidir: `previousState` será **opcionalmente preenchido pelo service** (não pelo interceptor) via `AuditContext` no `AsyncLocalStorage` quando disponível; interceptor usa `null` se ausente (dec-016)
+- [x] 0.2.3 Documentar a decisão: interceptor intercepta somente o response (after hook); `previousState` disponível apenas quando o service o injeta explicitamente no contexto
+- [x] 0.2.4 Registrar no plan.md como decisão técnica de escopo (reduz complexidade do interceptor, elimina latência extra de leitura de DB)
 
 ### 0.3 Decisão técnica: tratamento de bulk operations `[A]`
 
 Ref: REQ-004 (checklist/requirements.md) — gap arquitetural
 
-- [ ] 0.3.1 Confirmar decisão: `AuditInterceptor` global emite **1 evento por request** (não N por recurso afetado internamente)
-- [ ] 0.3.2 Documentar que `resourceId = null` e `resource = "<entity>-bulk"` para requests que afetam N recursos (raro no MVP)
-- [ ] 0.3.3 Adicionar item em Escopo Excluído desta tarefa: "N audit events por bulk intra-request"
-- [ ] 0.3.4 Registrar decisão auditável: 1 evento/request satisfaz FR-001 no MVP; revisitar em Epic 10 se necessário
+- [x] 0.3.1 Confirmar decisão: `AuditInterceptor` global emite **1 evento por request** (não N por recurso afetado internamente) (dec-017)
+- [x] 0.3.2 Documentar que `resourceId = null` e `resource = "<entity>-bulk"` para requests que afetam N recursos (raro no MVP)
+- [x] 0.3.3 Adicionar item em Escopo Excluído desta tarefa: "N audit events por bulk intra-request"
+- [x] 0.3.4 Registrar decisão auditável: 1 evento/request satisfaz FR-001 no MVP; revisitar em Epic 10 se necessário
 
 ### 0.4 Decisão técnica: tipo `ip_address` (text vs inet) `[A]`
 
 Ref: SEC-006 (checklist/security.md)
 
-- [ ] 0.4.1 Verificar exemplos existentes no codebase: buscar `inet` vs `text` em outras migrations do projeto
-- [ ] 0.4.2 Decidir: usar `TEXT` (não `INET`) para `ip_address` — suporta IPv6 bracket notation, proxies e valores `unknown` sem rejeição no DB
-- [ ] 0.4.3 Documentar decisão na migration SQL com comentário inline
+- [x] 0.4.1 Verificar exemplos existentes no codebase: buscar `inet` vs `text` em outras migrations do projeto (resultado: TEXT em consents + marketing)
+- [x] 0.4.2 Decidir: usar `TEXT` (não `INET`) para `ip_address` — suporta IPv6 bracket notation, proxies e valores `unknown` sem rejeição no DB (dec-018)
+- [x] 0.4.3 Documentar decisão na migration SQL com comentário inline (a fazer em 1.1.3)
 
 ### 0.5 Decisão técnica: estratégia de truncamento de payload `[A]`
 
 Ref: SEC-007 (checklist/security.md)
 
-- [ ] 0.5.1 Definir função de truncamento: serializar objeto → se `JSON.stringify(obj).length > 65536` → armazenar `{ "__truncated": true, "__originalSize": N, "__sample": primeiros 1000 chars }` (JSON sempre válido)
-- [ ] 0.5.2 Confirmar constante `AUDIT_PAYLOAD_TRUNCATE_BYTES = 65536` exportada de `packages/types`
-- [ ] 0.5.3 Documentar estratégia no `audit.interceptor.ts` com comentário
+- [x] 0.5.1 Definir função de truncamento: serializar objeto → se `JSON.stringify(obj).length > 65536` → armazenar `{ "__truncated": true, "__originalSize": N, "__sample": primeiros 1000 chars }` (JSON sempre válido) (dec-019)
+- [x] 0.5.2 Confirmar constante `AUDIT_PAYLOAD_TRUNCATE_BYTES = 65536` exportada de `packages/types` (audit/index.ts)
+- [ ] 0.5.3 Documentar estratégia no `audit.interceptor.ts` com comentário (FASE 2)
 
 ### 0.6 Decisão técnica: escopo do campo `q` (busca full-text) `[M]`
 
 Ref: API-003 (checklist/api.md)
 
-- [ ] 0.6.1 Decidir: `q` faz `ILIKE '%query%'` nos campos `resource` e `resource_id` apenas (sem busca em JSONB para MVP)
-- [ ] 0.6.2 Documentar limitação: `q` não busca em `previousState`/`newState` (custo de performance sem índice GIN)
-- [ ] 0.6.3 Registrar decisão: índice adicional para `q` em JSONB fica para Epic 10 com observabilidade
+- [x] 0.6.1 Decidir: `q` faz `ILIKE '%query%'` nos campos `resource` e `resource_id` apenas (sem busca em JSONB para MVP) (dec-020)
+- [x] 0.6.2 Documentar limitação: `q` não busca em `previousState`/`newState` (custo de performance sem índice GIN)
+- [x] 0.6.3 Registrar decisão: índice adicional para `q` em JSONB fica para Epic 10 com observabilidade
 
 ### 0.7 Decisão técnica: serialização de JSONB em export CSV `[M]`
 
 Ref: API-009 (checklist/api.md)
 
-- [ ] 0.7.1 Decidir: `previousState` e `newState` são serializados como **JSON stringificado** na célula CSV (ex: `"{""action"":""create""}"`)
-- [ ] 0.7.2 Documentar no cabeçalho CSV: coluna `previousState` contém JSON serializado
-- [ ] 0.7.3 Registrar decisão: sem achamento (flatten) de campos JSONB para MVP
+- [x] 0.7.1 Decidir: `previousState` e `newState` são serializados como **JSON stringificado** na célula CSV (ex: `"{""action"":""create""}"`) (dec-021)
+- [x] 0.7.2 Documentar no cabeçalho CSV: coluna `previousState` contém JSON serializado
+- [x] 0.7.3 Registrar decisão: sem achamento (flatten) de campos JSONB para MVP
 
 ### 0.8 Decisão técnica: paginação cursor vs offset no viewer `[M]`
 
 Ref: API-012 (checklist/api.md)
 
-- [ ] 0.8.1 Decidir: usar **offset-based pagination** com índice `(tenant_id, timestamp DESC)` — simples, suficiente para 50 itens/pág e 10k eventos/tenant no MVP
-- [ ] 0.8.2 Documentar limitação: auto-refresh pode causar duplicatas/pulos com alto throughput; mitigar exibindo "Atualizado em HH:MM:SS" no viewer
-- [ ] 0.8.3 Registrar decisão: cursor-based pagination é roadmap para versão futura se throughput > 100 req/s
+- [x] 0.8.1 Decidir: usar **offset-based pagination** com índice `(tenant_id, timestamp DESC)` — simples, suficiente para 50 itens/pág e 10k eventos/tenant no MVP (dec-022)
+- [x] 0.8.2 Documentar limitação: auto-refresh pode causar duplicatas/pulos com alto throughput; mitigar exibindo "Atualizado em HH:MM:SS" no viewer
+- [x] 0.8.3 Registrar decisão: cursor-based pagination é roadmap para versão futura se throughput > 100 req/s
 
 ### 0.9 Decisão técnica: lista canônica de `resource` para severity `warning` `[A]`
 
 Ref: REQ-006 (checklist/requirements.md)
 
-- [ ] 0.9.1 Definir lista: `resource` values que disparam `warning` = `["role", "permission", "user-role", "group-role", "member-role"]`
-- [ ] 0.9.2 Exportar como constante `AUDIT_WARNING_RESOURCES` de `packages/types/src/audit/index.ts`
+- [x] 0.9.1 Definir lista: `resource` values que disparam `warning` = `["role", "permission", "user-role", "group-role", "member-role"]` (dec-023)
+- [x] 0.9.2 Exportar como constante `AUDIT_WARNING_RESOURCES` de `packages/types/src/audit/index.ts`
 - [ ] 0.9.3 Usar constante no `audit.severity.ts` (FASE 2)
 
 ### 0.10 Contratos Zod em `packages/types` `[C]`
 
 Ref: plan.md §Project Structure, API-011 (checklist/api.md), contracts/audit-events.md
 
-- [ ] 0.10.1 Criar `packages/types/src/audit/index.ts` com schemas Zod: `AuditActionSchema`, `AuditSeveritySchema`, `AuditEventSchema`, `AuditEventListResponseSchema`, `AuditExportRequestSchema`, `AuditExportJobStatusSchema`, `AuditEventsQuerySchema`
-- [ ] 0.10.2 Exportar constantes: `AUDIT_EVENTS_PAGE_SIZE`, `AUDIT_EXPORT_QUEUE_NAME`, `AUDIT_EXPORT_TTL_SECONDS`, `AUDIT_PAYLOAD_TRUNCATE_BYTES`, `AUDIT_ACTIONS`, `AUDIT_SEVERITIES`, `AUDIT_WARNING_RESOURCES`
-- [ ] 0.10.3 Adicionar export em `packages/types/src/index.ts`
-- [ ] 0.10.4 Criar `packages/types/src/__tests__/audit.snapshot.spec.ts` com snapshot de todos os schemas
-- [ ] 0.10.5 Rodar `pnpm test --filter=@metanoia/types` e confirmar snapshot gerado
-- [ ] 0.10.6 Verificar paridade entre `z.infer<typeof AuditEventSchema>` e campos do data-model.md (todos os 12 campos presentes)
+- [x] 0.10.1 Criar `packages/types/src/audit/index.ts` com schemas Zod: `AuditActionSchema`, `AuditSeveritySchema`, `AuditEventSchema`, `AuditEventListResponseSchema`, `AuditExportRequestSchema`, `AuditExportJobStatusSchema`, `AuditEventsQuerySchema`
+- [x] 0.10.2 Exportar constantes: `AUDIT_EVENTS_PAGE_SIZE`, `AUDIT_EXPORT_QUEUE_NAME`, `AUDIT_EXPORT_TTL_SECONDS`, `AUDIT_PAYLOAD_TRUNCATE_BYTES`, `AUDIT_ACTIONS`, `AUDIT_SEVERITIES`, `AUDIT_WARNING_RESOURCES`
+- [x] 0.10.3 Adicionar export em `packages/types/src/index.ts`
+- [x] 0.10.4 Criar `packages/types/src/__tests__/audit.snapshot.spec.ts` com snapshot de todos os schemas
+- [x] 0.10.5 Rodar `pnpm test --filter=@metanoia/types` e confirmar snapshot gerado (18/18 pass)
+- [x] 0.10.6 Verificar paridade entre `z.infer<typeof AuditEventSchema>` e campos do data-model.md (todos os 12 campos presentes)
 
 ### 0.11 Keys i18n PT-BR `[A]`
 
 Ref: plan.md §Constitution Check (Princípio III), REQ-013 (checklist/requirements.md)
 
-- [ ] 0.11.1 Adicionar namespace `superAdmin.audit.*` em `apps/web/messages/pt-BR.json` com keys: `title`, `subtitle`, `filters.*`, `table.*` (colunas, estados vazios), `actions.*`, `export.*`, `severity.*` em vocabulário pastoral
-- [ ] 0.11.2 Verificar vocabulário: evitar termos corporativos ("logs", "registros"); usar linguagem de cuidado pastoral ("histórico de ações", "trilha de responsabilidade")
+- [x] 0.11.1 Adicionar namespace `superAdmin.audit.*` em `apps/web/messages/pt-BR.json` com keys: `title`, `subtitle`, `filters.*`, `table.*` (colunas, estados vazios), `actions.*`, `export.*`, `severity.*` em vocabulário pastoral
+- [x] 0.11.2 Verificar vocabulário: evitar termos corporativos ("logs", "registros"); usar linguagem de cuidado pastoral ("histórico de ações", "trilha de responsabilidade")
 - [ ] 0.11.3 Confirmar que nenhuma string hardcoded em PT-BR no componente viewer (FASE 4)
 
 ---
@@ -130,36 +130,36 @@ Ref: plan.md §Constitution Check (Princípio III), REQ-013 (checklist/requireme
 
 Ref: plan.md §Project Structure, data-model.md, FR-INFRA-02
 
-- [ ] 1.1.1 Criar migration `apps/api/prisma/migrations/<ts>_create_audit_events/migration.sql`
-- [ ] 1.1.2 Definir tabela `audit_events` com todos os 12 campos (snake_case): `id UUID`, `tenant_id UUID NOT NULL`, `user_id UUID NOT NULL`, `action TEXT NOT NULL CHECK (action IN (...))`, `resource TEXT NOT NULL`, `resource_id TEXT` (nullable), `ip_address TEXT NOT NULL`, `user_agent TEXT NOT NULL`, `previous_state JSONB`, `new_state JSONB`, `timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()`, `severity TEXT NOT NULL CHECK (severity IN (...))`
-- [ ] 1.1.3 Adicionar comentário inline: `-- ip_address: TEXT (não INET) — suporta IPv6 bracket notation e proxies (dec-0.4)`
-- [ ] 1.1.4 Criar índice `idx_audit_events_tenant_timestamp` em `(tenant_id, timestamp DESC)` (FR-012)
-- [ ] 1.1.5 Habilitar RLS: `ALTER TABLE audit_events ENABLE ROW LEVEL SECURITY; ALTER TABLE audit_events FORCE ROW LEVEL SECURITY;`
-- [ ] 1.1.6 Criar policy INSERT: `CREATE POLICY audit_events_tenant_insert ON audit_events FOR INSERT WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);`
-- [ ] 1.1.7 Criar policy SELECT: `CREATE POLICY audit_events_tenant_select ON audit_events FOR SELECT USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);`
-- [ ] 1.1.8 Adicionar comentário explícito: `-- SOMENTE INSERT + SELECT. SEM UPDATE. SEM DELETE. Imutabilidade garantida pela ausência de policies UPDATE/DELETE (FR-INFRA-02, SEC-001, SEC-002).`
-- [ ] 1.1.9 FK para tabela `tenants`: `REFERENCES tenants(id) ON DELETE CASCADE` (consistente com padrão do projeto)
+- [x] 1.1.1 Criar migration `apps/api/prisma/migrations/20260617000000_9-3-audit-events/migration.sql`
+- [x] 1.1.2 Definir tabela `audit_events` com todos os 12 campos (snake_case): user_id nullable (dec-016)
+- [x] 1.1.3 Adicionar comentário inline: `-- ip_address: TEXT (não INET) — suporta IPv6 bracket notation e proxies (dec-018)`
+- [x] 1.1.4 Criar índice `idx_audit_events_tenant_timestamp` em `(tenant_id, timestamp DESC)` + idx_user + idx_action (dec-024)
+- [x] 1.1.5 Habilitar RLS: `ALTER TABLE audit_events ENABLE ROW LEVEL SECURITY; ALTER TABLE audit_events FORCE ROW LEVEL SECURITY;`
+- [x] 1.1.6 Criar policy INSERT com NULLIF guard
+- [x] 1.1.7 Criar policy SELECT com NULLIF guard
+- [x] 1.1.8 Adicionar comentário explícito: `-- SOMENTE INSERT + SELECT. SEM UPDATE. SEM DELETE. Imutabilidade garantida pela ausência de policies UPDATE/DELETE (FR-INFRA-02, SEC-001, SEC-002).`
+- [x] 1.1.9 FK para tabela `tenants`: `REFERENCES tenants(id) ON DELETE CASCADE`
 
 ### 1.2 Prisma schema: model `AuditEvent` `[C]`
 
 Ref: data-model.md, plan.md §Project Structure
 
-- [ ] 1.2.1 Adicionar `model AuditEvent` em `apps/api/prisma/schema.prisma` com todos os 12 campos em camelCase + `@map`/`@@map` snake_case
-- [ ] 1.2.2 Usar `@default(dbgenerated("gen_random_uuid()"))` NÃO — usar `id` sem default no schema (gerado pela app via `generateId()`)
-- [ ] 1.2.3 Marcar `@@map("audit_events")`
-- [ ] 1.2.4 Rodar `pnpm prisma generate` e confirmar sem erros de schema
+- [x] 1.2.1 Adicionar `model AuditEvent` em `apps/api/prisma/schema.prisma` com todos os 12 campos em camelCase + `@map`/`@@map` snake_case
+- [x] 1.2.2 `id` sem default no schema (gerado pela app via `generateId()`)
+- [x] 1.2.3 Marcado `@@map("audit_events")`
+- [x] 1.2.4 Rodar `pnpm prisma generate` — gerado sem erros
 
 ### 1.3 RLS spec: isolamento e imutabilidade `[C]`
 
 Ref: SEC-003, SEC-004 (checklist/security.md), plan.md §Testing, FR-003, FR-004, SC-002, SC-007
 
-- [ ] 1.3.1 Criar `apps/api/test/rls/audit-events.rls-spec.ts` baseado em scaffold de `group-members.rls-spec.ts`
-- [ ] 1.3.2 Setup: criar 2 tenants distintos (A e B) + inserir 3 eventos para tenant A e 2 para tenant B diretamente via `metanoia_app` role com `SET LOCAL app.current_tenant_id`
-- [ ] 1.3.3 Teste de isolamento: SELECT como tenant A retorna exatamente 3 eventos (não vê os 2 do tenant B) — SC-007
-- [ ] 1.3.4 Teste de imutabilidade UPDATE: tentar `UPDATE audit_events SET action = 'fake'` como `metanoia_app` → deve falhar com policy violation — SC-002
-- [ ] 1.3.5 Teste de imutabilidade DELETE: tentar `DELETE FROM audit_events WHERE id = <id>` como `metanoia_app` → deve falhar com policy violation — SC-002
-- [ ] 1.3.6 Teste de SELECT sem SET LOCAL: SELECT sem `app.current_tenant_id` retorna 0 linhas (NULLIF garante empty string = null)
-- [ ] 1.3.7 Rodar `pnpm test apps/api/test/rls/audit-events.rls-spec.ts` e confirmar todos os testes passam
+- [x] 1.3.1 Criar `apps/api/test/rls/audit-events.rls-spec.ts` baseado em scaffold de `group-members.rls-spec.ts`
+- [x] 1.3.2 Setup: criar 2 tenants distintos (A e B) + inserir 3 eventos para tenant A e 2 para tenant B
+- [x] 1.3.3 Teste de isolamento: SELECT como tenant A retorna exatamente 3 eventos (não vê os 2 do tenant B) — SC-007
+- [x] 1.3.4 Teste de imutabilidade UPDATE: deve falhar com policy violation — SC-002
+- [x] 1.3.5 Teste de imutabilidade DELETE: deve falhar com policy violation — SC-002
+- [x] 1.3.6 Teste de SELECT sem SET LOCAL: SELECT sem `app.current_tenant_id` retorna 0 linhas
+- [ ] 1.3.7 Rodar `pnpm test apps/api/test/rls/audit-events.rls-spec.ts` e confirmar todos os testes passam (requer Docker/DB)
 
 ---
 
@@ -171,100 +171,86 @@ Ref: SEC-003, SEC-004 (checklist/security.md), plan.md §Testing, FR-003, FR-004
 
 Ref: plan.md §Project Structure, REQ-009 (checklist/requirements.md)
 
-- [ ] 2.1.1 Criar diretório `apps/api/src/audit/` com os arquivos: `audit.module.ts`, `audit.service.ts`, `audit.controller.ts`, `super-audit.controller.ts`, `audit.interceptor.ts`, `audit.severity.ts`, `audit-export.processor.ts`
-- [ ] 2.1.2 Criar `audit.module.ts`: importar `BullModule.registerQueue({ name: AUDIT_EXPORT_QUEUE_NAME })`, declarar controllers e providers, exportar `AuditService`
-- [ ] 2.1.3 Registrar `AuditModule` em `app.module.ts`
-- [ ] 2.1.4 Registrar `AuditInterceptor` como `APP_INTERCEPTOR` global em `app.module.ts` (providers array)
+- [x] 2.1.1 Criar diretório `apps/api/src/audit/` com os arquivos: `audit.module.ts`, `audit.service.ts`, `audit.controller.ts`, `super-audit.controller.ts`, `audit.interceptor.ts`, `audit.severity.ts`, `audit-export.processor.ts`, `audit-context.ts`
+- [x] 2.1.2 Criar `audit.module.ts`: BullMqModule + PrismaModule + RedisModule + StorageModule; exportar `AuditService`; APP_INTERCEPTOR global
+- [x] 2.1.3 Registrar `AuditModule` em `app.module.ts`
+- [x] 2.1.4 Registrar `AuditInterceptor` como `APP_INTERCEPTOR` global em `audit.module.ts` (providers array)
 
 ### 2.2 `audit.severity.ts`: mapeamento action → severity `[A]`
 
 Ref: data-model.md §Severity mapping, REQ-006 (checklist/requirements.md), dec-0.9
 
-- [ ] 2.2.1 Implementar função `getAuditSeverity(action: AuditAction, resource: string): AuditSeverity`
-- [ ] 2.2.2 Lógica: `delete | config_change` → `critical`; `update` com `resource` em `AUDIT_WARNING_RESOURCES` → `warning`; demais → `info`
-- [ ] 2.2.3 Importar `AUDIT_WARNING_RESOURCES` de `packages/types`
-- [ ] 2.2.4 Escrever unit tests `audit.severity.spec.ts`: cobrir todos os 6 valores de `action` + caso update-roles → warning vs update-padrão → info
-- [ ] 2.2.5 Rodar testes e confirmar 100% de coverage na função
+- [x] 2.2.1 Implementar função `getAuditSeverity(action: AuditAction, resource: string): AuditSeverity`
+- [x] 2.2.2 Lógica: `delete | config_change | auth_failure` → `critical`; `update` com `resource` em `AUDIT_WARNING_RESOURCES` → `warning`; demais → `info`
+- [x] 2.2.3 Importar `AUDIT_WARNING_RESOURCES` de `packages/types`
+- [x] 2.2.4 Escrever unit tests `audit.severity.spec.ts`: 14 casos cobrindo todos os actions + warning resources vs info
+- [x] 2.2.5 Rodar testes e confirmar 14/14 pass
 
 ### 2.3 `audit.service.ts`: Prisma direto (sem repository) `[C]`
 
 Ref: plan.md §Structure Decision, REQ-009, SEC-002
 
-- [ ] 2.3.1 Implementar `createEvent(dto: CreateAuditEventDto): Promise<void>` — usar `this.prisma.auditEvent.create()` com `withTenantTx` (tenantId já no AsyncLocalStorage)
-- [ ] 2.3.2 Implementar `listEvents(query: AuditEventsQueryDto, tenantId?: string): Promise<AuditEventListResponse>` — suportar `tenantId` opcional para cross-tenant (Super Admin passa `prisma.client` direto)
-- [ ] 2.3.3 Aplicar filtros server-side: `action`, `userId`, `dateFrom`, `dateTo`, `severity`; `q` via `ILIKE '%q%'` em `resource` e `resource_id` (dec-0.6)
-- [ ] 2.3.4 Paginação offset: `skip: (page - 1) * perPage`, `take: perPage`, `orderBy: { timestamp: 'desc' }`; retornar `{ data, meta: { page, perPage, total, totalPages } }`
-- [ ] 2.3.5 Garantir que service **não expõe** métodos `update()` ou `delete()` (SEC-002)
-- [ ] 2.3.6 Implementar `createExportJob(dto, tenantId?): Promise<{ jobId: string }>` — enfileirar job BullMQ com `generateId()` como jobId + gravar estado inicial no Redis
-- [ ] 2.3.7 Implementar `getExportJobStatus(jobId: string): Promise<AuditExportJobStatus>` — ler estado do Redis; retornar 404 se ausente/expirado
-- [ ] 2.3.8 Escrever unit tests `audit.service.spec.ts`: mock do Prisma + Redis; cobrir create, list com filtros, paginação, createExportJob, getExportJobStatus (incluindo 404)
-- [ ] 2.3.9 Rodar testes e confirmar sem erros
+- [x] 2.3.1 Implementar `createEvent(dto: CreateAuditEventDto): Promise<void>` — withTenantTx; falhas silenciadas (FR-INFRA-01)
+- [x] 2.3.2 Implementar `listEvents(query, tenantId?)` — tenantId opcional para Super Admin (prisma.client direto)
+- [x] 2.3.3 Filtros: action, userId, dateFrom, dateTo, severity, resource, q (ILIKE em resource + resource_id)
+- [x] 2.3.4 Paginação offset + orderBy timestamp desc
+- [x] 2.3.5 Sem métodos update() ou delete() expostos (SEC-002)
+- [x] 2.3.6 createExportJob: BullMQ + Redis estado inicial
+- [x] 2.3.7 getExportJobStatus: Redis → 404 se ausente/expirado
+- [ ] 2.3.8 Escrever unit tests `audit.service.spec.ts` (pendente)
+- [ ] 2.3.9 Rodar testes (pendente)
 
 ### 2.4 `audit.interceptor.ts`: interceptor global de mutativos `[C]`
 
 Ref: plan.md §Summary, FR-001, FR-010, FR-011, SEC-008, SEC-011, dec-0.2, dec-0.3, dec-0.5
 
-- [ ] 2.4.1 Implementar `AuditInterceptor implements NestInterceptor` com `intercept(context: ExecutionContext, next: CallHandler)`
-- [ ] 2.4.2 Filtrar métodos: somente `POST`, `PUT`, `PATCH`, `DELETE` (`['POST','PUT','PATCH','DELETE'].includes(request.method)`)
-- [ ] 2.4.3 Verificar `userId` no `AsyncLocalStorage` (RequestContext): se ausente → `return next.handle()` sem criar evento (SEC-008, endpoints `@Public()`)
-- [ ] 2.4.4 Extrair `tenantId`, `userId`, `ipAddress` (header `X-Forwarded-For` ou `request.ip`), `userAgent` (header `User-Agent`) do contexto
-- [ ] 2.4.5 Derivar `resource` e `action` da rota (ex: `POST /api/v1/groups` → `resource="group"`, `action="create"`); `resourceId` do path param `:id` quando presente
-- [ ] 2.4.6 Usar `tap()` do RxJS para capturar `newState` do response (após handler); `previousState` vem de `AuditContext.getPreviousState()` se definido pelo service (null caso contrário — dec-0.2)
-- [ ] 2.4.7 Aplicar truncamento a 64KB em `previousState` e `newState`: `truncatePayload(obj, AUDIT_PAYLOAD_TRUNCATE_BYTES)` (dec-0.5)
-- [ ] 2.4.8 Chamar `auditService.createEvent()` em `tap()` com `try/catch`: falhas logadas via NestJS `Logger`, nunca propagadas ao request original (FR-010, SEC-011)
-- [ ] 2.4.9 Garantir que interceptor não captura GET/HEAD/OPTIONS (FR-011): teste explícito
-- [ ] 2.4.10 Escrever unit tests `audit.interceptor.spec.ts`:
-  - POST autenticado → cria evento
-  - GET → não cria evento (FR-011)
-  - sem userId → não cria evento (SEC-008)
-  - falha no service (mock throw) → request não bloqueado (FR-010)
-  - payload > 64KB → truncado com `__truncated: true` (dec-0.5)
-- [ ] 2.4.11 Rodar testes e confirmar todos passam
+- [x] 2.4.1 Implementar `AuditInterceptor implements NestInterceptor`
+- [x] 2.4.2 Filtrar métodos: somente POST/PUT/PATCH/DELETE
+- [x] 2.4.3 Suporta @Public(): userId pode ser null (SEC-008)
+- [x] 2.4.4 Extrai userId, ipAddress (X-Forwarded-For/X-Real-IP/socket), userAgent
+- [x] 2.4.5 Deriva resource/action/resourceId da rota
+- [x] 2.4.6 tap() captura newState; previousState de auditContext (dec-016)
+- [x] 2.4.7 Truncamento 64KB (dec-019)
+- [x] 2.4.8 Fire-and-forget: AuditService.createEvent() swallows errors
+- [x] 2.4.9 GET/HEAD/OPTIONS excluídos
+- [ ] 2.4.10 Escrever unit tests `audit.interceptor.spec.ts` (pendente)
+- [ ] 2.4.11 Rodar testes (pendente)
 
 ### 2.5 `audit.controller.ts`: endpoint tenant-scoped `[A]`
 
 Ref: contracts/audit-events.md §GET /api/v1/audit/events, FR-005, FR-006
 
-- [ ] 2.5.1 Implementar `GET /api/v1/audit/events` com `@Controller('audit')` + `@Get('events')`
-- [ ] 2.5.2 Usar `@UseGuards(KeycloakAuthGuard)` (sem `@Roles` — qualquer usuário autenticado do tenant)
-- [ ] 2.5.3 Validar query params via `@Query(new ZodValidationPipe(AuditEventsQuerySchema))` de `packages/types`
-- [ ] 2.5.4 Chamar `auditService.listEvents(query)` com `withTenantTx` (tenantId do AsyncLocalStorage)
-- [ ] 2.5.5 Retornar envelope `{ data: AuditEvent[], meta: { page, perPage, total, totalPages } }` com HTTP 200
-- [ ] 2.5.6 Escrever integration tests `audit.controller.integration-spec.ts`:
-  - GET sem auth → 401
-  - GET com auth → 200 + envelope correto + meta.perPage = 50
-  - GET com filtro `action=delete` → só deletes
-  - GET endpoint → `audit_events` count estável (FR-011: GET não gera evento)
-- [ ] 2.5.7 Rodar testes e confirmar
+- [x] 2.5.1 Implementar `GET /api/v1/audit-events` + `POST /api/v1/audit-events/exports` + `GET /api/v1/audit-events/exports/:jobId`
+- [x] 2.5.2 @UseGuards(KeycloakAuthGuard, RolesGuard, TenantGuard) + @Roles(ADMIN_TENANT)
+- [x] 2.5.3 Validar query params via ZodValidationPipe(AuditEventsQuerySchema)
+- [x] 2.5.4 Chama auditService.listEvents(query) (RLS via withTenantTx)
+- [x] 2.5.5 Retorna envelope com HTTP 200/202
+- [ ] 2.5.6 Escrever integration tests `audit.controller.integration-spec.ts` (pendente)
+- [ ] 2.5.7 Rodar testes (pendente)
 
 ### 2.6 `super-audit.controller.ts`: endpoints cross-tenant Super Admin `[C]`
 
 Ref: contracts/audit-events.md §Super Admin endpoints, SEC-005, dec-0.1
 
-- [ ] 2.6.1 Implementar `@Controller('admin/super/audit')` + `@UseGuards(KeycloakAuthGuard)` + `@Roles(Role.SUPER_ADMIN)` em toda a classe
-- [ ] 2.6.2 `GET /api/v1/admin/super/audit/events`: usar `prisma.client` direto (NÃO `withTenantTx`) — padrão confirmado no spike 0.1; filtrar por `tenantId` opcional (dec-0.1)
-- [ ] 2.6.3 `POST /api/v1/admin/super/audit/export`: validar body `{ format, filters? }`; chamar `auditService.createExportJob()`; retornar HTTP 202 + `{ data: { jobId, message } }`
-- [ ] 2.6.4 `GET /api/v1/admin/super/audit/jobs/:jobId`: chamar `auditService.getExportJobStatus(jobId)`; retornar 200 ou 404 (jobId inexistente/expirado)
-- [ ] 2.6.5 Escrever integration tests `super-audit.controller.integration-spec.ts`:
-  - GET sem SUPER_ADMIN role → 403
-  - GET cross-tenant → retorna eventos de múltiplos tenants
-  - GET com `tenantId` filtro → filtra corretamente
-  - POST export → 202 + jobId UUID v7
-  - GET job polling → 200 + `{ status, signedUrl }` (mock BullMQ)
-- [ ] 2.6.6 Rodar testes e confirmar
+- [x] 2.6.1 Implementar `@Controller('api/v1/super-admin/audit-events')` + `@Roles(SUPER_ADMIN)`
+- [x] 2.6.2 `GET /api/v1/super-admin/audit-events?tenantId=<uuid>`: usa listEvents(query, tenantId) → prisma.client direto (dec-015 confirmado no spike 0.1)
+- [x] 2.6.3 `POST /api/v1/super-admin/audit-events/exports`: HTTP 202 + jobId
+- [x] 2.6.4 `GET /api/v1/super-admin/audit-events/exports/:jobId`: 200 ou 404
+- [ ] 2.6.5 Escrever integration tests (pendente)
+- [ ] 2.6.6 Rodar testes (pendente)
 
 ### 2.7 `audit-export.processor.ts`: BullMQ worker `[A]`
 
 Ref: plan.md §Reuso (reports/ 8-7), FR-INFRA-03, data-model.md §AuditExportJob
 
-- [ ] 2.7.1 Criar `audit-export.processor.ts` baseado no scaffold de `reports/reports.processor.ts`
-- [ ] 2.7.2 Registrar `@Processor(AUDIT_EXPORT_QUEUE_NAME)` com `attempts: 3` (FR-INFRA-03)
-- [ ] 2.7.3 Processar job: ler todos os eventos com `auditService.listEvents()` sem paginação (export completo) com filtros do job; todos os 12 campos (API-009)
-- [ ] 2.7.4 Serializar para CSV ou JSON: JSONB (`previousState`, `newState`) serializado como JSON string nas células CSV (dec-0.7)
-- [ ] 2.7.5 Upload arquivo para MinIO (reusando `StorageService` do módulo content/8-2); gerar signed URL com TTL `AUDIT_EXPORT_TTL_SECONDS` (24h)
-- [ ] 2.7.6 Atualizar estado do job no Redis: `{ status: "completed", signedUrl, expiresAt }` ou `{ status: "failed", failureReason }`
-- [ ] 2.7.7 Escrever unit tests `audit-export.processor.spec.ts`: mock StorageService + Redis; job completed → signed URL; job failed → failureReason
-- [ ] 2.7.8 Rodar testes e confirmar
+- [x] 2.7.1 Criar `audit-export.processor.ts` baseado no scaffold de `reports/reports.processor.ts`
+- [x] 2.7.2 BullMQ worker via bullMq.createWorker(AUDIT_EXPORT_QUEUE_NAME, ...)
+- [x] 2.7.3 Processar job: listEvents() perPage=10000 + todos os 12 campos
+- [x] 2.7.4 CSV com BOM UTF-8; previousState/newState como JSON string (dec-021)
+- [x] 2.7.5 Upload para MinIO via StorageService.upload() + signedUrl
+- [x] 2.7.6 Atualizar Redis: completed + signedUrl + expiresAt; failed + failureReason
+- [ ] 2.7.7 Escrever unit tests `audit-export.processor.spec.ts` (pendente)
+- [ ] 2.7.8 Rodar testes (pendente)
 
 ---
 

@@ -228,6 +228,7 @@ model Tenant {
   invites              Invite[]
   radarStatuses        ParticipantRadarStatus[]
   statusImprovements   ParticipantStatusImproved[]
+  auditEvents          AuditEvent[]
 
   @@index([tenantId])
   @@index([status])
@@ -727,6 +728,43 @@ model TrailProgress {
 // ---------------------------------------------------------------------------
 // Tenant Content Config — Story 8-4 (completion rules per content type)
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Audit Events — Story 9-3 (LGPD Immutable Audit Log)
+// dec-015 (SEC-005): id via generateId() (UUIDv7), no DB default
+// dec-018 (SEC-006): ipAddress TEXT (not INET)
+// dec-016 (SEC-011): userId nullable (public route captures)
+// FR-INFRA-02: no update() / delete() exposed anywhere in the service
+// ---------------------------------------------------------------------------
+
+/// AuditEvent — immutable record of every state-changing action in the system.
+/// RLS: tenant-scoped INSERT + SELECT only. No UPDATE/DELETE policies (enforces immutability).
+/// Super Admin reads cross-tenant via prisma.client (bypasses RLS per dec-015).
+model AuditEvent {
+  id            String    @id @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  /// userId: nullable — public route captures may have no authenticated user (dec-016)
+  userId        String?   @map("user_id") @db.Uuid
+  action        String    @map("action")
+  resource      String    @map("resource")
+  resourceId    String?   @map("resource_id")
+  /// ipAddress: TEXT (not INET) — supports IPv6 bracket notation and proxies (dec-018)
+  ipAddress     String    @map("ip_address")
+  userAgent     String    @map("user_agent")
+  /// previousState: null when AuditContext not populated by service (dec-016)
+  previousState Json?     @map("previous_state")
+  /// newState: may be truncated marker if payload > 65536 bytes (dec-019)
+  newState      Json?     @map("new_state")
+  timestamp     DateTime  @default(now()) @map("timestamp") @db.Timestamptz
+  severity      String    @map("severity")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, timestamp(sort: Desc)])
+  @@index([tenantId, userId])
+  @@index([tenantId, action])
+  @@map("audit_events")
+}
 
 /// TenantContentConfig — per-tenant overrides for completion thresholds
 /// Convention over configuration: when absent, defaults apply (video 90%, doc 80%)
