@@ -165,6 +165,7 @@ model User {
 
   userTenants      UserTenant[]
   consents         Consent[]
+  consentRecords   ConsentRecord[]
   groupMemberships GroupMember[]
   pastoralAlerts   PastoralAlert[]  @relation("alerts")
   pastoralActions  PastoralAction[] @relation("actions")
@@ -206,6 +207,41 @@ model Consent {
 
   @@index([tenantId])
   @@map("consents")
+}
+
+/// DataProcessingRegistry — global catalogue of data processing operations (LGPD Art. 9º).
+/// No tenant_id; no RLS. Public endpoint: GET /api/v1/privacy/data-processing.
+/// Seeded by migration 20260618000000_9-4-base-legal-consentimento.
+model DataProcessingRegistry {
+  id                String   @id @db.Uuid
+  operationName     String   @map("operation_name")
+  legalBasis        String   @map("legal_basis")
+  purpose           String
+  dataCategories    String[] @map("data_categories")
+  retentionPeriod   String   @map("retention_period")
+  thirdPartySharing String?  @map("third_party_sharing")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("data_processing_registry")
+}
+
+/// ConsentRecord — append-only log of consent withdrawals (LGPD Art. 8º §5).
+/// Tenant-scoped (RLS NULLIF — same pattern as audit_events).
+/// No UPDATE or DELETE policies: history is immutable.
+model ConsentRecord {
+  id          String   @id @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  tenantId    String?  @map("tenant_id") @db.Uuid
+  consentType String   @map("consent_type")
+  action      String   @default("withdrawn")
+  timestamp   DateTime @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, consentType], name: "consent_records_user_consent_idx")
+  @@index([tenantId], name: "consent_records_tenant_idx")
+  @@map("consent_records")
 }
 
 /// Tenant — materializes the implicit tenant, self-referencing tenant_id for universal RLS

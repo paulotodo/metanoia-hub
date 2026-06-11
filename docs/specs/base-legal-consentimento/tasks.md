@@ -28,36 +28,36 @@
 
 ### 0.1 Estender `packages/types/src/consent.ts` com schemas story 9-4 `[C]`
 
-- [ ] 0.1.1 Adicionar `ConsentTypeSchema = z.enum(['terms_of_service', 'privacy_policy', 'focus_monitoring'])` e tipo `ConsentType` — NÃO remover `ConsentDocumentTypeSchema` existente `[C]`
-- [ ] 0.1.2 Adicionar `LegalBasisSchema` e tipo `LegalBasis` `[C]`
-- [ ] 0.1.3 Adicionar `DataProcessingRegistryItemSchema` + `DataProcessingRegistryResponseSchema` `[C]`
-- [ ] 0.1.4 Adicionar `ConsentRecordSchema` `[C]`
-- [ ] 0.1.5 Adicionar `ConsentStatusBadgeSchema`, `ConsentHistoryItemSchema`, `ConsentHistoryResponseSchema` `[C]`
-- [ ] 0.1.6 Adicionar `WithdrawConsentInputSchema` + `WithdrawConsentResponseSchema` `[C]`
-- [ ] 0.1.7 Exportar todos os novos schemas via `packages/types/src/index.ts` `[C]`
+- [x] 0.1.1 Adicionar `ConsentTypeSchema = z.enum(['terms_of_service', 'privacy_policy', 'focus_monitoring'])` e tipo `ConsentType` — NÃO remover `ConsentDocumentTypeSchema` existente `[C]`
+- [x] 0.1.2 Adicionar `LegalBasisSchema` e tipo `LegalBasis` `[C]`
+- [x] 0.1.3 Adicionar `DataProcessingRegistryItemSchema` + `DataProcessingRegistryResponseSchema` `[C]`
+- [x] 0.1.4 Adicionar `ConsentRecordSchema` `[C]`
+- [x] 0.1.5 Adicionar `ConsentStatusBadgeSchema`, `ConsentHistoryItemSchema`, `ConsentHistoryResponseSchema` `[C]`
+- [x] 0.1.6 Adicionar `WithdrawConsentInputSchema` + `WithdrawConsentResponseSchema` `[C]`
+- [x] 0.1.7 Exportar todos os novos schemas via `packages/types/src/index.ts` `[C]`
 
 ### 0.2 Snapshot tests para schemas novos `[C]`
 
-- [ ] 0.2.1 Criar `packages/types/src/__tests__/consent.snap.spec.ts` com snapshot para `DataProcessingRegistryItemSchema` (input válido → `toMatchSnapshot()`) `[C]`
-- [ ] 0.2.2 Snapshot para `ConsentHistoryItemSchema` `[C]`
-- [ ] 0.2.3 Snapshot para `ConsentRecordSchema` `[C]`
-- [ ] 0.2.4 Snapshot para `WithdrawConsentInputSchema` `[C]`
-- [ ] 0.2.5 Snapshot para `WithdrawConsentResponseSchema` `[C]`
-- [ ] 0.2.6 Verificar que os snapshots existentes de `consent.ts` (story 2-8) não foram quebrados `[C]`
+- [x] 0.2.1 Criar `packages/types/src/__tests__/consent-9-4.snapshot.spec.ts` com snapshot para `DataProcessingRegistryItemSchema` (input válido → `toMatchSnapshot()`) `[C]`
+- [x] 0.2.2 Snapshot para `ConsentHistoryItemSchema` `[C]`
+- [x] 0.2.3 Snapshot para `ConsentRecordSchema` `[C]`
+- [x] 0.2.4 Snapshot para `WithdrawConsentInputSchema` `[C]`
+- [x] 0.2.5 Snapshot para `WithdrawConsentResponseSchema` `[C]`
+- [x] 0.2.6 Verificar que os snapshots existentes de `consent.ts` (story 2-8) não foram quebrados `[C]` — evidência: 357 testes passando, regressão não detectada
 
 ### 0.3 MSW handlers frontend `[A]`
 
-- [ ] 0.3.1 Criar `apps/web/src/mocks/handlers/consent-privacy.ts` com handler `GET /api/v1/privacy/data-processing` → 200 com array de 10 registros mock `[A]`
-- [ ] 0.3.2 Handler `GET /api/v1/consent/history` → 200 com 3 itens (2 aceitos, 1 revogado) `[A]`
-- [ ] 0.3.3 Handler `PATCH /api/v1/consent/:consentType/withdraw` → 200 para `focus_monitoring`; 400 para `terms_of_service` e `privacy_policy` `[A]`
-- [ ] 0.3.4 Importar `consent-privacy.ts` em `apps/web/src/mocks/handlers/index.ts` `[A]`
+- [x] 0.3.1 Criar `apps/web/mocks/handlers/consent-privacy.ts` com handler `GET /api/v1/privacy/data-processing` → 200 com array de 10 registros mock `[A]`
+- [x] 0.3.2 Handler `GET /api/v1/consent/history` → 200 com 3 itens (2 aceitos, 1 revogado) `[A]`
+- [x] 0.3.3 Handler `PATCH /api/v1/consent/:consentType/withdraw` → 200 para `focus_monitoring`; 400 para `terms_of_service` e `privacy_policy` `[A]`
+- [x] 0.3.4 Importar `consent-privacy.ts` em `apps/web/mocks/handlers/index.ts` `[A]`
 
 ### 0.4 Decidir ambiguidades (GAP-03 a GAP-06) `[A]`
 
-- [ ] 0.4.1 [GAP-03] Definir 10ª operação de tratamento: usar split `progressão de trilhas` / `progressão de módulos e aulas` como 2 registros distintos; documentar decisão em comentário no SQL da migration `[A]`
-- [ ] 0.4.2 [GAP-04] Decidir rate limiting do endpoint público: adicionar `@Throttle({ default: { ttl: 60000, limit: 30 } })` no controller; documentar como decisão arquitetural `[A]`
-- [ ] 0.4.3 [GAP-05] Confirmar que `audit.service.createEvent()` é chamado FORA de `withTenantTx` (padrão do projeto); adicionar comentário no service `[A]`
-- [ ] 0.4.4 [GAP-06] Comportamento de double-withdrawal: append-only (segundo INSERT permitido); adicionar caso de teste em 2.4 `[A]`
+- [x] 0.4.1 [GAP-03] 10ª operação: split em 2 registros distintos `progressão de trilhas` / `progressão de módulos e aulas`; documentado em comentário SQL da migration `[A]`
+- [x] 0.4.2 [GAP-04] Rate limiting: `PrivacyRateLimitGuard` in-memory 30 req/min (padrão do projeto — @nestjs/throttler não instalado); dec-016 `[A]`
+- [x] 0.4.3 [GAP-05] Withdrawal auditado automaticamente pelo AuditInterceptor global (PATCH ∈ WRITE_METHODS); sem chamada manual — dec-017; evidência: audit.interceptor.ts L33 `[A]`
+- [x] 0.4.4 [GAP-06] Double-withdrawal append-only sem 409; caso de teste em 3.5.5 — dec-018 `[A]`
 
 ---
 
@@ -65,32 +65,32 @@
 
 ### 1.1 Migration SQL `20260618000000_9-4-base-legal-consentimento` `[C]`
 
-- [ ] 1.1.1 Criar arquivo `apps/api/prisma/migrations/20260618000000_9-4-base-legal-consentimento/migration.sql` `[C]`
-- [ ] 1.1.2 `CREATE TABLE "data_processing_registry"` (sem tenant_id, sem RLS) com campos FR-01 completos `[C]`
-- [ ] 1.1.3 `CREATE TABLE "consent_records"` com `id, user_id, tenant_id (nullable), consent_type CHECK, action CHECK ('withdrawn'), timestamp` `[C]`
-- [ ] 1.1.4 FK `consent_records_user_id_fkey` → `users(id) ON DELETE CASCADE` `[C]`
-- [ ] 1.1.5 Índices: `consent_records_user_consent_idx (user_id, consent_type)` e `consent_records_tenant_idx (tenant_id)` `[A]`
-- [ ] 1.1.6 RLS em `consent_records`: `ALTER TABLE "consent_records" ENABLE ROW LEVEL SECURITY` `[C]`
-- [ ] 1.1.7 Policy SELECT NULLIF: `CREATE POLICY "consent_records_tenant_isolation_select" ON "consent_records" FOR SELECT USING (NULLIF(current_setting('app.current_tenant_id', true), '')::uuid IS NULL OR "tenant_id" IS NULL OR "tenant_id" = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid)` `[C]`
-- [ ] 1.1.8 Policy INSERT NULLIF: `CREATE POLICY "consent_records_tenant_isolation_insert" ON "consent_records" FOR INSERT WITH CHECK ("tenant_id" = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid OR "tenant_id" IS NULL)` `[C]`
-- [ ] 1.1.9 [GAP-03] `INSERT INTO "data_processing_registry"` com 10 operações (ON CONFLICT DO NOTHING): autenticação Keycloak, sessions Redis, progressão de trilhas, progressão de módulos/aulas, presença em reuniões, telemetria de engajamento, monitoramento de foco (consent), notas pastorais, radar de participação, armazenamento MinIO `[C]`
-- [ ] 1.1.10 Confirmar que todos os UUIDs no seed são v7 (formato `0197...`) gerados off-line `[C]`
+- [x] 1.1.1 Criar arquivo `apps/api/prisma/migrations/20260618000000_9-4-base-legal-consentimento/migration.sql` `[C]`
+- [x] 1.1.2 `CREATE TABLE "data_processing_registry"` (sem tenant_id, sem RLS) com campos FR-01 completos `[C]`
+- [x] 1.1.3 `CREATE TABLE "consent_records"` com `id, user_id, tenant_id (nullable), consent_type CHECK, action CHECK ('withdrawn'), timestamp` `[C]`
+- [x] 1.1.4 FK `consent_records_user_id_fkey` → `users(id) ON DELETE CASCADE` `[C]`
+- [x] 1.1.5 Índices: `consent_records_user_consent_idx (user_id, consent_type)` e `consent_records_tenant_idx (tenant_id)` `[A]`
+- [x] 1.1.6 RLS em `consent_records`: `ALTER TABLE "consent_records" ENABLE ROW LEVEL SECURITY` `[C]`
+- [x] 1.1.7 Policy SELECT NULLIF `[C]`
+- [x] 1.1.8 Policy INSERT NULLIF `[C]`
+- [x] 1.1.9 [GAP-03] `INSERT INTO "data_processing_registry"` com 10 operações (ON CONFLICT DO NOTHING) — split trilhas/módulos documentado `[C]`
+- [x] 1.1.10 UUIDs v7 `0197b600-...` gerados off-line; prefixo `0197` confirmado `[C]`
 
 ### 1.2 Prisma schema `[C]`
 
-- [ ] 1.2.1 Adicionar `model DataProcessingRegistry` ao `apps/api/prisma/schema.prisma` após `model Consent` `[C]`
-- [ ] 1.2.2 Adicionar `model ConsentRecord` com `@@map("consent_records")` `[C]`
-- [ ] 1.2.3 Adicionar relação em `model User`: `consentRecords ConsentRecord[]` `[C]`
-- [ ] 1.2.4 Executar `pnpm --filter @metanoia/api exec prisma generate` e confirmar saída sem erros `[C]`
+- [x] 1.2.1 Adicionar `model DataProcessingRegistry` ao `apps/api/prisma/schema.prisma` após `model Consent` `[C]`
+- [x] 1.2.2 Adicionar `model ConsentRecord` com `@@map("consent_records")` `[C]`
+- [x] 1.2.3 Adicionar relação em `model User`: `consentRecords ConsentRecord[]` `[C]`
+- [x] 1.2.4 `prisma generate` OK — evidência: "Generated Prisma Client (v7.7.0) in 318ms" `[C]`
 
 ### 1.3 Teste RLS isolation `consent_records` `[C]`
 
-- [ ] 1.3.1 Criar `apps/api/test/rls/consent-records.rls-spec.ts` seguindo padrão existente (PrismaPg adapter, beforeEach com tenants A+B, UUIDs hex fixos) `[C]`
-- [ ] 1.3.2 Caso: INSERT tenant A → SELECT tenant B → nenhum resultado `[C]`
-- [ ] 1.3.3 Caso: INSERT `tenantId = null` → SELECT tenant A → visível; SELECT tenant B → visível `[C]`
-- [ ] 1.3.4 Caso: UPDATE direto → rejeição (sem policy UPDATE) `[C]`
-- [ ] 1.3.5 Caso: DELETE direto → rejeição (sem policy DELETE) `[C]`
-- [ ] 1.3.6 Executar `pnpm --filter @metanoia/api test:rls` e confirmar verde `[C]`
+- [x] 1.3.1 Criar `apps/api/test/rls/consent-records.rls-spec.ts` seguindo padrão PrismaPg `[C]`
+- [x] 1.3.2 Caso: INSERT tenant A → SELECT tenant B → nenhum resultado `[C]`
+- [x] 1.3.3 Caso: INSERT `tenantId = null` → SELECT tenant A → visível; SELECT tenant B → visível `[C]`
+- [x] 1.3.4 Caso: UPDATE direto → rejeição (sem policy UPDATE) `[C]`
+- [x] 1.3.5 Caso: DELETE direto → rejeição (sem policy DELETE) `[C]`
+- [ ] 1.3.6 Executar `pnpm --filter @metanoia/api test:rls` e confirmar verde `[C]` — pendente DB (CI)
 
 ---
 
@@ -98,26 +98,26 @@
 
 ### 2.1 `PrivacyService` `[C]`
 
-- [ ] 2.1.1 Criar `apps/api/src/privacy/privacy.service.ts` com `listDataProcessingRegistry()` usando `this.prisma.client.dataProcessingRegistry.findMany({ orderBy: { operationName: 'asc' } })` `[C]`
-- [ ] 2.1.2 Mapear `Date → ISO string` no `toDto` (sem expor objeto Prisma bruto) `[A]`
+- [x] 2.1.1 Criar `apps/api/src/privacy/privacy.service.ts` com `listDataProcessingRegistry()` usando `this.prisma.client.dataProcessingRegistry.findMany({ orderBy: { operationName: 'asc' } })` `[C]`
+- [x] 2.1.2 Mapear `Date → ISO string` no `toDto` (sem expor objeto Prisma bruto) `[A]`
 
 ### 2.2 `PrivacyController` `[C]`
 
-- [ ] 2.2.1 Criar `apps/api/src/privacy/privacy.controller.ts` com `@Controller('api/v1/privacy')` + `@Get('data-processing')` + `@Public()` `[C]`
-- [ ] 2.2.2 [GAP-04] Adicionar `@Throttle({ default: { ttl: 60000, limit: 30 } })` no controller `[A]`
-- [ ] 2.2.3 Sem `@UseGuards` — endpoint público `[C]`
+- [x] 2.2.1 Criar `apps/api/src/privacy/privacy.controller.ts` com `@Controller('api/v1/privacy')` + `@Get('data-processing')` + `@Public()` `[C]`
+- [x] 2.2.2 [GAP-04] `PrivacyRateLimitGuard` 30 req/min via `@UseGuards` (dec-016 — @nestjs/throttler não instalado) `[A]`
+- [x] 2.2.3 Sem `@UseGuards(KeycloakAuthGuard)` — endpoint público `[C]`
 
 ### 2.3 `PrivacyModule` `[C]`
 
-- [ ] 2.3.1 Criar `apps/api/src/privacy/privacy.module.ts` importando `PrismaModule`, declarando controller e provider `[C]`
-- [ ] 2.3.2 Importar `PrivacyModule` em `AppModule` `[C]`
+- [x] 2.3.1 Criar `apps/api/src/privacy/privacy.module.ts` importando `PrismaModule`, declarando controller e provider `[C]`
+- [x] 2.3.2 Importar `PrivacyModule` em `AppModule` `[C]`
 
 ### 2.4 Testes unitários do `PrivacyService` `[A]`
 
-- [ ] 2.4.1 Criar `apps/api/src/privacy/__tests__/privacy.service.spec.ts` `[A]`
-- [ ] 2.4.2 Mock `PrismaService.client.dataProcessingRegistry.findMany` → retorna array vazio → verifica `{ data: [] }` `[A]`
-- [ ] 2.4.3 Mock com 2 registros → verifica shape do DTO (campos ISO string) `[A]`
-- [ ] 2.4.4 Verificar que o controller chama o service e retorna a resposta sem transformação adicional `[A]`
+- [x] 2.4.1 Criar `apps/api/src/privacy/__tests__/privacy.service.spec.ts` `[A]`
+- [x] 2.4.2 Mock `PrismaService.client.dataProcessingRegistry.findMany` → retorna array vazio → verifica `{ data: [] }` — evidência: ✓ green `[A]`
+- [x] 2.4.3 Mock com registros → verifica shape do DTO (campos ISO string) — evidência: ✓ green `[A]`
+- [x] 2.4.4 Controller chama service e retorna resposta sem transformação — evidência: ✓ green `[A]`
 
 ---
 
