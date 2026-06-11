@@ -5,6 +5,14 @@
 **Status**: Draft
 **Epic**: 8 — Content (Story 8-8)
 
+## Clarifications
+
+### Session 2026-06-11
+
+- Q: Qual o formato de serialização do trecho destacado (highlight) no campo `snippet` da resposta JSON? → A: Tags HTML `<b>termo</b>` geradas pelo `ts_headline` do PostgreSQL (StartSel='<b>', StopSel='</b>'). O FE renderiza com `dangerouslySetInnerHTML` em contexto controlado (campo de busca, sem input de usuário no conteúdo).
+- Q: Como o sistema deve tratar aulas de trilhas com status `archived` nos resultados de busca? → A: Trilhas arquivadas (`archived`) são tratadas como `published` para efeito de visibilidade — aparecem para todos os papéis sem indicação especial. `archived` não implica restrição de visibilidade adicional; apenas `draft` tem regra diferenciada (FR-007/FR-008).
+- Q: Qual o limite de resultados retornados por chamada de busca (paginação)? → A: Top 20 resultados por chamada, sem paginação. O parâmetro `limit` padrão é 20 e não configurável pelo cliente nesta versão. Paginação pode ser adicionada incrementalmente se necessário.
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Busca por aulas relevantes (Priority: P1)
@@ -97,14 +105,15 @@ Como **participante, líder ou administrador**, quero usar um campo de busca na 
 - **FR-002**: O sistema DEVE suportar busca insensível a diacríticos — termos com e sem acentuação devem retornar os mesmos resultados.
 - **FR-003**: O sistema DEVE suportar busca por prefixo de palavra — um prefixo de um termo deve corresponder a registros cujas palavras começam com esse prefixo.
 - **FR-004**: O sistema DEVE ranquear os resultados de busca por relevância textual, apresentando os mais aderentes primeiro.
-- **FR-005**: Os resultados de busca DEVEM incluir: nome da aula, nome do módulo ao qual pertence, nome da trilha ao qual pertence, tipo de conteúdo, e trecho do texto com o termo encontrado destacado.
+- **FR-005**: Os resultados de busca DEVEM incluir: nome da aula, nome do módulo ao qual pertence, nome da trilha ao qual pertence, tipo de conteúdo, e trecho do texto com o termo encontrado destacado em HTML (`<b>termo</b>`) gerado por `ts_headline`. O campo `snippet` é serializado como string HTML e renderizado pelo FE com `dangerouslySetInnerHTML`.
 - **FR-006**: O sistema DEVE restringir os resultados ao escopo da organização do usuário autenticado — nenhum resultado de outro tenant pode aparecer.
 - **FR-007**: Participantes NÃO DEVEM visualizar aulas cujas trilhas estão em status de rascunho.
 - **FR-008**: Líderes e administradores DEVEM visualizar aulas de trilhas em rascunho, com indicação do status de rascunho nos resultados.
 - **FR-009**: Aulas removidas logicamente (soft-deleted) NÃO DEVEM aparecer em nenhum resultado de busca, independente do papel do usuário.
 - **FR-010**: Quando nenhum resultado é encontrado, o sistema DEVE retornar uma resposta de sucesso com lista vazia — nunca um erro.
 - **FR-011**: O sistema DEVE manter o índice de busca isolado por organização — não é possível atravessar o limite do tenant via busca.
-- **FR-012**: O sistema DEVE responder a buscas com até 10.000 aulas indexadas dentro do limite de desempenho esperado para a operação.
+- **FR-012**: O sistema DEVE responder a buscas com até 10.000 aulas indexadas dentro do limite de desempenho esperado para a operação. O endpoint retorna no máximo 20 resultados por chamada (top-20 por relevância). Paginação não está no escopo desta versão.
+- **FR-013**: Trilhas com status `archived` são tratadas como `published` para efeito de visibilidade nos resultados de busca — sem restrição adicional. Apenas trilhas com status `draft` aplicam regra diferenciada (FR-007/FR-008).
 
 > Decisões de infraestrutura: a feature adiciona um índice de busca persistido no banco de dados (gerenciado por trigger automático). Não envolve scheduling periódico, rotação de chaves, refresh de token externo ou mutex multi-pod adicionais além do que já existe na plataforma.
 
