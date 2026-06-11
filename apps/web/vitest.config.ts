@@ -9,6 +9,8 @@ export default defineConfig({
       // Mirror tsconfig paths so tests can import from the `@/` alias.
       '@': path.resolve(__dirname, './src'),
       '@mocks': path.resolve(__dirname, './__mocks__'),
+      // MSW server and handlers (apps/web/mocks/)
+      '@test-mocks': path.resolve(__dirname, './mocks'),
     },
   },
   test: {

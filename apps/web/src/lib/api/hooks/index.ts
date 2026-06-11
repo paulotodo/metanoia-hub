@@ -27,3 +27,9 @@ export {
   useUnassignTrail,
 } from './use-group-trails';
 export { searchKeys, useSearch } from './use-search';
+export {
+  trailStructureKeys,
+  useTrail,
+  useTrailModules,
+  useModuleLessons,
+} from './use-trail-structure';

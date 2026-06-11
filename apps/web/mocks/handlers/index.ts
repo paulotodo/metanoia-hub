@@ -10,6 +10,7 @@ import { authRecoveryHandlers } from './auth-recovery';
 import { participantGroupsHandlers } from './participant-groups';
 import { superAdminTenantsHandlers } from './super-admin-tenants';
 import { usersHandlers } from './users';
+import { trailStructureHandlers } from './trail-structure';
 
 export const handlers = [
   ...radarHandlers,
@@ -24,4 +25,5 @@ export const handlers = [
   ...participantGroupsHandlers,
   ...superAdminTenantsHandlers,
   ...usersHandlers,
+  ...trailStructureHandlers,
 ];
