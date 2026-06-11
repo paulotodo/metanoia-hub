@@ -1,5 +1,17 @@
 export { PaginationSchema, type Pagination } from './pagination';
 export {
+  MyTrailStatusSchema,
+  type MyTrailStatus,
+  MyTrailItemSchema,
+  type MyTrailItem,
+  MyTrailsQuerySchema,
+  type MyTrailsQuery,
+  MyTrailsMetaSchema,
+  type MyTrailsMeta,
+  MyTrailsResponseSchema,
+  type MyTrailsResponse,
+} from './content/my-trails.schema';
+export {
   searchResultItemSchema,
   type SearchResultItem,
   searchResponseSchema,

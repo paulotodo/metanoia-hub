@@ -34,6 +34,8 @@ import {
   LessonAccessModeSchema,
   SetPrerequisitesRequestSchema,
   ModulePrerequisiteResponseSchema,
+  MyTrailStatusSchema,
+  MyTrailItemSchema,
 } from '../index';
 
 // ------------------------------------------------------------------
@@ -1234,6 +1236,81 @@ describe('InvalidTrailIdsResponseSchema snapshot', () => {
           "message",
           "statusCode",
         ],
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// MyTrailStatusSchema
+// ------------------------------------------------------------------
+describe('MyTrailStatusSchema snapshot', () => {
+  it('freezes valid and invalid values', () => {
+    const ok = MyTrailStatusSchema.safeParse('in_progress');
+    const fail = MyTrailStatusSchema.safeParse('paused');
+    expect({
+      success: ok.success,
+      data: ok.success ? ok.data : null,
+      failure: !fail.success,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": "in_progress",
+        "failure": true,
+        "success": true,
+      }
+    `);
+  });
+});
+
+// ------------------------------------------------------------------
+// MyTrailItemSchema
+// ------------------------------------------------------------------
+describe('MyTrailItemSchema snapshot', () => {
+  it('freezes shape of a valid MyTrailItem', () => {
+    const ok = MyTrailItemSchema.safeParse({
+      id: '018e6b1c-0000-7000-8000-000000000001',
+      name: 'Discipulado Básico',
+      description: 'Fundamentos da fé cristã',
+      moduleCount: 3,
+      lessonCount: 12,
+      progressPercent: 50,
+      status: 'in_progress',
+      lastActivity: '2026-06-11T10:00:00.000Z',
+    });
+    expect({
+      success: ok.success,
+      keys: ok.success ? Object.keys(ok.data).sort() : [],
+    }).toMatchInlineSnapshot(`
+      {
+        "keys": [
+          "description",
+          "id",
+          "lastActivity",
+          "lessonCount",
+          "moduleCount",
+          "name",
+          "progressPercent",
+          "status",
+        ],
+        "success": true,
+      }
+    `);
+  });
+
+  it('accepts null description and lastActivity', () => {
+    const ok = MyTrailItemSchema.safeParse({
+      id: '018e6b1c-0000-7000-8000-000000000002',
+      name: 'Nova Trilha',
+      description: null,
+      moduleCount: 0,
+      lessonCount: 0,
+      progressPercent: 0,
+      status: 'not_started',
+      lastActivity: null,
+    });
+    expect({ success: ok.success }).toMatchInlineSnapshot(`
+      {
         "success": true,
       }
     `);
