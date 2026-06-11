@@ -1089,5 +1089,26 @@
     "emptyState": "Nenhuma aula encontrada para esta busca. Tente outras palavras.",
     "draftBadge": "Rascunho",
     "resultsCount": "{count} resultado(s) encontrado(s)"
+  },
+  "trailPlaylist": {
+    "overallProgress": "Seu caminho na trilha",
+    "empty": {
+      "title": "Trilha sem conteúdo",
+      "body": "Esta trilha ainda não possui módulos. Aguarde novas aulas serem adicionadas pelo seu líder."
+    },
+    "error": "Não foi possível carregar a trilha. Verifique sua conexão e tente novamente.",
+    "retry": "Tentar novamente",
+    "locked": {
+      "reason": "Complete o conteúdo anterior para prosseguir neste caminho"
+    },
+    "status": {
+      "notStarted": "Não iniciada",
+      "inProgress": "Em andamento",
+      "completed": "Concluída"
+    },
+    "duration": "{minutes} min",
+    "module": {
+      "empty": "Nenhuma aula disponível neste módulo"
+    }
   }
 }
