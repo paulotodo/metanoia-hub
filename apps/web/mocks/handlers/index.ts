@@ -12,6 +12,7 @@ import { superAdminTenantsHandlers } from './super-admin-tenants';
 import { usersHandlers } from './users';
 import { trailStructureHandlers } from './trail-structure';
 import { myTrailsHandlers } from './my-trails';
+import { auditEventsHandlers } from './audit-events';
 
 export const handlers = [
   ...radarHandlers,
@@ -28,4 +29,5 @@ export const handlers = [
   ...usersHandlers,
   ...trailStructureHandlers,
   ...myTrailsHandlers,
+  ...auditEventsHandlers,
 ];

@@ -945,6 +945,81 @@
         "confirm": "Sim, suspender",
         "cancel": "Cancelar"
       }
+    },
+    "audit": {
+      "title": "Trilha de Responsabilidade",
+      "subtitle": "Histórico de ações realizadas pelos membros da comunidade",
+      "refreshedAt": "Atualizado às {time}",
+      "filters": {
+        "title": "Filtros",
+        "action": {
+          "label": "Tipo de ação",
+          "placeholder": "Todas as ações",
+          "create": "Criação",
+          "update": "Atualização",
+          "delete": "Remoção",
+          "login": "Acesso",
+          "logout": "Saída",
+          "auth_failure": "Falha de autenticação",
+          "config_change": "Alteração de configuração",
+          "export": "Exportação"
+        },
+        "severity": {
+          "label": "Relevância",
+          "placeholder": "Todas",
+          "info": "Informativo",
+          "warning": "Atenção",
+          "critical": "Crítico"
+        },
+        "dateFrom": "De",
+        "dateTo": "Até",
+        "userId": "Membro (ID)",
+        "resource": "Recurso",
+        "q": "Buscar por recurso",
+        "qPlaceholder": "Ex.: grupo, membro, trilha…",
+        "clearAll": "Limpar filtros",
+        "apply": "Aplicar"
+      },
+      "table": {
+        "timestamp": "Data e hora",
+        "member": "Membro",
+        "action": "Ação",
+        "resource": "Recurso",
+        "severity": "Relevância",
+        "ipAddress": "Endereço IP",
+        "details": "Detalhes",
+        "empty": "Nenhum registro encontrado para os filtros selecionados.",
+        "loading": "Carregando histórico de ações…",
+        "error": "Não foi possível carregar o histórico. Tente novamente.",
+        "previousState": "Estado anterior",
+        "newState": "Estado atual"
+      },
+      "actions": {
+        "export": "Exportar CSV",
+        "refresh": "Atualizar",
+        "viewDetails": "Ver detalhes",
+        "close": "Fechar"
+      },
+      "export": {
+        "title": "Exportar histórico",
+        "description": "O arquivo CSV será gerado de forma assíncrona. Você receberá um link para download em breve.",
+        "submit": "Solicitar exportação",
+        "processing": "Gerando exportação…",
+        "ready": "Exportação pronta!",
+        "download": "Baixar CSV",
+        "failed": "Falha na exportação. Tente novamente.",
+        "expiresAt": "Link expira em {date}",
+        "columns": {
+          "previousState": "Estado anterior (JSON)",
+          "newState": "Estado atual (JSON)"
+        }
+      },
+      "severity": {
+        "info": "Informativo",
+        "warning": "Atenção",
+        "critical": "Crítico"
+      },
+      "pagination": "Mostrando {from}-{to} de {total} registros"
     }
   },
   "error": {

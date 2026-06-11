@@ -29,6 +29,7 @@ import { ObservabilityModule } from './observability/observability.module';
 import { ContentModule } from './content/content.module';
 import { ReportsModule } from './reports/reports.module';
 import { SearchModule } from './search/search.module';
+import { AuditModule } from './audit/audit.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -75,6 +76,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     ContentModule,
     ReportsModule,
     SearchModule,
+    AuditModule,
   ],
 })
 export class AppModule implements NestModule {
