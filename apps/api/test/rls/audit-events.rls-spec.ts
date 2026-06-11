@@ -16,9 +16,13 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { generateId } from '@metanoia/types';
 import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
 
-// Fixed UUIDs that satisfy hex-only constraint for UUID columns
-const AUDIT_USER_A_ID = '01912345-6789-7000-8000-aaaaaaaaaaaa';
-const AUDIT_USER_B_ID = '01912345-6789-7000-8000-bbbbbbbbbbbb';
+// Per-run unique user IDs. audit_events is append-only (no DELETE policy), so the
+// afterAll cleanup is a no-op via the app role and rows survive across runs. In CI
+// this spec is executed twice against the same DB (general `turbo test` + the
+// dedicated RLS step), so fixed IDs would make the per-user counts accumulate
+// (3→6, 2→4). Fresh IDs per execution keep each run's counts deterministic.
+const AUDIT_USER_A_ID = generateId();
+const AUDIT_USER_B_ID = generateId();
 
 function makeClient(): PrismaClient {
   const connectionString = process.env['DATABASE_APP_URL'] ?? process.env['DATABASE_URL'];
