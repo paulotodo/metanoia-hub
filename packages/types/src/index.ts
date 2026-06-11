@@ -1,4 +1,12 @@
 export { PaginationSchema, type Pagination } from './pagination';
+export {
+  searchResultItemSchema,
+  type SearchResultItem,
+  searchResponseSchema,
+  type SearchResponse,
+  searchQuerySchema,
+  type SearchQuery,
+} from './search/search-result.schema';
 export { generateId } from './id';
 export {
   REPORTS_QUEUE_NAME,

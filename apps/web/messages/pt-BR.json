@@ -1083,5 +1083,11 @@
         "page": "Página {page} de {totalPages}"
       }
     }
+  },
+  "search": {
+    "placeholder": "Buscar aulas e trilhas...",
+    "emptyState": "Nenhuma aula encontrada para esta busca. Tente outras palavras.",
+    "draftBadge": "Rascunho",
+    "resultsCount": "{count} resultado(s) encontrado(s)"
   }
 }
