@@ -33,3 +33,4 @@ export {
   useTrailModules,
   useModuleLessons,
 } from './use-trail-structure';
+export { myTrailsKeys, useMyTrails } from './use-my-trails';

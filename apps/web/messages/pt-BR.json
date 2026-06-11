@@ -1110,5 +1110,22 @@
     "module": {
       "empty": "Nenhuma aula disponível neste módulo"
     }
+  },
+  "myTrails": {
+    "title": "Minhas Trilhas",
+    "empty": "Nenhuma trilha disponível ainda. Fale com o líder do seu grupo para começar sua jornada de discipulado.",
+    "error": "Não foi possível carregar suas trilhas. Verifique sua conexão e tente novamente.",
+    "allLoaded": "Você viu todas as suas trilhas.",
+    "status": {
+      "not_started": "Não Iniciada",
+      "in_progress": "Em Andamento",
+      "completed": "Concluída"
+    },
+    "modules": "módulos",
+    "module": "módulo",
+    "lessons": "aulas",
+    "lesson": "aula",
+    "lastActivity": "Última atividade",
+    "loadingMore": "Carregando mais trilhas..."
   }
 }

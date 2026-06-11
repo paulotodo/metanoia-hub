@@ -11,6 +11,7 @@ import { participantGroupsHandlers } from './participant-groups';
 import { superAdminTenantsHandlers } from './super-admin-tenants';
 import { usersHandlers } from './users';
 import { trailStructureHandlers } from './trail-structure';
+import { myTrailsHandlers } from './my-trails';
 
 export const handlers = [
   ...radarHandlers,
@@ -26,4 +27,5 @@ export const handlers = [
   ...superAdminTenantsHandlers,
   ...usersHandlers,
   ...trailStructureHandlers,
+  ...myTrailsHandlers,
 ];

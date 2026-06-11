@@ -25,6 +25,8 @@ import { PrerequisitesService } from './prerequisites/prerequisites.service';
 import { PublishingService } from './publishing/publishing.service';
 import { CatalogService } from './catalog/catalog.service';
 import { VersionService } from './versioning/version.service';
+import { MyTrailsController } from './my-trails/my-trails.controller';
+import { MyTrailsService } from './my-trails/my-trails.service';
 
 @Module({
   imports: [
@@ -44,6 +46,7 @@ import { VersionService } from './versioning/version.service';
     PrerequisitesController,
     PublishingController,
     CatalogController,
+    MyTrailsController,
   ],
   providers: [
     ContentRepository,
@@ -59,6 +62,7 @@ import { VersionService } from './versioning/version.service';
     PublishingService,
     CatalogService,
     VersionService,
+    MyTrailsService,
   ],
   exports: [ContentService, UploadService, ProgressService, CompletionRulesService, AccessControlService, PublishingService, CatalogService, VersionService],
 })
