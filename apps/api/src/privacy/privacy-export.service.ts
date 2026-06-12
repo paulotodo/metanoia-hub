@@ -259,7 +259,7 @@ export class PrivacyExportService implements OnModuleInit {
 
     // Stub: enqueue notification
     try {
-      const notifQueue = this.bullMqService.createQueue('queue:notifications');
+      const notifQueue = this.bullMqService.createQueue('notifications');
       await notifQueue.add('privacy-export-ready', { userId, format });
     } catch {
       this.logger.warn('Failed to enqueue privacy-export-ready notification (non-fatal)');

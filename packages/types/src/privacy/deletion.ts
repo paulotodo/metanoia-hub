@@ -12,7 +12,7 @@ import { z } from 'zod';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-export const PRIVACY_DELETION_QUEUE_NAME = 'queue:privacy-deletion';
+export const PRIVACY_DELETION_QUEUE_NAME = 'privacy-deletion';
 export const PRIVACY_DELETION_JOB_KEY_PREFIX = 'cache:privacy:deletion-job';
 export const PRIVACY_DELETION_GRACE_DAYS = 7;
 export const PRIVACY_DELETION_DEADLINE_DAYS = 30;

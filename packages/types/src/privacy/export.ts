@@ -11,7 +11,7 @@ import { z } from 'zod';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-export const PRIVACY_EXPORT_QUEUE_NAME = 'queue:privacy-export';
+export const PRIVACY_EXPORT_QUEUE_NAME = 'privacy-export';
 export const PRIVACY_EXPORT_JOB_KEY_PREFIX = 'cache:privacy:export-job';
 export const PRIVACY_EXPORT_JOB_TTL_SECONDS = 172800; // 48h
 export const PRIVACY_EXPORT_SIGNED_URL_SECONDS = 172800; // 48h
