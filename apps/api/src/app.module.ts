@@ -25,6 +25,7 @@ import { AdminInvitesModule } from './admin-invites/admin-invites.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { UsersModule } from './users/users.module';
 import { MarketingModule } from './marketing/marketing.module';
+import { PrivacyModule } from './privacy/privacy.module';
 import { ObservabilityModule } from './observability/observability.module';
 import { ContentModule } from './content/content.module';
 import { ReportsModule } from './reports/reports.module';
@@ -72,6 +73,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     OnboardingModule,
     UsersModule,
     MarketingModule,
+    PrivacyModule,
     ObservabilityModule,
     ContentModule,
     ReportsModule,

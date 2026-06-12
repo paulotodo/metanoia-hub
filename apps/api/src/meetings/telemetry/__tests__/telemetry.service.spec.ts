@@ -1,3 +1,6 @@
+/* eslint-disable @metanoia/no-surveillance-terms --
+ * Test descriptions reference the canonical `focus_monitoring` ConsentType for
+ * the FR-11 gate. No user-facing surveillance vocabulary is introduced. */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { generateId } from "@metanoia/types";
 import { requestContext } from "../../../common/context/request-context";
@@ -18,13 +21,17 @@ function buildMocks() {
     hgetall: vi.fn().mockResolvedValue({}),
     hincrby: vi.fn().mockResolvedValue(1),
   };
+  const consentRepo = {
+    hasWithdrawn: vi.fn().mockResolvedValue(false),
+  };
   const service = new TelemetryService(
     meetings as never,
     presence as never,
     telemetry as never,
     redis as never,
+    consentRepo as never,
   );
-  return { service, meetings, presence, telemetry, redis };
+  return { service, meetings, presence, telemetry, redis, consentRepo };
 }
 
 async function withCtx<T>(fn: () => Promise<T>): Promise<T> {
@@ -186,6 +193,26 @@ describe("TelemetryService", () => {
         (c) => c[1] === "visible",
       );
       expect(visibleCall).toBeUndefined();
+    });
+
+    it("FR-11: silently returns without recording when user has withdrawn focus_monitoring consent", async () => {
+      env.consentRepo.hasWithdrawn.mockResolvedValue(true);
+
+      await env.service.recordFocusHeartbeat(TENANT, MEETING, USER_1, true);
+
+      expect(env.redis.hincrby).not.toHaveBeenCalled();
+    });
+
+    it("FR-11: records heartbeat normally when focus_monitoring consent is active (not withdrawn)", async () => {
+      env.consentRepo.hasWithdrawn.mockResolvedValue(false);
+
+      await env.service.recordFocusHeartbeat(TENANT, MEETING, USER_1, true);
+
+      expect(env.redis.hincrby).toHaveBeenCalledWith(
+        `rt:meeting:${TENANT}:${MEETING}:focus:${USER_1}`,
+        "total",
+        30,
+      );
     });
   });
 });

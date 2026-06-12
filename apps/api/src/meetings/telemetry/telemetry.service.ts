@@ -3,6 +3,7 @@ import { uuidv7 } from 'uuidv7';
 import { computeTelemetry, type CameraSegment } from '@metanoia/types';
 import type { MeetingTelemetry } from '@prisma/client';
 import { RedisService } from '../../redis/redis.service';
+import { ConsentRepository } from '../../consent/consent.repository';
 import { MeetingsRepository } from '../meetings.repository';
 import { PresenceService } from '../presence/presence.service';
 import { TelemetryRepository } from './telemetry.repository';
@@ -25,6 +26,7 @@ export class TelemetryService {
     private readonly presence: PresenceService,
     private readonly telemetry: TelemetryRepository,
     private readonly redis: RedisService,
+    private readonly consentRepo: ConsentRepository,
   ) {}
 
   async flushTelemetry(
@@ -131,6 +133,10 @@ export class TelemetryService {
    * `total` always and `visible` only when `visible: true`. The increment
    * step is constant 30s (the contract); a sliding-window approach is out of
    * scope for MVP.
+   *
+   * FR-11 gate: if the user has withdrawn focus_monitoring consent, silently
+   * returns without recording any heartbeat data for that user. Other
+   * participants in the same meeting are unaffected.
    */
   async recordFocusHeartbeat(
     tenantId: string,
@@ -139,6 +145,12 @@ export class TelemetryService {
     visible: boolean,
     stepSeconds = 30,
   ): Promise<void> {
+    // FR-11: gate — do not collect focus data for users who withdrew consent
+    const withdrawn = await this.consentRepo.hasWithdrawn(userId, 'focus_monitoring');
+    if (withdrawn) {
+      return;
+    }
+
     const key = `rt:meeting:${tenantId}:${meetingId}:focus:${userId}`;
     await this.redis.hincrby(key, 'total', stepSeconds);
     if (visible) {

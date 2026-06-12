@@ -1,0 +1,139 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ConsentHistoryItemSchema snapshot > parses accepted mandatory item 1`] = `
+{
+  "acceptedAt": "2026-01-01T10:00:00.000Z",
+  "acceptedVersion": "1.0",
+  "consentType": "terms_of_service",
+  "isMandatory": true,
+  "status": "accepted",
+  "withdrawnAt": null,
+}
+`;
+
+exports[`ConsentHistoryItemSchema snapshot > parses pending item (no consent yet) 1`] = `
+{
+  "acceptedAt": null,
+  "acceptedVersion": null,
+  "consentType": "focus_monitoring",
+  "isMandatory": false,
+  "status": "pending",
+  "withdrawnAt": null,
+}
+`;
+
+exports[`ConsentHistoryItemSchema snapshot > parses withdrawn optional item 1`] = `
+{
+  "acceptedAt": "2026-01-01T10:00:00.000Z",
+  "acceptedVersion": "1.0",
+  "consentType": "focus_monitoring",
+  "isMandatory": false,
+  "status": "withdrawn",
+  "withdrawnAt": "2026-06-11T08:00:00.000Z",
+}
+`;
+
+exports[`ConsentRecordSchema snapshot > parses a withdrawal record with null tenantId 1`] = `
+{
+  "action": "withdrawn",
+  "consentType": "focus_monitoring",
+  "id": "0197a000-0000-7000-8000-000000000011",
+  "tenantId": null,
+  "timestamp": "2026-06-11T09:00:00.000Z",
+  "userId": "0197a000-0000-7000-8000-000000000021",
+}
+`;
+
+exports[`ConsentRecordSchema snapshot > parses a withdrawal record with tenantId 1`] = `
+{
+  "action": "withdrawn",
+  "consentType": "focus_monitoring",
+  "id": "0197a000-0000-7000-8000-000000000010",
+  "tenantId": "0197a000-0000-7000-8000-000000000030",
+  "timestamp": "2026-06-11T08:00:00.000Z",
+  "userId": "0197a000-0000-7000-8000-000000000020",
+}
+`;
+
+exports[`DataProcessingRegistryItemSchema snapshot > accepts null thirdPartySharing 1`] = `
+{
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "dataCategories": [
+    "pastoral_notes",
+    "care_actions",
+  ],
+  "id": "0197a000-0000-7000-8000-000000000002",
+  "legalBasis": "legitimate_interest",
+  "operationName": "Notas Pastorais",
+  "purpose": "Registro de acompanhamento pastoral pelo líder.",
+  "retentionPeriod": "5 years",
+  "thirdPartySharing": null,
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+}
+`;
+
+exports[`DataProcessingRegistryItemSchema snapshot > parses a valid registry item 1`] = `
+{
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "dataCategories": [
+    "email",
+    "hashed_password",
+    "session_token",
+  ],
+  "id": "0197a000-0000-7000-8000-000000000001",
+  "legalBasis": "contract",
+  "operationName": "Autenticação e Controle de Acesso",
+  "purpose": "Verificar identidade do usuário e controlar acesso à plataforma.",
+  "retentionPeriod": "90 days after account deletion",
+  "thirdPartySharing": "Keycloak (identity provider, same data controller)",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+}
+`;
+
+exports[`Story 2-8 schemas not broken by 9-4 additions > AcceptConsentInputSchema parses valid input 1`] = `
+{
+  "documentType": "terms_of_service",
+  "version": "1.0",
+}
+`;
+
+exports[`Story 2-8 schemas not broken by 9-4 additions > AcceptConsentResponseSchema parses valid response 1`] = `
+{
+  "data": {
+    "acceptedAt": "2026-06-11T08:00:00.000Z",
+    "consentId": "0197a000-0000-7000-8000-000000000050",
+    "documentType": "privacy_policy",
+    "version": "1.0",
+  },
+}
+`;
+
+exports[`Story 2-8 schemas not broken by 9-4 additions > ConsentStatusResponseSchema parses valid response 1`] = `
+{
+  "data": {
+    "allUpToDate": true,
+    "documents": [
+      {
+        "acceptedAt": "2026-01-01T00:00:00.000Z",
+        "acceptedVersion": "1.0",
+        "currentVersion": "1.0",
+        "documentType": "terms_of_service",
+        "isUpToDate": true,
+      },
+    ],
+  },
+}
+`;
+
+exports[`WithdrawConsentInputSchema snapshot > parses empty body (strict) 1`] = `{}`;
+
+exports[`WithdrawConsentResponseSchema snapshot > parses a withdrawal response 1`] = `
+{
+  "data": {
+    "action": "withdrawn",
+    "consentType": "focus_monitoring",
+    "recordId": "0197a000-0000-7000-8000-000000000040",
+    "withdrawnAt": "2026-06-11T08:00:00.000Z",
+  },
+}
+`;

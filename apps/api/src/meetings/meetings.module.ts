@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
+import { ConsentModule } from '../consent/consent.module';
 import { LiveKitWebhookController } from './webhooks/livekit-webhook.controller';
 import { MeetingEventService } from './events/meeting-event.service';
 import { MeetingEventWorker } from './events/meeting-event.worker';
@@ -28,7 +29,7 @@ import { PresenceRepository } from './presence/presence.repository';
 import { PresenceCheckpointService } from './presence/presence-checkpoint.service';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, ConsentModule],
   controllers: [
     LiveKitWebhookController,
     MeetingSseController,
