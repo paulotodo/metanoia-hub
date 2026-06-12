@@ -32,10 +32,15 @@ async function ensureMeeting(
        VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, 'rls-reflections-group', 'wed', '19:30', 'weekly', NOW())
        ON CONFLICT (id) DO NOTHING`,
     );
+    // A non-null, spec-specific `topic` keeps these meetings out of the broad
+    // `DELETE FROM meetings WHERE topic IS NULL AND scheduled_for = ...` cleanup
+    // in meeting-attendance.rls-spec.ts, which otherwise races against this
+    // suite (same scheduled_for + null topic) and intermittently wipes the FK
+    // parents mid-test.
     await tx.$executeRawUnsafe(
-      `INSERT INTO meetings (id, tenant_id, group_id, scheduled_for, status, updated_at)
+      `INSERT INTO meetings (id, tenant_id, group_id, scheduled_for, status, topic, updated_at)
        VALUES ('${meetingId}'::uuid, '${tenantId}'::uuid, '${groupId}'::uuid,
-               '2026-04-20T19:30:00Z'::timestamptz, 'scheduled', NOW())
+               '2026-04-20T19:30:00Z'::timestamptz, 'scheduled', 'rls-reflections-meeting', NOW())
        ON CONFLICT (id) DO NOTHING`,
     );
   });
