@@ -7,7 +7,7 @@
  * - FR-03: multi-tenant export contains tenants[] with 2+ entries
  * - NFR-P1: benchmark with 5 tenants × ~5 records each < 30s
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { PrivacyExportService } from '../privacy-export.service';
 import type { PrivacyExportJobPayload } from '@metanoia/types';
 
