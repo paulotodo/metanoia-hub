@@ -21,6 +21,7 @@ import {
   type AuditAction,
   type AuditEventListResponse,
   type AuditEventsQuery,
+  type AuditExportData,
   type AuditExportJobPayload,
   type AuditExportJobStatus,
   generateId,
@@ -305,6 +306,28 @@ export class AuditService implements OnModuleInit {
         total,
         totalPages: Math.ceil(total / perPage),
       },
+    };
+  }
+
+  /**
+   * Export audit events for a user within a tenant.
+   * Privileged — uses prisma.client directly (no RLS). Never throws.
+   * userId is nullable on AuditEvent — filter with { equals: userId }.
+   */
+  async exportUserData(userId: string, tenantId: string): Promise<AuditExportData> {
+    const events = await this.prisma.client.auditEvent.findMany({
+      where: { userId: { equals: userId }, tenantId },
+      select: { action: true, resource: true, resourceId: true, timestamp: true },
+      orderBy: { timestamp: 'asc' },
+    });
+
+    return {
+      events: events.map((e) => ({
+        action: e.action,
+        resource: e.resource,
+        resourceId: e.resourceId,
+        timestamp: e.timestamp.toISOString(),
+      })),
     };
   }
 }

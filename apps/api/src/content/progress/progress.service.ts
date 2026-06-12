@@ -4,6 +4,7 @@ import {
   LESSON_PROGRESS_QUEUE_NAME,
   type LessonProgressJobPayload,
   type TrailProgressDetailResponse,
+  type TrailsExportData,
   type ResumeProgressResponse,
   type LessonStatus,
 } from '@metanoia/types';
@@ -176,5 +177,56 @@ export class ProgressService implements OnModuleInit {
         },
       };
     });
+  }
+
+  /**
+   * Export trail and lesson progress data for a user within a tenant.
+   * Privileged — uses prisma.client directly (no RLS). Never throws.
+   */
+  async exportUserData(userId: string, tenantId: string): Promise<TrailsExportData> {
+    const trailProgressRows = await this.prisma.client.trailProgress.findMany({
+      where: { userId, tenantId },
+    });
+
+    // Fetch trail names in bulk
+    const trailIds = [...new Set(trailProgressRows.map((r) => r.trailId))];
+    const trails = trailIds.length
+      ? await this.prisma.client.trail.findMany({
+          where: { id: { in: trailIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const trailMap = new Map(trails.map((t) => [t.id, t.name]));
+
+    const lessonProgressRows = await this.prisma.client.lessonProgress.findMany({
+      where: { userId, tenantId },
+    });
+
+    // Fetch lesson titles in bulk
+    const lessonIds = [...new Set(lessonProgressRows.map((r) => r.lessonId))];
+    const lessons = lessonIds.length
+      ? await this.prisma.client.lesson.findMany({
+          where: { id: { in: lessonIds } },
+          select: { id: true, title: true },
+        })
+      : [];
+    const lessonMap = new Map(lessons.map((l) => [l.id, l.title]));
+
+    return {
+      trailProgress: trailProgressRows.map((r) => ({
+        trailId: r.trailId,
+        trailName: trailMap.get(r.trailId) ?? '',
+        progressPercent: r.progressPercent,
+        completedAt: r.completedAt?.toISOString() ?? null,
+        updatedAt: r.updatedAt.toISOString(),
+      })),
+      lessonProgress: lessonProgressRows.map((r) => ({
+        lessonId: r.lessonId,
+        lessonName: lessonMap.get(r.lessonId) ?? '',
+        status: r.status.toString(),
+        completedAt: r.completedAt?.toISOString() ?? null,
+        updatedAt: r.updatedAt.toISOString(),
+      })),
+    };
   }
 }

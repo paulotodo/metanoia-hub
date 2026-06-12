@@ -9,6 +9,7 @@ import {
   type AcceptConsentInput,
   type AcceptConsentResponse,
   type ConsentDocumentStatus,
+  type ConsentExportData,
   type ConsentHistoryItem,
   type ConsentHistoryResponse,
   type ConsentStatusResponse,
@@ -210,6 +211,29 @@ export class ConsentService {
         version: versionToRecord,
         acceptedAt: created.acceptedAt.toISOString(),
       },
+    };
+  }
+
+  /**
+   * Export consent data for a user.
+   * Privileged — uses ConsentRepository which calls prisma.client directly. Never throws.
+   */
+  async exportConsentData(userId: string, tenantId: string): Promise<ConsentExportData> {
+    const [acceptances, withdrawals] = await Promise.all([
+      this.repo.findAllAcceptancesByUser(userId),
+      this.repo.findWithdrawalsByUser(userId, tenantId),
+    ]);
+
+    return {
+      acceptances: acceptances.map((a) => ({
+        documentType: a.documentType,
+        version: a.version,
+        acceptedAt: a.acceptedAt.toISOString(),
+      })),
+      withdrawals: withdrawals.map((w) => ({
+        consentType: w.consentType,
+        timestamp: w.timestamp.toISOString(),
+      })),
     };
   }
 }

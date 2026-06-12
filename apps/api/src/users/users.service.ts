@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { OnboardingCompleteResponse } from '@metanoia/types';
+import type { OnboardingCompleteResponse, UserExportData } from '@metanoia/types';
 import { PrismaService } from '../prisma/prisma.service';
 import { getRequestContext } from '../common/context/request-context';
 
@@ -39,6 +39,50 @@ export class UsersService {
     return {
       userId: user.id,
       onboardingCompletedAt: (user.onboardingCompletedAt ?? now).toISOString(),
+    };
+  }
+
+  /**
+   * Export all personal data for a given user across all tenants.
+   * Privileged context — runs without RLS (worker mode). Never throws.
+   * CL-02/dec-019: excludes tenantId from profile (internal metadata).
+   */
+  async exportUserData(userId: string, _tenantId: string): Promise<UserExportData> {
+    const user = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        status: true,
+        onboardingCompletedAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    const userTenants = await this.prisma.client.userTenant.findMany({
+      where: { userId },
+      select: { tenantId: true, role: true, createdAt: true },
+    });
+
+    return {
+      profile: user
+        ? {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            status: user.status,
+            onboardingCompletedAt: user.onboardingCompletedAt?.toISOString() ?? null,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
+          }
+        : null,
+      tenants: userTenants.map((ut) => ({
+        tenantId: ut.tenantId,
+        role: ut.role,
+        joinedAt: ut.createdAt.toISOString(),
+      })),
     };
   }
 

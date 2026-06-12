@@ -816,3 +816,26 @@ model TenantContentConfig {
 
   @@map("tenant_content_config")
 }
+
+/// PrivacyExportJob — tracks async data export requests (Story 9-1 / LGPD Art. 20)
+/// Worker mode: privileged (no RLS on queries), RLS enabled for HTTP polling.
+/// allTenantIds: captured at request time to avoid cross-tenant data leakage in worker.
+model PrivacyExportJob {
+  id            String    @id @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  format        String    @default("json")
+  status        String    @default("accepted")
+  allTenantIds  String[]  @map("all_tenant_ids") @db.Uuid
+  objectKey     String?   @map("object_key")
+  signedUrl     String?   @map("signed_url")
+  expiresAt     DateTime? @map("expires_at") @db.Timestamptz
+  failureReason String?   @map("failure_reason")
+  requestedAt   DateTime  @map("requested_at") @db.Timestamptz
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId], map: "idx_privacy_export_jobs_user_id")
+  @@index([tenantId, userId], map: "idx_privacy_export_jobs_tenant_user")
+  @@map("privacy_export_jobs")
+}

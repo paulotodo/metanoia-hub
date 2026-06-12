@@ -25,31 +25,31 @@
 
 Ref: spec §6.4, data-model.md §Schemas Zod, contracts/api.md
 
-- [ ] 1.1.1 Criar `packages/types/src/privacy/export.ts` com todos os schemas Zod: `PrivacyExportRequestSchema`, `PrivacyExportJobResponseSchema`, `PrivacyExportStatusSchema`, `UserProfileExportSchema`, `UserExportDataSchema`, `GroupsExportDataSchema`, `MeetingsExportDataSchema`, `TrailsExportDataSchema`, `PastoralExportDataSchema`, `ConsentExportDataSchema`, `AuditExportDataSchema`, `FullExportPayloadSchema`
-- [ ] 1.1.2 Adicionar constantes ao mesmo arquivo: `PRIVACY_EXPORT_QUEUE_NAME = 'queue:privacy-export'`, `PRIVACY_EXPORT_JOB_KEY_PREFIX = 'cache:privacy:export-job'`, `PRIVACY_EXPORT_JOB_TTL_SECONDS = 172800`, `PRIVACY_EXPORT_SIGNED_URL_SECONDS = 172800`, `PRIVACY_EXPORT_ESTIMATED_HOURS = 24`
-- [ ] 1.1.3 Re-exportar todos os schemas e constantes em `packages/types/src/index.ts` (ou `packages/types/src/privacy/index.ts` + barrel)
-- [ ] 1.1.4 Escrever snapshot tests para todos os schemas Zod em `packages/types/src/privacy/__tests__/export.snapshot.spec.ts` (gate contra breaking changes silenciosos)
-- [ ] 1.1.5 Verificar paridade exata de nomes de campo entre `packages/types` e `contracts/api.md` (camelCase em todos)
+- [x] 1.1.1 Criar `packages/types/src/privacy/export.ts` com todos os schemas Zod: `PrivacyExportRequestSchema`, `PrivacyExportJobResponseSchema`, `PrivacyExportStatusSchema`, `UserProfileExportSchema`, `UserExportDataSchema`, `GroupsExportDataSchema`, `MeetingsExportDataSchema`, `TrailsExportDataSchema`, `PastoralExportDataSchema`, `ConsentExportDataSchema`, `AuditExportDataSchema`, `FullExportPayloadSchema`
+- [x] 1.1.2 Adicionar constantes ao mesmo arquivo: `PRIVACY_EXPORT_QUEUE_NAME = 'queue:privacy-export'`, `PRIVACY_EXPORT_JOB_KEY_PREFIX = 'cache:privacy:export-job'`, `PRIVACY_EXPORT_JOB_TTL_SECONDS = 172800`, `PRIVACY_EXPORT_SIGNED_URL_SECONDS = 172800`, `PRIVACY_EXPORT_ESTIMATED_HOURS = 24`
+- [x] 1.1.3 Re-exportar todos os schemas e constantes em `packages/types/src/index.ts` (ou `packages/types/src/privacy/index.ts` + barrel)
+- [x] 1.1.4 Escrever snapshot tests para todos os schemas Zod em `packages/types/src/privacy/__tests__/export.snapshot.spec.ts` (gate contra breaking changes silenciosos)
+- [x] 1.1.5 Verificar paridade exata de nomes de campo entre `packages/types` e `contracts/api.md` (camelCase em todos)
 
 ### 1.2 Migration e Schema Prisma `[C]`
 
 Ref: data-model.md §Entity PrivacyExportJob, spec §AC9
 
-- [ ] 1.2.1 Adicionar model `PrivacyExportJob` ao `apps/api/prisma/schema.prisma` com todos os campos: `id`, `tenantId`, `userId`, `format`, `status` (default `'accepted'`), `allTenantIds` (UUID[]), `objectKey` (nullable), `signedUrl` (nullable), `expiresAt` (nullable), `failureReason` (nullable), `requestedAt`, `completedAt` (nullable), `createdAt` (default `NOW()`)
-- [ ] 1.2.2 Adicionar `@@map("privacy_export_jobs")` e todos os `@map()` para snake_case no model
-- [ ] 1.2.3 Gerar migration `apps/api/prisma/migrations/<ts>_add_privacy_export_jobs/migration.sql` com DDL completo (tabela + índices)
-- [ ] 1.2.4 Adicionar índices na migration: `idx_privacy_export_jobs_user_id (user_id)`, `idx_privacy_export_jobs_tenant_user (tenant_id, user_id)`, `idx_privacy_export_jobs_status (status) WHERE status IN ('accepted', 'processing')`
-- [ ] 1.2.5 Adicionar RLS policy na migration: `ENABLE ROW LEVEL SECURITY` + `CREATE POLICY privacy_export_jobs_tenant USING (NULLIF(current_setting('app.current_tenant_id', TRUE), '')::UUID = tenant_id)`
-- [ ] 1.2.6 Escrever RLS isolation spec em `apps/api/test/rls/privacy-export-jobs.rls.spec.ts` — garantir que tenant A não vê jobs do tenant B (AC9)
+- [x] 1.2.1 Adicionar model `PrivacyExportJob` ao `apps/api/prisma/schema.prisma` com todos os campos: `id`, `tenantId`, `userId`, `format`, `status` (default `'accepted'`), `allTenantIds` (UUID[]), `objectKey` (nullable), `signedUrl` (nullable), `expiresAt` (nullable), `failureReason` (nullable), `requestedAt`, `completedAt` (nullable), `createdAt` (default `NOW()`)
+- [x] 1.2.2 Adicionar `@@map("privacy_export_jobs")` e todos os `@map()` para snake_case no model
+- [x] 1.2.3 Gerar migration `apps/api/prisma/migrations/<ts>_add_privacy_export_jobs/migration.sql` com DDL completo (tabela + índices)
+- [x] 1.2.4 Adicionar índices na migration: `idx_privacy_export_jobs_user_id (user_id)`, `idx_privacy_export_jobs_tenant_user (tenant_id, user_id)`, `idx_privacy_export_jobs_status (status) WHERE status IN ('accepted', 'processing')`
+- [x] 1.2.5 Adicionar RLS policy na migration: `ENABLE ROW LEVEL SECURITY` + `CREATE POLICY privacy_export_jobs_tenant USING (NULLIF(current_setting('app.current_tenant_id', TRUE), '')::UUID = tenant_id)`
+- [x] 1.2.6 Escrever RLS isolation spec em `apps/api/test/rls/privacy-export-jobs.rls.spec.ts` — garantir que tenant A não vê jobs do tenant B (AC9)
 
 ### 1.3 Instalar pdfkit `[A]`
 
 Ref: spec §CL-03, plan.md §Riscos
 
-- [ ] 1.3.1 Adicionar `pdfkit@0.15.x` em dependencies de `apps/api/package.json`
-- [ ] 1.3.2 Adicionar `@types/pdfkit` em devDependencies de `apps/api/package.json`
-- [ ] 1.3.3 Executar `pnpm install` e verificar que build `pnpm build` em `apps/api` continua verde
-- [ ] 1.3.4 Verificar que pdfkit não exige fontes nativas no ambiente Docker/CI (usar embedding de fonte padrão se necessário)
+- [x] 1.3.1 Adicionar `pdfkit@0.15.x` em dependencies de `apps/api/package.json`
+- [x] 1.3.2 Adicionar `@types/pdfkit` em devDependencies de `apps/api/package.json`
+- [x] 1.3.3 Executar `pnpm install` e verificar que build `pnpm build` em `apps/api` continua verde
+- [x] 1.3.4 Verificar que pdfkit não exige fontes nativas no ambiente Docker/CI (usar embedding de fonte padrão se necessário)
 
 ---
 
@@ -61,69 +61,69 @@ Ref: spec §CL-03, plan.md §Riscos
 
 Ref: spec §2.5, data-model.md §UserExportDataSchema, plan.md §Fase 2 passo 5
 
-- [ ] 2.1.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<UserExportData>` em `apps/api/src/users/users.service.ts`
-- [ ] 2.1.2 Implementar query de profile: `prisma.client.user.findUnique({ where: { id: userId }, select: { id, email, name, status, onboardingCompletedAt, createdAt, updatedAt } })` — EXCLUIR `tenantId` (metadado interno, dec-019/CL-02)
-- [ ] 2.1.3 Implementar query de tenants do usuário: `prisma.client.userTenant.findMany({ where: { userId }, select: { tenantId, role, createdAt } })` — mapear `createdAt` como `joinedAt`
-- [ ] 2.1.4 Mapear datas com `.toISOString()` e retornar `{ profile: UserProfileExport | null, tenants: [...] }`
+- [x] 2.1.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<UserExportData>` em `apps/api/src/users/users.service.ts`
+- [x] 2.1.2 Implementar query de profile: `prisma.client.user.findUnique({ where: { id: userId }, select: { id, email, name, status, onboardingCompletedAt, createdAt, updatedAt } })` — EXCLUIR `tenantId` (metadado interno, dec-019/CL-02)
+- [x] 2.1.3 Implementar query de tenants do usuário: `prisma.client.userTenant.findMany({ where: { userId }, select: { tenantId, role, createdAt } })` — mapear `createdAt` como `joinedAt`
+- [x] 2.1.4 Mapear datas com `.toISOString()` e retornar `{ profile: UserProfileExport | null, tenants: [...] }`
 - [ ] 2.1.5 Escrever unit tests em `apps/api/src/users/__tests__/users.export.spec.ts` — cobrir: usuário sem dados, dados completos, data mapping ISO 8601
 
 ### 2.2 Groups: exportUserData `[A]`
 
 Ref: spec §2.5, data-model.md §GroupsExportDataSchema; path real: `apps/api/src/group-members/group-members.service.ts`
 
-- [ ] 2.2.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<GroupsExportData>` em `apps/api/src/group-members/group-members.service.ts`
-- [ ] 2.2.2 Implementar query: `prisma.client.groupMember.findMany({ where: { userId, tenantId }, include: { group: { select: { name: true } } } })` — mapear `groupName` do join
-- [ ] 2.2.3 Retornar `{ memberships: Array<{ groupId, groupName, role, joinedAt }> }` com datas ISO 8601
+- [x] 2.2.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<GroupsExportData>` em `apps/api/src/group-members/group-members.service.ts`
+- [x] 2.2.2 Implementar query: `prisma.client.groupMember.findMany({ where: { userId, tenantId }, include: { group: { select: { name: true } } } })` — mapear `groupName` do join
+- [x] 2.2.3 Retornar `{ memberships: Array<{ groupId, groupName, role, joinedAt }> }` com datas ISO 8601
 - [ ] 2.2.4 Escrever unit tests em `apps/api/src/group-members/__tests__/group-members.export.spec.ts`
 
 ### 2.3 Meetings: exportUserData `[A]`
 
 Ref: spec §2.5, data-model.md §MeetingsExportDataSchema; modelos: `MeetingAttendance` + `MeetingParticipantRecord` (userId nullable — filtrar `userId: { equals: userId }`)
 
-- [ ] 2.3.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<MeetingsExportData>` em `apps/api/src/meetings/meetings.service.ts`
-- [ ] 2.3.2 Implementar query de attendance: `prisma.client.meetingAttendance.findMany({ where: { userId, tenantId }, include: { meeting: { select: { title: true } } } })` — mapear `title` do join, `joinTime`/`leaveTime` como ISO 8601, `presenceType`
-- [ ] 2.3.3 Implementar query de participantRecords: `prisma.client.meetingParticipantRecord.findMany({ where: { userId: { equals: userId }, tenantId } })` — `userId` é nullable no model, usar `{ equals: userId }`
-- [ ] 2.3.4 Retornar `{ attendance: [...], participantRecords: [...] }` com datas ISO 8601
+- [x] 2.3.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<MeetingsExportData>` em `apps/api/src/meetings/meetings.service.ts`
+- [x] 2.3.2 Implementar query de attendance: `prisma.client.meetingAttendance.findMany({ where: { userId, tenantId } })` — busca títulos em bulk via meetingMap
+- [x] 2.3.3 Implementar query de participantRecords: `prisma.client.meetingParticipantRecord.findMany({ where: { userId: { equals: userId }, tenantId } })` — `userId` é nullable no model, usar `{ equals: userId }`
+- [x] 2.3.4 Retornar `{ attendance: [...], participantRecords: [...] }` com datas ISO 8601
 - [ ] 2.3.5 Escrever unit tests em `apps/api/src/meetings/__tests__/meetings.export.spec.ts` — cobrir o caso `userId` nullable em `participantRecords`
 
 ### 2.4 Trails: exportUserData `[A]`
 
 Ref: spec §2.5, data-model.md §TrailsExportDataSchema; paths reais: `TrailProgress` + `LessonProgress` (ambos têm `userId`, `tenantId`). Service owner: `apps/api/src/content/progress/progress.service.ts`
 
-- [ ] 2.4.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<TrailsExportData>` em `apps/api/src/content/progress/progress.service.ts`
-- [ ] 2.4.2 Implementar query de trailProgress: `prisma.client.trailProgress.findMany({ where: { userId, tenantId }, include: { trail: { select: { name: true } } } })` — mapear `trailName`, `progressPercent`, `completedAt`
-- [ ] 2.4.3 Implementar query de lessonProgress: `prisma.client.lessonProgress.findMany({ where: { userId, tenantId }, include: { lesson: { select: { title: true } } } })` — mapear `lessonName` (campo `title`), `status.toString()`, `completedAt`
-- [ ] 2.4.4 Retornar `{ trailProgress: [...], lessonProgress: [...] }` com datas ISO 8601 nullable
+- [x] 2.4.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<TrailsExportData>` em `apps/api/src/content/progress/progress.service.ts`
+- [x] 2.4.2 Implementar query de trailProgress: `prisma.client.trailProgress.findMany({ where: { userId, tenantId } })` — busca trail names em bulk via trailMap
+- [x] 2.4.3 Implementar query de lessonProgress: `prisma.client.lessonProgress.findMany({ where: { userId, tenantId }, include: { lesson: { select: { title: true } } } })` — mapear `lessonName` (campo `title`), `status.toString()`, `completedAt`
+- [x] 2.4.4 Retornar `{ trailProgress: [...], lessonProgress: [...] }` com datas ISO 8601 nullable
 - [ ] 2.4.5 Escrever unit tests em `apps/api/src/content/progress/__tests__/progress.export.spec.ts`
 
 ### 2.5 Pastoral: exportUserData `[C]`
 
 Ref: spec §2.5 + §CL-04, data-model.md §PastoralExportDataSchema; campo-chave: `participantId` (não `userId`) em `PastoralAlert` e `PastoralNote`
 
-- [ ] 2.5.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<PastoralExportData>` em `apps/api/src/pastoral/pastoral.service.ts`
-- [ ] 2.5.2 Implementar query de alertsAboutMe: `prisma.client.pastoralAlert.findMany({ where: { participantId: userId, tenantId }, select: { id, signalType, createdAt } })` — atenção: campo é `participantId`, não `userId`
-- [ ] 2.5.3 Implementar query de notesAboutMe: `prisma.client.pastoralNote.findMany({ where: { participantId: userId, tenantId }, select: { id, noteType, occurredAt, content } })`
-- [ ] 2.5.4 PastoralAction EXCLUÍDA do export (dec-021/CL-04 — fora do escopo especificado)
-- [ ] 2.5.5 Retornar `{ alertsAboutMe: [...], notesAboutMe: [...] }` com datas ISO 8601
+- [x] 2.5.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<PastoralExportData>` em `apps/api/src/pastoral/pastoral.service.ts`
+- [x] 2.5.2 Implementar query de alertsAboutMe: `prisma.client.pastoralAlert.findMany({ where: { participantId: userId, tenantId }, select: { id, signalType, createdAt } })` — atenção: campo é `participantId`, não `userId`
+- [x] 2.5.3 Implementar query de notesAboutMe: `prisma.client.pastoralNote.findMany({ where: { participantId: userId, tenantId }, select: { id, noteType, occurredAt, content } })`
+- [x] 2.5.4 PastoralAction EXCLUÍDA do export (dec-021/CL-04 — fora do escopo especificado)
+- [x] 2.5.5 Retornar `{ alertsAboutMe: [...], notesAboutMe: [...] }` com datas ISO 8601
 - [ ] 2.5.6 Escrever unit tests em `apps/api/src/pastoral/__tests__/pastoral.export.spec.ts` — testar campo `participantId`
 
 ### 2.6 Consent: exportConsentData `[C]`
 
 Ref: spec §2.2, data-model.md §ConsentExportDataSchema; usa `ConsentRepository` existente em `apps/api/src/consent/`
 
-- [ ] 2.6.1 Adicionar método `exportConsentData(userId: string, tenantId: string): Promise<ConsentExportData>` em `apps/api/src/consent/consent.service.ts`
-- [ ] 2.6.2 Injetar `ConsentRepository` (já existe) e chamar `findAllAcceptancesByUser(userId)` — mapear `documentType`, `acceptedAt` como ISO 8601
-- [ ] 2.6.3 Chamar `findWithdrawalsByUser(userId, tenantId)` — mapear `consentType`, `timestamp` como ISO 8601
-- [ ] 2.6.4 Retornar `{ acceptances: [...], withdrawals: [...] }`
+- [x] 2.6.1 Adicionar método `exportConsentData(userId: string, tenantId: string): Promise<ConsentExportData>` em `apps/api/src/consent/consent.service.ts`
+- [x] 2.6.2 Usar `ConsentRepository` existente: chamar `findAllAcceptancesByUser(userId)` — mapear `documentType`, `acceptedAt` como ISO 8601
+- [x] 2.6.3 Chamar `findWithdrawalsByUser(userId, tenantId)` — mapear `consentType`, `timestamp` como ISO 8601
+- [x] 2.6.4 Retornar `{ acceptances: [...], withdrawals: [...] }`
 - [ ] 2.6.5 Escrever unit tests em `apps/api/src/consent/__tests__/consent.export.spec.ts`
 
 ### 2.7 Audit: exportUserData `[C]`
 
 Ref: spec §2.5, data-model.md §AuditExportDataSchema; AuditEvent.userId pode ser nullable — usar `{ equals: userId }`
 
-- [ ] 2.7.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<AuditExportData>` em `apps/api/src/audit/audit.service.ts`
-- [ ] 2.7.2 Implementar query: `prisma.client.auditEvent.findMany({ where: { userId: { equals: userId }, tenantId }, select: { action, resource, resourceId, createdAt } })` — mapear `createdAt` como `timestamp`
-- [ ] 2.7.3 Retornar `{ events: Array<{ action, resource, resourceId: string | null, timestamp }> }`
+- [x] 2.7.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<AuditExportData>` em `apps/api/src/audit/audit.service.ts`
+- [x] 2.7.2 Implementar query: `prisma.client.auditEvent.findMany({ where: { userId: { equals: userId }, tenantId }, select: { action, resource, resourceId, timestamp } })` — mapear `timestamp` como ISO 8601
+- [x] 2.7.3 Retornar `{ events: Array<{ action, resource, resourceId: string | null, timestamp }> }`
 - [ ] 2.7.4 Escrever unit tests em `apps/api/src/audit/__tests__/audit.export.spec.ts` — cobrir `userId` nullable
 
 ---
@@ -136,67 +136,54 @@ Ref: spec §2.5, data-model.md §AuditExportDataSchema; AuditEvent.userId pode s
 
 Ref: spec §FR-01, §FR-02, §FR-04, plan.md §Fase 3, contracts/api.md
 
-- [ ] 3.1.1 Criar `apps/api/src/privacy/privacy-export.service.ts` com `@Injectable() PrivacyExportService`
-- [ ] 3.1.2 Implementar `createJob(userId: string, format: 'json'|'pdf', tenantId: string): Promise<CreateJobResult>`:
+- [x] 3.1.1 Criar `apps/api/src/privacy/privacy-export.service.ts` com `@Injectable() PrivacyExportService`
+- [x] 3.1.2 Implementar `createJob(userId: string, format: 'json'|'pdf', tenantId: string): Promise<PrivacyExportJobResponse>`:
   - Query `allTenantIds` via `prisma.client.userTenant.findMany({ where: { userId } })` (modo privilegiado, sem RLS)
   - Verificar job ativo: `findFirst({ where: { userId, tenantId, status: { in: ['accepted', 'processing'] } } })` — retornar 409 via `ConflictException` se existe
   - INSERT `privacy_export_jobs` com status `accepted`, `requestedAt = new Date()`
-  - `bullMqService.addJob(PRIVACY_EXPORT_QUEUE_NAME, 'export-personal-data', payload, { attempts: 3, backoff: { type: 'exponential', delay: 60_000 } })` — delay: 60s/5min/30min crescente (dec-020)
+  - `queue.add('export-personal-data', payload, { attempts: 3, backoff: { type: 'exponential', delay: 60_000 } })` — delay: 60s/5min/30min crescente (dec-020)
   - Gravar Redis `cache:privacy:export-job:<jobId>` = `{ jobId, status: 'accepted', signedUrl: null, expiresAt: null, failureReason: null }` com TTL 172800s
   - Retornar `{ jobId, status: 'accepted', estimatedCompletionHours: 24 }`
-- [ ] 3.1.3 Implementar `getJobStatus(jobId: string): Promise<PrivacyExportStatus>`:
+- [x] 3.1.3 Implementar `getJobStatus(jobId: string): Promise<PrivacyExportStatus>`:
   - Ler Redis `cache:privacy:export-job:<jobId>` — retornar 404 via `NotFoundException` se ausente (TTL expirado)
   - Retornar objeto `{ jobId, status, signedUrl, expiresAt, failureReason }` — `signedUrl: null` quando não completo
-- [ ] 3.1.4 Implementar `processExportJob(payload: PrivacyExportJobPayload): Promise<void>`:
+- [x] 3.1.4 Implementar `processExportJob(payload: PrivacyExportJobPayload): Promise<void>`:
   - UPDATE DB `status = 'processing'` + Redis `status = 'processing'`
-  - Para cada `tenantId` em `payload.allTenantIds`: chamar todos os 7 `exportUserData`/`exportConsentData` com `prisma.client` direto
+  - Para cada `tenantId` em `payload.allTenantIds`: chamar todos os 7 `exportUserData`/`exportConsentData`
   - Gerar `FullExportPayload` e serializar (JSON.stringify ou PDF via pdfkit)
   - Upload MinIO: `storageService.upload(objectKey, buffer, mimeType)` — key: `exports/global/{userId}/{YYYY-MM-DD}-{jobId}.{format}` (dec-019)
-  - Obter `signedUrl = await storageService.getSignedUrl(objectKey, PRIVACY_EXPORT_SIGNED_URL_SECONDS)`
-  - UPDATE DB: `status = 'completed'`, `objectKey`, `signedUrl`, `expiresAt`, `completedAt` — NÃO logar `signedUrl` em `Logger.log` (só `Logger.debug`)
-  - UPDATE Redis: `{ status: 'completed', signedUrl, expiresAt: ISO }` com TTL 172800s
-  - Enfileirar notificação: `bullMqService.addJob('queue:notifications', 'privacy-export-ready', { userId, format })` (stub)
-- [ ] 3.1.5 Implementar `handleJobFailure(jobId: string, reason: string): Promise<void>`:
-  - UPDATE DB: `status = 'failed'`, `failureReason = reason` (CHK008 — gap documentado como tarefa explícita)
-  - UPDATE Redis: `{ status: 'failed', failureReason: reason }` com TTL 172800s
-  - Alertar Sentry via `SentryService` (se disponível) ou `Logger.error`
-- [ ] 3.1.6 Implementar `generatePdf(payload: FullExportPayload): Buffer` — usar pdfkit: `new PDFDocument()` → seções por tenant → módulo por seção → `Buffer.concat(chunks)` (síncrono)
+  - Obter `signedUrl` + UPDATE DB/Redis completed — `signedUrl` só em `Logger.debug`
+  - Enfileirar notificação stub em `queue:notifications`
+- [x] 3.1.5 Implementar `handleJobFailure(jobId: string, reason: string): Promise<void>` — UPDATE DB + Redis (CHK008)
+- [x] 3.1.6 Implementar `generatePdf(payload: FullExportPayload): Promise<Buffer>` — usar pdfkit dinâmico + seções por tenant
 
 ### 3.2 PrivacyExportProcessor (BullMQ Worker) `[C]`
 
 Ref: spec §2.4, plan.md §Worker — Modo Privilegiado, reports.processor.ts como template
 
-- [ ] 3.2.1 Criar `apps/api/src/privacy/privacy-export.processor.ts` implementando `OnModuleInit`
-- [ ] 3.2.2 Em `onModuleInit()`: chamar `bullMqService.createWorker(PRIVACY_EXPORT_QUEUE_NAME, handler)` — mesmo padrão de `reports.processor.ts`
-- [ ] 3.2.3 Handler: verificar `job.name === 'export-personal-data'` → chamar `privacyExportService.processExportJob(job.data)`
-- [ ] 3.2.4 Tratar erro do handler: chamar `privacyExportService.handleJobFailure(job.data.jobId, error.message)` em caso de exceção (após BullMQ esgotar as 3 tentativas)
-- [ ] 3.2.5 Verificar que o processor NÃO usa `RequestContext` (job privilegiado — sem HTTP request)
+- [x] 3.2.1 Criar `apps/api/src/privacy/privacy-export.processor.ts` implementando `OnModuleInit`
+- [x] 3.2.2 Em `onModuleInit()`: chamar `bullMqService.createWorker(PRIVACY_EXPORT_QUEUE_NAME, handler)` — mesmo padrão de `reports.processor.ts`
+- [x] 3.2.3 Handler: verificar `job.name === 'export-personal-data'` → chamar `privacyExportService.processExportJob(job.data)`
+- [x] 3.2.4 Tratar erro do handler: chamar `privacyExportService.handleJobFailure(job.data.jobId, error.message)` em caso de exceção
+- [x] 3.2.5 Verificar que o processor NÃO usa `RequestContext` (job privilegiado — sem HTTP request)
 
 ### 3.3 privacy.controller.ts — novos endpoints `[C]`
 
 Ref: contracts/api.md §POST + §GET, spec §FR-01 + §FR-04
 
-- [ ] 3.3.1 Adicionar endpoint `POST /api/v1/privacy/export` no `apps/api/src/privacy/privacy.controller.ts`:
-  - Decorator `@Post('export')` + `@HttpCode(202)` + `@UseGuards(KeycloakAuthGuard, PrivacyRateLimitGuard)`
-  - Extrair `userId = getRequestContext().userId` e `tenantId = getRequestContext().tenantId`
-  - Validar body com `ZodValidationPipe` + `PrivacyExportRequestSchema`
-  - Chamar `privacyExportService.createJob(userId, body.format, tenantId)`
-  - Retornar `{ data: { jobId, status, estimatedCompletionHours } }`
-- [ ] 3.3.2 Adicionar endpoint `GET /api/v1/privacy/export/:jobId` no controller:
-  - Decorator `@Get('export/:jobId')` + `@UseGuards(KeycloakAuthGuard)`
-  - Chamar `privacyExportService.getJobStatus(params.jobId)`
-  - Retornar `{ data: { jobId, status, signedUrl, expiresAt, failureReason } }`
-- [ ] 3.3.3 Verificar que erros 404 e 409 seguem padrão `{ statusCode, error, message }` via AllExceptionsFilter existente
+- [x] 3.3.1 Adicionar endpoint `POST /api/v1/privacy/export` no `apps/api/src/privacy/privacy.controller.ts`: 202 + KeycloakAuthGuard + ZodValidationPipe + retorna `{ data: { jobId, status, estimatedCompletionHours } }`
+- [x] 3.3.2 Adicionar endpoint `GET /api/v1/privacy/export/:jobId` no controller: retorna `{ data: { jobId, status, signedUrl, expiresAt, failureReason } }`
+- [x] 3.3.3 Erros 404 e 409 via AllExceptionsFilter existente (NotFoundException e ConflictException já mapeados)
 
 ### 3.4 privacy.module.ts — atualizar imports `[A]`
 
 Ref: plan.md §Fase 3 passo 14
 
-- [ ] 3.4.1 Importar `BullMqModule` (ou `BullMqService` via module) em `privacy.module.ts`
-- [ ] 3.4.2 Importar `StorageModule` em `privacy.module.ts`
-- [ ] 3.4.3 Importar `ConsentModule` (para `ConsentRepository`) em `privacy.module.ts`
-- [ ] 3.4.4 Importar módulos dos 7 serviços de export (UsersModule, GroupMembersModule, MeetingsModule, ContentModule/ProgressModule, PastoralModule, AuditModule) — ou injetar serviços diretamente se já expostos globalmente
-- [ ] 3.4.5 Declarar `PrivacyExportService` e `PrivacyExportProcessor` em `providers` do módulo
+- [x] 3.4.1 `BullMqModule` é @Global — disponível sem import explícito
+- [x] 3.4.2 Importar `StorageModule` em `privacy.module.ts`
+- [x] 3.4.3 Importar `ConsentModule` em `privacy.module.ts`
+- [x] 3.4.4 Importar UsersModule, GroupMembersModule, MeetingsModule, ContentModule, PastoralModule, AuditModule, AuthModule em `privacy.module.ts`
+- [x] 3.4.5 Declarar `PrivacyExportService` e `PrivacyExportProcessor` em `providers` do módulo
 
 ---
 

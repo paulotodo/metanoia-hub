@@ -115,7 +115,7 @@ describe('PrivacyController integration: service call path', () => {
     const fakeService = {
       listDataProcessingRegistry: vi.fn().mockResolvedValue(fakeResult),
     };
-    const controller = new PrivacyController(fakeService as never);
+    const controller = new PrivacyController(fakeService as never, {} as never);
 
     const result = await controller.getDataProcessing();
 

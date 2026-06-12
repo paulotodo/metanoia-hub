@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import type { PastoralExportData } from '@metanoia/types';
 import type {
   RadarPageData,
   SignalDetail,
@@ -22,6 +23,7 @@ import {
 } from '@metanoia/types';
 import type { PastoralNote } from '@prisma/client';
 import { PastoralRepository } from './pastoral.repository';
+import { PrismaService } from '../prisma/prisma.service';
 import { requestContext } from '../common/context/request-context';
 import { RadarStatusRepository } from './radar/radar-status.repository';
 import { RadarJobService } from './radar/radar-job.service';
@@ -37,7 +39,41 @@ export class PastoralService {
     private readonly radarStatusRepo: RadarStatusRepository,
     private readonly radarJobService: RadarJobService,
     private readonly alertsService: AlertsService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  /**
+   * Export pastoral data about a user (alerts and notes where they are the participant).
+   * Privileged — uses prisma.client directly (no RLS). Never throws.
+   * PastoralAction excluded (CL-04 / dec-021).
+   * Field is participantId (not userId) on PastoralAlert and PastoralNote.
+   */
+  async exportUserData(userId: string, tenantId: string): Promise<PastoralExportData> {
+    const [alerts, notes] = await Promise.all([
+      this.prisma.client.pastoralAlert.findMany({
+        where: { participantId: userId, tenantId },
+        select: { id: true, signalType: true, createdAt: true },
+      }),
+      this.prisma.client.pastoralNote.findMany({
+        where: { participantId: userId, tenantId },
+        select: { id: true, noteType: true, occurredAt: true, content: true },
+      }),
+    ]);
+
+    return {
+      alertsAboutMe: alerts.map((a) => ({
+        id: a.id,
+        signalType: a.signalType,
+        createdAt: a.createdAt.toISOString(),
+      })),
+      notesAboutMe: notes.map((n) => ({
+        id: n.id,
+        noteType: n.noteType,
+        occurredAt: n.occurredAt.toISOString(),
+        content: n.content,
+      })),
+    };
+  }
 
   async getRadarPage(groupId?: string): Promise<RadarPageData> {
     const [alerts, groups] = await Promise.all([
