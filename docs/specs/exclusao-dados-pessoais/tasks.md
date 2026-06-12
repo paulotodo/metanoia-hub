@@ -137,32 +137,32 @@ Ref: plan F2.4/F2.5; imutabilidade 9-3 (audit nunca DELETE); OWASP A09
 
 Ref: plan F2.1; AVS-03 (backoff); OWASP A01/IDOR (ownership); dec-006/007/009
 
-- [ ] 4.1.1 Criar `apps/api/src/privacy/privacy-deletion.service.ts` com DI espelhando `PrivacyExportService` (BullMqService, PrismaService, RedisService, StorageService + 7 services de domínio + AuditService)
-- [ ] 4.1.2 `createJob(userId, tenantId)`: validar guardrail liderança (grupos ativos liderados → lançar 422 `LEADER_ACTIVE_GROUPS` com lista de grupos, dec-009); coletar `allTenantIds` via `userTenant.findMany`; verificar request ativo existente → retornar o mesmo `requestId` (idempotente, dec-006); criar `DeletionRequest` (cancellableUntil = now+7d, deletionDeadline = now+30d); `UPDATE users SET status='deletion_pending'`
-- [ ] 4.1.3 AVS-03 — backoff: enfileirar via `attempts: 3, backoff: { type: 'exponential', delay: 60_000 }` (espelha 9-1, NÃO usar custom strategy — `BullMqService` só expõe createQueue/createWorker, sem registro de backoffStrategy); soft-delete enfileirado com `delay` fixo = grace period (7d), hard-delete com `delay` = deadline (ou re-enfileirado pelo worker pós-soft). 2 jobs nomeados (`soft-delete-user-data`, `hard-delete-user-data`)
-- [ ] 4.1.4 `cancelRequest(requestId, userId)` — OWASP A01/IDOR: buscar request por `{ id: requestId, userId }` (ownership obrigatório no WHERE, não só por id); se não pertencer ao userId autenticado → 404 (não 403, evita enumeration); validar `now < cancellableUntil` senão 403/410; `UPDATE DeletionRequest SET status='cancelled', cancelled_at=NOW()`; restaurar `users.status='active'`; remover jobs BullMQ pendentes
-- [ ] 4.1.5 `getStatus(requestId, userId)` — OWASP A01/IDOR: query SEMPRE com `{ id: requestId, userId }` (ownership check obrigatório — corrige o gap do 9-1 getExportStatus que lookupa só por id); 404 se não pertencer
-- [ ] 4.1.6 `softDeleteAllTenants(payload)` e `hardDeleteAllTenants(payload)`: iterar `allTenantIds`; soft chama `softDeleteUserData` por módulo; hard executa `hardDeleteUserData` por módulo dentro de transação por tenant (`prisma.client.$transaction`), depois anonimiza audit + cleanup Redis/MinIO; guard de status `!= 'cancelled'` antes de executar (replay/idempotência, dec-007 rollback intra-tenant)
-- [ ] 4.1.7 `handleJobFailure(requestId, reason)`: `UPDATE status='failed', failure_reason` + Sentry capture + alerta DPO (método explícito, espelha 9-1 CHK008)
-- [ ] 4.1.8 Unit tests `apps/api/src/privacy/__tests__/privacy-deletion.service.spec.ts`: ownership em getStatus/cancelRequest (IDOR — request de outro user → 404), guardrail 422, idempotência createJob (2x=mesmo id), backoff exponential params, rollback transacional em falha intra-tenant
+- [x] 4.1.1 Criar `apps/api/src/privacy/privacy-deletion.service.ts` com DI espelhando `PrivacyExportService` (BullMqService, PrismaService, RedisService, StorageService + 7 services de domínio + AuditService)
+- [x] 4.1.2 `createJob(userId, tenantId)`: validar guardrail liderança (grupos ativos liderados → lançar 422 `LEADER_ACTIVE_GROUPS` com lista de grupos, dec-009); coletar `allTenantIds` via `userTenant.findMany`; verificar request ativo existente → retornar o mesmo `requestId` (idempotente, dec-006); criar `DeletionRequest` (cancellableUntil = now+7d, deletionDeadline = now+30d); `UPDATE users SET status='deletion_pending'`
+- [x] 4.1.3 AVS-03 — backoff: enfileirar via `attempts: 3, backoff: { type: 'exponential', delay: 60_000 }` (espelha 9-1, NÃO usar custom strategy — `BullMqService` só expõe createQueue/createWorker, sem registro de backoffStrategy); soft-delete enfileirado com `delay` fixo = grace period (7d), hard-delete com `delay` = deadline (ou re-enfileirado pelo worker pós-soft). 2 jobs nomeados (`soft-delete-user-data`, `hard-delete-user-data`)
+- [x] 4.1.4 `cancelRequest(requestId, userId)` — OWASP A01/IDOR: buscar request por `{ id: requestId, userId }` (ownership obrigatório no WHERE, não só por id); se não pertencer ao userId autenticado → 404 (não 403, evita enumeration); validar `now < cancellableUntil` senão 403/410; `UPDATE DeletionRequest SET status='cancelled', cancelled_at=NOW()`; restaurar `users.status='active'`; remover jobs BullMQ pendentes
+- [x] 4.1.5 `getStatus(requestId, userId)` — OWASP A01/IDOR: query SEMPRE com `{ id: requestId, userId }` (ownership check obrigatório — corrige o gap do 9-1 getExportStatus que lookupa só por id); 404 se não pertencer
+- [x] 4.1.6 `softDeleteAllTenants(payload)` e `hardDeleteAllTenants(payload)`: iterar `allTenantIds`; soft chama `softDeleteUserData` por módulo; hard executa `hardDeleteUserData` por módulo dentro de transação por tenant (`prisma.client.$transaction`), depois anonimiza audit + cleanup Redis/MinIO; guard de status `!= 'cancelled'` antes de executar (replay/idempotência, dec-007 rollback intra-tenant)
+- [x] 4.1.7 `handleJobFailure(requestId, reason)`: `UPDATE status='failed', failure_reason` + Sentry capture + alerta DPO (método explícito, espelha 9-1 CHK008)
+- [x] 4.1.8 Unit tests `apps/api/src/privacy/__tests__/privacy-deletion.service.spec.ts`: ownership em getStatus/cancelRequest (IDOR — request de outro user → 404), guardrail 422, idempotência createJob (2x=mesmo id), backoff exponential params, rollback transacional em falha intra-tenant
 
 ### 4.2 PrivacyDeletionProcessor + cleanup Redis/MinIO `[C]`
 
 Ref: plan F2.2/F2.5; replay idempotente (dec-007)
 
-- [ ] 4.2.1 Criar `apps/api/src/privacy/privacy-deletion.processor.ts` (skeleton de `PrivacyExportProcessor`): `createWorker(PRIVACY_DELETION_QUEUE_NAME, ...)` despachando por `job.name` (soft-delete-user-data / hard-delete-user-data); verificar `status != 'cancelled'` antes de executar (replay-safe)
-- [ ] 4.2.2 Cleanup pós hard-delete (no service, chamado pelo worker): Redis SCAN+DEL por `userId` (incl. `session:{userId}:*` e `cache:*` namespaces); MinIO listar+deletar objetos sob `user/{userId}/` e `exports/global/{userId}/`; `UPDATE deletion_requests SET status='hard_deleted', completed_at=NOW()`; emitir audit event `privacy.deletion.completed`
-- [ ] 4.2.3 Integration test do worker: soft então hard, verificar idempotência (executar 2x = mesmo resultado), guard de cancelamento (request cancelada → worker no-op)
+- [x] 4.2.1 Criar `apps/api/src/privacy/privacy-deletion.processor.ts` (skeleton de `PrivacyExportProcessor`): `createWorker(PRIVACY_DELETION_QUEUE_NAME, ...)` despachando por `job.name` (soft-delete-user-data / hard-delete-user-data); verificar `status != 'cancelled'` antes de executar (replay-safe)
+- [x] 4.2.2 Cleanup pós hard-delete (no service, chamado pelo worker): Redis SCAN+DEL por `userId` (incl. `session:{userId}:*` e `cache:*` namespaces); MinIO listar+deletar objetos sob `user/{userId}/` e `exports/global/{userId}/`; `UPDATE deletion_requests SET status='hard_deleted', completed_at=NOW()`; emitir audit event `privacy.deletion.completed`
+- [x] 4.2.3 Integration test do worker: soft então hard, verificar idempotência (executar 2x = mesmo resultado), guard de cancelamento (request cancelada → worker no-op)
 
 ### 4.3 Controller: 3 endpoints + export fix + module `[C]`
 
 Ref: plan F2.6/F2.7/F2.8; OWASP A01/A07; Q4/dec-012
 
-- [ ] 4.3.1 Adicionar a `PrivacyController` (todos `@UseGuards(KeycloakAuthGuard)`): `POST deletion` (@HttpCode 202, ZodValidationPipe(PrivacyDeletionRequestSchema), deriva userId/tenantId via `getRequestContext()`), `DELETE deletion/:requestId` (passa userId do contexto p/ ownership), `GET deletion/:requestId` (passa userId do contexto p/ ownership)
-- [ ] 4.3.2 OWASP A01 — em DELETE e GET, SEMPRE repassar `userId = getRequestContext().userId` ao service para o ownership check; nunca confiar só no `:requestId` do path (corrige o padrão do 9-1 getExportStatus)
-- [ ] 4.3.3 `PrivacyExportService.createJob`: adicionar guard `if (user.status === 'deletion_pending') throw new ConflictException(...)` antes do check de job existente (Q4/dec-012 — export bloqueado durante deleção pendente)
-- [ ] 4.3.4 `PrivacyModule`: adicionar `PrivacyDeletionService` + `PrivacyDeletionProcessor` a providers; exportar `PrivacyDeletionService`
-- [ ] 4.3.5 Integration test `apps/api/src/__tests__/privacy-deletion.integration.spec.ts`: cascade completo (criar user multi-tenant com dados em todos os módulos → soft → hard → verificar por tabela: users anonimizado, audit anonimizado, consents INTACTOS, soft-deleted DELETADOS no hard); IDOR (user B não cancela/lê request de user A → 404); export bloqueado durante deletion_pending → 409
+- [x] 4.3.1 Adicionar a `PrivacyController` (todos `@UseGuards(KeycloakAuthGuard)`): `POST deletion` (@HttpCode 202, ZodValidationPipe(PrivacyDeletionRequestSchema), deriva userId/tenantId via `getRequestContext()`), `DELETE deletion/:requestId` (passa userId do contexto p/ ownership), `GET deletion/:requestId` (passa userId do contexto p/ ownership)
+- [x] 4.3.2 OWASP A01 — em DELETE e GET, SEMPRE repassar `userId = getRequestContext().userId` ao service para o ownership check; nunca confiar só no `:requestId` do path (corrige o padrão do 9-1 getExportStatus)
+- [x] 4.3.3 `PrivacyExportService.createJob`: adicionar guard `if (user.status === 'deletion_pending') throw new ConflictException(...)` antes do check de job existente (Q4/dec-012 — export bloqueado durante deleção pendente)
+- [x] 4.3.4 `PrivacyModule`: adicionar `PrivacyDeletionService` + `PrivacyDeletionProcessor` a providers; exportar `PrivacyDeletionService`
+- [x] 4.3.5 Integration test `apps/api/src/__tests__/privacy-deletion.integration.spec.ts`: cascade completo (criar user multi-tenant com dados em todos os módulos → soft → hard → verificar por tabela: users anonimizado, audit anonimizado, consents INTACTOS, soft-deleted DELETADOS no hard); IDOR (user B não cancela/lê request de user A → 404); export bloqueado durante deletion_pending → 409
 
 ---
 
@@ -172,27 +172,27 @@ Ref: plan F2.6/F2.7/F2.8; OWASP A01/A07; Q4/dec-012
 
 Ref: plan F3.2/F3.3; AVS-02 (useAuth não expõe status)
 
-- [ ] 5.1.1 AVS-02 — verificação confirmada: NÃO existe `useAuth()` expondo `user.status` no projeto (padrão é hooks TanStack dedicados, ex. `/users/me/onboarding-status`); criar endpoint backend `GET /api/v1/users/me` (ou `/users/me/status`) em `users.controller.ts` retornando `{ id, email, name, status }` (status necessário para o banner `deletion_pending`)
-- [ ] 5.1.2 Criar hook `apps/web/src/lib/api/hooks/use-current-user.ts` (`useCurrentUser()`) espelhando `useOnboardingStatus` (TanStack Query → `/users/me`), com schema inline validado
-- [ ] 5.1.3 Criar `apps/web/src/hooks/use-privacy-deletion.ts`: `useDeletionRequest()` (POST), `useCancelDeletion()` (DELETE), `useDeletionStatus(requestId)` (GET)
-- [ ] 5.1.4 Unit tests dos hooks (MSW): sucesso, 422 leader_blocked, 409 deletion_pending, 404 ownership
+- [x] 5.1.1 AVS-02 — verificação confirmada: NÃO existe `useAuth()` expondo `user.status` no projeto (padrão é hooks TanStack dedicados, ex. `/users/me/onboarding-status`); criar endpoint backend `GET /api/v1/users/me` (ou `/users/me/status`) em `users.controller.ts` retornando `{ id, email, name, status }` (status necessário para o banner `deletion_pending`)
+- [x] 5.1.2 Criar hook `apps/web/src/lib/api/hooks/use-current-user.ts` (`useCurrentUser()`) espelhando `useOnboardingStatus` (TanStack Query → `/users/me`), com schema inline validado
+- [x] 5.1.3 Criar `apps/web/src/hooks/use-privacy-deletion.ts`: `useDeletionRequest()` (POST), `useCancelDeletion()` (DELETE), `useDeletionStatus(requestId)` (GET)
+- [x] 5.1.4 Unit tests dos hooks (MSW): sucesso, 422 leader_blocked, 409 deletion_pending, 404 ownership
 
 ### 5.2 DeletionSection + DeletionPendingBanner `[A]`
 
 Ref: plan F3.1/F3.3/F3.4
 
-- [ ] 5.2.1 Criar `DeletionSection` (estados: idle / leader_blocked / pending / cancelled) com diálogo explicativo (o que SERÁ removido por módulo + o que SERÁ RETIDO: audit anonimizado, consents) e input de confirmação exigindo digitação literal de `EXCLUIR`
-- [ ] 5.2.2 Criar `apps/web/src/components/deletion-pending-banner.tsx`: exibe quando `useCurrentUser().data.status === 'deletion_pending'`; "Sua conta será excluída em {N} dias. [Cancelar solicitação]"
-- [ ] 5.2.3 Inserir banner em `apps/web/app/(authenticated)/layout.tsx` (abaixo do header, dentro de NavigationShell) e `DeletionSection` após `ExportSection` em `.../privacidade/page.tsx`
-- [ ] 5.2.4 Component tests: confirmação `EXCLUIR` (botão desabilitado até match), banner visível só em deletion_pending, leader_blocked lista grupos
+- [x] 5.2.1 Criar `DeletionSection` (estados: idle / leader_blocked / pending / cancelled) com diálogo explicativo (o que SERÁ removido por módulo + o que SERÁ RETIDO: audit anonimizado, consents) e input de confirmação exigindo digitação literal de `EXCLUIR`
+- [x] 5.2.2 Criar `apps/web/src/components/deletion-pending-banner.tsx`: exibe quando `useCurrentUser().data.status === 'deletion_pending'`; "Sua conta será excluída em {N} dias. [Cancelar solicitação]"
+- [x] 5.2.3 Inserir banner em `apps/web/app/(authenticated)/layout.tsx` (abaixo do header, dentro de NavigationShell) e `DeletionSection` após `ExportSection` em `.../privacidade/page.tsx`
+- [x] 5.2.4 Component tests: confirmação `EXCLUIR` (botão desabilitado até match), banner visível só em deletion_pending, leader_blocked lista grupos
 
 ### 5.3 i18n + MSW `[M]`
 
 Ref: plan F3.5/F3.6
 
-- [ ] 5.3.1 Adicionar bloco `privacy.deletion.*` em `apps/web/messages/pt-BR.json` (title, description, confirmPlaceholder/Label/Mismatch, requestButton, cancelButton, statusPending/Cancelled/Completed, willRemove/willRetain, retainAudit/retainConsent, leaderBlocked, transferLeadership, dissolveGroup, gracePeriodDays, deadlineDays) — vocabulário pastoral, PT-BR
-- [ ] 5.3.2 Adicionar handlers MSW em `apps/web/mocks/handlers/privacy.ts`: `POST deletion` (202 | 422 leader_blocked | 409 deletion_pending), `DELETE deletion/:id` (200 | 404), `GET deletion/:id` (status), `GET /users/me` (status)
-- [ ] 5.3.3 Verificar gate MSW `NEXT_PUBLIC_API_MOCKING` e que os testes FE passam com os handlers
+- [x] 5.3.1 Adicionar bloco `privacy.deletion.*` em `apps/web/messages/pt-BR.json` (title, description, confirmPlaceholder/Label/Mismatch, requestButton, cancelButton, statusPending/Cancelled/Completed, willRemove/willRetain, retainAudit/retainConsent, leaderBlocked, transferLeadership, dissolveGroup, gracePeriodDays, deadlineDays) — vocabulário pastoral, PT-BR
+- [x] 5.3.2 Adicionar handlers MSW em `apps/web/mocks/handlers/privacy.ts`: `POST deletion` (202 | 422 leader_blocked | 409 deletion_pending), `DELETE deletion/:id` (200 | 404), `GET deletion/:id` (status), `GET /users/me` (status)
+- [x] 5.3.3 Verificar gate MSW `NEXT_PUBLIC_API_MOCKING` e que os testes FE passam com os handlers
 
 ---
 
@@ -202,18 +202,18 @@ Ref: plan F3.5/F3.6
 
 Ref: plan F4.3/F4.4; OWASP A01; armadilhas RLS do projeto
 
-- [ ] 6.1.1 RLS spec `apps/api/test/rls/deletion-requests.rls.spec.ts` (PrismaPg adapter, UUIDs fixos hex, users globais, cleanup só mutável): tenant A não vê deletion_requests de tenant B; UPDATE de soft-delete respeita tenant_id (não afeta outros tenants); worker `prisma.client` vê todos os tenants
-- [ ] 6.1.2 RLS spec para anonimização de audit em 0-rows (imutabilidade 9-3): UPDATE de anonimização não quebra com 0 linhas afetadas
-- [ ] 6.1.3 Teste de guardrail liderança: líder com grupo ativo → 422 + lista; líder de grupo único → 422 + opção dissolver; não-líder → 202
-- [ ] 6.1.4 Teste IDOR end-to-end: token de user B em GET/DELETE deletion/:id de user A → 404 (sem enumeration)
+- [x] 6.1.1 RLS spec `apps/api/test/rls/deletion-requests.rls.spec.ts` (PrismaPg adapter, UUIDs fixos hex, users globais, cleanup só mutável): tenant A não vê deletion_requests de tenant B; UPDATE de soft-delete respeita tenant_id (não afeta outros tenants); worker `prisma.client` vê todos os tenants
+- [x] 6.1.2 RLS spec para anonimização de audit em 0-rows (imutabilidade 9-3): UPDATE de anonimização não quebra com 0 linhas afetadas
+- [x] 6.1.3 Teste de guardrail liderança: líder com grupo ativo → 422 + lista; líder de grupo único → 422 + opção dissolver; não-líder → 202
+- [x] 6.1.4 Teste IDOR end-to-end: token de user B em GET/DELETE deletion/:id de user A → 404 (sem enumeration)
 
 ### 6.2 Integração final + smoke `[C]`
 
 Ref: plan F5.1/F5.2; GUARDRAIL feature-00c (push direto em dev bypassa CI)
 
-- [ ] 6.2.1 Subir `docker-compose.test.yml` e rodar a suíte RLS completa (apps/api/test/rls) contra Postgres real; confirmar isolamento + imutabilidade audit
-- [ ] 6.2.2 Smoke manual: `POST /privacy/deletion {confirm:'EXCLUIR'}` → 202 + DeletionRequest criada + users.status=deletion_pending; `GET /:id` → pending; invocar worker soft-delete → `deleted_at` preenchido; `DELETE /:id` fora do grace simulado → 403
-- [ ] 6.2.3 GUARDRAIL: antes de declarar done — auditar `git status`/`git log` reais; `pnpm lint` + `pnpm build` + `pnpm test` verdes localmente; nunca declarar concluído com base só no sumário; confirmar migration aplicada e RLS specs verdes
+- [x] 6.2.1 Subir `docker-compose.test.yml` e rodar a suíte RLS completa (apps/api/test/rls) contra Postgres real; confirmar isolamento + imutabilidade audit
+- [x] 6.2.2 Smoke manual: `POST /privacy/deletion {confirm:'EXCLUIR'}` → 202 + DeletionRequest criada + users.status=deletion_pending; `GET /:id` → pending; invocar worker soft-delete → `deleted_at` preenchido; `DELETE /:id` fora do grace simulado → 403
+- [x] 6.2.3 GUARDRAIL: antes de declarar done — auditar `git status`/`git log` reais; `pnpm lint` + `pnpm build` + `pnpm test` verdes localmente; nunca declarar concluído com base só no sumário; confirmar migration aplicada e RLS specs verdes
 
 ---
 
