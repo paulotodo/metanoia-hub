@@ -2,7 +2,7 @@
 
 **Feature:** Story 9-1 — Exportação de Dados Pessoais / Portabilidade LGPD
 **Epic:** 9 (LGPD/Privacidade)
-**Status:** specify
+**Status:** clarify (bloqueio humano pendente: CL-02 campos UserExportData.profile)
 **Versão:** 1.0.0
 **Data:** 2026-06-12
 
@@ -326,4 +326,34 @@ UI:
 
 ## Clarifications
 
-_Nenhuma pendente — spec baseada em artefato BMad + reconciliações explícitas do contexto de execução._
+Resolvidas na onda clarify (2026-06-12). Q2 permanece em bloqueio humano pendente.
+
+### CL-01: Origem de `allTenantIds` no INSERT (Q1) — score 2, autônoma
+**Decisão:** Query ao DB via `prisma.userTenant.findMany({ where: { userId } })` sem RLS (modo privilegiado), no controller no momento do POST.
+**Justificativa:** spec §2.6 e FR-03 especificam explicitamente `UserTenant.findMany({ userId })` no modo privilegiado do worker. Claims JWT requereria mapper Keycloak não especificado. Este padrão é consistente com o modo super-admin já documentado.
+**Impacto na implementação:** Controller deve usar `prisma.client` diretamente (sem `withTenantTx`) para a query de `user_tenants`. Os `allTenantIds` resultantes alimentam tanto o INSERT no DB quanto o payload do BullMQ job.
+
+### CL-02: Campos de `UserExportData.profile` (Q2) — score 0, BLOQUEIO HUMANO PENDENTE
+**Status:** Aguardando resposta humana (`block-001`).
+**Contexto:** spec §6.4 define `profile: {...} | null` sem especificar a interface. Opções: (A) `name, email, phone, avatarUrl, createdAt, updatedAt`; (B) adicionar `locale, timezone`; (C) definir Zod schema explícito antes de implementar.
+**Bloqueio:** A decisão impacta conformidade LGPD art. 18 (portabilidade de todos os dados pessoais) vs risco de vazar campos internos.
+
+### CL-03: Biblioteca PDF — instalar `pdfkit` (Q3) — score 2, autônoma
+**Decisão:** Instalar `pdfkit@0.15.x` em `apps/api` (+ `@types/pdfkit` como devDependency).
+**Justificativa:** spec §5.1 lista "PDF via pdfkit" explicitamente no IN SCOPE. spec §10 Riscos antecipa "se ausente, instalar em apps/api". Constitution §IV não veda libs de geração de arquivo (apenas proíbe libs de validação NestJS de terceiros).
+**Impacto na implementação:** Adicionar ao `apps/api/package.json`. CI deve validar build com a nova dependência.
+
+### CL-04: `PastoralAction` — excluída do export (Q4) — score 2, autônoma
+**Decisão:** `PastoralAction` NÃO entra no export desta story. O export Pastoral cobre apenas `pastoral_alerts` e `pastoral_notes`.
+**Justificativa:** spec §2.5 lista explicitamente `pastoral_alerts` e `pastoral_notes` como as tabelas Pastoral relevantes, sem mencionar `pastoral_actions`. spec §6.4 `PastoralExportData` define apenas `alertsAboutMe` e `notesAboutMe`. Incluir `PastoralAction` seria escopo não especificado, aumentando blast radius sem base documental.
+**Impacto na implementação:** `pastoral.service.ts exportUserData()` filtra apenas por `pastoral_alerts` e `pastoral_notes` com `participantId = userId`.
+
+### CL-05: Polling — Redis como fonte primária com TTL 48h (Q5) — score 2, autônoma
+**Decisão:** Redis é a fonte primária de status para o polling (`GET /api/v1/privacy/export/:jobId`). TTL do Redis = 48h (paridade com validade da signed URL, NFR-S1). Sem fallback ao DB nesta story.
+**Justificativa:** spec §7 Fluxo Principal especifica "Retornar status do Redis" sem mencionar fallback. spec §2.4 aponta `reports.service` como "template exato" — que usa Redis como fonte primária. TTL=48h garante que o link não expire antes do Redis.
+**Impacto na implementação:** `privacy-export.service.ts` usa `cache:privacy-export-job:<jobId>` com TTL de 172800s (48h) ao gravar. Polling lê apenas do Redis. O `signed_url` no DB permanece como auditoria, não como fallback de polling.
+
+### CL-06: `all_tenant_ids` na tabela DB — risco cross-tenant (aviso herdado)
+**Decisão:** Manter `all_tenant_ids UUID[]` na tabela `privacy_export_jobs` porém como coluna **write-once** nunca retornada pela API pública. A RLS policy existente (filtra por `tenant_id`) isola os jobs por tenant de origem; `all_tenant_ids` é lido apenas pelo worker privilegiado via query direta (sem RLS). A coluna não aparece em nenhuma resposta de API.
+**Justificativa:** Remoção da coluna do DB exigiria mudança arquitetural; o worker já lê os `allTenantIds` do payload BullMQ (Redis). A abordagem write-once + nunca exposta na API é suficiente para mitigar o risco sem refatoração do schema.
+**Impacto na implementação:** DTOs de resposta (`PrivacyExportResponseSchema`) não incluem `allTenantIds`. Worker lê do payload BullMQ, não do DB.
