@@ -2,7 +2,7 @@
 
 **Feature:** Story 9-1 — Exportação de Dados Pessoais / Portabilidade LGPD
 **Epic:** 9 (LGPD/Privacidade)
-**Status:** clarify (bloqueio humano pendente: CL-02 campos UserExportData.profile)
+**Status:** plan (clarify concluído 2026-06-12)
 **Versão:** 1.0.0
 **Data:** 2026-06-12
 
@@ -219,9 +219,23 @@ CREATE POLICY privacy_export_jobs_tenant ON privacy_export_jobs
 ### 6.4 Contrato de exportUserData por módulo
 ```typescript
 // Cada módulo retorna dados zerados (arrays vazios) se usuário não tem dados — NUNCA lança
+
+// UserProfileExport: fonte da verdade — campos reais do model User (schema.prisma verificado)
+// EXCLUÍDO: tenantId (metadado interno de multi-tenancy, não é dado pessoal do titular)
+// NÃO EXISTEM: phone, avatarUrl, locale, timezone (ausentes do schema)
+interface UserProfileExport {
+  id: string;                         // UUID v7
+  email: string;
+  name: string;
+  status: string;                     // 'pending_verification' | 'active' | etc.
+  onboardingCompletedAt: string | null; // ISO 8601
+  createdAt: string;                  // ISO 8601
+  updatedAt: string;                  // ISO 8601
+}
+
 interface UserExportData {
-  profile: {...} | null;
-  tenants: Array<{tenantId, role, joinedAt}>;
+  profile: UserProfileExport | null;
+  tenants: Array<{tenantId: string, role: string, joinedAt: string}>;
 }
 interface GroupsExportData {
   memberships: Array<{groupId, groupName, role, joinedAt}>;
@@ -326,17 +340,21 @@ UI:
 
 ## Clarifications
 
-Resolvidas na onda clarify (2026-06-12). Q2 permanece em bloqueio humano pendente.
+Todas as perguntas resolvidas na onda clarify (2026-06-12). Block-001 (CL-02) respondido por humano e integrado.
 
 ### CL-01: Origem de `allTenantIds` no INSERT (Q1) — score 2, autônoma
 **Decisão:** Query ao DB via `prisma.userTenant.findMany({ where: { userId } })` sem RLS (modo privilegiado), no controller no momento do POST.
 **Justificativa:** spec §2.6 e FR-03 especificam explicitamente `UserTenant.findMany({ userId })` no modo privilegiado do worker. Claims JWT requereria mapper Keycloak não especificado. Este padrão é consistente com o modo super-admin já documentado.
 **Impacto na implementação:** Controller deve usar `prisma.client` diretamente (sem `withTenantTx`) para a query de `user_tenants`. Os `allTenantIds` resultantes alimentam tanto o INSERT no DB quanto o payload do BullMQ job.
 
-### CL-02: Campos de `UserExportData.profile` (Q2) — score 0, BLOQUEIO HUMANO PENDENTE
-**Status:** Aguardando resposta humana (`block-001`).
-**Contexto:** spec §6.4 define `profile: {...} | null` sem especificar a interface. Opções: (A) `name, email, phone, avatarUrl, createdAt, updatedAt`; (B) adicionar `locale, timezone`; (C) definir Zod schema explícito antes de implementar.
-**Bloqueio:** A decisão impacta conformidade LGPD art. 18 (portabilidade de todos os dados pessoais) vs risco de vazar campos internos.
+### CL-02: Campos de `UserExportData.profile` (Q2) — score 3, RESOLVIDO (block-001 respondido)
+**Status:** Resolvido — resposta humana integrada.
+**Decisão:** Campos exportados = campos reais do model `User` em `schema.prisma`: `id, email, name, status, onboardingCompletedAt, createdAt, updatedAt`.
+**EXCLUÍDO:** `tenantId` — metadado interno de multi-tenancy, não é dado pessoal do titular LGPD.
+**NÃO EXISTEM:** `phone, avatarUrl, locale, timezone` — ausentes do schema Prisma (verificado via introspecção direta).
+**Fonte da verdade:** `UserProfileExport` definido como interface explícita em §6.4 e como Zod schema em `packages/types/src/privacy/export.ts`.
+**Justificativa:** Campos verificados empiricamente no schema.prisma (grep sobre model User). Exclusão de tenantId alinha com LGPD (metadado de sistema, não dado do titular). Campos ausentes no schema não podem ser exportados.
+**Evidência:** `grep -A 10 "^model User " apps/api/prisma/schema.prisma` confirma: id, email, name, status, tenantId, onboardingCompletedAt, createdAt, updatedAt — sem phone/avatarUrl/locale/timezone.
 
 ### CL-03: Biblioteca PDF — instalar `pdfkit` (Q3) — score 2, autônoma
 **Decisão:** Instalar `pdfkit@0.15.x` em `apps/api` (+ `@types/pdfkit` como devDependency).
