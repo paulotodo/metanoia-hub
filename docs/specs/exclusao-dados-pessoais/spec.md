@@ -277,9 +277,40 @@ Usuário com role `Líder` e grupos ativos não pode solicitar exclusão. O endp
 
 ## Clarifications
 
-*(Sem itens pendentes — todos os pontos ambíguos foram resolvidos via epic-09.md + RECONCILIACAO-EPIC9)*
+*(Etapa clarify executada em 2026-06-12 via feature-00c pipeline. Q1-Q3 e Q5 resolvidos autonomamente — score ≥ 2. Q4 aguarda decisão humana — ver bloco `[NEEDS CLARIFICATION]` abaixo.)*
 
-- **Anonimização de audit**: hash sha256 truncado a 8 chars (determinístico, não-reversível). Confirmado pela tensão LGPD vs imutabilidade.
-- **Consent RETER**: base legal LGPD art. 16 — confirmado.
-- **Grace period**: 7 dias para cancelamento, 30 dias para hard-delete (NFR-L2 do epic-09).
-- **Guardrail de liderança**: verificação server-side no endpoint, não apenas frontend.
+### Resolvidos (score ≥ 2)
+
+- **Anonimização de audit** (pré-existente): hash sha256 truncado a 8 chars (determinístico, não-reversível). Confirmado pela tensão LGPD vs imutabilidade.
+- **Consent RETER** (pré-existente): base legal LGPD art. 16 — confirmado.
+- **Grace period** (pré-existente): 7 dias para cancelamento, 30 dias para hard-delete (NFR-L2 do epic-09).
+- **Guardrail de liderança** (pré-existente): verificação server-side no endpoint, não apenas frontend.
+
+- **Q1 — Idempotência soft-delete** (dec-006, score 2): O worker NÃO usa checkpoint de módulo. O soft-delete é idempotente por natureza: aplicar `deletedAt` a um registro já marcado é no-op. Em caso de falha, o job reexecuta do início sem risco de inconsistência. FR-10 "retomar da última fase completada" refere-se às 2 fases do worker (soft-delete vs. hard-delete), não a granularidade de módulo. `softDeleteCheckpoint JSONB` NÃO é adicionado à tabela `deletion_requests`.
+
+- **Q2 — Rollback cross-tenant no hard-delete** (dec-007, score 3): "Rollback total" (NFR-S1) significa rollback **intra-tenant**: cada tenant é processado em transação PostgreSQL separada (consistente com RLS multi-tenant isolado). Se o hard-delete do tenant B falha, apenas o tenant B sofre rollback; o tenant A permanece deletado. Rollback cross-tenant não é viável nativamente. Abortar todos os tenants (opção D) viola NFR-L1 (prazo LGPD ≤ 30 dias). Em falha de qualquer tenant: Sentry alert + DPO notificado; retry BullMQ.
+
+- **Q3 — Re-cadastro com mesmo email durante soft-delete** (dec-008, score 3): Email permanece "ocupado" (não-anonimizado) durante os 30 dias do período de soft-delete. A anonimização `email → removed-<hash>@deleted.invalid` ocorre apenas no **hard-delete** (spec §3). Tentativa de cadastro com o mesmo email durante soft-delete será bloqueada pela unique constraint de `users.email`. Essa é a consequência natural da sequência temporal da spec.
+
+- **Q5 — Grupo com único líder sem transferência possível** (dec-009, score 2): FR-01 retorna 422 para qualquer grupo ativo com o usuário como líder. Para o edge case de grupo com único membro (sem outro usuário para receber a liderança), o 422 inclui a opção **"Dissolver grupo"** como alternativa ao "Transferir Liderança". A UI deve distinguir os dois casos: grupos com outros membros → "Transferir Liderança"; grupos com único membro → "Dissolver grupo" + confirmação. Dissolução remove o grupo (`status → "dissolved"`) e desbloqueia a solicitação de exclusão.
+
+### Pendente — aguardando decisão humana
+
+**[NEEDS CLARIFICATION] Q4 — Concorrência export × deleção** (dec-010, block-001, score 0):
+
+A spec §7.2 classifica export (Story 9-1) como OUT OF SCOPE para Story 9-2 sem definir regras de interação entre os dois fluxos. Nenhuma das 3 fontes (briefing, constitution, spec) endereça este edge case.
+
+**Pergunta**: O que acontece quando um export está em andamento ou pendente no momento do soft-delete?
+
+Sub-questões:
+1. `exportUserData()` deve incluir ou filtrar dados com `deletedAt IS NOT NULL` após soft-delete?
+2. `POST /api/v1/privacy/export` deve retornar 409/422 quando `User.status === "deletion_pending"`?
+3. Há risco real de race condition entre `PrivacyExportProcessor` e `PrivacyDeletionProcessor` para o mesmo `userId`?
+
+Opções:
+- **A**: export filtra `deletedAt IS NULL` — após soft-delete, export retorna dados mínimos/vazio
+- **B**: export inclui dados soft-deleted (titular ainda tem direito à portabilidade durante grace period)
+- **C**: bloquear novo export quando `User.status === "deletion_pending"`
+- **D** (recomendado como padrão prudente): B + C — export em andamento inclui tudo; novo export bloqueado com aviso
+
+*Decisão desta questão NÃO bloqueia o plan/execute — pode ser resolvida como errata antes da review-task. Responder via `/feature-00c-resume exclusao-dados-pessoais` com a opção escolhida.*
