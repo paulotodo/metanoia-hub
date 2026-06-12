@@ -34,12 +34,13 @@ function makeClient(): PrismaClient {
   return new PrismaClient({ adapter });
 }
 
-/** Superuser client — bypasses RLS (worker pattern) */
+/** Superuser client — bypasses RLS (worker pattern, Prisma v7 PrismaPg adapter) */
 function makeSuperuserClient(): PrismaClient {
   const connectionString = process.env['DATABASE_URL'];
   if (!connectionString) throw new Error('DATABASE_URL not set');
-  // PrismaPg: no adapter trick needed — DATABASE_URL uses superuser in test env
-  return new PrismaClient({ datasources: { db: { url: connectionString } } });
+  // Prisma v7: datasources option removed — use PrismaPg adapter with DATABASE_URL (superuser)
+  const adapter = new PrismaPg({ connectionString });
+  return new PrismaClient({ adapter });
 }
 
 async function ensureTenant(prisma: PrismaClient, tenantId: string, name: string) {
