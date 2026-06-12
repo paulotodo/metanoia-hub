@@ -294,23 +294,8 @@ Usuário com role `Líder` e grupos ativos não pode solicitar exclusão. O endp
 
 - **Q5 — Grupo com único líder sem transferência possível** (dec-009, score 2): FR-01 retorna 422 para qualquer grupo ativo com o usuário como líder. Para o edge case de grupo com único membro (sem outro usuário para receber a liderança), o 422 inclui a opção **"Dissolver grupo"** como alternativa ao "Transferir Liderança". A UI deve distinguir os dois casos: grupos com outros membros → "Transferir Liderança"; grupos com único membro → "Dissolver grupo" + confirmação. Dissolução remove o grupo (`status → "dissolved"`) e desbloqueia a solicitação de exclusão.
 
-### Pendente — aguardando decisão humana
-
-**[NEEDS CLARIFICATION] Q4 — Concorrência export × deleção** (dec-010, block-001, score 0):
-
-A spec §7.2 classifica export (Story 9-1) como OUT OF SCOPE para Story 9-2 sem definir regras de interação entre os dois fluxos. Nenhuma das 3 fontes (briefing, constitution, spec) endereça este edge case.
-
-**Pergunta**: O que acontece quando um export está em andamento ou pendente no momento do soft-delete?
-
-Sub-questões:
-1. `exportUserData()` deve incluir ou filtrar dados com `deletedAt IS NOT NULL` após soft-delete?
-2. `POST /api/v1/privacy/export` deve retornar 409/422 quando `User.status === "deletion_pending"`?
-3. Há risco real de race condition entre `PrivacyExportProcessor` e `PrivacyDeletionProcessor` para o mesmo `userId`?
-
-Opções:
-- **A**: export filtra `deletedAt IS NULL` — após soft-delete, export retorna dados mínimos/vazio
-- **B**: export inclui dados soft-deleted (titular ainda tem direito à portabilidade durante grace period)
-- **C**: bloquear novo export quando `User.status === "deletion_pending"`
-- **D** (recomendado como padrão prudente): B + C — export em andamento inclui tudo; novo export bloqueado com aviso
-
-*Decisão desta questão NÃO bloqueia o plan/execute — pode ser resolvida como errata antes da review-task. Responder via `/feature-00c-resume exclusao-dados-pessoais` com a opção escolhida.*
+- **Q4 — Concorrência export × deleção** (dec-012, score 2 — decisão humana via block-001): Opção **D (B+C)** adotada:
+  - Export EM ANDAMENTO inclui dados soft-deleted durante o grace period (portabilidade LGPD preservada até o hard-delete efetivo).
+  - `POST /api/v1/privacy/export` retorna **409 Conflict** quando `User.status === "deletion_pending"` (novo export bloqueado com aviso).
+  - Não há race condition nova: export em curso lê snapshot; novo export é barrado pelo 409. O `PrivacyExportProcessor` e `PrivacyDeletionProcessor` operam em fases temporais distintas (export → soft-delete → hard-delete).
+  - FR-02 atualizado implicitamente: o endpoint `POST /api/v1/privacy/export` (Story 9-1) deve verificar `User.status !== "deletion_pending"` antes de enfileirar novo export.
