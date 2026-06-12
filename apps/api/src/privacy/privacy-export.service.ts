@@ -75,6 +75,17 @@ export class PrivacyExportService implements OnModuleInit {
     format: 'json' | 'pdf',
     tenantId: string,
   ): Promise<PrivacyExportJobResponse> {
+    // dec-012 (Q4): block export when user has a pending deletion request
+    const user = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+      select: { status: true },
+    });
+    if (user?.status === 'deletion_pending') {
+      throw new ConflictException(
+        'Cannot create export while a deletion request is pending. Cancel the deletion request first.',
+      );
+    }
+
     // Check for existing active job
     const existing = await this.prisma.client.privacyExportJob.findFirst({
       where: {

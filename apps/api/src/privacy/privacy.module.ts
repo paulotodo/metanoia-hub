@@ -14,6 +14,8 @@ import { PrivacyRateLimitGuard } from './privacy-rate-limit.guard';
 import { PrivacyService } from './privacy.service';
 import { PrivacyExportService } from './privacy-export.service';
 import { PrivacyExportProcessor } from './privacy-export.processor';
+import { PrivacyDeletionService } from './privacy-deletion.service';
+import { PrivacyDeletionProcessor } from './privacy-deletion.processor';
 
 @Module({
   imports: [
@@ -34,7 +36,9 @@ import { PrivacyExportProcessor } from './privacy-export.processor';
     PrivacyRateLimitGuard,
     PrivacyExportService,
     PrivacyExportProcessor,
+    PrivacyDeletionService,
+    PrivacyDeletionProcessor,
   ],
-  exports: [PrivacyExportService],
+  exports: [PrivacyExportService, PrivacyDeletionService],
 })
 export class PrivacyModule {}
