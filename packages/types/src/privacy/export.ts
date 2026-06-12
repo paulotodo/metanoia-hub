@@ -40,6 +40,20 @@ export const PrivacyExportStatusSchema = z.object({
 });
 export type PrivacyExportStatus = z.infer<typeof PrivacyExportStatusSchema>;
 
+// ─── API Envelope Schemas (for frontend hooks) ────────────────────────────────
+
+/** Envelope wrapper for POST /api/v1/privacy/export → 202 response. */
+export const PrivacyExportJobEnvelopeSchema = z.object({
+  data: PrivacyExportJobResponseSchema,
+});
+export type PrivacyExportJobEnvelope = z.infer<typeof PrivacyExportJobEnvelopeSchema>;
+
+/** Envelope wrapper for GET /api/v1/privacy/export/:jobId response. */
+export const PrivacyExportStatusEnvelopeSchema = z.object({
+  data: PrivacyExportStatusSchema,
+});
+export type PrivacyExportStatusEnvelope = z.infer<typeof PrivacyExportStatusEnvelopeSchema>;
+
 // ─── BullMQ Job Payload ───────────────────────────────────────────────────────
 
 export interface PrivacyExportJobPayload {

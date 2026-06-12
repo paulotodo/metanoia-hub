@@ -1231,6 +1231,21 @@
       "retention": "Retenção",
       "third_party": "Compartilhamento",
       "no_sharing": "Não compartilhado"
+    },
+    "export": {
+      "title": "Meus dados",
+      "requestButton": "Exportar meus dados",
+      "formatJson": "Formato JSON",
+      "formatPdf": "Formato PDF",
+      "statusAccepted": "Solicitação recebida",
+      "statusProcessing": "Preparando seu arquivo…",
+      "statusCompleted": "Arquivo pronto para download",
+      "statusFailed": "Falha na exportação",
+      "downloadLink": "Baixar meu arquivo",
+      "toastCompleted": "Seu arquivo está pronto! Clique para baixar.",
+      "toastFailed": "Não foi possível gerar o arquivo. Tente novamente.",
+      "duplicateWarning": "Já existe uma exportação em andamento. Aguarde a conclusão antes de solicitar uma nova.",
+      "estimatedHours": "Tempo estimado: até {{hours}}h"
     }
   }
 }

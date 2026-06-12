@@ -65,7 +65,7 @@ Ref: spec §2.5, data-model.md §UserExportDataSchema, plan.md §Fase 2 passo 5
 - [x] 2.1.2 Implementar query de profile: `prisma.client.user.findUnique({ where: { id: userId }, select: { id, email, name, status, onboardingCompletedAt, createdAt, updatedAt } })` — EXCLUIR `tenantId` (metadado interno, dec-019/CL-02)
 - [x] 2.1.3 Implementar query de tenants do usuário: `prisma.client.userTenant.findMany({ where: { userId }, select: { tenantId, role, createdAt } })` — mapear `createdAt` como `joinedAt`
 - [x] 2.1.4 Mapear datas com `.toISOString()` e retornar `{ profile: UserProfileExport | null, tenants: [...] }`
-- [ ] 2.1.5 Escrever unit tests em `apps/api/src/users/__tests__/users.export.spec.ts` — cobrir: usuário sem dados, dados completos, data mapping ISO 8601
+- [x] 2.1.5 Escrever unit tests em `apps/api/src/users/__tests__/users.export.spec.ts` — cobrir: usuário sem dados, dados completos, data mapping ISO 8601
 
 ### 2.2 Groups: exportUserData `[A]`
 
@@ -74,7 +74,7 @@ Ref: spec §2.5, data-model.md §GroupsExportDataSchema; path real: `apps/api/sr
 - [x] 2.2.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<GroupsExportData>` em `apps/api/src/group-members/group-members.service.ts`
 - [x] 2.2.2 Implementar query: `prisma.client.groupMember.findMany({ where: { userId, tenantId }, include: { group: { select: { name: true } } } })` — mapear `groupName` do join
 - [x] 2.2.3 Retornar `{ memberships: Array<{ groupId, groupName, role, joinedAt }> }` com datas ISO 8601
-- [ ] 2.2.4 Escrever unit tests em `apps/api/src/group-members/__tests__/group-members.export.spec.ts`
+- [x] 2.2.4 Escrever unit tests em `apps/api/src/group-members/__tests__/group-members.export.spec.ts`
 
 ### 2.3 Meetings: exportUserData `[A]`
 
@@ -84,7 +84,7 @@ Ref: spec §2.5, data-model.md §MeetingsExportDataSchema; modelos: `MeetingAtte
 - [x] 2.3.2 Implementar query de attendance: `prisma.client.meetingAttendance.findMany({ where: { userId, tenantId } })` — busca títulos em bulk via meetingMap
 - [x] 2.3.3 Implementar query de participantRecords: `prisma.client.meetingParticipantRecord.findMany({ where: { userId: { equals: userId }, tenantId } })` — `userId` é nullable no model, usar `{ equals: userId }`
 - [x] 2.3.4 Retornar `{ attendance: [...], participantRecords: [...] }` com datas ISO 8601
-- [ ] 2.3.5 Escrever unit tests em `apps/api/src/meetings/__tests__/meetings.export.spec.ts` — cobrir o caso `userId` nullable em `participantRecords`
+- [x] 2.3.5 Escrever unit tests em `apps/api/src/meetings/__tests__/meetings.export.spec.ts` — cobrir o caso `userId` nullable em `participantRecords`
 
 ### 2.4 Trails: exportUserData `[A]`
 
@@ -94,7 +94,7 @@ Ref: spec §2.5, data-model.md §TrailsExportDataSchema; paths reais: `TrailProg
 - [x] 2.4.2 Implementar query de trailProgress: `prisma.client.trailProgress.findMany({ where: { userId, tenantId } })` — busca trail names em bulk via trailMap
 - [x] 2.4.3 Implementar query de lessonProgress: `prisma.client.lessonProgress.findMany({ where: { userId, tenantId }, include: { lesson: { select: { title: true } } } })` — mapear `lessonName` (campo `title`), `status.toString()`, `completedAt`
 - [x] 2.4.4 Retornar `{ trailProgress: [...], lessonProgress: [...] }` com datas ISO 8601 nullable
-- [ ] 2.4.5 Escrever unit tests em `apps/api/src/content/progress/__tests__/progress.export.spec.ts`
+- [x] 2.4.5 Escrever unit tests em `apps/api/src/content/progress/__tests__/progress.export.spec.ts`
 
 ### 2.5 Pastoral: exportUserData `[C]`
 
@@ -105,7 +105,7 @@ Ref: spec §2.5 + §CL-04, data-model.md §PastoralExportDataSchema; campo-chave
 - [x] 2.5.3 Implementar query de notesAboutMe: `prisma.client.pastoralNote.findMany({ where: { participantId: userId, tenantId }, select: { id, noteType, occurredAt, content } })`
 - [x] 2.5.4 PastoralAction EXCLUÍDA do export (dec-021/CL-04 — fora do escopo especificado)
 - [x] 2.5.5 Retornar `{ alertsAboutMe: [...], notesAboutMe: [...] }` com datas ISO 8601
-- [ ] 2.5.6 Escrever unit tests em `apps/api/src/pastoral/__tests__/pastoral.export.spec.ts` — testar campo `participantId`
+- [x] 2.5.6 Escrever unit tests em `apps/api/src/pastoral/__tests__/pastoral.export.spec.ts` — testar campo `participantId`
 
 ### 2.6 Consent: exportConsentData `[C]`
 
@@ -115,7 +115,7 @@ Ref: spec §2.2, data-model.md §ConsentExportDataSchema; usa `ConsentRepository
 - [x] 2.6.2 Usar `ConsentRepository` existente: chamar `findAllAcceptancesByUser(userId)` — mapear `documentType`, `acceptedAt` como ISO 8601
 - [x] 2.6.3 Chamar `findWithdrawalsByUser(userId, tenantId)` — mapear `consentType`, `timestamp` como ISO 8601
 - [x] 2.6.4 Retornar `{ acceptances: [...], withdrawals: [...] }`
-- [ ] 2.6.5 Escrever unit tests em `apps/api/src/consent/__tests__/consent.export.spec.ts`
+- [x] 2.6.5 Escrever unit tests em `apps/api/src/consent/__tests__/consent.export.spec.ts`
 
 ### 2.7 Audit: exportUserData `[C]`
 
@@ -124,7 +124,7 @@ Ref: spec §2.5, data-model.md §AuditExportDataSchema; AuditEvent.userId pode s
 - [x] 2.7.1 Adicionar método `exportUserData(userId: string, tenantId: string): Promise<AuditExportData>` em `apps/api/src/audit/audit.service.ts`
 - [x] 2.7.2 Implementar query: `prisma.client.auditEvent.findMany({ where: { userId: { equals: userId }, tenantId }, select: { action, resource, resourceId, timestamp } })` — mapear `timestamp` como ISO 8601
 - [x] 2.7.3 Retornar `{ events: Array<{ action, resource, resourceId: string | null, timestamp }> }`
-- [ ] 2.7.4 Escrever unit tests em `apps/api/src/audit/__tests__/audit.export.spec.ts` — cobrir `userId` nullable
+- [x] 2.7.4 Escrever unit tests em `apps/api/src/audit/__tests__/audit.export.spec.ts` — cobrir `userId` nullable
 
 ---
 
@@ -195,39 +195,39 @@ Ref: plan.md §Fase 3 passo 14
 
 Ref: spec §FR-06 (implícito), plan.md §Fase 4 passo 16; arquivo: `apps/web/messages/pt-BR.json`
 
-- [ ] 4.1.1 Adicionar chaves `privacy.export.title`, `privacy.export.requestButton`, `privacy.export.formatJson`, `privacy.export.formatPdf`, `privacy.export.statusAccepted`, `privacy.export.statusProcessing`, `privacy.export.statusCompleted`, `privacy.export.statusFailed`, `privacy.export.downloadLink`, `privacy.export.toastCompleted`, `privacy.export.toastFailed`, `privacy.export.duplicateWarning`, `privacy.export.estimatedHours` em `apps/web/messages/pt-BR.json`
-- [ ] 4.1.2 Usar vocabulário pastoral/pessoal: "Meus dados", "Exportar meus dados", "Seu arquivo está pronto" (não termos corporativos)
+- [x] 4.1.1 Adicionar chaves `privacy.export.title`, `privacy.export.requestButton`, `privacy.export.formatJson`, `privacy.export.formatPdf`, `privacy.export.statusAccepted`, `privacy.export.statusProcessing`, `privacy.export.statusCompleted`, `privacy.export.statusFailed`, `privacy.export.downloadLink`, `privacy.export.toastCompleted`, `privacy.export.toastFailed`, `privacy.export.duplicateWarning`, `privacy.export.estimatedHours` em `apps/web/messages/pt-BR.json`
+- [x] 4.1.2 Usar vocabulário pastoral/pessoal: "Meus dados", "Exportar meus dados", "Seu arquivo está pronto" (não termos corporativos)
 
 ### 4.2 Hook usePrivacyExport `[A]`
 
 Ref: spec §FR-04 + §FR-05, plan.md §Fase 4 passo 17, AC6 + AC7
 
-- [ ] 4.2.1 Criar `apps/web/app/(authenticated)/app/consumo/perfil/privacidade/hooks/use-privacy-export.ts` como Client Component hook
-- [ ] 4.2.2 Implementar `useRequestExport(format: 'json'|'pdf')`: mutation TanStack Query para `POST /api/v1/privacy/export` — retornar `jobId`
-- [ ] 4.2.3 Implementar `useExportStatus(jobId: string | null)`: query TanStack Query com `refetchInterval: 5_000` quando `status !== 'completed' && status !== 'failed'` e `jobId !== null`
-- [ ] 4.2.4 Parar polling quando status for `completed` ou `failed` (`refetchInterval: false`)
-- [ ] 4.2.5 Expor `{ requestExport, status, signedUrl, isPolling, error }` ao componente pai
-- [ ] 4.2.6 Escrever testes do hook em `hooks/__tests__/use-privacy-export.spec.ts` usando MSW
+- [x] 4.2.1 Criar `apps/web/app/(authenticated)/app/consumo/perfil/privacidade/hooks/use-privacy-export.ts` como Client Component hook
+- [x] 4.2.2 Implementar `useRequestExport(format: 'json'|'pdf')`: mutation TanStack Query para `POST /api/v1/privacy/export` — retornar `jobId`
+- [x] 4.2.3 Implementar `useExportStatus(jobId: string | null)`: query TanStack Query com `refetchInterval: 5_000` quando `status !== 'completed' && status !== 'failed'` e `jobId !== null`
+- [x] 4.2.4 Parar polling quando status for `completed` ou `failed` (`refetchInterval: false`)
+- [x] 4.2.5 Expor `{ requestExport, status, signedUrl, isPolling, error }` ao componente pai
+- [x] 4.2.6 Escrever testes do hook em `hooks/__tests__/use-privacy-export.spec.ts` usando MSW
 
 ### 4.3 Componentes de Export na página de privacidade `[A]`
 
 Ref: spec §FR-05, §FR-06 (UI), plan.md §Fase 4 passo 18, AC6 + AC7
 
-- [ ] 4.3.1 Modificar `apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx` para adicionar seção "Meus Exports"
-- [ ] 4.3.2 Adicionar botão "Exportar meus dados" com seletor de formato (JSON ou PDF) — dispara `useRequestExport`
-- [ ] 4.3.3 Exibir estado do export em andamento (status `accepted`/`processing`) com indicador de progresso
-- [ ] 4.3.4 Exibir toast quando `status === 'completed'` via shadcn/ui Toast — mensagem PT-BR do i18n
-- [ ] 4.3.5 Exibir link de download quando `status === 'completed'` com `signedUrl` — abrir em nova aba
-- [ ] 4.3.6 Exibir aviso de export duplicado se POST retornar 409 (mensagem PT-BR)
-- [ ] 4.3.7 Escrever testes de componente em `__tests__/privacy-export.spec.tsx` — cobrir AC6 (botão exportar) e AC7 (toast completed)
+- [x] 4.3.1 Modificar `apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx` para adicionar seção "Meus Exports"
+- [x] 4.3.2 Adicionar botão "Exportar meus dados" com seletor de formato (JSON ou PDF) — dispara `useRequestExport`
+- [x] 4.3.3 Exibir estado do export em andamento (status `accepted`/`processing`) com indicador de progresso
+- [x] 4.3.4 Exibir toast quando `status === 'completed'` via shadcn/ui Toast — mensagem PT-BR do i18n
+- [x] 4.3.5 Exibir link de download quando `status === 'completed'` com `signedUrl` — abrir em nova aba
+- [x] 4.3.6 Exibir aviso de export duplicado se POST retornar 409 (mensagem PT-BR)
+- [x] 4.3.7 Escrever testes de componente em `__tests__/privacy-export.spec.tsx` — cobrir AC6 (botão exportar) e AC7 (toast completed)
 
 ### 4.4 MSW Handlers `[M]`
 
 Ref: plan.md §Fase 4 passo 19
 
-- [ ] 4.4.1 Adicionar handler `POST /api/v1/privacy/export` em `apps/web/mocks/handlers/privacy.ts` — retornar 202 com jobId mock
-- [ ] 4.4.2 Adicionar handler `GET /api/v1/privacy/export/:jobId` — retornar sequência de status: `accepted` → `processing` → `completed` com `signedUrl` mock
-- [ ] 4.4.3 Adicionar handler de 409 para testar duplicate detection no componente
+- [x] 4.4.1 Adicionar handler `POST /api/v1/privacy/export` em `apps/web/mocks/handlers/privacy.ts` — retornar 202 com jobId mock
+- [x] 4.4.2 Adicionar handler `GET /api/v1/privacy/export/:jobId` — retornar sequência de status: `accepted` → `processing` → `completed` com `signedUrl` mock
+- [x] 4.4.3 Adicionar handler de 409 para testar duplicate detection no componente
 
 ---
 
@@ -239,42 +239,42 @@ Ref: plan.md §Fase 4 passo 19
 
 Ref: spec §AC2, plan.md §Fase 5 passo 20
 
-- [ ] 5.1.1 Criar `apps/api/src/privacy/__tests__/privacy-export.integration-spec.ts`
-- [ ] 5.1.2 Criar fixtures para todos os 7 módulos (1 registro por módulo para o userId de teste)
-- [ ] 5.1.3 Testar que `processExportJob` chama todos os 7 `exportUserData`/`exportConsentData` e produz `FullExportPayload` com seções não-nulas (AC2)
-- [ ] 5.1.4 Testar comportamento "usuário sem dados": todos os `exportUserData` retornam arrays vazios → export gerado com seções vazias, sem erro (AC8)
-- [ ] 5.1.5 Testar cenário multi-tenant: 2 tenants → export contém seção `tenants[]` com 2 entradas (spec §FR-03)
-- [ ] 5.1.6 Benchmark NFR-P1: medir tempo de `processExportJob` com dados mock de 5 tenants × 10 registros/módulo — deve ser < 30s (gap CHK042 tratado como volume de referência para MVP)
+- [x] 5.1.1 Criar `apps/api/src/privacy/__tests__/privacy-export.integration-spec.ts`
+- [x] 5.1.2 Criar fixtures para todos os 7 módulos (1 registro por módulo para o userId de teste)
+- [x] 5.1.3 Testar que `processExportJob` chama todos os 7 `exportUserData`/`exportConsentData` e produz `FullExportPayload` com seções não-nulas (AC2)
+- [x] 5.1.4 Testar comportamento "usuário sem dados": todos os `exportUserData` retornam arrays vazios → export gerado com seções vazias, sem erro (AC8)
+- [x] 5.1.5 Testar cenário multi-tenant: 2 tenants → export contém seção `tenants[]` com 2 entradas (spec §FR-03)
+- [x] 5.1.6 Benchmark NFR-P1: medir tempo de `processExportJob` com dados mock de 5 tenants × 10 registros/módulo — deve ser < 30s (gap CHK042 tratado como volume de referência para MVP)
 
 ### 5.2 Integration Test — Fluxo completo POST→polling `[C]`
 
 Ref: spec §AC1 + §AC3 + §AC4 + §AC5
 
-- [ ] 5.2.1 Criar `apps/api/src/privacy/__tests__/privacy-export.e2e-spec.ts` (ou adicionar à suite existente)
-- [ ] 5.2.2 Testar `POST /api/v1/privacy/export` → 202 com `jobId` (AC1)
-- [ ] 5.2.3 Testar `GET /api/v1/privacy/export/:jobId` → retorna status do Redis (AC3)
-- [ ] 5.2.4 Testar 409 para segundo POST com job ativo (AC4)
-- [ ] 5.2.5 Testar mock de falha após 3 tentativas → `handleJobFailure` atualiza DB e Redis com `status: 'failed'` (AC5 + CHK008)
-- [ ] 5.2.6 Testar 404 quando jobId não existe no Redis
+- [x] 5.2.1 Criar `apps/api/src/privacy/__tests__/privacy-export.e2e-spec.ts` (ou adicionar à suite existente)
+- [x] 5.2.2 Testar `POST /api/v1/privacy/export` → 202 com `jobId` (AC1)
+- [x] 5.2.3 Testar `GET /api/v1/privacy/export/:jobId` → retorna status do Redis (AC3)
+- [x] 5.2.4 Testar 409 para segundo POST com job ativo (AC4)
+- [x] 5.2.5 Testar mock de falha após 3 tentativas → `handleJobFailure` atualiza DB e Redis com `status: 'failed'` (AC5 + CHK008)
+- [x] 5.2.6 Testar 404 quando jobId não existe no Redis
 
 ### 5.3 RLS Isolation Spec `[C]`
 
 Ref: spec §NFR-T1, §AC9, data-model.md §RLS
 
-- [ ] 5.3.1 Implementar `apps/api/test/rls/privacy-export-jobs.rls.spec.ts` seguindo padrão das outras RLS specs do projeto
-- [ ] 5.3.2 Criar jobs para tenant A e tenant B com `userId` distinto
-- [ ] 5.3.3 Verificar que SELECT com `app.current_tenant_id = tenant_A` retorna apenas jobs do tenant A
-- [ ] 5.3.4 Verificar que SELECT com `app.current_tenant_id = tenant_B` retorna apenas jobs do tenant B
-- [ ] 5.3.5 Usar UUIDs fixos hex (padrão das specs RLS do projeto) — sem `uuidv7()` nos fixtures de teste
+- [x] 5.3.1 Implementar `apps/api/test/rls/privacy-export-jobs.rls.spec.ts` seguindo padrão das outras RLS specs do projeto
+- [x] 5.3.2 Criar jobs para tenant A e tenant B com `userId` distinto
+- [x] 5.3.3 Verificar que SELECT com `app.current_tenant_id = tenant_A` retorna apenas jobs do tenant A
+- [x] 5.3.4 Verificar que SELECT com `app.current_tenant_id = tenant_B` retorna apenas jobs do tenant B
+- [x] 5.3.5 Usar UUIDs fixos hex (padrão das specs RLS do projeto) — sem `uuidv7()` nos fixtures de teste
 
 ### 5.4 Observabilidade e Qualidade `[M]`
 
 Ref: plan.md §Riscos (signed URL nos logs), spec §NFR-S3
 
-- [ ] 5.4.1 Verificar (grep) que `signedUrl` não aparece em nenhum `Logger.log` — apenas `Logger.debug` permitido
-- [ ] 5.4.2 Verificar (grep) que `allTenantIds` não aparece em nenhuma resposta de API (DTO de resposta não inclui o campo)
-- [ ] 5.4.3 Adicionar `Logger.log('PrivacyExportJob created', { jobId, format })` no `createJob` — sem dados pessoais sensíveis
-- [ ] 5.4.4 Verificar que `FullExportPayload` gerado é válido contra `FullExportPayloadSchema.parse()` antes do upload (gate de qualidade do dado)
+- [x] 5.4.1 Verificar (grep) que `signedUrl` não aparece em nenhum `Logger.log` — apenas `Logger.debug` permitido
+- [x] 5.4.2 Verificar (grep) que `allTenantIds` não aparece em nenhuma resposta de API (DTO de resposta não inclui o campo)
+- [x] 5.4.3 Adicionar `Logger.log('PrivacyExportJob created', { jobId, format })` no `createJob` — sem dados pessoais sensíveis
+- [x] 5.4.4 Verificar que `FullExportPayload` gerado é válido contra `FullExportPayloadSchema.parse()` antes do upload (gate de qualidade do dado)
 
 ---
 
