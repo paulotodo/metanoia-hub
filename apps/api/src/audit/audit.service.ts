@@ -29,6 +29,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { BullMqService } from '../bullmq/bullmq.service';
 import { RedisService } from '../redis/redis.service';
 import { withTenantTx } from '../prisma/with-tenant-tx';
+import { requestContext } from '../common/context/request-context';
 import { getAuditSeverity } from './audit.severity';
 import { getAuditPreviousState } from './audit-context';
 
@@ -87,33 +88,55 @@ export class AuditService implements OnModuleInit {
    * FR-INFRA-02: this is the ONLY write path — no update/delete exposed.
    */
   async createEvent(dto: CreateAuditEventDto): Promise<void> {
+    // Tenant comes from AsyncLocalStorage (never a parameter — multi-tenancy rule).
+    // The `withMultiTenant` Prisma extension that used to auto-inject tenant_id on
+    // every write was removed in Story 7-7; `withTenantTx` only issues SET LOCAL for
+    // RLS and does NOT populate the INSERT column. So tenant_id must be written
+    // explicitly here — the previous `tenantId: ''` placeholder produced
+    // `invalid input syntax for type uuid: ""` and silently dropped every event
+    // (fire-and-forget swallowed the error).
+    // audit_events.tenant_id is NOT NULL uuid — a public/unauthenticated route has no
+    // tenant to attribute the event to, so skip silently (FR-INFRA-01: never throw).
+    const tenantId = requestContext.getStore()?.tenantId ?? '';
+    if (!tenantId) {
+      this.logger.debug(
+        { action: dto.action, resource: dto.resource },
+        'audit event skipped: no tenant in request context',
+      );
+      return;
+    }
+
     const severity = getAuditSeverity(dto.action, dto.resource);
     const previousState = truncatePayload(getAuditPreviousState());
     const newState = truncatePayload(dto.newState);
 
     try {
-      await withTenantTx(this.prisma, async (tx) => {
-        await tx.auditEvent.create({
-          data: {
-            id: generateId(),
-            tenantId: '', // injected by withTenantTx via RLS — placeholder satisfies type
-            userId: dto.userId,
-            action: dto.action,
-            resource: dto.resource,
-            resourceId: dto.resourceId,
-            ipAddress: dto.ipAddress,
-            userAgent: dto.userAgent,
-            // Prisma nullable JSON: use undefined to omit, or cast to InputJsonValue
-            previousState: previousState !== null
-              ? (previousState as Prisma.InputJsonValue)
-              : undefined,
-            newState: newState !== null
-              ? (newState as Prisma.InputJsonValue)
-              : undefined,
-            severity,
-          },
-        });
-      });
+      await withTenantTx(
+        this.prisma,
+        async (tx) => {
+          await tx.auditEvent.create({
+            data: {
+              id: generateId(),
+              tenantId,
+              userId: dto.userId,
+              action: dto.action,
+              resource: dto.resource,
+              resourceId: dto.resourceId,
+              ipAddress: dto.ipAddress,
+              userAgent: dto.userAgent,
+              // Prisma nullable JSON: use undefined to omit, or cast to InputJsonValue
+              previousState: previousState !== null
+                ? (previousState as Prisma.InputJsonValue)
+                : undefined,
+              newState: newState !== null
+                ? (newState as Prisma.InputJsonValue)
+                : undefined,
+              severity,
+            },
+          });
+        },
+        { tenantId },
+      );
     } catch (err) {
       // Audit failures must NEVER propagate to the caller (FR-INFRA-01)
       this.logger.error({ err, action: dto.action, resource: dto.resource }, 'audit event write failed');

@@ -62,6 +62,15 @@ vi.mock('./audit-context', () => ({
   auditContext: { run: vi.fn(), getStore: vi.fn(() => null) },
 }));
 
+// createEvent resolves tenant_id from RequestContext (AsyncLocalStorage). The
+// `tenantId: ''` placeholder bug (Story 7-7 removed the auto-inject extension) is
+// guarded by this: with no tenant in context, createEvent skips the write.
+const VALID_TENANT_ID = '01912345-6789-7000-8000-0000000000aa';
+const { mockGetStore } = vi.hoisted(() => ({ mockGetStore: vi.fn() }));
+vi.mock('../common/context/request-context', () => ({
+  requestContext: { getStore: mockGetStore },
+}));
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function makeDto(overrides: Partial<CreateAuditEventDto> = {}): CreateAuditEventDto {
@@ -117,6 +126,11 @@ describe('AuditService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetStore.mockReturnValue({
+      tenantId: VALID_TENANT_ID,
+      requestId: 'req-01',
+      correlationId: 'corr-01',
+    });
     mockAuditEvent.create.mockResolvedValue({});
     mockAuditEvent.findMany.mockResolvedValue([]);
     mockAuditEvent.count.mockResolvedValue(0);
@@ -142,6 +156,23 @@ describe('AuditService', () => {
       expect(data.action).toBe('create');
       expect(data.resource).toBe('group');
       expect(data.severity).toBe('info');
+    });
+
+    it('writes the real tenant_id from RequestContext (regression: not "")', async () => {
+      await service.createEvent(makeDto());
+
+      const { data } = mockAuditEvent.create.mock.calls[0]![0];
+      // Story 7-7 removed the auto-inject extension; tenant_id must now be the
+      // value resolved from AsyncLocalStorage, never the old '' placeholder.
+      expect(data.tenantId).toBe(VALID_TENANT_ID);
+      expect(data.tenantId).not.toBe('');
+    });
+
+    it('skips the write when there is no tenant in context (public route)', async () => {
+      mockGetStore.mockReturnValue(undefined);
+
+      await expect(service.createEvent(makeDto())).resolves.toBeUndefined();
+      expect(mockAuditEvent.create).not.toHaveBeenCalled();
     });
 
     it('assigns correct severity for delete action', async () => {

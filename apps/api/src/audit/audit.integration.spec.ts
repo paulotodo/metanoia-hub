@@ -49,6 +49,21 @@ vi.mock('./audit-context', () => ({
   auditContext: { run: vi.fn(), getStore: vi.fn(() => null) },
 }));
 
+// createEvent resolves tenant_id from RequestContext (AsyncLocalStorage) — the
+// `tenantId: ''` placeholder was removed (Story 7-7 deleted the auto-inject
+// extension). The factory inlines the literal because vi.mock is hoisted above
+// const declarations.
+vi.mock('../common/context/request-context', () => ({
+  requestContext: {
+    getStore: () => ({
+      tenantId: '01912345-6789-7000-8000-0000000000aa',
+      requestId: 'req-int',
+      correlationId: 'corr-int',
+    }),
+  },
+}));
+const VALID_TENANT_ID = '01912345-6789-7000-8000-0000000000aa';
+
 const mockQueue = { add: vi.fn() };
 const mockBullMqService = {
   createQueue: vi.fn(() => mockQueue),
@@ -111,7 +126,7 @@ describe('FASE 3.1 — Automatic audit capture (US1)', () => {
 
     // All 12 fields present (id generated internally, tenantId via RLS)
     expect(data.id).toBeTruthy(); // UUIDv7 generated
-    expect(data.tenantId).toBeDefined(); // filled by withTenantTx
+    expect(data.tenantId).toBe(VALID_TENANT_ID); // real tenant from RequestContext (not '')
     expect(data.userId).toBe('user-01');
     expect(data.action).toBe('create');
     expect(data.resource).toBe('groups');

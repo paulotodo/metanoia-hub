@@ -15,6 +15,8 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { generateId } from '@metanoia/types';
 import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
+import { AuditService } from '../../src/audit/audit.service';
+import { requestContext } from '../../src/common/context/request-context';
 
 // Per-run unique user IDs. audit_events is append-only (no DELETE policy), so the
 // afterAll cleanup is a no-op via the app role and rows survive across runs. In CI
@@ -200,6 +202,54 @@ describe('audit_events RLS', () => {
     expect(affected).toBe(0);
     // Rows survive — the audit trail cannot be erased.
     expect(await countEventsForUserA()).toBe(before);
+  });
+
+  // ─── Regression: AuditService.createEvent writes the real tenant_id ────────
+  // Before this fix createEvent inserted `tenantId: ''` (relying on the
+  // withMultiTenant extension deleted in Story 7-7). Against a real DB that
+  // raised `invalid input syntax for type uuid: ""` and — being fire-and-forget —
+  // silently dropped every audit event. This drives the actual write path
+  // (AuditService → withTenantTx → INSERT) and asserts the row lands under the
+  // tenant resolved from RequestContext.
+  it('AuditService.createEvent persists the real tenant_id from RequestContext (not "")', async () => {
+    const auditService = new AuditService(
+      { client: prisma } as never,
+      { createQueue: () => ({ add: async () => undefined }) } as never,
+      {} as never,
+    );
+    auditService.onModuleInit();
+
+    const resourceId = generateId();
+    await requestContext.run(
+      {
+        tenantId: TENANT_A_ID,
+        userId: AUDIT_USER_A_ID,
+        requestId: 'rls-createEvent-req',
+        correlationId: 'rls-createEvent-corr',
+      },
+      async () => {
+        await auditService.createEvent({
+          userId: AUDIT_USER_A_ID,
+          action: 'create',
+          resource: 'consent',
+          resourceId,
+          ipAddress: '127.0.0.1',
+          userAgent: 'vitest/rls-createEvent',
+          newState: { via: 'createEvent' },
+        });
+      },
+    );
+
+    const rows = await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
+      return tx.$queryRawUnsafe<{ tid: string; resource: string }[]>(
+        `SELECT tenant_id::text as tid, resource FROM audit_events WHERE resource_id = '${resourceId}'`,
+      );
+    });
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.tid).toBe(TENANT_A_ID);
+    expect(rows[0]?.resource).toBe('consent');
   });
 
   // ─── NULLIF guard: SELECT without SET LOCAL returns 0 rows ─────────────────
