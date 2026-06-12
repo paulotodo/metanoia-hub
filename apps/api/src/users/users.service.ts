@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { OnboardingCompleteResponse, UserExportData } from '@metanoia/types';
+import type { CurrentUser, OnboardingCompleteResponse, UserExportData } from '@metanoia/types';
+import { UserStatusSchema } from '@metanoia/types';
 import { PrismaService } from '../prisma/prisma.service';
 import { getRequestContext } from '../common/context/request-context';
 
@@ -144,14 +145,19 @@ export class UsersService {
    * Get current user profile including status (for deletion_pending banner).
    * AVS-02: useAuth() does not expose user.status — this endpoint provides it.
    */
-  async getCurrentUser(): Promise<{ id: string; email: string; name: string; status: string }> {
+  async getCurrentUser(): Promise<CurrentUser> {
     const { userId } = getRequestContext();
     if (!userId) throw new Error('getCurrentUser requires userId in RequestContext');
     const user = await this.prisma.client.user.findUniqueOrThrow({
       where: { id: userId },
       select: { id: true, email: true, name: true, status: true },
     });
-    return user;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      status: UserStatusSchema.parse(user.status),
+    };
   }
 
   /**

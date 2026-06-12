@@ -12,6 +12,7 @@ import type { ConsentHistoryItem, ConsentType } from '@metanoia/types';
 import { useConsentHistory } from '@/hooks/use-consent-history';
 import { useWithdrawConsent } from '@/hooks/use-withdraw-consent';
 import { usePrivacyExport } from '@/hooks/use-privacy-export';
+import { DeletionSection } from '@/components/privacy';
 
 // ---------------------------------------------------------------------------
 // Status badge component
@@ -340,6 +341,9 @@ export default function PrivacidadeConsentimentoPage() {
 
       {/* Meus dados — export personal data */}
       <ExportSection />
+
+      {/* Exclusão de conta — LGPD Art. 18 VI */}
+      <DeletionSection />
     </main>
   );
 }

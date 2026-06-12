@@ -1246,6 +1246,33 @@
       "toastFailed": "Não foi possível gerar o arquivo. Tente novamente.",
       "duplicateWarning": "Já existe uma exportação em andamento. Aguarde a conclusão antes de solicitar uma nova.",
       "estimatedHours": "Tempo estimado: até {{hours}}h"
+    },
+    "deletion": {
+      "title": "Solicitar exclusão da conta",
+      "description": "Ao solicitar a exclusão, seus dados serão removidos permanentemente em {{days}} dias. Você pode cancelar dentro do período de {{graceDays}} dias.",
+      "confirmLabel": "Para confirmar, entendo que esta ação irá remover meus dados desta comunidade.",
+      "requestButton": "Solicitar exclusão da minha conta",
+      "cancelButton": "Cancelar solicitação de exclusão",
+      "requestPending": "Processando…",
+      "cancelPending": "Cancelando…",
+      "statusPending": "Exclusão solicitada",
+      "statusSoftDeleted": "Dados removidos — aguardando exclusão definitiva",
+      "statusHardDeleted": "Conta excluída",
+      "statusCancelled": "Solicitação cancelada",
+      "statusFailed": "Falha na exclusão. Entre em contato com o suporte.",
+      "cancellableUntilLabel": "Cancelável até:",
+      "deletionDeadlineLabel": "Exclusão definitiva prevista para:",
+      "duplicateWarning": "Já existe uma solicitação de exclusão ativa.",
+      "leaderBlockerWarning": "Você lidera grupos ativos. Transfira a liderança antes de solicitar a exclusão.",
+      "genericError": "Não foi possível processar sua solicitação. Tente novamente.",
+      "cancelError": "Não foi possível cancelar a solicitação. Tente novamente.",
+      "successMessage": "Solicitação de exclusão registrada. Você pode cancelar até a data indicada."
+    },
+    "deletionBanner": {
+      "title": "Exclusão de conta solicitada",
+      "description": "Sua conta será excluída em {{days}} dias. Se mudou de ideia, cancele agora.",
+      "cancelButton": "Cancelar exclusão",
+      "cancelling": "Cancelando…"
     }
   }
 }

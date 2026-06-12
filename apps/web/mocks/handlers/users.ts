@@ -2,7 +2,34 @@ import { http, HttpResponse } from 'msw';
 
 const MOCK_USER_ID = '01912345-6789-7000-8000-0000000000a1';
 
+/** Mutable in-memory user status for tests (use server.use() to override). */
+let _userStatus: 'pending_verification' | 'active' | 'deletion_pending' | 'deleted' = 'active';
+
+/** Reset user mock state between tests. */
+export function resetUserMockState() {
+  _userStatus = 'active';
+}
+
+/** Set the simulated user status (e.g. for deletion_pending banner tests). */
+export function setUserMockStatus(
+  status: 'pending_verification' | 'active' | 'deletion_pending' | 'deleted',
+) {
+  _userStatus = status;
+}
+
 export const usersHandlers = [
+  // GET /api/v1/users/me — returns current user profile including status
+  http.get('*/api/v1/users/me', () =>
+    HttpResponse.json({
+      data: {
+        id: MOCK_USER_ID,
+        email: 'joao@igrejabetania.com.br',
+        name: 'João Silva',
+        status: _userStatus,
+      },
+    }),
+  ),
+
   // GET /api/v1/users/me/onboarding-status
   // Default: onboarding NOT complete (null) — can be overridden per-test
   http.get('*/api/v1/users/me/onboarding-status', () =>
