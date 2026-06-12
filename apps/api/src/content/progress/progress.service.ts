@@ -229,4 +229,59 @@ export class ProgressService implements OnModuleInit {
       })),
     };
   }
+
+  /**
+   * Soft-delete progress rows for a user within a tenant (Story 9-2).
+   * Covers lesson_progress, module_progress, trail_progress.
+   * Idempotent via WHERE deleted_at IS NULL.
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE lesson_progress
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE module_progress
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE trail_progress
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+  }
+
+  /**
+   * Hard-delete progress rows for a user within a tenant (Story 9-2).
+   * All 3 progress tables: DELETE (user_id NOT NULL in all).
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    await tx.$executeRaw`
+      DELETE FROM lesson_progress
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM module_progress
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM trail_progress
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+  }
 }

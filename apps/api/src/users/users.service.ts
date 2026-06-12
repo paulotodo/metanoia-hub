@@ -87,6 +87,74 @@ export class UsersService {
   }
 
   /**
+   * Soft-delete user data scoped to one tenant (Story 9-2 / LGPD Art. 18 VI).
+   * Sets deleted_at on user_tenants for this user+tenant.
+   * Idempotent: guard `deleted_at IS NULL` means calling 2x = same result.
+   * Note: consents are NOT touched here (LGPD art. 16 — retained).
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE user_tenants
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    this.logger.log(`softDeleteUserData: user_tenants marked for userId=${userId} tenantId=${tenantId}`);
+  }
+
+  /**
+   * Hard-delete user data scoped to one tenant (Story 9-2 / LGPD Art. 18 VI).
+   * - Deletes user_tenants row.
+   * - Anonymizes the users record (UPDATE, not DELETE — preserves FK chain).
+   *   email = 'removed-<hash>@deleted.invalid' where hash = sha256(userId+salt)[:8]
+   *   status = 'deleted'
+   * Called inside a prisma.$transaction by the worker.
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    // Delete the tenant association
+    await tx.$executeRaw`
+      DELETE FROM user_tenants
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    // Anonymize the user profile (keep row — preserves FK chain cross-tenant)
+    const anonymizationSalt = process.env['ANONYMIZATION_SALT'] ?? 'metanoia-deletion-salt';
+    const { createHash } = await import('node:crypto');
+    const hash = createHash('sha256')
+      .update(userId + anonymizationSalt)
+      .digest('hex')
+      .slice(0, 8);
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        name: 'Usuário Removido',
+        email: `removed-${hash}@deleted.invalid`,
+        status: 'deleted',
+      },
+    });
+    this.logger.log(`hardDeleteUserData: user_tenants deleted + user anonymized userId=${userId}`);
+  }
+
+  /**
+   * Get current user profile including status (for deletion_pending banner).
+   * AVS-02: useAuth() does not expose user.status — this endpoint provides it.
+   */
+  async getCurrentUser(): Promise<{ id: string; email: string; name: string; status: string }> {
+    const { userId } = getRequestContext();
+    if (!userId) throw new Error('getCurrentUser requires userId in RequestContext');
+    const user = await this.prisma.client.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { id: true, email: true, name: true, status: true },
+    });
+    return user;
+  }
+
+  /**
    * Check whether onboarding is complete for the authenticated user.
    * Returns the timestamp if set, or null if pending.
    */

@@ -387,4 +387,88 @@ export class PastoralService {
       lastActiveAt: r.lastActiveAt,
     }));
   }
+
+  /**
+   * Soft-delete pastoral data for a user within a tenant (Story 9-2).
+   * Covers pastoral_alerts, pastoral_actions, pastoral_notes (field: participant_id),
+   * outreach_intents (field: created_by_user_id), reflections (field: leader_id).
+   * Idempotent via WHERE deleted_at IS NULL.
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE pastoral_alerts
+      SET deleted_at = NOW()
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE pastoral_actions
+      SET deleted_at = NOW()
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE pastoral_notes
+      SET deleted_at = NOW()
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE outreach_intents
+      SET deleted_at = NOW()
+      WHERE created_by_user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE reflections
+      SET deleted_at = NOW()
+      WHERE leader_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+  }
+
+  /**
+   * Hard-delete pastoral data for a user within a tenant (Story 9-2).
+   * pastoral_alerts, pastoral_actions, pastoral_notes (participant_id): DELETE
+   * reflections (leader_id): DELETE — NOT NULL, cannot SET NULL (AVS-01)
+   * outreach_intents (created_by_user_id): DELETE — NOT NULL, cannot SET NULL
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    await tx.$executeRaw`
+      DELETE FROM pastoral_alerts
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM pastoral_actions
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM pastoral_notes
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    // AVS-01: leader_id is NOT NULL — DELETE, never SET NULL
+    await tx.$executeRaw`
+      DELETE FROM reflections
+      WHERE leader_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    // created_by_user_id is NOT NULL — DELETE, never SET NULL
+    await tx.$executeRaw`
+      DELETE FROM outreach_intents
+      WHERE created_by_user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+  }
 }

@@ -1,0 +1,78 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DeletionStatusEnum > covers all valid statuses 1`] = `
+[
+  "pending",
+  "soft_deleted",
+  "hard_deleted",
+  "cancelled",
+  "failed",
+]
+`;
+
+exports[`LeaderBlockerSchema > parses leader blocker with groups 1`] = `
+{
+  "error": "LEADER_ACTIVE_GROUPS",
+  "groups": [
+    {
+      "id": "00000000-0000-7000-8000-000000000001",
+      "name": "Célula Norte",
+    },
+    {
+      "id": "00000000-0000-7000-8000-000000000002",
+      "name": "Jovens Alpha",
+    },
+  ],
+}
+`;
+
+exports[`PrivacyDeletionRequestSchema > accepts confirm=EXCLUIR 1`] = `
+{
+  "confirm": "EXCLUIR",
+}
+`;
+
+exports[`PrivacyDeletionResponseSchema > parses valid response 1`] = `
+{
+  "cancellableUntil": "2026-06-19T10:00:00.000Z",
+  "deletionDeadline": "2026-07-12T10:00:00.000Z",
+  "requestId": "00000000-0000-7000-8000-000000000001",
+  "status": "pending",
+}
+`;
+
+exports[`PrivacyDeletionStatusSchema > parses cancelled status with cancelledAt 1`] = `
+{
+  "cancellableUntil": "2026-06-19T10:00:00.000Z",
+  "cancelledAt": "2026-06-12T10:00:00.000Z",
+  "completedAt": null,
+  "deletionDeadline": "2026-07-12T10:00:00.000Z",
+  "failureReason": null,
+  "requestId": "00000000-0000-7000-8000-000000000001",
+  "status": "cancelled",
+}
+`;
+
+exports[`PrivacyDeletionStatusSchema > parses hard_deleted status 1`] = `
+{
+  "cancellableUntil": "2026-06-19T10:00:00.000Z",
+  "cancelledAt": null,
+  "completedAt": "2026-06-12T10:00:00.000Z",
+  "deletionDeadline": "2026-07-12T10:00:00.000Z",
+  "failureReason": null,
+  "requestId": "00000000-0000-7000-8000-000000000001",
+  "status": "hard_deleted",
+}
+`;
+
+exports[`PrivacyDeletionStatusSchema > parses pending status 1`] = `
+{
+  "cancellableUntil": "2026-06-19T10:00:00.000Z",
+  "cancelledAt": null,
+  "completedAt": null,
+  "deletionDeadline": "2026-07-12T10:00:00.000Z",
+  "failureReason": null,
+  "requestId": "00000000-0000-7000-8000-000000000001",
+  "status": "pending",
+}
+`;

@@ -218,6 +218,23 @@ export class ConsentService {
    * Export consent data for a user.
    * Privileged — uses ConsentRepository which calls prisma.client directly. Never throws.
    */
+  /**
+   * Soft-delete for consents: NO-OP (LGPD art. 16 — legal basis requires retention).
+   * Explicit stub so PrivacyDeletionService can call uniformly across all bounded contexts.
+   */
+  async softDeleteUserData(_userId: string, _tenantId: string): Promise<void> {
+    // LGPD art. 16 — consents MUST be retained; this is intentionally a no-op
+    // Tests assert that consent rows are NOT affected by soft-delete
+  }
+
+  /**
+   * Hard-delete for consents: NO-OP (LGPD art. 16 — retained even after hard-delete).
+   * Consent data is the legal record of user agreement — never deleted.
+   */
+  async hardDeleteUserData(_userId: string, _tenantId: string): Promise<void> {
+    // LGPD art. 16 — consents MUST be retained
+  }
+
   async exportConsentData(userId: string, tenantId: string): Promise<ConsentExportData> {
     const [acceptances, withdrawals] = await Promise.all([
       this.repo.findAllAcceptancesByUser(userId),

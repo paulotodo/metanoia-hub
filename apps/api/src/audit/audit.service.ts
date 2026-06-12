@@ -314,6 +314,40 @@ export class AuditService implements OnModuleInit {
    * Privileged — uses prisma.client directly (no RLS). Never throws.
    * userId is nullable on AuditEvent — filter with { equals: userId }.
    */
+  /**
+   * Soft-delete for audit: NO-OP (anonimização only happens in hard-delete).
+   * Audit log is immutable (Story 9-3) — never soft-deleted.
+   */
+  async softDeleteUserData(_userId: string, _tenantId: string): Promise<void> {
+    // No-op: anonimização occurs in hard-delete only (imutabilidade 9-3)
+  }
+
+  /**
+   * Hard-delete for audit: anonymize user reference (Story 9-2 / LGPD Art. 18 VI).
+   * Sets user_id = NULL and anonymized_user_ref = 'anonymous-<hash>' for all audit events.
+   * audit_events rows are NEVER DELETED (imutabilidade 9-3).
+   * Uses prisma.client directly (superuser, bypasses RLS — cross-tenant visibility required).
+   * hash = sha256(userId + ANONYMIZATION_SALT).slice(0,8) — same salt as users anonymization.
+   */
+  async hardDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    const anonymizationSalt = process.env['ANONYMIZATION_SALT'] ?? 'metanoia-deletion-salt';
+    const { createHash } = await import('node:crypto');
+    const hash = createHash('sha256')
+      .update(userId + anonymizationSalt)
+      .digest('hex')
+      .slice(0, 8);
+    const anonymizedRef = `anonymous-${hash}`;
+
+    // Direct executeRaw — bypasses Prisma model constraints (no update/delete exposed on AuditEvent)
+    await this.prisma.client.$executeRaw`
+      UPDATE audit_events
+      SET user_id = NULL,
+          anonymized_user_ref = ${anonymizedRef}
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+  }
+
   async exportUserData(userId: string, tenantId: string): Promise<AuditExportData> {
     const events = await this.prisma.client.auditEvent.findMany({
       where: { userId: { equals: userId }, tenantId },

@@ -397,6 +397,77 @@ export class MeetingsService {
     };
   }
 
+  /**
+   * Soft-delete user data across 4 meeting tables (Story 9-2).
+   * Idempotent via WHERE deleted_at IS NULL.
+   * meeting_attendance + meeting_telemetry: user_id NOT NULL → soft-delete
+   * meeting_participants + meeting_events: user_id nullable → soft-delete (SET NULL happens in hard-delete)
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE meeting_attendance
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE meeting_telemetry
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE meeting_participants
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE meeting_events
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+  }
+
+  /**
+   * Hard-delete user data in meeting tables (Story 9-2).
+   * meeting_attendance + meeting_telemetry → DELETE (NOT NULL user_id)
+   * meeting_participants + meeting_events → SET NULL user_id (nullable confirmed in schema)
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    await tx.$executeRaw`
+      DELETE FROM meeting_attendance
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM meeting_telemetry
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      UPDATE meeting_participants
+      SET user_id = NULL
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      UPDATE meeting_events
+      SET user_id = NULL
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+  }
+
   private toResponse(meeting: Meeting): MeetingResponse {
     return MeetingResponseSchema.parse({
       id: meeting.id,

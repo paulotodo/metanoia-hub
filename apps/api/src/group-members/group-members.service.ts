@@ -172,6 +172,36 @@ export class GroupMembersService {
     }
   }
 
+  /**
+   * Soft-delete group_members rows for a user within a tenant (Story 9-2).
+   * Idempotent via WHERE deleted_at IS NULL.
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE group_members
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+  }
+
+  /**
+   * Hard-delete group_members rows for a user within a tenant (Story 9-2).
+   * Called inside a prisma.$transaction by the worker.
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    await tx.$executeRaw`
+      DELETE FROM group_members
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+  }
+
   private toSummary(row: MembershipRow): GroupMemberSummary {
     return {
       userId: row.user.id,
