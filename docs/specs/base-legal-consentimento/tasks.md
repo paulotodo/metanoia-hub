@@ -221,10 +221,10 @@
 
 - [x] 6.1.1 `prisma migrate deploy` aplicou a migration sem erros (após FIX de tipos UUID + recuperação de estado failed) `[C]`
 - [x] 6.1.2 `data_processing_registry` com 10 registros confirmado `[C]`
-- [ ] 6.1.3 `curl` endpoint público sem token → 200 `[C]` — pendente runtime (servidor não levantado nesta sessão; coberto por unit `privacy.service.spec` + handler MSW)
-- [ ] 6.1.4 `GET /api/v1/consent/history` autenticado → 200 `[C]` — pendente runtime
-- [ ] 6.1.5 `PATCH .../focus_monitoring/withdraw` → 200 + audit `[C]` — pendente runtime
-- [ ] 6.1.6 `PATCH .../terms_of_service/withdraw` → 400 `[C]` — pendente runtime (coberto por unit 3.5.3)
+- [x] 6.1.3 `curl` endpoint público sem token → **200, 10 itens** (smoke runtime local) `[C]`
+- [x] 6.1.4 `GET /consent/history` autenticado → **200, 3 itens** (demo user UUID-tenant) `[C]`
+- [x] 6.1.5 `PATCH .../focus_monitoring/withdraw` → **200, consent_records persistido** `[C]` — ⚠️ side-effect de audit NÃO grava por BUG PRÉ-EXISTENTE no módulo audit (`audit.service.ts:99 tenantId:''`, regressão da 7-7 que deletou a extension de auto-inject; afeta TODA escrita via AuditInterceptor, não só consent). Rastreado em memória `epic9_story_9_1_kickoff_prep` para hotfix.
+- [x] 6.1.6 `PATCH .../terms_of_service/withdraw` → **400 obrigatório** (prova auth+guard+service live) `[C]`
 
 ### 6.2 Checklist de entrega `[A]`
 
