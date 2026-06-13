@@ -26,11 +26,6 @@ import {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Wait for the wizard to appear on the boas-vindas page. */
-async function expectWizardVisible(page: Page) {
-  await expect(page.getByTestId('onboarding-wizard')).toBeVisible({ timeout: 15_000 });
-}
-
 /** Navigate to the wizard page directly (authenticated). */
 async function goToBoasVindas(page: Page) {
   await page.goto(`${E2E_BASE_URL}/app/admin/boas-vindas`);
