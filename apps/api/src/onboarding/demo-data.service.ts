@@ -87,6 +87,15 @@ export class DemoDataService {
    * hasRealData — true if any Group without isDemoData exists
    * demoRecordCount — total count of demo records across all 12 tables
    * nudgeDismissed — true if Tenant.metadata.demoDismissedAt is set
+   *
+   * Interface with LGPD export (SEC011 / dec-010):
+   * Users and records seeded with isDemoData=true appear in LGPD exports
+   * (Story 9-1) as technical tenant data — they are not automatically filtered
+   * by the LGPD exporter (filtering deferred to post-MVP per SEC010).
+   * Admins who do not want demo records included in a LGPD export must call
+   * `DELETE /api/v1/onboarding/demo-data` before triggering the export.
+   * This method itself does not filter by isDemoData; it counts all records
+   * (demo and real) separately to inform the UI nudge.
    */
   async getDemoStatus(tenantId: string): Promise<DemoStatusResult> {
     const [
