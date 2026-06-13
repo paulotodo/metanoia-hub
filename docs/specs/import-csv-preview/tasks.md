@@ -238,7 +238,7 @@
 
 ### 4.1 Criar página Server Component shell `[A]`
 
-- [ ] Criar `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx`
+- [x] Criar `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx`
   - Server Component: metadata title PT-BR pastoral + `<Suspense>` wrapper
   - Importar `ImportClient` como Client Component
   - Decisão padrão (UX-04-G1): layout scroll único dentro do step do wizard de onboarding (não criar novo step)
@@ -246,7 +246,7 @@
 
 ### 4.2 Criar import-client.tsx (orquestrador Client Component) `[A]`
 
-- [ ] Criar `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/import-client.tsx`
+- [x] Criar `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/import-client.tsx`
   - Estado local: `file | null`, `parseResult | null`, `checkResult | null`
   - Fluxo: arquivo selecionado → `csvParser.parse(file)` → `csvValidator.validate(rows)` → `useCheckEmails(emails)` → atualizar preview
   - Compor `FileUploadZone` + `CSVPreviewTable`
@@ -255,7 +255,7 @@
 
 ### 4.3 MSW handler para check-emails `[M]`
 
-- [ ] Criar/editar handler MSW em `apps/web/src/mocks/handlers/`
+- [x] Criar/editar handler MSW em `apps/web/mocks/handlers/users.ts`
   - `GET /api/v1/users/check-emails` → resposta mockada com shape correta
   - Validar shape via `checkEmailsResponseSchema`
   - Ref: plan.md §Project Structure; padrão MSW Cenários 01-09
