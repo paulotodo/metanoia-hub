@@ -177,7 +177,7 @@
 
 ### 3.1 Criar strings i18n PT-BR (import.*) `[C]`
 
-- [ ] Editar `apps/web/messages/pt-BR.json`
+- [x] Editar `apps/web/messages/pt-BR.json`
   - Keys de upload: `import.dropzone.idle`, `import.dropzone.dragover`, `import.dropzone.accepted`, `import.dropzone.errorSize`, `import.dropzone.errorType`, `import.dropzone.parsing`
   - Keys de erros validação pastoral: `import.error.emailInvalid`, `import.error.emailMissing`, `import.error.nameTooShort`, `import.error.columnMissing`, `import.error.roleInvalid`
   - Keys de avisos: `import.warning.duplicate`, `import.warning.multipleSheets`, `import.warning.apiUnavailable`, `import.warning.partialCheck`
@@ -187,7 +187,7 @@
 
 ### 3.2 Implementar FileUploadZone `[A]`
 
-- [ ] Criar `apps/web/src/components/onboarding/file-upload-zone.tsx`
+- [x] Criar `apps/web/src/components/onboarding/file-upload-zone.tsx`
   - Estados visuais: idle, drag-over (highlight), accepted (nome+tamanho+ícone), error-size, error-type, parsing (spinner durante parse)
   - Drag & drop + clique no seletor nativo (FR-01)
   - Rejeitar >5MB com mensagem PT-BR (FR-02); rejeitar extensão != .csv/.xlsx (FR-03)
@@ -195,7 +195,7 @@
   - Operável por teclado: Tab, Enter/Space abre seletor; labels ARIA (FR-22)
   - Decisão padrão (UX-01-G1): spinner no estado `parsing`
   - Ref: spec.md FR-01/02/03/04/22; checklist UX-01-G1
-- [ ] Criar `apps/web/src/components/onboarding/file-upload-zone.spec.tsx`
+- [x] Criar `apps/web/src/components/onboarding/file-upload-zone.spec.tsx`
   - Drag & drop CSV aceito → estado accepted
   - Drag & drop XLSX aceito → estado accepted
   - >5MB → error-size + mensagem PT-BR
@@ -203,12 +203,12 @@
   - Click "Baixar template" → download sem fetch de rede
   - Teclado: Tab foca zona, Enter abre seletor
   - Estado parsing → spinner visível
-  - **jest-axe**: `expect(await axe(container)).toHaveNoViolations()` em todos os estados
+  - **jest-axe**: `expect(await axe(container)).toHaveNoViolations()` em todos os estados (5 estados testados)
   - Ref: plan.md §Plano de Testes; checklist UX-03; spec.md FR-22
 
 ### 3.3 Implementar CSVPreviewTable `[A]`
 
-- [ ] Criar `apps/web/src/components/onboarding/csv-preview-table.tsx`
+- [x] Criar `apps/web/src/components/onboarding/csv-preview-table.tsx`
   - Exibir primeiras 10 linhas (FR-16): colunas Nome, E-mail, Telefone, Papel
   - Status por linha: ícone + `aria-label` textual em PT-BR (FR-23)
   - Resumo: "N linhas lidas — X válidas, Y críticas, Z avisos" (FR-16)
@@ -220,7 +220,7 @@
   - Botão avançar desabilitado se `canProceed: false` + explicação (FR-15)
   - Decisões padrão: UX-02-G2 → skeleton; UX-07-G1 → banner `role="status"`
   - Ref: spec.md FR-15/16/17/23; checklist UX-02-G1/G2; checklist UX-07-G1
-- [ ] Criar `apps/web/src/components/onboarding/csv-preview-table.spec.tsx`
+- [x] Criar `apps/web/src/components/onboarding/csv-preview-table.spec.tsx`
   - Tabela 10 linhas com resumo correto
   - Linha crítica: indicador + texto alternativo visíveis
   - Linha aviso: indicador + texto visíveis
