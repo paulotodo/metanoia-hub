@@ -333,21 +333,21 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
 
 ### 7.1 Integrar DemoOverlay e DemoDataNudge na página de grupos `[C]`
 
-- [ ] Abrir `apps/web/app/(authenticated)/app/admin/grupos/page.tsx`
-- [ ] Identificar se é Server Component ou Client Component (SSR vs CSR boundary)
-- [ ] Para cada grupo com `isDemoData=true` na listagem: envolver em `<DemoOverlay>`
-- [ ] Adicionar `<DemoDataNudge />` abaixo do header (Client Component via boundary separado se a página for Server Component)
-- [ ] Adicionar testes de componente: DemoOverlay presente em grupos demo, ausente em grupos reais
+- [x] Abrir `apps/web/app/(authenticated)/app/admin/grupos/page.tsx`
+- [x] Identificar se é Server Component ou Client Component (SSR vs CSR boundary)
+- [x] Para cada grupo com `isDemoData=true` na listagem: envolver em `<DemoOverlay>`
+- [x] Adicionar `<DemoDataNudge />` abaixo do header (Client Component via boundary separado se a página for Server Component)
+- [x] Adicionar testes de componente: DemoOverlay presente em grupos demo, ausente em grupos reais
 
 ### 7.2 Documentar regra de coexistência demo+real no Radar (CHK032) `[M]`
 
-- [ ] Em `docs/specs/dados-demonstracao/spec.md`, seção `## Escopo Excluído` (ou `## Notas de Implementação`), adicionar nota formal sobre CHK032: semáforos demo (fixos por design) coexistem com semáforos reais (calculados); o admin é informado pelo `DemoDataNudge` e pode remover quando quiser; filtro automático por `isDemoData` no Radar está deferido para pós-MVP (dec-010)
+- [x] Em `docs/specs/dados-demonstracao/spec.md`, seção `## Escopo Excluído` (ou `## Notas de Implementação`), adicionar nota formal sobre CHK032: semáforos demo (fixos por design) coexistem com semáforos reais (calculados); o admin é informado pelo `DemoDataNudge` e pode remover quando quiser; filtro automático por `isDemoData` no Radar está deferido para pós-MVP (dec-010)
 
 ### 7.3 Verificar revalidação de query após limpeza (CHK016) `[A]`
 
-- [ ] Confirmar que `useDeleteDemoData.onSuccess` invalida `['demo-status']` (implementado na FASE 6.3)
-- [ ] Adicionar teste: após `mutate()` do cleanup, `useDemoStatus` re-fetcha e retorna `hasDemoData: false`
-- [ ] Confirmar que `DemoCleanupButton` desaparece após a query ser invalidada (FR-09)
+- [x] Confirmar que `useDeleteDemoData.onSuccess` invalida `['demo-status']` (implementado na FASE 6.3)
+- [x] Adicionar teste: após `mutate()` do cleanup, `useDemoStatus` re-fetcha e retorna `hasDemoData: false`
+- [x] Confirmar que `DemoCleanupButton` desaparece após a query ser invalidada (FR-09)
 
 ---
 
