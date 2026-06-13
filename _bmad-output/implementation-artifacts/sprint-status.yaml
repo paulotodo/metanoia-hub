@@ -170,7 +170,7 @@ development_status:
   # Sprint 16: 10-3, 10-4
   epic-10: in-progress
   10-1-wizard-de-onboarding-para-admin-tenant: ready-for-dev
-  10-2-dados-de-demonstracao-seed: ready-for-dev
+  10-2-dados-de-demonstracao-seed: done
   10-3-importacao-csv-upload-preview-validacao: ready-for-dev
   10-4-importacao-csv-confirmacao-processamento: ready-for-dev
   epic-10-retrospective: optional
