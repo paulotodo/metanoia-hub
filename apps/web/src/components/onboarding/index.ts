@@ -6,3 +6,4 @@ export {
 export { DemoOverlay } from "./demo-overlay";
 export { DemoDataNudge } from "./demo-data-nudge";
 export { DemoCleanupButton } from "./demo-cleanup-button";
+export { OnboardingWizard } from "./wizard/OnboardingWizard";

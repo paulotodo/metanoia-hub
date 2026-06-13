@@ -171,6 +171,8 @@ model User {
   status                String    @default("pending_verification")
   tenantId              String?   @map("tenant_id") @db.Uuid
   onboardingCompletedAt DateTime? @map("onboarding_completed_at")
+  profilePhotoUrl       String?   @map("profile_photo_url")
+  roleTitle             String?   @map("role_title")
   createdAt             DateTime  @default(now()) @map("created_at")
   updatedAt             DateTime  @updatedAt @map("updated_at")
   isDemoData            Boolean   @default(false) @map("is_demo_data")
@@ -271,6 +273,8 @@ model Tenant {
   isDemo                Boolean  @default(false) @map("is_demo")
   focusIndicatorEnabled Boolean  @default(false) @map("focus_indicator_enabled")
   metadata              Json     @default("{}") @map("metadata") @db.JsonB
+  onboardingProgress    Json?    @map("onboarding_progress") @db.JsonB
+  logoUrl               String?  @map("logo_url")
   createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz
 

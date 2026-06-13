@@ -1,75 +1,42 @@
-'use client';
+// Server Component — fetches wizard status SSR and passes to OnboardingWizard.
+// The wizard itself is a Client Component ('use client') rendered full-screen.
+import { cookies } from 'next/headers';
+import { ONBOARDING_PROGRESS_DEFAULT, OnboardingStatusResponseSchema } from '@metanoia/types';
+import { OnboardingWizard } from '@/components/onboarding';
 
-import { useRouter } from 'next/navigation';
-import { Button, Card } from '@metanoia/ui';
-import { useDemoRadar } from '@/lib/api/hooks';
-import { useCompleteOnboarding } from '@/lib/api/hooks/use-users';
-import { useCurrentFirstName } from '@/lib/session/use-current-first-name';
-import { WelcomeHeader } from './_components/welcome-header';
-import { DemoRadarCard } from './_components/demo-radar-card';
-import messages from '../../../../../messages/pt-BR.json';
+const API_INTERNAL_URL =
+  process.env.API_INTERNAL_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  'http://localhost:3001/api/v1';
 
-function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`bg-surface-subtle animate-pulse rounded-md ${className}`} />;
+async function getWizardStatus(accessToken: string) {
+  try {
+    const res = await fetch(`${API_INTERNAL_URL}/onboarding/status`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      cache: 'no-store',
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as unknown;
+    return OnboardingStatusResponseSchema.parse(json).data;
+  } catch {
+    return null;
+  }
 }
 
-export default function BoasVindasPage() {
-  const router = useRouter();
-  const { data, isLoading, error } = useDemoRadar();
-  const { mutate: completeOnboarding, isPending } = useCompleteOnboarding();
-  const firstName = useCurrentFirstName();
-  const t = messages.welcome;
-  const ta = messages.welcome.firstAccess.admin;
+export default async function BoasVindasPage() {
+  // Read access token from session cookie (set by Keycloak callback).
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value ?? '';
 
-  function handleCreateGroup() {
-    completeOnboarding(undefined, {
-      onSuccess: () => {
-        router.push('/app/admin/grupos/novo?first=true');
-      },
-      onError: () => {
-        // Onboarding completion is best-effort — proceed even if the API call fails
-        router.push('/app/admin/grupos/novo?first=true');
-      },
-    });
-  }
+  const status = accessToken ? await getWizardStatus(accessToken) : null;
+
+  const initialProgress = status?.progress ?? ONBOARDING_PROGRESS_DEFAULT;
+  const hasRealGroups = status?.hasRealGroups ?? false;
 
   return (
-    <section
-      className="mx-auto max-w-2xl space-y-6 px-6 py-10"
-      data-testid="admin-welcome-view"
-    >
-      <WelcomeHeader name={firstName ?? 'Pastor'} />
-
-      <p className="text-center text-base text-text-secondary">{ta.body}</p>
-
-      {isLoading && (
-        <Card className="space-y-3 p-6">
-          <Skeleton className="h-4 w-1/3" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </Card>
-      )}
-
-      {error && (
-        <Card className="p-6">
-          <p className="text-sm text-text-secondary">{t.error.demoUnavailable}</p>
-        </Card>
-      )}
-
-      {data && <DemoRadarCard data={data} />}
-
-      <div className="flex justify-center">
-        <Button
-          type="button"
-          className="w-full max-w-sm"
-          onClick={handleCreateGroup}
-          disabled={isPending}
-          data-testid="welcome-cta"
-        >
-          {ta.cta}
-        </Button>
-      </div>
-    </section>
+    <OnboardingWizard
+      initialProgress={initialProgress}
+      hasRealGroups={hasRealGroups}
+    />
   );
 }

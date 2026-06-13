@@ -11,6 +11,9 @@ export {
   useDemoStatus,
   useDeleteDemoData,
   useDismissDemoNudge,
+  useWizardStatus,
+  useUpdateTenantProfile,
+  useUpdateUserProfile,
 } from './use-onboarding';
 export { usersKeys, useOnboardingStatus, useCompleteOnboarding } from './use-users';
 export { groupKeys, useCreateGroup } from './use-groups';

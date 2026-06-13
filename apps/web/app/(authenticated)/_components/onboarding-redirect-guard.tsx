@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useOnboardingStatus } from '@/lib/api/hooks/use-users';
+import { useWizardStatus } from '@/lib/api/hooks/use-onboarding';
 import { useCurrentRole } from '@/lib/session/use-current-role';
 
 const WELCOME_PATHS = new Set([
@@ -13,7 +14,6 @@ const WELCOME_PATHS = new Set([
 
 function welcomePathForRole(role: string | null): string | null {
   switch (role) {
-    case 'super_admin':
     case 'admin_tenant':
       return '/app/admin/boas-vindas';
     case 'lider':
@@ -21,15 +21,23 @@ function welcomePathForRole(role: string | null): string | null {
     case 'participante':
       return '/app/consumo/boas-vindas';
     default:
+      // super_admin and unknown roles: no wizard redirect
       return null;
   }
 }
 
 /**
- * Transparent guard: on every authenticated page load, checks whether
- * onboarding_completed_at is null. If so, redirects to the role-specific
- * welcome screen. Does nothing if already on a welcome path (loop prevention).
+ * Transparent guard: on every authenticated page load, checks whether the
+ * user/tenant should be redirected to the onboarding wizard.
  *
+ * For admin_tenant: uses the TRIPLE condition (FR-01):
+ *   progress.completed === false AND progress.skippedAt === null AND hasRealGroups === false
+ *   super_admin is never redirected.
+ *
+ * For lider / participante: uses the legacy user-scoped condition
+ *   (onboardingCompletedAt === null from User table, Story 7-1).
+ *
+ * Does nothing if already on a welcome path (loop prevention).
  * Renders children unconditionally — redirect happens in useEffect so there
  * is no flash of wrong content during the API round-trip.
  */
@@ -41,23 +49,52 @@ export function OnboardingRedirectGuard({
   const pathname = usePathname();
   const router = useRouter();
   const role = useCurrentRole();
-  const { data, isSuccess } = useOnboardingStatus();
+
+  // User-scoped status (Story 7-1) — used for lider / participante
+  const { data: userOnboarding, isSuccess: userSuccess } = useOnboardingStatus();
+
+  // Tenant-scoped wizard status — used for admin_tenant (FR-01 triple condition)
+  const { data: wizardStatus, isSuccess: wizardSuccess } = useWizardStatus();
 
   useEffect(() => {
-    // Don't redirect if already on a welcome path (loop prevention)
+    // Loop prevention: don't redirect if already on a welcome path
     if (WELCOME_PATHS.has(pathname)) return;
 
-    // Wait until both role and onboarding status are available
-    if (!isSuccess || !role) return;
+    // Wait until role is resolved
+    if (!role) return;
 
-    // If onboarding not complete, redirect to role-specific welcome page
-    if (data?.onboardingCompletedAt === null) {
+    // super_admin never goes through the wizard
+    if (role === 'super_admin') return;
+
+    if (role === 'admin_tenant') {
+      // Must wait for wizard status (tenant-scoped)
+      if (!wizardSuccess || !wizardStatus) return;
+
+      const progress = wizardStatus.data.progress;
+      const hasRealGroups = wizardStatus.data.hasRealGroups;
+
+      // Triple condition (FR-01): all three must be true to trigger redirect
+      const shouldRedirect =
+        progress.completed === false &&
+        progress.skippedAt === null &&
+        hasRealGroups === false;
+
+      if (shouldRedirect) {
+        router.replace('/app/admin/boas-vindas');
+      }
+      return;
+    }
+
+    // lider / participante: legacy user-scoped condition (Story 7-1)
+    if (!userSuccess) return;
+
+    if (userOnboarding?.onboardingCompletedAt === null) {
       const target = welcomePathForRole(role);
       if (target) {
         router.replace(target);
       }
     }
-  }, [pathname, isSuccess, data, role, router]);
+  }, [pathname, role, wizardSuccess, wizardStatus, userSuccess, userOnboarding, router]);
 
   return <>{children}</>;
 }

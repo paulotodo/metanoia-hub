@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { generateId } from '@metanoia/types';
+import * as withTenantTxModule from '../prisma/with-tenant-tx';
 import { UsersService } from './users.service';
 import { requestContext } from '../common/context/request-context';
 
@@ -93,5 +94,121 @@ describe('UsersService.getOnboardingStatus', () => {
     const result = await withCtx(USER_ID, () => service.getOnboardingStatus());
 
     expect(result.onboardingCompletedAt).toBeNull();
+  });
+});
+
+// ─── UsersService.updateProfile ──────────────────────────────────────────────
+
+describe('UsersService.updateProfile', () => {
+  // Mock tx object simulating Prisma transaction handle
+  const mockTx = {
+    user: {
+      update: vi.fn(),
+    },
+  };
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    mockTx.user.update.mockResolvedValue({
+      id: USER_ID,
+      name: 'Pastor João',
+      profilePhotoUrl: 'https://minio.test/users/01/avatar.png',
+      roleTitle: 'Pastor',
+    });
+    vi.spyOn(withTenantTxModule, 'withTenantTx').mockImplementation(
+      async (_prisma, fn) => fn(mockTx as unknown as Parameters<typeof fn>[0]),
+    );
+  });
+
+  it('updates name, profilePhotoUrl and roleTitle via explicit fields', async () => {
+    const prisma = mockPrisma();
+    const service = new UsersService(prisma as never);
+
+    const result = await withCtx(USER_ID, () =>
+      service.updateProfile({
+        name: 'Pastor João',
+        profilePhotoUrl: 'https://minio.test/users/01/avatar.png',
+        roleTitle: 'Pastor',
+      }),
+    );
+
+    expect(mockTx.user.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: USER_ID },
+        data: expect.objectContaining({
+          name: 'Pastor João',
+          profilePhotoUrl: 'https://minio.test/users/01/avatar.png',
+          roleTitle: 'Pastor',
+        }),
+      }),
+    );
+    expect(result.data.name).toBe('Pastor João');
+    expect(result.data.profilePhotoUrl).toBe('https://minio.test/users/01/avatar.png');
+    expect(result.data.roleTitle).toBe('Pastor');
+  });
+
+  it('omits undefined fields from the update data (partial update — no profilePhotoUrl key in data)', async () => {
+    // When only `name` is provided, profilePhotoUrl and roleTitle must NOT appear
+    // in the Prisma `data` object (anti-mass-assignment / no accidental nullification).
+    let capturedData: Record<string, unknown> = {};
+    mockTx.user.update.mockImplementation((args: { data: Record<string, unknown> }) => {
+      capturedData = args.data;
+      return Promise.resolve({ id: USER_ID, name: 'Updated Name', profilePhotoUrl: null, roleTitle: null });
+    });
+
+    const prisma = mockPrisma();
+    const service = new UsersService(prisma as never);
+
+    await withCtx(USER_ID, () =>
+      service.updateProfile({ name: 'Updated Name' }),
+    );
+
+    expect('name' in capturedData).toBe(true);
+    expect('profilePhotoUrl' in capturedData).toBe(false);
+    expect('roleTitle' in capturedData).toBe(false);
+  });
+
+  it('returns null for profilePhotoUrl when not set', async () => {
+    mockTx.user.update.mockResolvedValue({
+      id: USER_ID,
+      name: 'João',
+      profilePhotoUrl: null,
+      roleTitle: null,
+    });
+    const prisma = mockPrisma();
+    const service = new UsersService(prisma as never);
+
+    const result = await withCtx(USER_ID, () =>
+      service.updateProfile({ name: 'João' }),
+    );
+
+    expect(result.data.profilePhotoUrl).toBeNull();
+    expect(result.data.roleTitle).toBeNull();
+  });
+
+  it('resolves userId from AsyncLocalStorage — never from body', async () => {
+    const prisma = mockPrisma();
+    const service = new UsersService(prisma as never);
+
+    await withCtx(USER_ID, () =>
+      service.updateProfile({ name: 'Test' }),
+    );
+
+    // The update `where` clause must use userId from context, not from any param
+    expect(mockTx.user.update).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: USER_ID } }),
+    );
+  });
+
+  it('throws if userId is absent in RequestContext', async () => {
+    const prisma = mockPrisma();
+    const service = new UsersService(prisma as never);
+
+    await expect(
+      requestContext.run(
+        { tenantId: TENANT, requestId: generateId(), correlationId: generateId() },
+        () => service.updateProfile({ name: 'Test' }),
+      ),
+    ).rejects.toThrow('updateProfile requires userId');
   });
 });

@@ -13,4 +13,19 @@ export const tenantsHandlers = [
   http.get('*/api/v1/tenants/me', () =>
     HttpResponse.json({ data: mockTenantMe }),
   ),
+
+  // PATCH /api/v1/tenants/me — update tenant profile + onboarding progress (Story 10-1)
+  http.patch('*/api/v1/tenants/me', () =>
+    HttpResponse.json({
+      data: {
+        id: mockTenantMe.id,
+        name: mockTenantMe.name,
+        denomination: null,
+        city: null,
+        state: null,
+        logoUrl: null,
+        onboardingProgress: null,
+      },
+    }),
+  ),
 ];

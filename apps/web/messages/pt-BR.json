@@ -1296,5 +1296,95 @@
       "cancelButton": "Cancelar exclusão",
       "cancelling": "Cancelando…"
     }
+  },
+  "onboardingWizard": {
+    "steps": {
+      "1": "Seu Perfil Pastoral",
+      "2": "Sua Comunidade",
+      "3": "Seu Primeiro Grupo de Discipulado",
+      "4": "Convide um Líder",
+      "5": "Conheça o Radar Pastoral"
+    },
+    "progress": {
+      "step": "Etapa {{current}} de {{total}}",
+      "completed": "Concluído"
+    },
+    "actions": {
+      "next": "Próxima etapa",
+      "back": "Voltar",
+      "skip": "Pular configuração",
+      "skipStep": "Fazer depois",
+      "complete": "Concluir Setup",
+      "replayTutorial": "Rever tutorial"
+    },
+    "step1": {
+      "title": "Seu Perfil Pastoral",
+      "nameLabel": "Como seus discípulos te conhecem?",
+      "namePlaceholder": "Seu nome pastoral",
+      "roleTitleLabel": "Seu título pastoral",
+      "roleTitlePlaceholder": "Ex: Pastor, Líder, Presbítero",
+      "photoLabel": "Foto de perfil",
+      "photoHint": "PNG, JPEG ou WebP — máximo 5 MB",
+      "photoChangeButton": "Escolher foto"
+    },
+    "step2": {
+      "title": "Sua Comunidade",
+      "nameLabel": "Nome da sua comunidade",
+      "namePlaceholder": "Nome da igreja ou ministério",
+      "denominationLabel": "Denominação",
+      "denominationPlaceholder": "Ex: Batista, Presbiteriana, Assembleia de Deus",
+      "cityLabel": "Cidade",
+      "cityPlaceholder": "Sua cidade",
+      "stateLabel": "Estado (UF)",
+      "statePlaceholder": "Ex: SP",
+      "logoLabel": "Logo da comunidade",
+      "logoHint": "PNG, JPEG ou WebP — máximo 2 MB"
+    },
+    "step3": {
+      "title": "Seu Primeiro Grupo de Discipulado",
+      "createGroupOption": "Criar meu primeiro grupo agora",
+      "demoOption": "Explorar com dados de demonstração",
+      "groupNameLabel": "Nome do grupo",
+      "groupNamePlaceholder": "Ex: Encontro de Líderes — Quinta",
+      "groupDescriptionLabel": "Descrição (opcional)",
+      "groupDescriptionPlaceholder": "Descreva brevemente o propósito deste grupo",
+      "createButton": "Criar grupo",
+      "demoModeNote": "Você poderá criar seu grupo real a qualquer momento depois."
+    },
+    "step4": {
+      "title": "Convide um Líder",
+      "description": "Convide alguém para ajudar na liderança da sua comunidade.",
+      "leaderNameLabel": "Nome do líder",
+      "leaderNamePlaceholder": "Nome completo",
+      "leaderEmailLabel": "E-mail do líder",
+      "leaderEmailPlaceholder": "email@exemplo.com",
+      "inviteButton": "Enviar convite",
+      "skipLabel": "Fazer depois"
+    },
+    "step5": {
+      "title": "Conheça o Radar Pastoral",
+      "description": "O Radar Pastoral transforma participação digital em visibilidade pastoral.",
+      "signalGreen": "Participação estável",
+      "signalYellow": "Requer atenção",
+      "signalRed": "Cuidado urgente",
+      "demoPreviewLabel": "Exemplo de como o radar funciona",
+      "realDataLabel": "Seus dados reais",
+      "waitingDataLabel": "Aguardando primeiros sinais",
+      "waitingDataDescription": "Seu radar aparecerá aqui conforme os membros participarem das reuniões.",
+      "completeButton": "Concluir Setup"
+    },
+    "readOnlyBanner": "Modo visualização — nenhuma alteração será salva.",
+    "errors": {
+      "uploadInvalidType": "Tipo de arquivo não suportado. Use PNG, JPEG ou WebP.",
+      "uploadTooLarge": "Arquivo muito grande. Máximo: {{maxMb}} MB.",
+      "uploadFailed": "Não foi possível enviar o arquivo. Tente novamente.",
+      "groupDuplicate": "Já existe um grupo com este nome. Escolha outro nome.",
+      "groupCreateFailed": "Não foi possível criar o grupo. Tente novamente.",
+      "inviteInvalidEmail": "Endereço de e-mail inválido.",
+      "inviteAlreadyMember": "Este e-mail já é membro da sua comunidade.",
+      "inviteFailed": "Não foi possível enviar o convite. Tente novamente.",
+      "saveFailed": "Não foi possível salvar as alterações. Tente novamente.",
+      "skipFailed": "Não foi possível registrar o pulo. Tente novamente."
+    }
   }
 }
