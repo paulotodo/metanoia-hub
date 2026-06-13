@@ -839,3 +839,17 @@ export {
   type PrivacyDeletionStatusEnvelope,
   type PrivacyDeletionJobPayload,
 } from './privacy/deletion';
+export {
+  csvRowRoleSchema,
+  type CSVRowRole,
+  csvRowStatusSchema,
+  type CSVRowStatus,
+  CSVRowSchema,
+  type CSVRow,
+  CSVValidationResultSchema,
+  type CSVValidationResult,
+  checkEmailsQuerySchema,
+  type CheckEmailsQuery,
+  checkEmailsResponseSchema,
+  type CheckEmailsResponse,
+} from './onboarding/csv-import';

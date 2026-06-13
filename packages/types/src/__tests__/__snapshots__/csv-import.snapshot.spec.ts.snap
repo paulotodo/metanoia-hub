@@ -1,0 +1,140 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CSVRowSchema snapshot > parses a row with critico status and messages 1`] = `
+{
+  "email": "invalido",
+  "messages": [
+    "Nome muito curto (mínimo 2 caracteres)",
+    "E-mail inválido",
+  ],
+  "nome": "X",
+  "papel": "participante",
+  "rowIndex": 5,
+  "status": "critico",
+  "telefone": null,
+}
+`;
+
+exports[`CSVRowSchema snapshot > parses a row with null telefone 1`] = `
+{
+  "email": "maria@exemplo.com",
+  "messages": [
+    "Telefone não informado",
+  ],
+  "nome": "Maria Santos",
+  "papel": "lider",
+  "rowIndex": 1,
+  "status": "aviso",
+  "telefone": null,
+}
+`;
+
+exports[`CSVRowSchema snapshot > parses a valid row with all fields 1`] = `
+{
+  "email": "joao@exemplo.com",
+  "messages": [],
+  "nome": "João Silva",
+  "papel": "participante",
+  "rowIndex": 0,
+  "status": "ok",
+  "telefone": "11999990000",
+}
+`;
+
+exports[`CSVValidationResultSchema snapshot > parses a result with critical errors (canProceed: false) 1`] = `
+{
+  "canProceed": false,
+  "criticalCount": 3,
+  "encoding": "iso-8859-1",
+  "missingRequiredColumns": [
+    "email",
+  ],
+  "multiSheetWarning": false,
+  "okCount": 5,
+  "rows": [],
+  "sampleSize": 10,
+  "totalRows": 10,
+  "warningCount": 2,
+}
+`;
+
+exports[`CSVValidationResultSchema snapshot > parses a result with multiSheetWarning 1`] = `
+{
+  "canProceed": true,
+  "criticalCount": 0,
+  "encoding": "windows-1252",
+  "missingRequiredColumns": [],
+  "multiSheetWarning": true,
+  "okCount": 0,
+  "rows": [],
+  "sampleSize": 0,
+  "totalRows": 0,
+  "warningCount": 0,
+}
+`;
+
+exports[`CSVValidationResultSchema snapshot > parses a valid result with rows 1`] = `
+{
+  "canProceed": true,
+  "criticalCount": 0,
+  "encoding": "utf-8",
+  "missingRequiredColumns": [],
+  "multiSheetWarning": false,
+  "okCount": 1,
+  "rows": [
+    {
+      "email": "joao@exemplo.com",
+      "messages": [],
+      "nome": "João Silva",
+      "papel": "participante",
+      "rowIndex": 0,
+      "status": "ok",
+      "telefone": null,
+    },
+  ],
+  "sampleSize": 1,
+  "totalRows": 1,
+  "warningCount": 0,
+}
+`;
+
+exports[`checkEmailsQuerySchema snapshot > transforms comma-separated emails string into array 1`] = `
+{
+  "emails": [
+    "joao@exemplo.com",
+    "maria@exemplo.com",
+    "pedro@exemplo.com",
+  ],
+}
+`;
+
+exports[`checkEmailsResponseSchema snapshot > parses a valid response with mixed exists values 1`] = `
+{
+  "data": {
+    "results": [
+      {
+        "email": "joao@exemplo.com",
+        "exists": true,
+      },
+      {
+        "email": "novo@exemplo.com",
+        "exists": false,
+      },
+    ],
+  },
+  "meta": {
+    "checkedCount": 2,
+    "tenantScoped": true,
+  },
+}
+`;
+
+exports[`csvRowRoleSchema > accepts lider 1`] = `"lider"`;
+
+exports[`csvRowRoleSchema > accepts participante 1`] = `"participante"`;
+
+exports[`csvRowStatusSchema > accepts all valid statuses 1`] = `"critico"`;
+
+exports[`csvRowStatusSchema > accepts all valid statuses 2`] = `"aviso"`;
+
+exports[`csvRowStatusSchema > accepts all valid statuses 3`] = `"ok"`;
