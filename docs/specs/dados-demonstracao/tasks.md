@@ -173,33 +173,35 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
 
 ### 3.1 Adicionar 3 endpoints ao OnboardingController `[C]`
 
-- [ ] Abrir `apps/api/src/onboarding/onboarding.controller.ts`
-- [ ] `@Delete('demo-data') @Roles('admin_tenant') @HttpCode(204)`: chama `demoDataService.deleteDemoData(ctx.tenantId)`, responde 204 sem corpo
-- [ ] `@Get('demo-status') @Roles('admin_tenant')`: chama `demoDataService.getDemoStatus(ctx.tenantId)`, responde `{ data: result }`
-- [ ] `@Patch('demo-nudge-dismiss') @Roles('admin_tenant') @HttpCode(204)`: chama `demoDataService.dismissNudge(ctx.tenantId)`, responde 204 sem corpo
-- [ ] `ctx.tenantId` via `getRequestContext()` (AsyncLocalStorage) — nunca parâmetro na assinatura (SEC003)
-- [ ] Adicionar `@ApiTags` e `@ApiBearerAuth` para Swagger se o controller já os usa
+- [x] Abrir `apps/api/src/onboarding/onboarding.controller.ts`
+- [x] `@Delete('demo-data') @Roles(Role.ADMIN_TENANT) @HttpCode(204)`: chama `demoDataService.deleteDemoData(ctx.tenantId)`, responde 204 sem corpo
+- [x] `@Get('demo-status') @Roles(Role.ADMIN_TENANT)`: chama `demoDataService.getDemoStatus(ctx.tenantId)`, responde `{ data: result }`
+- [x] `@Patch('demo-nudge-dismiss') @Roles(Role.ADMIN_TENANT) @HttpCode(204)`: chama `demoDataService.dismissNudge(ctx.tenantId)`, responde 204 sem corpo
+- [x] `ctx.tenantId` via `getRequestContext()` (AsyncLocalStorage) — nunca parâmetro na assinatura (SEC003)
+- [x] Swagger: controller já não usa @ApiTags/@ApiBearerAuth (padrão do repo) — sem divergência
 
 ### 3.2 Registrar DemoDataService no OnboardingModule `[C]`
 
-- [ ] Abrir `apps/api/src/onboarding/onboarding.module.ts`
-- [ ] Adicionar `DemoDataService` em `providers: [...]`
-- [ ] Adicionar `DemoDataService` em `exports: [...]` (necessário para injeção no SuperAdminTenantsModule — CHK041)
+- [x] Abrir `apps/api/src/onboarding/onboarding.module.ts`
+- [x] `DemoDataService` já em `providers: [...]` (FASE 2 — não houve regressão); adicionado `PrismaModule` em `imports: [...]`
+- [x] `DemoDataService` já em `exports: [...]` (necessário para injeção no SuperAdminTenantsModule — CHK041)
 
 ### 3.3 Integrar DemoDataService no SuperAdminTenantsModule `[C]`
 
-- [ ] Abrir `apps/api/src/super-admin/super-admin-tenants.module.ts` e importar `OnboardingModule`
-- [ ] Abrir `apps/api/src/super-admin/super-admin-tenants.service.ts`
-- [ ] Injetar `DemoDataService` via construtor
-- [ ] No método de provisioning, após criação do admin user, adicionar Step 4:
+- [x] `apps/api/src/super-admin/super-admin-tenants.module.ts`: importa `OnboardingModule`
+- [x] `apps/api/src/super-admin/super-admin-tenants.service.ts`: injeta `DemoDataService` via construtor
+- [x] Step 4 adicionado no `runSaga()` após Step 3, antes de `updateStatus(id, 'active')`:
   ```ts
   try {
-    await this.demoDataService.seedDemoData(newTenant.id);
+    await this.demoDataService.seedDemoData(id);
+    this.logger.log(`Saga step 4 (seed demo data) complete for tenant ${id}`);
   } catch (err) {
-    this.logger.error('seedDemoData failed (non-fatal)', err);
+    this.logger.warn(`Saga step 4 (seed demo data) failed (non-fatal) for tenant ${id}`, err);
   }
   ```
-- [ ] Confirmar que a injeção não cria ciclo de dependência
+- [x] Dependência circular ausente: OnboardingModule não importa SuperAdminTenantsModule (CHK041 confirmado na FASE 0)
+- [x] Testes: 14 OnboardingController.spec + 3 novos em SuperAdminTenantsService.spec (seed chamado, falha não aborta)
+- [x] Validação: `tsc --noEmit` 0 erros produção; `vitest run` 14+18 pass; commit `c69d8c5`
 
 ---
 
