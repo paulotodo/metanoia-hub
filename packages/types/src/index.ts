@@ -131,6 +131,20 @@ export {
   type SemaforoStatusLabel,
   type NudgeSuggestionKey,
   type PastoralVocabulary,
+  // Story 10-1 — Wizard de Onboarding vocabulary (CHK017)
+  WIZARD_STEP_PROFILE_LABEL,
+  WIZARD_STEP_COMMUNITY_LABEL,
+  WIZARD_STEP_GROUP_LABEL,
+  WIZARD_STEP_INVITE_LABEL,
+  WIZARD_STEP_RADAR_LABEL,
+  WIZARD_DISPLAY_NAME_QUESTION,
+  WIZARD_ROLE_TITLE_LABEL,
+  WIZARD_COMMUNITY_NAME_LABEL,
+  WIZARD_COMPLETE_BUTTON,
+  WIZARD_SKIP_LABEL,
+  WIZARD_SKIP_LATER_LABEL,
+  WIZARD_REPLAY_LABEL,
+  WIZARD_DEMO_PREVIEW_LABEL,
 } from './vocabulary';
 export {
   ClientErrorReportSchema,
@@ -418,6 +432,21 @@ export {
   type OnboardingCompleteResponse,
   DemoStatusResponseSchema,
   type DemoStatusResponse,
+  // Story 10-1 — Wizard de Onboarding
+  MinioUrlSchema,
+  OnboardingProgressSchema,
+  type OnboardingProgress,
+  ONBOARDING_PROGRESS_DEFAULT,
+  OnboardingStatusResponseSchema,
+  type OnboardingStatusResponse,
+  UpdateTenantProfileSchema,
+  type UpdateTenantProfile,
+  UpdateTenantProfileResponseSchema,
+  type UpdateTenantProfileResponse,
+  UpdateUserProfileSchema,
+  type UpdateUserProfile,
+  UpdateUserProfileResponseSchema,
+  type UpdateUserProfileResponse,
 } from './onboarding';
 export {
   UserStatusSchema,

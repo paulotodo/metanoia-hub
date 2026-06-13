@@ -119,3 +119,37 @@ export const PASTORAL_VOCABULARY = {
 } as const;
 
 export type PastoralVocabulary = typeof PASTORAL_VOCABULARY;
+
+// ---------------------------------------------------------------------------
+// Wizard de Onboarding — 5 etapas pastorais (CHK017, Story 10-1)
+// Labels user-facing em PT-BR; código/logs em inglês.
+// ---------------------------------------------------------------------------
+
+/** Step 1 — profile setup */
+export const WIZARD_STEP_PROFILE_LABEL = 'Seu Perfil Pastoral' as const;
+/** Step 2 — community setup */
+export const WIZARD_STEP_COMMUNITY_LABEL = 'Sua Comunidade' as const;
+/** Step 3 — first discipleship group */
+export const WIZARD_STEP_GROUP_LABEL = 'Seu Primeiro Grupo de Discipulado' as const;
+/** Step 4 — invite a leader */
+export const WIZARD_STEP_INVITE_LABEL = 'Convide um Líder' as const;
+/** Step 5 — discover pastoral radar */
+export const WIZARD_STEP_RADAR_LABEL = 'Conheça o Radar Pastoral' as const;
+
+/** Prompt asking how disciples know the pastor (Step 1 display name) */
+export const WIZARD_DISPLAY_NAME_QUESTION = 'Como seus discípulos te conhecem?' as const;
+/** Label for the pastoral title field (Step 1) */
+export const WIZARD_ROLE_TITLE_LABEL = 'Seu título pastoral' as const;
+/** Label for the community name field (Step 2) */
+export const WIZARD_COMMUNITY_NAME_LABEL = 'Nome da sua comunidade' as const;
+
+/** Primary CTA — conclude the wizard (Step 5) */
+export const WIZARD_COMPLETE_BUTTON = 'Concluir Setup' as const;
+/** Secondary action — skip entire wizard setup */
+export const WIZARD_SKIP_LABEL = 'Pular configuração' as const;
+/** Inline skip — defer a non-critical step */
+export const WIZARD_SKIP_LATER_LABEL = 'Fazer depois' as const;
+/** Navigation link to replay the wizard in read-only mode */
+export const WIZARD_REPLAY_LABEL = 'Rever tutorial' as const;
+/** Label for the demo radar preview in Step 5 */
+export const WIZARD_DEMO_PREVIEW_LABEL = 'Exemplo de como o radar funciona' as const;
