@@ -162,23 +162,23 @@ async function seedDemoChain(
     );
 
     await tx.$executeRawUnsafe(
-      `INSERT INTO trails (id, tenant_id, title, description, is_demo_data, created_at, updated_at)
+      `INSERT INTO trails (id, tenant_id, name, description, created_by, is_demo_data, created_at, updated_at)
        VALUES ('${ids.trailId}'::uuid, '${tenantId}'::uuid,
-               'Cleanup Demo Trail ${tenantId.slice(-4)}', 'demo', true, NOW(), NOW())
+               'Cleanup Demo Trail ${tenantId.slice(-4)}', 'demo', '${ids.userId}'::uuid, true, NOW(), NOW())
        ON CONFLICT (id) DO NOTHING`,
     );
 
     await tx.$executeRawUnsafe(
-      `INSERT INTO modules (id, tenant_id, trail_id, title, description, order_index, is_demo_data, created_at, updated_at)
+      `INSERT INTO modules (id, tenant_id, trail_id, name, "order", is_demo_data, created_at, updated_at)
        VALUES ('${ids.modId}'::uuid, '${tenantId}'::uuid, '${ids.trailId}'::uuid,
-               'Cleanup Demo Module', 'demo', 1, true, NOW(), NOW())
+               'Cleanup Demo Module', 1, true, NOW(), NOW())
        ON CONFLICT (id) DO NOTHING`,
     );
 
     await tx.$executeRawUnsafe(
-      `INSERT INTO lessons (id, tenant_id, module_id, title, content_type, order_index, is_demo_data, created_at, updated_at)
+      `INSERT INTO lessons (id, tenant_id, module_id, name, content_type, "order", is_demo_data, created_at, updated_at)
        VALUES ('${ids.lesId}'::uuid, '${tenantId}'::uuid, '${ids.modId}'::uuid,
-               'Cleanup Demo Lesson', 'text', 1, true, NOW(), NOW())
+               'Cleanup Demo Lesson', 'rich_text', 1, true, NOW(), NOW())
        ON CONFLICT (id) DO NOTHING`,
     );
 

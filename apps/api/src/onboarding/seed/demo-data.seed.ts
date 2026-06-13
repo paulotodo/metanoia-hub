@@ -709,4 +709,11 @@ async function main(): Promise<void> {
   console.log('Done.');
 }
 
-void main();
+// Only run the CLI entrypoint when this file is invoked directly
+// (e.g. `tsx src/onboarding/seed/demo-data.seed.ts --tenant-id=<UUID>`).
+// It MUST NOT run when imported by DemoDataService at app boot — otherwise
+// `node dist/main.js` would hit the no-arg branch, print usage and exit(1),
+// crashing the API (caught only in E2E, where the full app boots).
+if (process.argv[1]?.includes('demo-data.seed')) {
+  void main();
+}
