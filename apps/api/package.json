@@ -22,6 +22,7 @@
     "db:seed:demo": "tsx prisma/seeds/demo-seed.ts",
     "db:seed:demo:clean": "tsx prisma/seeds/demo-seed-clean.ts",
     "db:seed:demo:keycloak": "tsx prisma/seeds/demo-seed-keycloak.ts",
+    "db:seed:demo-data": "tsx src/onboarding/seed/demo-data.seed.ts",
     "start:e2e": "node dist/main.js"
   },
   "dependencies": {

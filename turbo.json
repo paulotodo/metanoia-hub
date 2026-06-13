@@ -38,6 +38,9 @@
     "db:seed": {
       "cache": false,
       "dependsOn": ["db:setup"]
+    },
+    "db:seed:demo-data": {
+      "cache": false
     }
   }
 }
