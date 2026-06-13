@@ -41,6 +41,7 @@ function makeLesson() {
     createdAt: new Date('2026-06-11T10:00:00Z'),
     updatedAt: new Date('2026-06-11T10:00:00Z'),
     deletedAt: null,
+    isDemoData: false,
   };
 }
 

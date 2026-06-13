@@ -416,6 +416,8 @@ export {
   type DemoRadarResponse,
   OnboardingCompleteResponseSchema,
   type OnboardingCompleteResponse,
+  DemoStatusResponseSchema,
+  type DemoStatusResponse,
 } from './onboarding';
 export {
   UserStatusSchema,

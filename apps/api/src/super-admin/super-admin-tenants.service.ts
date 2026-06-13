@@ -17,6 +17,7 @@ import {
   type TenantsListResponse,
 } from '@metanoia/types';
 import { SuperAdminTenantsRepository } from './super-admin-tenants.repository';
+import { DemoDataService } from '../onboarding/demo-data.service';
 
 interface SagaState {
   step: 1 | 2 | 3;
@@ -45,7 +46,10 @@ const ALLOWED_STATUS_TRANSITIONS: Record<TenantStatus, TenantStatus[]> = {
 export class SuperAdminTenantsService {
   private readonly logger = new Logger(SuperAdminTenantsService.name);
 
-  constructor(private readonly repo: SuperAdminTenantsRepository) {}
+  constructor(
+    private readonly repo: SuperAdminTenantsRepository,
+    private readonly demoDataService: DemoDataService,
+  ) {}
 
   async list(query: TenantsListQuery): Promise<TenantsListResponse> {
     const { rows, total, memberCounts } = await this.repo.list({
@@ -237,6 +241,14 @@ export class SuperAdminTenantsService {
         error: null,
       });
       this.logger.log(`Saga step 3 (invite) running for tenant ${id} — mocked`);
+
+      // Step 4 — seed demo data (non-fatal: failure must not abort provisioning).
+      try {
+        await this.demoDataService.seedDemoData(id);
+        this.logger.log(`Saga step 4 (seed demo data) complete for tenant ${id}`);
+      } catch (err) {
+        this.logger.warn(`Saga step 4 (seed demo data) failed (non-fatal) for tenant ${id}`, err);
+      }
 
       // Saga complete.
       await this.repo.updateStatus(id, 'active');
