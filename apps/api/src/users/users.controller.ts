@@ -1,6 +1,10 @@
-import { Controller, Get, HttpCode, HttpStatus, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import type { CurrentUser, OnboardingCompleteResponse } from '@metanoia/types';
+import { UpdateUserProfileSchema } from '@metanoia/types';
+import type { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { ScrubPiiInterceptor } from '../common/interceptors/scrub-pii.interceptor';
 import { UsersService } from './users.service';
 
 @Controller('api/v1/users')
@@ -18,6 +22,25 @@ export class UsersController {
   async getCurrentUser(): Promise<{ data: CurrentUser }> {
     const data = await this.usersService.getCurrentUser();
     return { data };
+  }
+
+  /**
+   * PATCH /api/v1/users/me
+   *
+   * Update authenticated user's display name, photo and role title (Etapa 1).
+   * Anti-mass-assignment: ZodValidationPipe(UpdateUserProfileSchema.strict()).
+   * userId resolved from AsyncLocalStorage (never from body/param — API5/BFLA).
+   *
+   * Route is registered BEFORE me/onboarding-complete so NestJS does not
+   * accidentally shadow it — prefix 'me' is a shorter prefix than
+   * 'me/onboarding-complete'.
+   */
+  @Patch('me')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ZodValidationPipe(UpdateUserProfileSchema))
+  @UseInterceptors(ScrubPiiInterceptor)
+  async updateProfile(@Body() dto: UpdateUserProfileDto) {
+    return this.usersService.updateProfile(dto);
   }
 
   /**

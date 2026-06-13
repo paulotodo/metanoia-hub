@@ -14,6 +14,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { OnboardingController } from './onboarding.controller';
 import { DemoDataService } from './demo-data.service';
+import { OnboardingWizardService } from './onboarding-wizard.service';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
 
@@ -59,10 +60,15 @@ describe('OnboardingController', () => {
       seedDemoData: vi.fn().mockResolvedValue(undefined),
     };
 
+    const mockWizardService = { getWizardStatus: vi.fn().mockResolvedValue({ data: { progress: {}, hasRealGroups: false } }) };
+
     const passGuard = { canActivate: () => true };
     const module = await Test.createTestingModule({
       controllers: [OnboardingController],
-      providers: [{ provide: DemoDataService, useValue: service }],
+      providers: [
+        { provide: DemoDataService, useValue: service },
+        { provide: OnboardingWizardService, useValue: mockWizardService },
+      ],
     })
       .overrideGuard(KeycloakAuthGuard).useValue(passGuard)
       .overrideGuard(RolesGuard).useValue(passGuard)

@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { CurrentUser, OnboardingCompleteResponse, UserExportData } from '@metanoia/types';
+import type { CurrentUser, OnboardingCompleteResponse, UpdateUserProfile, UpdateUserProfileResponse, UserExportData } from '@metanoia/types';
 import { UserStatusSchema } from '@metanoia/types';
 import { PrismaService } from '../prisma/prisma.service';
+import { withTenantTx } from '../prisma/with-tenant-tx';
 import { getRequestContext } from '../common/context/request-context';
 
 @Injectable()
@@ -157,6 +158,48 @@ export class UsersService {
       email: user.email,
       name: user.name,
       status: UserStatusSchema.parse(user.status),
+    };
+  }
+
+  /**
+   * Update the authenticated user's profile (Etapa 1 of the onboarding wizard).
+   * PATCH /api/v1/users/me.
+   *
+   * dec-018 MUST: fields mapped explicitly — no spread-merge of dto.
+   * Immutable fields (status, tenantId, email, onboardingCompletedAt) not touched.
+   * userId resolved from AsyncLocalStorage — never from body or param (API5/BFLA).
+   */
+  async updateProfile(dto: UpdateUserProfile): Promise<UpdateUserProfileResponse> {
+    const { userId } = getRequestContext();
+    if (!userId) {
+      throw new Error('updateProfile requires userId in RequestContext');
+    }
+
+    const user = await withTenantTx(this.prisma, (tx) =>
+      tx.user.update({
+        where: { id: userId },
+        data: {
+          // Explicit field mapping — anti-mass-assignment (dec-018)
+          ...(dto.name !== undefined ? { name: dto.name } : {}),
+          ...(dto.profilePhotoUrl !== undefined ? { profilePhotoUrl: dto.profilePhotoUrl } : {}),
+          ...(dto.roleTitle !== undefined ? { roleTitle: dto.roleTitle } : {}),
+        },
+        select: {
+          id: true,
+          name: true,
+          profilePhotoUrl: true,
+          roleTitle: true,
+        },
+      }),
+    );
+
+    return {
+      data: {
+        id: user.id,
+        name: user.name,
+        profilePhotoUrl: user.profilePhotoUrl ?? null,
+        roleTitle: user.roleTitle ?? null,
+      },
     };
   }
 
