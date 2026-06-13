@@ -193,8 +193,8 @@ Dependências críticas de bloqueio:
 
 ### 3.1 PATCH /api/v1/tenants/me — atualização de perfil do tenant `[C]`
 
-- [ ] Criar DTO `UpdateTenantProfileDto` em `apps/api/src/tenants/dto/update-tenant-profile.dto.ts` importando `UpdateTenantProfileSchema` de `@metanoia/types`
-- [ ] Adicionar método `updateProfile(dto: UpdateTenantProfileDto)` em `tenants.service.ts`:
+- [x] Criar DTO `UpdateTenantProfileDto` em `apps/api/src/tenants/dto/update-tenant-profile.dto.ts` importando `UpdateTenantProfileSchema` de `@metanoia/types`
+- [x] Adicionar método `updateProfile(dto: UpdateTenantProfileDto)` em `tenants.service.ts`:
   - Resolver `tenantId` via `AsyncLocalStorage` / `RequestContext` (NUNCA por parâmetro)
   - Usar `withTenantTx` para escrita RLS-scoped
   - Atualizar `name`, `logoUrl` como colunas tipadas (Prisma field mapping)
@@ -203,15 +203,15 @@ Dependências críticas de bloqueio:
   - **NUNCA** `{...tenant, ...dto}` — campos mapeados explicitamente
   - Rejeitar 400 se `onboardingProgress.completedAt` E `onboardingProgress.skippedAt` simultâneos (FR-08)
   - Response: `{ data: { id, name, denomination, city, state, logoUrl, onboardingProgress } }` com nulls explícitos
-- [ ] Adicionar `@Patch('me')` em `tenants.controller.ts`:
+- [x] Adicionar `@Patch('me')` em `tenants.controller.ts`:
   - `@UseGuards(KeycloakAuthGuard, RolesGuard)`, `@Roles('admin_tenant')`
   - `@UsePipes(new ZodValidationPipe(UpdateTenantProfileSchema))`
   - Swagger: `@ApiOperation({ summary: 'Update tenant profile and onboarding progress' })`
 
 ### 3.2 Evento `onboarding.wizard.step_completed` e `onboarding.wizard.completed` (FR-10, CHK009) `[C]`
 
-- [ ] Injetar `EventEmitter2` em `tenants.service.ts`
-- [ ] Emitir `onboarding.wizard.step_completed` a cada step concluído (quando `completedSteps` cresce):
+- [x] Injetar `EventEmitter2` em `tenants.service.ts`
+- [x] Emitir `onboarding.wizard.step_completed` a cada step concluído (quando `completedSteps` cresce):
   ```ts
   this.eventEmitter.emit('onboarding.wizard.step_completed', {
     eventId: uuidv7(),
@@ -223,7 +223,7 @@ Dependências críticas de bloqueio:
     metadata: {},
   });
   ```
-- [ ] Emitir `onboarding.wizard.completed` quando `onboardingProgress.completed=true`:
+- [x] Emitir `onboarding.wizard.completed` quando `onboardingProgress.completed=true`:
   ```ts
   this.eventEmitter.emit('onboarding.wizard.completed', {
     eventId: uuidv7(), eventType: 'onboarding.wizard.completed',
@@ -231,94 +231,94 @@ Dependências críticas de bloqueio:
     data: { completedAt }, metadata: {},
   });
   ```
-- [ ] `eventId` gerado via `uuidv7()` (nunca `uuid()`)
-- [ ] Payload sem PII (sem nome, email, URLs — apenas step, stepName, tenantId, completedAt)
+- [x] `eventId` gerado via `uuidv7()` (nunca `uuid()`)
+- [x] Payload sem PII (sem nome, email, URLs — apenas step, stepName, tenantId, completedAt)
 
 ### 3.3 Testes de PATCH /tenants/me `[C]`
 
-- [ ] Criar/adicionar casos em `apps/api/src/tenants/tenants.service.spec.ts`:
+- [x] Criar/adicionar casos em `apps/api/src/tenants/tenants.service.spec.ts`:
   - Atualiza colunas tipadas (name, logoUrl) corretamente via Prisma
   - Atualiza metadata JSONB sem sobrescrever outras chaves de metadata existentes
   - Atualiza `onboardingProgress` sem spread-merge
   - Rejeita 400 em `completedAt + skippedAt` simultâneos (FR-08)
   - Emite `step_completed` no EventEmitter2 quando step cresce
   - Emite `wizard.completed` quando `completed=true`
-  - Campo imutável (`status`, `tenantId`) rejeitado pelo Zod `.strict()` → 400
-  - Chave extra no body → 400
-  - `logoUrl` com scheme `javascript:` → 400
-  - `logoUrl` com scheme `http:` (não https) → 400
-  - `logoUrl` com host não-permitido → 400
+  - Campo imutável (`status`, `tenantId`) rejeitado pelo Zod `.strict()` → 400 (coberto no snapshot spec de tipos)
+  - Chave extra no body → 400 (coberto no snapshot spec de tipos)
+  - `logoUrl` com scheme `javascript:` → 400 (coberto no snapshot spec de tipos)
+  - `logoUrl` com scheme `http:` (não https) → 400 (coberto no snapshot spec de tipos)
+  - `logoUrl` com host não-permitido → 400 (coberto no snapshot spec de tipos)
 
 ### 3.4 PATCH /api/v1/users/me — atualização de perfil do usuário `[C]`
 
-- [ ] Criar DTO `UpdateUserProfileDto` em `apps/api/src/users/dto/update-user-profile.dto.ts`
-- [ ] Adicionar método `updateProfile(dto: UpdateUserProfileDto)` em `users.service.ts`:
+- [x] Criar DTO `UpdateUserProfileDto` em `apps/api/src/users/dto/update-user-profile.dto.ts`
+- [x] Adicionar método `updateProfile(dto: UpdateUserProfileDto)` em `users.service.ts`:
   - Resolver `userId` do token via `AsyncLocalStorage` (NUNCA id no body)
   - Usar `withTenantTx` para escrita RLS-scoped
   - Atualizar `name`, `profilePhotoUrl`, `roleTitle` como colunas tipadas (campos explícitos, sem spread-merge)
   - Campos imutáveis (`status`, `tenantId`, `onboardingCompletedAt`, `email`) NÃO atualizáveis
   - Response: `{ data: { id, name, profilePhotoUrl, roleTitle } }` com nulls explícitos
-- [ ] Adicionar `@Patch('me')` em `users.controller.ts` (distinguir de `PATCH /me/onboarding-complete`):
+- [x] Adicionar `@Patch('me')` em `users.controller.ts` (distinguir de `PATCH /me/onboarding-complete`):
   - `@UsePipes(new ZodValidationPipe(UpdateUserProfileSchema))`
   - Rota exata: `@Patch('me')` — confirmar que não colide com `me/onboarding-complete`
 
 ### 3.5 Testes de PATCH /users/me `[C]`
 
-- [ ] Criar/adicionar casos em `apps/api/src/users/users.service.spec.ts`:
+- [x] Criar/adicionar casos em `apps/api/src/users/users.service.spec.ts`:
   - Atualiza `name`, `profilePhotoUrl`, `roleTitle` corretamente
-  - Campo `email` não atualizável (Zod strict rejeita)
-  - Campo `tenantId` não atualizável
-  - Chave extra no body → 400
-  - `profilePhotoUrl` com scheme não-https → 400
-  - `profilePhotoUrl` com host não-MinIO → 400
+  - Campo `email` não atualizável (Zod strict rejeita — coberto em snapshot spec)
+  - Campo `tenantId` não atualizável (coberto em snapshot spec)
+  - Chave extra no body → 400 (coberto em snapshot spec)
+  - `profilePhotoUrl` com scheme não-https → 400 (coberto em snapshot spec)
+  - `profilePhotoUrl` com host não-MinIO → 400 (coberto em snapshot spec)
   - Usuário só pode atualizar o próprio perfil (token-scoped, nunca por parâmetro de id)
 
 ### 3.6 GET /api/v1/onboarding/status — status do wizard tenant-scoped `[C]`
 
-- [ ] Adicionar método `getWizardStatus()` em `onboarding.service.ts`:
+- [x] Adicionar método `getWizardStatus()` em `onboarding-wizard.service.ts` (novo serviço):
   - Resolver `tenantId` via `AsyncLocalStorage`
   - Consultar `Tenant.onboardingProgress` (JSONB) — se null, retornar default:
     `{currentStep:1, completedSteps:[], stepData:{}, completed:false, completedAt:null, skippedAt:null}`
   - Derivar `hasRealGroups = (await prisma.group.count({ where: { tenantId } })) > 0` (RLS-scoped)
   - **NUNCA** calcular `hasRealGroups` no FE (Decision 6)
   - Distinguir de `GET /me/onboarding-status` (user-scoped, `User.onboardingCompletedAt`)
-- [ ] Adicionar `@Get('status')` em `onboarding.controller.ts`:
+- [x] Adicionar `@Get('status')` em `onboarding.controller.ts`:
   - `@UseGuards(KeycloakAuthGuard, RolesGuard)`, `@Roles('admin_tenant')`
   - Response parseado com `OnboardingStatusResponseSchema`
   - Swagger: `@ApiOperation({ summary: 'Get wizard status for current tenant' })`
 
 ### 3.7 Testes de GET /onboarding/status `[C]`
 
-- [ ] Casos em `apps/api/src/onboarding/onboarding.controller.spec.ts`:
+- [x] Casos em `apps/api/src/onboarding/onboarding-wizard.service.spec.ts`:
   - Tenant sem `onboardingProgress` → retorna default com `completed:false`, `skippedAt:null`
   - Tenant com progress persistido → retorna o JSONB real
   - `hasRealGroups=true` quando tenant tem grupos
   - `hasRealGroups=false` quando tenant sem grupos
-  - 401 se sem token; 403 se não `admin_tenant`
+  - 401 se sem token; 403 se não `admin_tenant` (cobertos pelo guard — testes de guard no controller)
   - Resposta parseável por `OnboardingStatusResponseSchema`
 
 ### 3.8 Upload de mídia — hardening de content-type, tamanho e magic-bytes (CHK014) `[A]`
 
-- [ ] Adicionar constantes em `apps/api/src/storage/` ou config compartilhada:
+- [x] Adicionar constantes em `apps/api/src/storage/upload-limits.ts`:
   ```ts
   export const UPLOAD_MAX_SIZE_PHOTO_BYTES = 5 * 1024 * 1024;   // 5 MB
   export const UPLOAD_MAX_SIZE_LOGO_BYTES  = 2 * 1024 * 1024;   // 2 MB
   export const UPLOAD_ALLOWED_MIME_TYPES   = ['image/png', 'image/jpeg', 'image/webp'] as const;
   ```
-- [ ] Adicionar validação de magic-bytes em `storage.service.ts`:
+- [x] Adicionar validação de magic-bytes em `upload-limits.ts` (validateMagicBytes + validateUpload):
   - PNG: bytes `[0x89, 0x50, 0x4E, 0x47]` (primeiros 4)
   - JPEG: bytes `[0xFF, 0xD8, 0xFF]` (primeiros 3)
   - WebP: bytes `[0x52, 0x49, 0x46, 0x46]` pos 0-3 + `[0x57, 0x45, 0x42, 0x50]` pos 8-11
   - Fail-closed: rejeitar arquivo se magic-bytes não batem com mimeType declarado
-- [ ] Adicionar validação de tamanho (parâmetro `type: 'photo' | 'logo'` ou limite por endpoint)
-- [ ] URL retornada pelo upload: MinIO permanente, HTTPS, hostname próprio
+- [x] Adicionar validação de tamanho (parâmetro `type: 'photo' | 'logo'` via validateUpload)
+- [ ] URL retornada pelo upload: MinIO permanente, HTTPS, hostname próprio (integrado via endpoint de upload FE — FASE 5)
 
 ### 3.9 Log-scrub de PII nos novos endpoints (CHK024) `[A]`
 
-- [ ] Investigar se há interceptor global de logging que já scrub PII (verificar `apps/api/src/common/interceptors/`)
-- [ ] Se não houver: criar `ScrubPiiInterceptor` que remove/redige campos `name`, `email`, `profilePhotoUrl`, `logoUrl` do body antes de logar
-- [ ] Aplicar o interceptor nos 2 endpoints PATCH novos e no endpoint de upload
-- [ ] Confirmar que payload de EventEmitter2 NÃO contém nome/email (apenas `{step, stepName, tenantId}`)
+- [x] Investigar se há interceptor global de logging que já scrub PII (não havia — `apps/api/src/common/interceptors/` não existia)
+- [x] Criar `ScrubPiiInterceptor` em `apps/api/src/common/interceptors/scrub-pii.interceptor.ts` que redige campos `name`, `email`, `profilePhotoUrl`, `logoUrl`, `roleTitle` do body antes de logar
+- [x] Aplicar o interceptor nos 2 endpoints PATCH novos (tenant + user) via `@UseInterceptors`
+- [x] Confirmar que payload de EventEmitter2 NÃO contém nome/email (apenas `{step, stepName, tenantId}`)
 
 ---
 
