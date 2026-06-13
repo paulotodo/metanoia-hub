@@ -192,6 +192,22 @@ O ambiente de desenvolvimento/testes (modelo Story 7-2 com `Tenant.isDemo`) func
 
 ## Clarifications
 
-> Nenhuma ambiguidade crítica irresolvível — os artefatos BMad (10-2-dados-de-demonstracao-seed.md) e RECONCILIACAO-EPIC10.md §10 fornecem decisões suficientes. Uma observação de implementação:
+Decisões resolvidas autonomamente pela fase clarify (answerer score >=2). Restou 1 bloqueio humano (Q4).
 
-**Obs. — Progresso granular (`LessonProgress`, `ModuleProgress`):** O artefato BMad lista `trail_progress` nas 9 tabelas. O schema real possui também `lesson_progress` e `module_progress`. Na implementação, confirmar se esses registros granulares são criados pelo seed (para coerência do painel) e, se sim, adicioná-los ao escopo da migration e da limpeza. Decisão técnica mantida para a fase de plan.
+**dec-006 — Q1: Escopo de isDemoData ampliado para 11 tabelas (score 3)**
+
+`TrailProgress` e `ModuleProgress` NÃO possuem `@relation` com `onDelete: Cascade` para `User` no schema Prisma — ao deletar usuários demo, esses registros ficariam órfãos. `LessonProgress` É coberta por cascade da `Lesson` (onDelete: Cascade confirmado). Decisão: adicionar `isDemoData` em `trail_progress` e `module_progress` além das 9 tabelas originais. `lesson_progress` não precisa do campo (cascade suficiente). Total: 11 tabelas na migration.
+
+Tabelas completas com `isDemoData`: `users`, `groups`, `group_members`, `trails`, `modules`, `lessons`, `trail_progress`, `module_progress`, `meeting_telemetry`, `pastoral_actions`, e opcionalmente `lesson_progress` (por precaução, embora coberta por cascade). Implementação final a confirmar no plan com base no seed criado.
+
+**dec-007 — Q2: Nudge "Manter por enquanto" fecha permanentemente (score 2)**
+
+FR-08 define "exibido apenas uma vez por tenant (ou até que o admin tome uma decisão explícita)". "Manter por enquanto" é tratado como decisão explícita de manter os dados — o nudge não reaparece. O admin que mudar de ideia acessa a limpeza via FR-09 (Configurações). O estado de "nudge dispensado" é persistido por tenant.
+
+**dec-008 — Q3: Limpeza deve ser transacional (score 3)**
+
+SC-02 exige "100% dos registros marcados como demonstração do tenant são removidos por uma única ação de limpeza". FR-06 define a operação como idempotente. A limpeza de 11 tabelas deve ser envolvida em `prisma.$transaction()` — tudo ou nada. Em caso de falha parcial, retornar 500 (o admin pode re-executar; idempotência garante resultado correto na segunda tentativa).
+
+**block-001 — Q4: Filtro de dados demo em relatórios (aguardando humano)**
+
+Edge case menciona que relatórios e exportações devem poder filtrar dados demo para não distorcer métricas reais. Nenhum FR foi criado para isso na spec. O answerer não conseguiu decidir (score 0 — empate entre deferir vs. documentar como NFR). Bloqueio registrado aguardando decisão do PO: (A) implementar filtro automático nesta story, (B) deferir para story posterior, ou (C) documentar como NFR sem implementação agora.
