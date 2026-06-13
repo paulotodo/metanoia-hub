@@ -40,3 +40,13 @@ export const OnboardingCompleteResponseSchema = z.object({
   onboardingCompletedAt: z.string().datetime(),
 });
 export type OnboardingCompleteResponse = z.infer<typeof OnboardingCompleteResponseSchema>;
+
+// --- GET /api/v1/onboarding/demo-status ---
+
+export const DemoStatusResponseSchema = z.object({
+  hasDemoData: z.boolean(),
+  hasRealData: z.boolean(),
+  demoRecordCount: z.number().int().nonnegative(),
+  nudgeDismissed: z.boolean(),
+});
+export type DemoStatusResponse = z.infer<typeof DemoStatusResponseSchema>;

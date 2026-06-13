@@ -4,6 +4,7 @@ import {
   DemoRadarParticipantSchema,
   DemoRadarResponseSchema,
   OnboardingCompleteResponseSchema,
+  DemoStatusResponseSchema,
 } from '../onboarding';
 
 describe('DemoRadarSignalSchema snapshot', () => {
@@ -129,6 +130,55 @@ describe('OnboardingCompleteResponseSchema snapshot', () => {
     const result = OnboardingCompleteResponseSchema.safeParse({
       userId: 'not-a-uuid',
       onboardingCompletedAt: 'not-a-datetime',
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('DemoStatusResponseSchema snapshot', () => {
+  it('DemoStatusResponseSchema snapshot', () => {
+    expect(DemoStatusResponseSchema.shape).toMatchSnapshot();
+  });
+
+  it('accepts valid demo status response', () => {
+    const result = DemoStatusResponseSchema.safeParse({
+      hasDemoData: true,
+      hasRealData: false,
+      demoRecordCount: 35,
+      nudgeDismissed: false,
+    });
+    expect({
+      success: result.success,
+      data: result.success ? result.data : null,
+    }).toMatchInlineSnapshot(`
+      {
+        "data": {
+          "demoRecordCount": 35,
+          "hasDemoData": true,
+          "hasRealData": false,
+          "nudgeDismissed": false,
+        },
+        "success": true,
+      }
+    `);
+  });
+
+  it('rejects negative demoRecordCount', () => {
+    const result = DemoStatusResponseSchema.safeParse({
+      hasDemoData: true,
+      hasRealData: false,
+      demoRecordCount: -1,
+      nudgeDismissed: false,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects non-integer demoRecordCount', () => {
+    const result = DemoStatusResponseSchema.safeParse({
+      hasDemoData: true,
+      hasRealData: false,
+      demoRecordCount: 1.5,
+      nudgeDismissed: false,
     });
     expect(result.success).toBe(false);
   });

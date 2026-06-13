@@ -151,7 +151,7 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
 
 - [x] Em `apps/api/package.json`: adicionado `"db:seed:demo-data": "tsx src/onboarding/seed/demo-data.seed.ts"`; não duplica `db:seed:demo` do Story 7-2 (RECONCILIACAO §6 — scripts coexistem)
 - [x] Em `turbo.json`: adicionado pipeline `"db:seed:demo-data": { "cache": false }`
-- [ ] Testar execução: `pnpm --filter @metanoia/api db:seed:demo-data -- --tenant-id <UUID>` (requer DB disponível)
+- [ ] Testar execução: `pnpm --filter @metanoia/api db:seed:demo-data -- --tenant-id <UUID>` (requer DB disponível) — **DEFERIDO**: executar manualmente no ambiente de desenvolvimento com DB ativo; não bloqueia CI
 
 ### 2.4 Criar testes unitários do DemoDataService `[C]`
 
@@ -212,26 +212,26 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
 
 ### 4.1 Criar demo-data-isolation.rls-spec.ts `[C]`
 
-- [ ] Criar `apps/api/test/rls/demo-data-isolation.rls-spec.ts`
-- [ ] Setup: criar 2 tenants com UUIDs fixos; `PrismaPg({ connectionString: DATABASE_APP_URL })`
-- [ ] Seed demo data no tenant A
-- [ ] No contexto do tenant B: verificar que `SELECT` com `isDemoData=true` retorna 0 registros (pelo menos: users, groups, meetings, pastoral_actions)
-- [ ] SEC011: RLS bloqueia acesso cross-tenant — não é filtro manual, é política aplicada pelo DB
-- [ ] Cleanup: excluir apenas tabelas mutáveis (padrão do projeto); `beforeEach` com função nomeada (não `.bind(undefined)`)
+- [x] Criar `apps/api/test/rls/demo-data-isolation.rls-spec.ts`
+- [x] Setup: criar 2 tenants com UUIDs fixos; `PrismaPg({ connectionString: DATABASE_APP_URL })`
+- [x] Seed demo data no tenant A
+- [x] No contexto do tenant B: verificar que `SELECT` com `isDemoData=true` retorna 0 registros (pelo menos: users, groups, meetings, pastoral_actions)
+- [x] SEC011: RLS bloqueia acesso cross-tenant — não é filtro manual, é política aplicada pelo DB
+- [x] Cleanup: excluir apenas tabelas mutáveis (padrão do projeto); `beforeEach` com função nomeada (não `.bind(undefined)`)
 
 ### 4.2 Criar demo-data-cleanup.rls-spec.ts `[C]`
 
-- [ ] Criar `apps/api/test/rls/demo-data-cleanup.rls-spec.ts`
-- [ ] Setup: criar tenants A e B; seed demo data nos dois
-- [ ] Chamar `deleteDemoData(tenantIdA)` no contexto de A
-- [ ] Verificar: tenant A → 0 registros demo em todas as tabelas
-- [ ] Verificar: tenant B → registros demo intactos
-- [ ] Teste de idempotência: chamar `deleteDemoData(tenantIdA)` novamente → sem erro (204 no-op)
-- [ ] CHK030: documentar em comentário que race condition seed+cleanup simultâneo está fora do escopo (baixo risco: seed ocorre no provisionamento, cleanup só após login do admin)
+- [x] Criar `apps/api/test/rls/demo-data-cleanup.rls-spec.ts`
+- [x] Setup: criar tenants A e B; seed demo data nos dois
+- [x] Chamar `deleteDemoData(tenantIdA)` no contexto de A
+- [x] Verificar: tenant A → 0 registros demo em todas as tabelas
+- [x] Verificar: tenant B → registros demo intactos
+- [x] Teste de idempotência: chamar `deleteDemoData(tenantIdA)` novamente → sem erro (204 no-op)
+- [x] CHK030: documentar em comentário que race condition seed+cleanup simultâneo está fora do escopo (baixo risco: seed ocorre no provisionamento, cleanup só após login do admin)
 
 ### 4.3 Documentar interface LGPD (SEC011) `[A]`
 
-- [ ] Em `apps/api/src/onboarding/demo-data.service.ts`, no método `getDemoStatus`, adicionar comentário JSDoc documentando o comportamento da interface com o exportador LGPD da Story 9-1: usuários demo (`isDemoData=true`) aparecem no export LGPD como dados técnicos do tenant; o admin deve executar `DELETE /onboarding/demo-data` antes do export caso não queira exportar dados demo; não há filtro automático por `isDemoData` no exportador (dec-010, SEC010)
+- [x] Em `apps/api/src/onboarding/demo-data.service.ts`, no método `getDemoStatus`, adicionar comentário JSDoc documentando o comportamento da interface com o exportador LGPD da Story 9-1: usuários demo (`isDemoData=true`) aparecem no export LGPD como dados técnicos do tenant; o admin deve executar `DELETE /onboarding/demo-data` antes do export caso não queira exportar dados demo; não há filtro automático por `isDemoData` no exportador (dec-010, SEC010)
 
 ---
 
@@ -242,8 +242,8 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
 
 ### 5.1 Adicionar DemoStatusResponseSchema em packages/types `[C]`
 
-- [ ] Abrir `packages/types/src/onboarding.ts`
-- [ ] Adicionar:
+- [x] Abrir `packages/types/src/onboarding.ts`
+- [x] Adicionar:
   ```ts
   export const DemoStatusResponseSchema = z.object({
     hasDemoData: z.boolean(),
@@ -253,14 +253,14 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
   });
   export type DemoStatusResponse = z.infer<typeof DemoStatusResponseSchema>;
   ```
-- [ ] Verificar export no barrel principal (`packages/types/src/index.ts`)
+- [x] Verificar export no barrel principal (`packages/types/src/index.ts`) — exportado em bloco onboarding junto com DemoRadarSignalSchema etc.
 
 ### 5.2 Adicionar snapshot test `[A]`
 
-- [ ] Abrir `packages/types/src/__tests__/onboarding.spec.ts`
-- [ ] Adicionar: `it('DemoStatusResponseSchema snapshot', () => { expect(DemoStatusResponseSchema.shape).toMatchSnapshot(); })`
-- [ ] Rodar `pnpm --filter @metanoia/types test --run` para gerar snapshot inicial
-- [ ] Confirmar que o arquivo `.snap` foi gerado e incluído no commit
+- [x] Abrir `packages/types/src/__tests__/onboarding.snapshot.spec.ts` (arquivo existente do projeto — padrão *.snapshot.spec.ts)
+- [x] Adicionado: `it('DemoStatusResponseSchema snapshot', () => { expect(DemoStatusResponseSchema.shape).toMatchSnapshot(); })` + 3 casos adicionais (valid parse, rejeita negativo, rejeita float)
+- [x] Rodado `pnpm --filter @metanoia/types test --run` — "Snapshots 1 written", 397 passed (35 files)
+- [x] Arquivo `.snap` gerado em `__tests__/__snapshots__/onboarding.snapshot.spec.ts.snap` — incluído no commit; gate build `pnpm turbo build --filter=@metanoia/types` verde (1.483s)
 
 ---
 
