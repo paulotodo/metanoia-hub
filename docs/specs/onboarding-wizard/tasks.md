@@ -136,12 +136,12 @@ Dependências críticas de bloqueio:
 
 ### 2.1 OnboardingProgressSchema e OnboardingStatusResponseSchema `[C]`
 
-- [ ] Abrir `packages/types/src/onboarding.ts` e adicionar (sem quebrar schemas existentes):
+- [x] Abrir `packages/types/src/onboarding.ts` e adicionar (sem quebrar schemas existentes):
   ```ts
   export const OnboardingProgressSchema = z.object({
     currentStep: z.number().int().min(1).max(5),
     completedSteps: z.array(z.number().int().min(1).max(5)),
-    stepData: z.record(z.unknown()),
+    stepData: z.record(z.string(), z.unknown()),
     completed: z.boolean(),
     completedAt: z.string().datetime().nullable(),
     skippedAt: z.string().datetime().nullable(),
@@ -151,59 +151,41 @@ Dependências críticas de bloqueio:
   );
   export type OnboardingProgress = z.infer<typeof OnboardingProgressSchema>;
   ```
-- [ ] Adicionar `OnboardingStatusResponseSchema`: `z.object({ data: z.object({ progress: OnboardingProgressSchema, hasRealGroups: z.boolean() }) })`
-- [ ] Exportar ambos em `packages/types/src/index.ts`
+- [x] Adicionar `OnboardingStatusResponseSchema`: `z.object({ data: z.object({ progress: OnboardingProgressSchema, hasRealGroups: z.boolean() }) })`
+- [x] Exportar ambos em `packages/types/src/index.ts`
 
 ### 2.2 UpdateTenantProfileSchema e UpdateUserProfileSchema com URL allowlist `[C]`
 
-- [ ] Adicionar constante `MINIO_ALLOWED_HOSTS` lida de env `NEXT_PUBLIC_MINIO_HOST` / `MINIO_PUBLIC_HOST`
-- [ ] Criar helper `MinioUrlSchema`:
+- [x] Adicionar `configureMinioAllowedHosts(hosts: string[])` (runtime injection, Zod v4 compatible — sem process.env no package)
+- [x] Criar helper `MinioUrlSchema`:
   ```ts
-  const MinioUrlSchema = z.string().url()
+  export const MinioUrlSchema = z.string().url()
     .refine(url => url.startsWith('https://'), { message: 'URL deve usar https' })
-    .refine(url => {
-      try { return MINIO_ALLOWED_HOSTS.includes(new URL(url).hostname); }
-      catch { return false; }
-    }, { message: 'URL deve originar do bucket MinIO configurado' });
+    .refine(_isMinioUrl, { message: 'URL deve originar do bucket MinIO configurado' });
   ```
-- [ ] Adicionar `UpdateTenantProfileSchema` (`.strict()`):
+- [x] Adicionar `UpdateTenantProfileSchema` (`.strict()`):
   campos: `name: z.string().min(1)`, `denomination?`, `city?`, `state?`, `logoUrl?: MinioUrlSchema`, `onboardingProgress?: OnboardingProgressSchema`
-- [ ] Adicionar `UpdateUserProfileSchema` (`.strict()`):
+- [x] Adicionar `UpdateUserProfileSchema` (`.strict()`):
   campos: `name?: z.string().min(1)`, `profilePhotoUrl?: MinioUrlSchema`, `roleTitle?: z.string()`
-- [ ] Adicionar response schemas: `UpdateTenantProfileResponseSchema` e `UpdateUserProfileResponseSchema` com `{ data: {...} }` (nulls explícitos)
-- [ ] Confirmar que campos imutáveis (`status`, `tenantId`, `email`, `onboardingCompletedAt`) NÃO estão nos schemas de request
+- [x] Adicionar response schemas: `UpdateTenantProfileResponseSchema` e `UpdateUserProfileResponseSchema` com `{ data: {...} }` (nulls explícitos)
+- [x] Confirmar que campos imutáveis (`status`, `tenantId`, `email`, `onboardingCompletedAt`) NÃO estão nos schemas de request
 
 ### 2.3 Snapshot tests dos schemas novos `[C]`
 
-- [ ] Adicionar snapshot tests em `packages/types/src/__tests__/onboarding.spec.ts`:
-  - `OnboardingProgressSchema` — `z.infer<typeof OnboardingProgressSchema>` + snapshot do `.shape`
-  - `UpdateTenantProfileSchema` — snapshot
-  - `UpdateUserProfileSchema` — snapshot
-  - `OnboardingStatusResponseSchema` — snapshot
-  - Teste de `.refine()` FR-08: `completedAt=now + skippedAt=now` → `parse()` lança erro
-- [ ] Rodar `pnpm turbo test --filter=@metanoia/types` e confirmar verde
-- [ ] Confirmar que snapshots são commitados
+- [x] Criar `packages/types/src/__tests__/onboarding-wizard.snapshot.spec.ts` com:
+  - `OnboardingProgressSchema` — snapshot do `.shape` + 7 casos (valid, FR-08, out-of-range, strict)
+  - `UpdateTenantProfileSchema` — snapshot + 7 casos (logoUrl schemes, strict, FR-08 via progress)
+  - `UpdateUserProfileSchema` — snapshot + 8 casos (optional fields, strict, imutáveis, URL schemes)
+  - `OnboardingStatusResponseSchema` — snapshot + 2 casos
+- [x] `pnpm turbo test --filter=@metanoia/types` → 425 testes passando (36 files), 6 snapshots written
+- [x] Snapshots commitados em `packages/types/src/__tests__/__snapshots__/onboarding-wizard.snapshot.spec.ts.snap` (commit ec67a74)
 
 ### 2.4 Vocabulário pastoral para wizard nas 5 etapas (CHK017) `[A]`
 
-- [ ] Abrir `packages/types/src/vocabulary/vocabulary.ts` e adicionar seção `// Wizard de Onboarding`:
-  ```ts
-  export const WIZARD_STEP_PROFILE_LABEL = 'Seu Perfil Pastoral' as const;
-  export const WIZARD_STEP_COMMUNITY_LABEL = 'Sua Comunidade' as const;
-  export const WIZARD_STEP_GROUP_LABEL = 'Seu Primeiro Grupo de Discipulado' as const;
-  export const WIZARD_STEP_INVITE_LABEL = 'Convide um Líder' as const;
-  export const WIZARD_STEP_RADAR_LABEL = 'Conheça o Radar Pastoral' as const;
-  export const WIZARD_DISPLAY_NAME_QUESTION = 'Como seus discípulos te conhecem?' as const;
-  export const WIZARD_ROLE_TITLE_LABEL = 'Seu título pastoral' as const;
-  export const WIZARD_COMMUNITY_NAME_LABEL = 'Nome da sua comunidade' as const;
-  export const WIZARD_COMPLETE_BUTTON = 'Concluir Setup' as const;
-  export const WIZARD_SKIP_LABEL = 'Pular configuração' as const;
-  export const WIZARD_SKIP_LATER_LABEL = 'Fazer depois' as const;
-  export const WIZARD_REPLAY_LABEL = 'Rever tutorial' as const;
-  export const WIZARD_DEMO_PREVIEW_LABEL = 'Exemplo de como o radar funciona' as const;
-  ```
-- [ ] Confirmar que ESLint `no-surveillance-terms` não bloqueia novos termos
-- [ ] Exportar novos termos em `packages/types/src/vocabulary/index.ts`
+- [x] Adicionado seção `// Wizard de Onboarding` em `packages/types/src/vocabulary/vocabulary.ts`:
+  13 constantes WIZARD_* (5 step labels + 8 labels de ação/UI) em PT-BR
+- [x] ESLint `no-surveillance-terms` não bloqueia: lint 0 warnings (commit ec67a74)
+- [x] Exportados em `packages/types/src/vocabulary/index.ts` e `packages/types/src/index.ts`
 
 ---
 
