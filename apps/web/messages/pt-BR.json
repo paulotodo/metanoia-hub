@@ -80,7 +80,20 @@
           "name": "Marcos (exemplo)",
           "context": "Participacao estavel"
         }
-      }
+      },
+      "overlayBadge": "Dados de exemplo",
+      "overlayAriaLabel": "Este conteudo e um exemplo — nao representa sua congregacao real",
+      "nudgeTitle": "Voce ja tem participantes reais!",
+      "nudgeDescription": "Seu rebanho esta crescendo. Deseja remover os dados de exemplo agora que voce tem uma congregacao real?",
+      "nudgeClean": "Remover dados de exemplo",
+      "nudgeKeep": "Manter por enquanto",
+      "cleanupButtonLabel": "Remover dados de exemplo",
+      "cleanupConfirmTitle": "Remover dados de exemplo?",
+      "cleanupConfirmDescription": "Essa acao ira apagar os participantes, grupos e registros de exemplo. Seus dados reais nao serao afetados.",
+      "cleanupConfirmCancel": "Cancelar",
+      "cleanupConfirmAction": "Sim, remover",
+      "cleanupSuccess": "Dados de exemplo removidos com sucesso.",
+      "cleanupError": "Nao foi possivel remover os dados de exemplo. Tente novamente."
     }
   },
   "group": {
