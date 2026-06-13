@@ -23,8 +23,7 @@ import { requestContext } from '../common/context/request-context';
 const TENANT_ID = '01912345-6789-7000-8000-000000000001';
 const USER_ID = '01912345-6789-7000-8000-0000000000a1';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const BASE_TENANT: Record<string, any> = {
+const BASE_TENANT: Record<string, unknown> = {
   id: TENANT_ID,
   tenantId: TENANT_ID,
   name: 'Igreja Test',
