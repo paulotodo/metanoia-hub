@@ -256,3 +256,15 @@ Se dados de demonstração indisponíveis: opção (b) da Etapa 3 oculta, Etapa 
 - **Tracking user-scoped vs tenant-scoped**: coexistem. User-scoped (`onboardingCompletedAt` no User) permanece intacto; tenant-scoped (`onboardingProgress` no Tenant) é adicionado. Decidido em RECONCILIACAO §1.4/§10.1.
 - **Guard existente**: `onboarding-redirect-guard.tsx` não é recriado. O wizard engata no redirecionamento existente para `/app/admin/boas-vindas`; a tela de boas-vindas existente passa a renderizar o wizard. Decidido em RECONCILIACAO §1.4.
 - **Demo data**: Step 3 opção (b) e Step 5 preview dependem de `dados-demonstracao` (10-2, já entregue). Degradação graciosa se indisponível. Decidido em RECONCILIACAO §10.6.
+
+### Session 2026-06-13
+
+- **Q1 — Condição de disparo do wizard (FR-01)** [dec-007, score=1]: manter condição TRIPLA — `completed=false AND skippedAt=null AND zero grupos reais existentes`. Justificativa: FR-01 define as três condições explicitamente; remover a terceira viola FR-01 diretamente. Impacto: o guard deve consultar count de grupos do tenant antes de redirecionar ao wizard.
+
+- **Q2 — Persistência de URLs de foto/logo (FR-03/FR-04)** [dec-008, score=2]: colunas Prisma tipadas novas — `User.profilePhotoUrl: String?` e `Tenant.logoUrl: String?`. Justificativa: constitution exige `strict: true` em todo TypeScript; JSONB não tem type-safety em Prisma v7. Impacto: migration DDL com 2 novas colunas nullable; `PATCH /api/v1/users/me` e `PATCH /api/v1/tenants/me` expõem esses campos.
+
+- **Q3 — Mecanismo de evento `onboarding.wizard.step_completed` (FR-10)** [dec-009, score=2]: EventEmitter2 síncrono in-process (NestJS). Justificativa: consumo é FUTURO (Epic 13 sem consumer concreto no MVP); onboarding é supporting subdomain (service direto, sem infra adicional). BullMQ sem consumer seria overhead desnecessário. Impacto: `@OnEvent('onboarding.wizard.step_completed')` no módulo de analytics futuro; sem worker/queue dedicado nesta story.
+
+- **Q4 — Modo "Rever tutorial" (FR-09)** [dec-010, score=2]: campos read-only reais — wizard exibe dados mas não persiste alterações no replay. Justificativa: FR-09 define "modo leitura (sem salvar dados novamente)"; P7 AC confirma "sem editar dados". Impacto: prop `readOnly?: boolean` no componente wizard; formulários com `disabled` e sem submit ao backend; rota de replay em `/app/admin/configuracoes/rever-tutorial`.
+
+- **Q5 — onboardingSkippedAt / onboardingCompletedAt (FR-02/FR-08)** [dec-011, score=2]: dentro do JSONB `onboardingProgress` — `onboardingProgress.completedAt` e `onboardingProgress.skippedAt`, sem novas colunas DDL. Justificativa: FR-02 define a estrutura JSONB explicitamente com `completedAt?` e `skippedAt?` dentro do campo. Impacto: `PATCH /api/v1/tenants/me` atualiza `onboardingProgress` JSONB; `onboardingSkippedAt` mencionado em Key Entities refere-se a `onboardingProgress.skippedAt` (não coluna separada).
