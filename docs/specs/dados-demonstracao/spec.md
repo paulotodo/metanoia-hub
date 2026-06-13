@@ -192,7 +192,13 @@ O ambiente de desenvolvimento/testes (modelo Story 7-2 com `Tenant.isDemo`) func
 
 ## Clarifications
 
-Decisões resolvidas autonomamente pela fase clarify (answerer score >=2). Restou 1 bloqueio humano (Q4).
+Decisões resolvidas autonomamente pela fase clarify (answerer score >=2). Q4 respondido pelo PO (dec-010).
+
+### Escopo Excluído
+
+- **Filtro automático de dados demo em relatórios e exportações:** dados marcados com `isDemoData=true` aparecem normalmente em relatórios, dashboard do Radar e exportações. Filtro automático foi explicitamente deferido para story posterior (dec-010). O admin que não quiser ver dados demo executa a limpeza via FR-06.
+- **Credenciais de autenticação para usuários fictícios:** usuários demo existem apenas como registros de dados (não têm conta Keycloak). Gestão de contas Keycloak está fora do escopo desta story (FR-12).
+- **Validação de limite de plano na limpeza:** a operação `DELETE /onboarding/demo-data` deleta registros demo sem interação com `PlanLimitsService` — é operação administrativa de limpeza, não criação de conteúdo.
 
 **dec-006 — Q1: Escopo de isDemoData ampliado para 11 tabelas (score 3)**
 
@@ -208,6 +214,6 @@ FR-08 define "exibido apenas uma vez por tenant (ou até que o admin tome uma de
 
 SC-02 exige "100% dos registros marcados como demonstração do tenant são removidos por uma única ação de limpeza". FR-06 define a operação como idempotente. A limpeza de 11 tabelas deve ser envolvida em `prisma.$transaction()` — tudo ou nada. Em caso de falha parcial, retornar 500 (o admin pode re-executar; idempotência garante resultado correto na segunda tentativa).
 
-**block-001 — Q4: Filtro de dados demo em relatórios (aguardando humano)**
+**dec-010 — Q4: Filtro de dados demo em relatórios → DEFERIDO (score 2, decisão humano)**
 
-Edge case menciona que relatórios e exportações devem poder filtrar dados demo para não distorcer métricas reais. Nenhum FR foi criado para isso na spec. O answerer não conseguiu decidir (score 0 — empate entre deferir vs. documentar como NFR). Bloqueio registrado aguardando decisão do PO: (A) implementar filtro automático nesta story, (B) deferir para story posterior, ou (C) documentar como NFR sem implementação agora.
+Dados marcados com `isDemoData=true` **não** são filtrados automaticamente de relatórios, exportações ou métricas do Radar nesta story. Dados de demonstração aparecem normalmente — esse é o propósito: o admin vê a plataforma funcionando. O admin que precisar limpar usa `DELETE /api/v1/onboarding/demo-data` (FR-06). Implementar filtro automático fica fora do escopo desta story.
