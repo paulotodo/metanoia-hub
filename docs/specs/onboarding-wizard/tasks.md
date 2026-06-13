@@ -95,19 +95,19 @@ Dependências críticas de bloqueio:
 
 ### 0.1 Confirmar schema Prisma real (Tenant + User) antes da migration `[C]`
 
-- [ ] Ler `apps/api/prisma/schema.prisma` e confirmar campos existentes em `model Tenant` e `model User`
-- [ ] Verificar que `onboardingProgress`, `logoUrl`, `profilePhotoUrl`, `roleTitle` NÃO existem (colunas novas)
-- [ ] Confirmar que `onboarding_completed_at` existe em `User` (campo Story 7-1 — NÃO será tocado)
-- [ ] Confirmar que RLS já está habilitada nas tabelas `tenants` e `users` (sem `CREATE POLICY` necessário)
-- [ ] Confirmar nome da última migration para nomear a próxima corretamente (padrão: `<ts>_add_onboarding_wizard_tenant_user_fields`)
-- [ ] Registrar evidência: `grep -n "onboarding\|logoUrl\|logo_url\|profilePhoto\|role_title" apps/api/prisma/schema.prisma`
+- [x] Ler `apps/api/prisma/schema.prisma` e confirmar campos existentes em `model Tenant` e `model User`
+- [x] Verificar que `onboardingProgress`, `logoUrl`, `profilePhotoUrl`, `roleTitle` NÃO existem (colunas novas)
+- [x] Confirmar que `onboarding_completed_at` existe em `User` (campo Story 7-1 — NÃO será tocado)
+- [x] Confirmar que RLS já está habilitada nas tabelas `tenants` e `users` (sem `CREATE POLICY` necessário)
+- [x] Confirmar nome da última migration para nomear a próxima corretamente (padrão: `<ts>_add_onboarding_wizard_tenant_user_fields`)
+- [x] Registrar evidência: `grep -n "onboarding\|logoUrl\|logo_url\|profilePhoto\|role_title" apps/api/prisma/schema.prisma`
 
 ### 0.2 Confirmar endpoints existentes nos controllers `[C]`
 
-- [ ] Confirmar que `tenants.controller.ts` tem apenas `GET /me` (sem PATCH)
-- [ ] Confirmar que `users.controller.ts` tem `GET /me`, `PATCH /me/onboarding-complete`, `GET /me/onboarding-status` (sem PATCH /me genérico)
-- [ ] Confirmar que `onboarding.controller.ts` tem `GET /demo-radar`, `GET /demo-status`, `PATCH /demo-nudge-dismiss`, `DELETE /demo-data` (sem GET /status)
-- [ ] Confirmar presença e interface do `storage.service.ts` (método `upload`, parâmetros)
+- [x] Confirmar que `tenants.controller.ts` tem apenas `GET /me` (sem PATCH)
+- [x] Confirmar que `users.controller.ts` tem `GET /me`, `PATCH /me/onboarding-complete`, `GET /me/onboarding-status` (sem PATCH /me genérico)
+- [x] Confirmar que `onboarding.controller.ts` tem `GET /demo-radar`, `GET /demo-status`, `PATCH /demo-nudge-dismiss`, `DELETE /demo-data` (sem GET /status)
+- [x] Confirmar presença e interface do `storage.service.ts` (método `upload`, parâmetros)
 
 ---
 
@@ -115,14 +115,14 @@ Dependências críticas de bloqueio:
 
 ### 1.1 Criar migration aditiva: 4 colunas nullable `[C]`
 
-- [ ] Criar migration via `pnpm exec prisma migrate dev --name add_onboarding_wizard_tenant_user_fields`
-- [ ] DDL esperado em `tenants`: `ADD COLUMN "onboarding_progress" JSONB`, `ADD COLUMN "logo_url" TEXT`
-- [ ] DDL esperado em `users`: `ADD COLUMN "profile_photo_url" TEXT`, `ADD COLUMN "role_title" TEXT`
-- [ ] Adicionar em `schema.prisma` (model Tenant): `onboardingProgress Json? @map("onboarding_progress") @db.JsonB` e `logoUrl String? @map("logo_url")`
-- [ ] Adicionar em `schema.prisma` (model User): `profilePhotoUrl String? @map("profile_photo_url")` e `roleTitle String? @map("role_title")`
-- [ ] **PROIBIDO**: `CREATE POLICY`/`ALTER POLICY` (RLS já habilitada; colunas nullable não exigem nova policy)
-- [ ] **PROIBIDO**: `@default(uuid())` (sem novas PKs)
-- [ ] Validar: `pnpm exec prisma generate` sem erro
+- [x] Criar migration via `pnpm exec prisma migrate dev --name add_onboarding_wizard_tenant_user_fields`
+- [x] DDL esperado em `tenants`: `ADD COLUMN "onboarding_progress" JSONB`, `ADD COLUMN "logo_url" TEXT`
+- [x] DDL esperado em `users`: `ADD COLUMN "profile_photo_url" TEXT`, `ADD COLUMN "role_title" TEXT`
+- [x] Adicionar em `schema.prisma` (model Tenant): `onboardingProgress Json? @map("onboarding_progress") @db.JsonB` e `logoUrl String? @map("logo_url")`
+- [x] Adicionar em `schema.prisma` (model User): `profilePhotoUrl String? @map("profile_photo_url")` e `roleTitle String? @map("role_title")`
+- [x] **PROIBIDO**: `CREATE POLICY`/`ALTER POLICY` (RLS já habilitada; colunas nullable não exigem nova policy)
+- [x] **PROIBIDO**: `@default(uuid())` (sem novas PKs)
+- [x] Validar: `pnpm exec prisma generate` sem erro
 
 ### 1.2 Smoke test da migration `[C]`
 
