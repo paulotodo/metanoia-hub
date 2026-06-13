@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context)
 
 generated: "2026-04-08"
-last_updated: "2026-05-11T19:00:00Z"
+last_updated: "2026-06-13T04:40:00Z"
 project: metanoia-hub
 project_key: NOKEY
 tracking_system: file-system
@@ -158,9 +158,9 @@ development_status:
 
   # Epic 9: Privacidade, LGPD & Compliance
   # Sprint 15: 9-1, 9-2, 9-3, 9-4
-  epic-9: in-progress
+  epic-9: done
   9-1-exportacao-de-dados-pessoais-portabilidade-lgpd: done             # cstk feature-00c (push direto em dev, sem PR) — b14908a + review-task fa6e7d3 + fixes e2736dd/3006779; validado contra Postgres real (2026-06-12)
-  9-2-exclusao-de-dados-pessoais-eliminacao-lgpd: ready-for-dev
+  9-2-exclusao-de-dados-pessoais-eliminacao-lgpd: done                  # cstk feature-00c (8 ondas) — 45250ac + hotfix BullMQ 6aa72c3; PR #139 (merge c67e1e4) CI 100% verde incl. E2E Playwright (2026-06-13); fecha Epic 9 4/4
   9-3-log-de-auditoria-imutavel: done                                  # PR #135 (fd229d3) — RLS append-only + interceptor + viewer; 2 hotfixes CI (RLS spec)
   9-4-base-legal-historico-de-consentimento: done                      # PR #136 (5b7948e) — base legal + histórico consentimento + RLS consent
   epic-9-retrospective: optional
