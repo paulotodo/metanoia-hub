@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { SuperAdminTenantsService } from './super-admin-tenants.service';
 
+// Prevent demo-data.seed.ts CLI main() from calling process.exit during import
+vi.mock('../onboarding/seed/demo-data.seed', () => ({
+  seedDemoData: vi.fn().mockResolvedValue(undefined),
+}));
+
 const TENANT_A = '019800a0-0000-7000-8000-000000000001';
 const SUSPENDED_ID = '019800a0-0000-7000-8000-000000000004';
 
@@ -43,8 +48,14 @@ function createMocks() {
     updateMetadata: vi.fn(),
     setProvisioningState: vi.fn(),
   };
-  const service = new SuperAdminTenantsService(repo as never);
-  return { service, repo };
+  const demoDataService = {
+    seedDemoData: vi.fn().mockResolvedValue(undefined),
+    deleteDemoData: vi.fn().mockResolvedValue(undefined),
+    getDemoStatus: vi.fn(),
+    dismissNudge: vi.fn(),
+  };
+  const service = new SuperAdminTenantsService(repo as never, demoDataService as never);
+  return { service, repo, demoDataService };
 }
 
 describe('SuperAdminTenantsService.list', () => {
@@ -290,5 +301,82 @@ describe('SuperAdminTenantsService.retry', () => {
     const result = await service.retry(TENANT_A);
     expect(result.data.status).toBe('provisioning');
     expect(repo.updateStatus).toHaveBeenCalledWith(TENANT_A, 'provisioning');
+  });
+});
+
+// ─── Provisioning hook: Step 4 — seedDemoData ────────────────────────────────
+
+describe('SuperAdminTenantsService.runSaga (Step 4 — seedDemoData)', () => {
+  it('calls seedDemoData with the new tenant id after successful provisioning', async () => {
+    const { service, repo, demoDataService } = createMocks();
+    repo.findBySlug.mockResolvedValue(null);
+    repo.create.mockResolvedValue(makeTenantRow({ status: 'provisioning' }));
+    repo.setProvisioningState.mockResolvedValue(undefined);
+    repo.updateStatus.mockResolvedValue(undefined);
+
+    await service.provision({
+      name: 'Igreja Restauração',
+      slug: 'igreja-restauracao',
+      adminEmail: 'admin@restauracao.org',
+      plan: 'pro',
+    });
+
+    // runSaga is async and fire-and-forget — give it a tick to run
+    await new Promise((r) => setImmediate(r));
+
+    expect(demoDataService.seedDemoData).toHaveBeenCalledTimes(1);
+    // tenantId is the generated UUID from provision()
+    expect(demoDataService.seedDemoData).toHaveBeenCalledWith(
+      expect.stringMatching(/^[0-9a-f-]{36}$/i),
+    );
+  });
+
+  it('does NOT abort provisioning when seedDemoData throws (non-fatal, FR-05)', async () => {
+    const { service, repo, demoDataService } = createMocks();
+    repo.findBySlug.mockResolvedValue(null);
+    repo.create.mockResolvedValue(makeTenantRow({ status: 'provisioning' }));
+    repo.setProvisioningState.mockResolvedValue(undefined);
+    repo.updateStatus.mockResolvedValue(undefined);
+    demoDataService.seedDemoData.mockRejectedValue(new Error('DB unavailable'));
+
+    // provision() must not throw even if seed fails
+    await expect(service.provision({
+      name: 'Igreja Restauração',
+      slug: 'igreja-restauracao',
+      adminEmail: 'admin@restauracao.org',
+      plan: 'pro',
+    })).resolves.not.toThrow();
+
+    // Wait for the async saga to complete
+    await new Promise((r) => setImmediate(r));
+
+    // updateStatus to 'active' must still be called (saga completed despite seed failure)
+    expect(repo.updateStatus).toHaveBeenCalledWith(
+      expect.stringMatching(/^[0-9a-f-]{36}$/i),
+      'active',
+    );
+  });
+
+  it('seedDemoData failure is non-fatal — provisioning status becomes active', async () => {
+    const { service, repo, demoDataService } = createMocks();
+    repo.findBySlug.mockResolvedValue(null);
+    repo.create.mockResolvedValue(makeTenantRow({ status: 'provisioning' }));
+    repo.setProvisioningState.mockResolvedValue(undefined);
+    repo.updateStatus.mockResolvedValue(undefined);
+    demoDataService.seedDemoData.mockRejectedValue(new Error('Timeout'));
+
+    await service.provision({
+      name: 'Igreja Nova',
+      slug: 'igreja-nova',
+      adminEmail: 'admin@nova.org',
+      plan: 'basic',
+    });
+
+    await new Promise((r) => setImmediate(r));
+
+    // The saga outer catch must NOT be triggered — failure is isolated to Step 4 try/catch
+    const statusCalls = repo.updateStatus.mock.calls.map((c: unknown[]) => c[1]);
+    expect(statusCalls).toContain('active');
+    expect(statusCalls).not.toContain('provisioning_failed');
   });
 });
