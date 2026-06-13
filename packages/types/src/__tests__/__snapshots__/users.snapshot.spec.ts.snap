@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CurrentUserEnvelopeSchema > parses an envelope-wrapped user 1`] = `
+{
+  "data": {
+    "email": "joao@igrejabetania.com.br",
+    "id": "00000000-0000-7000-8000-000000000001",
+    "name": "João Silva",
+    "status": "active",
+  },
+}
+`;
+
+exports[`CurrentUserSchema > parses a deletion_pending user 1`] = `
+{
+  "email": "joao@igrejabetania.com.br",
+  "id": "00000000-0000-7000-8000-000000000001",
+  "name": "João Silva",
+  "status": "deletion_pending",
+}
+`;
+
+exports[`CurrentUserSchema > parses a valid active user 1`] = `
+{
+  "email": "joao@igrejabetania.com.br",
+  "id": "00000000-0000-7000-8000-000000000001",
+  "name": "João Silva",
+  "status": "active",
+}
+`;
+
+exports[`UserStatusSchema > accepts all valid statuses 1`] = `
+[
+  "pending_verification",
+  "active",
+  "deletion_pending",
+  "deleted",
+]
+`;

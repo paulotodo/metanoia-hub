@@ -1,0 +1,265 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuditExportDataSchema > matches snapshot 1`] = `
+{
+  "events": [
+    {
+      "action": "user.login",
+      "resource": "session",
+      "resourceId": null,
+      "timestamp": "2026-06-12T10:00:00.000Z",
+    },
+  ],
+}
+`;
+
+exports[`ConsentExportDataSchema > matches snapshot 1`] = `
+{
+  "acceptances": [
+    {
+      "acceptedAt": "2026-06-12T10:00:00.000Z",
+      "documentType": "terms_of_service",
+      "version": "1.0",
+    },
+  ],
+  "withdrawals": [
+    {
+      "consentType": "marketing_emails",
+      "timestamp": "2026-06-12T10:00:00.000Z",
+    },
+  ],
+}
+`;
+
+exports[`FullExportPayloadSchema > matches snapshot 1`] = `
+{
+  "exportedAt": "2026-06-12T10:00:00.000Z",
+  "format": "json",
+  "tenants": [
+    {
+      "audit": {
+        "events": [],
+      },
+      "consent": {
+        "acceptances": [],
+        "withdrawals": [],
+      },
+      "groups": {
+        "memberships": [],
+      },
+      "meetings": {
+        "attendance": [],
+        "participantRecords": [],
+      },
+      "pastoral": {
+        "alertsAboutMe": [],
+        "notesAboutMe": [],
+      },
+      "tenantId": "00000000-0000-7000-8000-000000000001",
+      "trails": {
+        "lessonProgress": [],
+        "trailProgress": [],
+      },
+    },
+  ],
+  "user": {
+    "profile": {
+      "createdAt": "2026-06-12T10:00:00.000Z",
+      "email": "user@example.com",
+      "id": "00000000-0000-7000-8000-000000000001",
+      "name": "Test User",
+      "onboardingCompletedAt": null,
+      "status": "active",
+      "updatedAt": "2026-06-12T10:00:00.000Z",
+    },
+    "tenants": [
+      {
+        "joinedAt": "2026-06-12T10:00:00.000Z",
+        "role": "participante",
+        "tenantId": "00000000-0000-7000-8000-000000000001",
+      },
+    ],
+  },
+}
+`;
+
+exports[`GroupsExportDataSchema > matches snapshot 1`] = `
+{
+  "memberships": [
+    {
+      "groupId": "00000000-0000-7000-8000-000000000001",
+      "groupName": "Célula Norte",
+      "joinedAt": "2026-06-12T10:00:00.000Z",
+      "role": "membro",
+    },
+  ],
+}
+`;
+
+exports[`MeetingsExportDataSchema > matches snapshot 1`] = `
+{
+  "attendance": [
+    {
+      "joinTime": "2026-06-12T10:00:00.000Z",
+      "leaveTime": "2026-06-12T10:00:00.000Z",
+      "meetingId": "00000000-0000-7000-8000-000000000001",
+      "presenceType": "integral",
+      "title": "Reunião Semanal",
+    },
+  ],
+  "participantRecords": [
+    {
+      "duration": 3600,
+      "id": "00000000-0000-7000-8000-000000000001",
+      "joinedAt": "2026-06-12T10:00:00.000Z",
+      "leftAt": "2026-06-12T10:00:00.000Z",
+      "meetingId": "00000000-0000-7000-8000-000000000001",
+    },
+  ],
+}
+`;
+
+exports[`PastoralExportDataSchema > matches snapshot 1`] = `
+{
+  "alertsAboutMe": [
+    {
+      "createdAt": "2026-06-12T10:00:00.000Z",
+      "id": "00000000-0000-7000-8000-000000000001",
+      "signalType": "absence",
+    },
+  ],
+  "notesAboutMe": [
+    {
+      "content": "Visitei o membro",
+      "id": "00000000-0000-7000-8000-000000000001",
+      "noteType": "care",
+      "occurredAt": "2026-06-12T10:00:00.000Z",
+    },
+  ],
+}
+`;
+
+exports[`PrivacyExportJobResponseSchema > matches snapshot 1`] = `
+{
+  "estimatedCompletionHours": 24,
+  "jobId": "00000000-0000-7000-8000-000000000001",
+  "status": "accepted",
+}
+`;
+
+exports[`PrivacyExportRequestSchema > accepts json format 1`] = `
+{
+  "format": "json",
+}
+`;
+
+exports[`PrivacyExportRequestSchema > accepts pdf format 1`] = `
+{
+  "format": "pdf",
+}
+`;
+
+exports[`PrivacyExportStatusSchema > matches snapshot — accepted 1`] = `
+{
+  "expiresAt": null,
+  "failureReason": null,
+  "jobId": "00000000-0000-7000-8000-000000000001",
+  "signedUrl": null,
+  "status": "accepted",
+}
+`;
+
+exports[`PrivacyExportStatusSchema > matches snapshot — completed 1`] = `
+{
+  "expiresAt": "2026-06-12T10:00:00.000Z",
+  "failureReason": null,
+  "jobId": "00000000-0000-7000-8000-000000000001",
+  "signedUrl": "https://example.com/file.json?sig=abc",
+  "status": "completed",
+}
+`;
+
+exports[`PrivacyExportStatusSchema > matches snapshot — failed 1`] = `
+{
+  "expiresAt": null,
+  "failureReason": "Internal error",
+  "jobId": "00000000-0000-7000-8000-000000000001",
+  "signedUrl": null,
+  "status": "failed",
+}
+`;
+
+exports[`TrailsExportDataSchema > matches snapshot 1`] = `
+{
+  "lessonProgress": [
+    {
+      "completedAt": "2026-06-12T10:00:00.000Z",
+      "lessonId": "00000000-0000-7000-8000-000000000001",
+      "lessonName": "Aula 1",
+      "status": "completed",
+      "updatedAt": "2026-06-12T10:00:00.000Z",
+    },
+  ],
+  "trailProgress": [
+    {
+      "completedAt": null,
+      "progressPercent": 80,
+      "trailId": "00000000-0000-7000-8000-000000000001",
+      "trailName": "Trilha Discipulado",
+      "updatedAt": "2026-06-12T10:00:00.000Z",
+    },
+  ],
+}
+`;
+
+exports[`UserExportDataSchema > accepts null profile 1`] = `
+{
+  "profile": null,
+  "tenants": [],
+}
+`;
+
+exports[`UserExportDataSchema > matches snapshot 1`] = `
+{
+  "profile": {
+    "createdAt": "2026-06-12T10:00:00.000Z",
+    "email": "user@example.com",
+    "id": "00000000-0000-7000-8000-000000000001",
+    "name": "Test User",
+    "onboardingCompletedAt": null,
+    "status": "active",
+    "updatedAt": "2026-06-12T10:00:00.000Z",
+  },
+  "tenants": [
+    {
+      "joinedAt": "2026-06-12T10:00:00.000Z",
+      "role": "participante",
+      "tenantId": "00000000-0000-7000-8000-000000000001",
+    },
+  ],
+}
+`;
+
+exports[`UserProfileExportSchema > accepts null onboardingCompletedAt 1`] = `
+{
+  "createdAt": "2026-06-12T10:00:00.000Z",
+  "email": "user@example.com",
+  "id": "00000000-0000-7000-8000-000000000001",
+  "name": "Test User",
+  "onboardingCompletedAt": null,
+  "status": "pending_verification",
+  "updatedAt": "2026-06-12T10:00:00.000Z",
+}
+`;
+
+exports[`UserProfileExportSchema > matches snapshot 1`] = `
+{
+  "createdAt": "2026-06-12T10:00:00.000Z",
+  "email": "user@example.com",
+  "id": "00000000-0000-7000-8000-000000000001",
+  "name": "Test User",
+  "onboardingCompletedAt": "2026-06-12T10:00:00.000Z",
+  "status": "active",
+  "updatedAt": "2026-06-12T10:00:00.000Z",
+}
+`;

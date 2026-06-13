@@ -10,11 +10,13 @@ import {
   type GroupMemberRole,
   type GroupMemberSummary,
   type GroupMembersListResponse,
+  type GroupsExportData,
   type UpdateGroupMemberRoleInput,
 } from '@metanoia/types';
 import { getRequestContext } from '../common/context/request-context';
 import { getLimit } from '../common/plan-limits/plan-limits.config';
 import { PlanLimitsService } from '../common/plan-limits/plan-limits.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { GroupMembersRepository } from './group-members.repository';
 
 interface MembershipRow {
@@ -33,7 +35,28 @@ export class GroupMembersService {
   constructor(
     private readonly repo: GroupMembersRepository,
     private readonly planLimits: PlanLimitsService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  /**
+   * Export group membership data for a user within a tenant.
+   * Privileged — uses prisma.client directly (no RLS). Never throws.
+   */
+  async exportUserData(userId: string, tenantId: string): Promise<GroupsExportData> {
+    const rows = await this.prisma.client.groupMember.findMany({
+      where: { userId, tenantId },
+      include: { group: { select: { name: true } } },
+    });
+
+    return {
+      memberships: rows.map((r) => ({
+        groupId: r.groupId,
+        groupName: r.group.name,
+        role: r.role,
+        joinedAt: r.createdAt.toISOString(),
+      })),
+    };
+  }
 
   async list(groupId: string): Promise<GroupMembersListResponse> {
     await this.requireGroup(groupId);
@@ -147,6 +170,36 @@ export class GroupMembersService {
         details: { resource: 'leadersPerTenant', plan, current, limit },
       });
     }
+  }
+
+  /**
+   * Soft-delete group_members rows for a user within a tenant (Story 9-2).
+   * Idempotent via WHERE deleted_at IS NULL.
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE group_members
+      SET deleted_at = NOW()
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+  }
+
+  /**
+   * Hard-delete group_members rows for a user within a tenant (Story 9-2).
+   * Called inside a prisma.$transaction by the worker.
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    await tx.$executeRaw`
+      DELETE FROM group_members
+      WHERE user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
   }
 
   private toSummary(row: MembershipRow): GroupMemberSummary {

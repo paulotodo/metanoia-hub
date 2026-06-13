@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import type { PastoralExportData } from '@metanoia/types';
 import type {
   RadarPageData,
   SignalDetail,
@@ -22,6 +23,7 @@ import {
 } from '@metanoia/types';
 import type { PastoralNote } from '@prisma/client';
 import { PastoralRepository } from './pastoral.repository';
+import { PrismaService } from '../prisma/prisma.service';
 import { requestContext } from '../common/context/request-context';
 import { RadarStatusRepository } from './radar/radar-status.repository';
 import { RadarJobService } from './radar/radar-job.service';
@@ -37,7 +39,41 @@ export class PastoralService {
     private readonly radarStatusRepo: RadarStatusRepository,
     private readonly radarJobService: RadarJobService,
     private readonly alertsService: AlertsService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  /**
+   * Export pastoral data about a user (alerts and notes where they are the participant).
+   * Privileged — uses prisma.client directly (no RLS). Never throws.
+   * PastoralAction excluded (CL-04 / dec-021).
+   * Field is participantId (not userId) on PastoralAlert and PastoralNote.
+   */
+  async exportUserData(userId: string, tenantId: string): Promise<PastoralExportData> {
+    const [alerts, notes] = await Promise.all([
+      this.prisma.client.pastoralAlert.findMany({
+        where: { participantId: userId, tenantId },
+        select: { id: true, signalType: true, createdAt: true },
+      }),
+      this.prisma.client.pastoralNote.findMany({
+        where: { participantId: userId, tenantId },
+        select: { id: true, noteType: true, occurredAt: true, content: true },
+      }),
+    ]);
+
+    return {
+      alertsAboutMe: alerts.map((a) => ({
+        id: a.id,
+        signalType: a.signalType,
+        createdAt: a.createdAt.toISOString(),
+      })),
+      notesAboutMe: notes.map((n) => ({
+        id: n.id,
+        noteType: n.noteType,
+        occurredAt: n.occurredAt.toISOString(),
+        content: n.content,
+      })),
+    };
+  }
 
   async getRadarPage(groupId?: string): Promise<RadarPageData> {
     const [alerts, groups] = await Promise.all([
@@ -350,5 +386,89 @@ export class PastoralService {
       presencePercentage: r.presencePercentage.toNumber(),
       lastActiveAt: r.lastActiveAt,
     }));
+  }
+
+  /**
+   * Soft-delete pastoral data for a user within a tenant (Story 9-2).
+   * Covers pastoral_alerts, pastoral_actions, pastoral_notes (field: participant_id),
+   * outreach_intents (field: created_by_user_id), reflections (field: leader_id).
+   * Idempotent via WHERE deleted_at IS NULL.
+   */
+  async softDeleteUserData(userId: string, tenantId: string): Promise<void> {
+    await this.prisma.client.$executeRaw`
+      UPDATE pastoral_alerts
+      SET deleted_at = NOW()
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE pastoral_actions
+      SET deleted_at = NOW()
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE pastoral_notes
+      SET deleted_at = NOW()
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE outreach_intents
+      SET deleted_at = NOW()
+      WHERE created_by_user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+    await this.prisma.client.$executeRaw`
+      UPDATE reflections
+      SET deleted_at = NOW()
+      WHERE leader_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+        AND deleted_at IS NULL
+    `;
+  }
+
+  /**
+   * Hard-delete pastoral data for a user within a tenant (Story 9-2).
+   * pastoral_alerts, pastoral_actions, pastoral_notes (participant_id): DELETE
+   * reflections (leader_id): DELETE — NOT NULL, cannot SET NULL (AVS-01)
+   * outreach_intents (created_by_user_id): DELETE — NOT NULL, cannot SET NULL
+   */
+  async hardDeleteUserData(
+    userId: string,
+    tenantId: string,
+    tx: Parameters<Parameters<typeof this.prisma.client.$transaction>[0]>[0],
+  ): Promise<void> {
+    await tx.$executeRaw`
+      DELETE FROM pastoral_alerts
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM pastoral_actions
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    await tx.$executeRaw`
+      DELETE FROM pastoral_notes
+      WHERE participant_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    // AVS-01: leader_id is NOT NULL — DELETE, never SET NULL
+    await tx.$executeRaw`
+      DELETE FROM reflections
+      WHERE leader_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
+    // created_by_user_id is NOT NULL — DELETE, never SET NULL
+    await tx.$executeRaw`
+      DELETE FROM outreach_intents
+      WHERE created_by_user_id = ${userId}::uuid
+        AND tenant_id = ${tenantId}::uuid
+    `;
   }
 }

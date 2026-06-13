@@ -18,14 +18,15 @@ model Health {
 
 /// Meeting event — stores real-time pipeline events for audit and replay
 model MeetingEvent {
-  id        String   @id @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
-  meetingId String   @map("meeting_id") @db.Uuid
-  eventType String   @map("event_type")
-  userId    String?  @map("user_id") @db.Uuid
-  payload   Json     @default("{}")
-  version   Int      @default(1)
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String    @id @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  meetingId String    @map("meeting_id") @db.Uuid
+  eventType String    @map("event_type")
+  userId    String?   @map("user_id") @db.Uuid
+  payload   Json      @default("{}")
+  version   Int       @default(1)
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
 
   @@index([tenantId, meetingId])
   @@map("meeting_events")
@@ -69,6 +70,7 @@ model MeetingParticipantRecord {
   joinedAt      DateTime? @map("joined_at") @db.Timestamptz
   leftAt        DateTime? @map("left_at") @db.Timestamptz
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
 
   meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
 
@@ -79,16 +81,17 @@ model MeetingParticipantRecord {
 
 /// MeetingAttendance — final aggregated presence record after meeting end (Story 5.3)
 model MeetingAttendance {
-  id                    String   @id @db.Uuid
-  tenantId              String   @map("tenant_id") @db.Uuid
-  meetingId             String   @map("meeting_id") @db.Uuid
-  userId                String   @map("user_id") @db.Uuid
-  joinTime              DateTime @map("join_time") @db.Timestamptz
-  leaveTime             DateTime @map("leave_time") @db.Timestamptz
-  totalDurationSeconds  Int      @map("total_duration_seconds")
-  presenceType          String   @map("presence_type") @db.VarChar(16)
-  reconnections         Int      @default(0)
-  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id                    String    @id @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  meetingId             String    @map("meeting_id") @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  joinTime              DateTime  @map("join_time") @db.Timestamptz
+  leaveTime             DateTime  @map("leave_time") @db.Timestamptz
+  totalDurationSeconds  Int       @map("total_duration_seconds")
+  presenceType          String    @map("presence_type") @db.VarChar(16)
+  reconnections         Int       @default(0)
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  deletedAt             DateTime? @map("deleted_at") @db.Timestamptz
 
   @@unique([meetingId, userId])
   @@index([tenantId, meetingId])
@@ -98,14 +101,15 @@ model MeetingAttendance {
 
 /// MeetingTelemetry — per-user engagement signals captured during a meeting (Story 5.4)
 model MeetingTelemetry {
-  id                   String   @id @db.Uuid
-  tenantId             String   @map("tenant_id") @db.Uuid
-  meetingId            String   @map("meeting_id") @db.Uuid
-  userId               String   @map("user_id") @db.Uuid
-  cameraOnSeconds      Int      @map("camera_on_seconds") @default(0)
-  roomDurationSeconds  Int      @map("room_duration_seconds") @default(0)
-  focusScore           Decimal? @map("focus_score") @db.Decimal(3, 2)
-  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id                   String    @id @db.Uuid
+  tenantId             String    @map("tenant_id") @db.Uuid
+  meetingId            String    @map("meeting_id") @db.Uuid
+  userId               String    @map("user_id") @db.Uuid
+  cameraOnSeconds      Int       @map("camera_on_seconds") @default(0)
+  roomDurationSeconds  Int       @map("room_duration_seconds") @default(0)
+  focusScore           Decimal?  @map("focus_score") @db.Decimal(3, 2)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  deletedAt            DateTime? @map("deleted_at") @db.Timestamptz
 
   @@unique([meetingId, userId])
   @@index([tenantId, meetingId])
@@ -139,12 +143,13 @@ model MeetingSnapshot {
 
 /// Reflection — post-meeting narrative capture by the leader (1–280 chars, Zod enforced)
 model Reflection {
-  id         String   @id @db.Uuid
-  tenantId   String   @map("tenant_id") @db.Uuid
-  meetingId  String   @map("meeting_id") @db.Uuid
-  leaderId   String   @map("leader_id") @db.Uuid
-  text       String   @db.VarChar(280)
-  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+  id         String    @id @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  meetingId  String    @map("meeting_id") @db.Uuid
+  leaderId   String    @map("leader_id") @db.Uuid
+  text       String    @db.VarChar(280)
+  recordedAt DateTime  @default(now()) @map("recorded_at") @db.Timestamptz
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamptz
 
   meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
 
@@ -179,11 +184,12 @@ model User {
 
 /// Join table — associates users with tenants and their role within each
 model UserTenant {
-  id        String   @id @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
-  role      String   @default("participante")
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String    @id @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  role      String    @default("participante")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id])
 
@@ -322,12 +328,13 @@ model Group {
 
 /// GroupMember — join table associating users with groups and their role within
 model GroupMember {
-  id        String   @id @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
-  groupId   String   @map("group_id") @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  role      String   @default("membro")
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String    @id @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  groupId   String    @map("group_id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  role      String    @default("membro")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
 
   group Group @relation(fields: [groupId], references: [id])
   user  User  @relation(fields: [userId], references: [id])
@@ -358,6 +365,7 @@ model PastoralAlert {
   dismissedAt      DateTime?    @map("dismissed_at")
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
+  deletedAt        DateTime?   @map("deleted_at") @db.Timestamptz
 
   participant User  @relation("alerts", fields: [participantId], references: [id])
   group       Group @relation(fields: [groupId], references: [id])
@@ -370,15 +378,16 @@ model PastoralAlert {
 
 /// PastoralAction — care action recorded by the leader
 model PastoralAction {
-  id            String   @id @db.Uuid
-  tenantId      String   @map("tenant_id") @db.Uuid
-  participantId String   @map("participant_id") @db.Uuid
-  groupId       String   @map("group_id") @db.Uuid
-  performedBy   String   @map("performed_by") @db.Uuid
-  actionType    String   @map("action_type")
-  signalType    String   @map("signal_type")
+  id            String    @id @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  participantId String    @map("participant_id") @db.Uuid
+  groupId       String    @map("group_id") @db.Uuid
+  performedBy   String    @map("performed_by") @db.Uuid
+  actionType    String    @map("action_type")
+  signalType    String    @map("signal_type")
   note          String?
-  recordedAt    DateTime @default(now()) @map("recorded_at")
+  recordedAt    DateTime  @default(now()) @map("recorded_at")
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
 
   participant User  @relation("actions", fields: [participantId], references: [id])
   group       Group @relation(fields: [groupId], references: [id])
@@ -390,15 +399,16 @@ model PastoralAction {
 
 /// PastoralNote — relational memory: conversation, prayer, milestone
 model PastoralNote {
-  id            String   @id @db.Uuid
-  tenantId      String   @map("tenant_id") @db.Uuid
-  participantId String   @map("participant_id") @db.Uuid
-  authorId      String   @map("author_id") @db.Uuid
-  noteType      String   @map("note_type")
+  id            String    @id @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  participantId String    @map("participant_id") @db.Uuid
+  authorId      String    @map("author_id") @db.Uuid
+  noteType      String    @map("note_type")
   content       String
-  occurredAt    DateTime @map("occurred_at")
-  metadata      Json     @default("{}") @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at")
+  occurredAt    DateTime  @map("occurred_at")
+  metadata      Json      @default("{}") @db.JsonB
+  createdAt     DateTime  @default(now()) @map("created_at")
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
 
   participant User @relation("notes", fields: [participantId], references: [id])
 
@@ -409,14 +419,15 @@ model PastoralNote {
 
 /// OutreachIntent — private pastoral note from Admin Tenant about a leader for a given week (Cenário 03)
 model OutreachIntent {
-  id              String   @id @db.Uuid
-  tenantId        String   @map("tenant_id") @db.Uuid
-  createdByUserId String   @map("created_by_user_id") @db.Uuid
-  targetLeaderId  String   @map("target_leader_id") @db.Uuid
-  weekOf          DateTime @map("week_of") @db.Timestamptz
-  note            String   @db.VarChar(280)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id              String    @id @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  createdByUserId String    @map("created_by_user_id") @db.Uuid
+  targetLeaderId  String    @map("target_leader_id") @db.Uuid
+  weekOf          DateTime  @map("week_of") @db.Timestamptz
+  note            String    @db.VarChar(280)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
 
   @@unique([tenantId, createdByUserId, targetLeaderId, weekOf])
   @@index([tenantId])
@@ -718,6 +729,7 @@ model LessonProgress {
   updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
 
   completedBy    CompletedBy? @map("completed_by")
+  deletedAt      DateTime?    @map("deleted_at") @db.Timestamptz
 
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -729,15 +741,16 @@ model LessonProgress {
 
 /// ModuleProgress — aggregated progress for a user on a module (persisted for "Meu Progresso")
 model ModuleProgress {
-  id               String   @id @db.Uuid
-  tenantId         String   @map("tenant_id") @db.Uuid
-  userId           String   @map("user_id") @db.Uuid
-  moduleId         String   @map("module_id") @db.Uuid
-  progressPercent  Int      @default(0) @map("progress_percent")
-  completedLessons Int      @default(0) @map("completed_lessons")
-  totalLessons     Int      @default(0) @map("total_lessons")
+  id               String    @id @db.Uuid
+  tenantId         String    @map("tenant_id") @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  moduleId         String    @map("module_id") @db.Uuid
+  progressPercent  Int       @default(0) @map("progress_percent")
+  completedLessons Int       @default(0) @map("completed_lessons")
+  totalLessons     Int       @default(0) @map("total_lessons")
   completedAt      DateTime? @map("completed_at") @db.Timestamptz
-  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz
 
   @@unique([tenantId, userId, moduleId])
   @@index([tenantId, userId])
@@ -746,15 +759,16 @@ model ModuleProgress {
 
 /// TrailProgress — aggregated progress for a user on a trail (persisted for "Meu Progresso")
 model TrailProgress {
-  id               String   @id @db.Uuid
-  tenantId         String   @map("tenant_id") @db.Uuid
-  userId           String   @map("user_id") @db.Uuid
-  trailId          String   @map("trail_id") @db.Uuid
-  progressPercent  Int      @default(0) @map("progress_percent")
-  completedModules Int      @default(0) @map("completed_modules")
-  totalModules     Int      @default(0) @map("total_modules")
+  id               String    @id @db.Uuid
+  tenantId         String    @map("tenant_id") @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  trailId          String    @map("trail_id") @db.Uuid
+  progressPercent  Int       @default(0) @map("progress_percent")
+  completedModules Int       @default(0) @map("completed_modules")
+  totalModules     Int       @default(0) @map("total_modules")
   completedAt      DateTime? @map("completed_at") @db.Timestamptz
-  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz
 
   @@unique([tenantId, userId, trailId])
   @@index([tenantId, userId])
@@ -790,9 +804,12 @@ model AuditEvent {
   /// previousState: null when AuditContext not populated by service (dec-016)
   previousState Json?     @map("previous_state")
   /// newState: may be truncated marker if payload > 65536 bytes (dec-019)
-  newState      Json?     @map("new_state")
-  timestamp     DateTime  @default(now()) @map("timestamp") @db.Timestamptz
-  severity      String    @map("severity")
+  newState           Json?     @map("new_state")
+  timestamp          DateTime  @default(now()) @map("timestamp") @db.Timestamptz
+  severity           String    @map("severity")
+  /// anonymizedUserRef: set by hard-delete worker when userId is nullified (Story 9-2 / LGPD Art. 18 VI).
+  /// Format: 'anonymous-<sha256[:8]>' — cross-references Users.anonymized_user_ref for traceability without PII.
+  anonymizedUserRef  String?   @map("anonymized_user_ref")
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -815,4 +832,50 @@ model TenantContentConfig {
   updatedAt                 DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("tenant_content_config")
+}
+
+/// PrivacyExportJob — tracks async data export requests (Story 9-1 / LGPD Art. 20)
+/// Worker mode: privileged (no RLS on queries), RLS enabled for HTTP polling.
+/// allTenantIds: captured at request time to avoid cross-tenant data leakage in worker.
+model PrivacyExportJob {
+  id            String    @id @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  format        String    @default("json")
+  status        String    @default("accepted")
+  allTenantIds  String[]  @map("all_tenant_ids") @db.Uuid
+  objectKey     String?   @map("object_key")
+  signedUrl     String?   @map("signed_url")
+  expiresAt     DateTime? @map("expires_at") @db.Timestamptz
+  failureReason String?   @map("failure_reason")
+  requestedAt   DateTime  @map("requested_at") @db.Timestamptz
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId], map: "idx_privacy_export_jobs_user_id")
+  @@index([tenantId, userId], map: "idx_privacy_export_jobs_tenant_user")
+  @@map("privacy_export_jobs")
+}
+
+/// DeletionRequest — tracks async deletion requests (Story 9-2 / LGPD Art. 18 VI)
+/// RLS: tenant-scoped INSERT + SELECT + UPDATE. Worker bypasses RLS (privileged).
+/// allTenantIds: captured at request time for cross-tenant sweep.
+model DeletionRequest {
+  id              String    @id @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  status          String    @default("pending")
+  allTenantIds    String[]  @map("all_tenant_ids") @db.Uuid
+  cancellableUntil DateTime @map("cancellable_until") @db.Timestamptz
+  deletionDeadline DateTime @map("deletion_deadline") @db.Timestamptz
+  cancelledAt     DateTime? @map("cancelled_at") @db.Timestamptz
+  confirmedAt     DateTime? @map("confirmed_at") @db.Timestamptz
+  completedAt     DateTime? @map("completed_at") @db.Timestamptz
+  failureReason   String?   @map("failure_reason")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([userId], map: "idx_deletion_requests_user_id")
+  @@index([tenantId, userId], map: "idx_deletion_requests_tenant_user")
+  @@map("deletion_requests")
 }

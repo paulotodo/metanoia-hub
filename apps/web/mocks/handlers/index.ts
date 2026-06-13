@@ -14,6 +14,8 @@ import { trailStructureHandlers } from './trail-structure';
 import { myTrailsHandlers } from './my-trails';
 import { auditEventsHandlers } from './audit-events';
 import { consentPrivacyHandlers } from './consent-privacy';
+import { privacyHandlers } from './privacy';
+import { privacyDeletionHandlers } from './privacy-deletion';
 
 export const handlers = [
   ...radarHandlers,
@@ -32,4 +34,6 @@ export const handlers = [
   ...myTrailsHandlers,
   ...auditEventsHandlers,
   ...consentPrivacyHandlers,
+  ...privacyHandlers,
+  ...privacyDeletionHandlers,
 ];

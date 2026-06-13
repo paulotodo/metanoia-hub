@@ -7,9 +7,12 @@
  * legally-precise consent vocabulary for the privacy screen, not general
  * pastoral UI copy. No new surveillance wording is introduced here. */
 
+import { useState } from 'react';
 import type { ConsentHistoryItem, ConsentType } from '@metanoia/types';
 import { useConsentHistory } from '@/hooks/use-consent-history';
 import { useWithdrawConsent } from '@/hooks/use-withdraw-consent';
+import { usePrivacyExport } from '@/hooks/use-privacy-export';
+import { DeletionSection } from '@/components/privacy';
 
 // ---------------------------------------------------------------------------
 // Status badge component
@@ -126,6 +129,143 @@ function ConsentItem({ item, onWithdraw, isPending }: ConsentItemProps) {
 // Page
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// ExportSection — "Meus dados" section with format selector + status
+// ---------------------------------------------------------------------------
+
+function ExportSection() {
+  const [format, setFormat] = useState<'json' | 'pdf'>('json');
+  const { requestExport, status, signedUrl, isPolling, isDuplicateError, error } =
+    usePrivacyExport();
+
+  const handleExport = () => {
+    requestExport(format);
+  };
+
+  return (
+    <section
+      aria-labelledby="export-section-title"
+      className="mt-10 rounded-lg border border-gray-200 bg-white p-6"
+    >
+      <h2 id="export-section-title" className="text-lg font-semibold text-gray-900">
+        Meus dados
+      </h2>
+      <p className="mt-1 text-sm text-gray-500">
+        Solicite uma cópia de todos os seus dados pessoais armazenados na plataforma.
+        O arquivo ficará disponível por 48 horas.
+      </p>
+
+      {/* Format selector */}
+      <fieldset className="mt-4">
+        <legend className="sr-only">Formato do arquivo</legend>
+        <div className="flex gap-4">
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700">
+            <input
+              type="radio"
+              name="export-format"
+              value="json"
+              checked={format === 'json'}
+              onChange={() => setFormat('json')}
+              className="text-indigo-600"
+            />
+            Formato JSON
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700">
+            <input
+              type="radio"
+              name="export-format"
+              value="pdf"
+              checked={format === 'pdf'}
+              onChange={() => setFormat('pdf')}
+              className="text-indigo-600"
+            />
+            Formato PDF
+          </label>
+        </div>
+      </fieldset>
+
+      {/* Export button */}
+      <button
+        type="button"
+        data-testid="export-button"
+        onClick={handleExport}
+        disabled={isPolling}
+        className="mt-4 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {isPolling ? 'Preparando…' : 'Exportar meus dados'}
+      </button>
+
+      {/* Duplicate warning — 409 */}
+      {isDuplicateError && (
+        <p
+          role="alert"
+          data-testid="duplicate-warning"
+          className="mt-3 rounded-md bg-amber-50 p-3 text-sm text-amber-700"
+        >
+          Já existe uma exportação em andamento. Aguarde a conclusão antes de solicitar uma nova.
+        </p>
+      )}
+
+      {/* Generic error */}
+      {error && !isDuplicateError && (
+        <p role="alert" className="mt-3 text-sm text-red-600">
+          Não foi possível processar sua solicitação. Tente novamente.
+        </p>
+      )}
+
+      {/* In-progress status */}
+      {(status === 'accepted' || status === 'processing') && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mt-4 flex items-center gap-2 text-sm text-gray-600"
+        >
+          <span
+            className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-indigo-600"
+            aria-hidden="true"
+          />
+          {status === 'accepted' ? 'Solicitação recebida' : 'Preparando seu arquivo…'}
+          <span className="text-xs text-gray-400">(tempo estimado: até 24h)</span>
+        </div>
+      )}
+
+      {/* Completed — toast-like inline alert + download link */}
+      {status === 'completed' && signedUrl && (
+        <div
+          role="status"
+          aria-live="polite"
+          data-testid="export-completed"
+          className="mt-4 rounded-md bg-green-50 p-4"
+        >
+          <p className="text-sm font-medium text-green-800">
+            Seu arquivo está pronto! Clique para baixar.
+          </p>
+          <a
+            href={signedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center text-sm font-medium text-indigo-600 underline hover:text-indigo-800"
+            data-testid="download-link"
+          >
+            Baixar meu arquivo
+          </a>
+        </div>
+      )}
+
+      {/* Failed */}
+      {status === 'failed' && (
+        <p role="alert" className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+          Não foi possível gerar o arquivo. Tente novamente.
+        </p>
+      )}
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
 /**
  * Privacidade & Consentimento — authenticated CSR page.
  * Route: /app/consumo/perfil/privacidade
@@ -198,6 +338,12 @@ export default function PrivacidadeConsentimentoPage() {
           ))}
         </ul>
       )}
+
+      {/* Meus dados — export personal data */}
+      <ExportSection />
+
+      {/* Exclusão de conta — LGPD Art. 18 VI */}
+      <DeletionSection />
     </main>
   );
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { PrivacyService } from '../privacy.service';
+import { PrivacyController } from '../privacy.controller';
 
 // Fixed UUIDs (v7 format) for deterministic snapshots
 const RECORD_ID_1 = '0197b600-0001-7000-8000-000000000001';
@@ -110,12 +111,11 @@ describe('PrivacyController integration: service call path', () => {
   // The controller simply delegates to the service and returns the result.
   // This verifies the response pass-through without additional transformation.
   it('controller returns service result directly', async () => {
-    const { PrivacyController } = await import('../privacy.controller');
     const fakeResult = { data: [{ id: RECORD_ID_1 }] };
     const fakeService = {
       listDataProcessingRegistry: vi.fn().mockResolvedValue(fakeResult),
     };
-    const controller = new PrivacyController(fakeService as never);
+    const controller = new PrivacyController(fakeService as never, {} as never);
 
     const result = await controller.getDataProcessing();
 
