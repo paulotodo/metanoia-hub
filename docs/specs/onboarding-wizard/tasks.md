@@ -326,7 +326,7 @@ Dependências críticas de bloqueio:
 
 ### 4.1 OnboardingWizard — container Client Component `[C]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx`:
+- [x] Criar `apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx`:
   - `'use client'`
   - Props: `initialProgress: OnboardingProgress`, `hasRealGroups: boolean`, `readOnly?: boolean`
   - Estado interno: `currentStep` derivado de `initialProgress.currentStep`
@@ -336,11 +336,11 @@ Dependências críticas de bloqueio:
   - Botão "Pular configuração" (`WIZARD_SKIP_LABEL`) como ação secundária — P8, `useMutation` para `PATCH /tenants/me` com `skippedAt=now`
   - Full-screen: sem fechar sem interação explícita — P1
   - Modo `readOnly=true`: passa prop para cada Step; sem botão "Pular"
-- [ ] Exportar `OnboardingWizard` em `apps/web/src/components/onboarding/index.ts`
+- [x] Exportar `OnboardingWizard` em `apps/web/src/components/onboarding/index.ts`
 
 ### 4.2 Step 1 — Perfil Pastoral `[C]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/steps/Step1Profile.tsx`:
+- [x] Criar `apps/web/src/components/onboarding/wizard/steps/Step1Profile.tsx`:
   - Labels via `WIZARD_DISPLAY_NAME_QUESTION`, `WIZARD_ROLE_TITLE_LABEL` (vocabulary.ts)
   - Campos: nome (obrigatório), roleTitle (opcional), foto (upload opcional)
   - `useMutation<undefined, Error, UpdateUserProfile>` para `PATCH /api/v1/users/me`
@@ -350,7 +350,7 @@ Dependências críticas de bloqueio:
 
 ### 4.3 Step 2 — Comunidade `[C]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/steps/Step2Community.tsx`:
+- [x] Criar `apps/web/src/components/onboarding/wizard/steps/Step2Community.tsx`:
   - Labels via `WIZARD_STEP_COMMUNITY_LABEL`, `WIZARD_COMMUNITY_NAME_LABEL`
   - Campos: nome da comunidade (obrigatório), denominação (opcional), cidade (opcional), UF (opcional), logo (upload opcional, 2 MB)
   - `useMutation` para `PATCH /api/v1/tenants/me`
@@ -359,8 +359,8 @@ Dependências críticas de bloqueio:
 
 ### 4.4 Step 3 — Primeiro Grupo ou Modo-Demo `[C]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/steps/Step3Group.tsx`:
-  - Opção (a): formulário criar grupo (nome + descrição) → `POST /api/v1/groups`; admin marcado como líder automaticamente (regra Epic 4-1 existente)
+- [x] Criar `apps/web/src/components/onboarding/wizard/steps/Step3Group.tsx`:
+  - Opção (a): formulário criar grupo (nome + dayOfWeek + time) → `POST /api/v1/groups`; admin marcado como líder automaticamente (regra Epic 4-1 existente)
   - Opção (b): "Explorar com dados de demonstração" — exibida SOMENTE se `GET /onboarding/demo-status` retornar `hasDemoData=true`
   - Opções mutuamente exclusivas (radio/selector)
   - Erro de grupo duplicado → mensagem acionável PT-BR, retentativa possível
@@ -369,7 +369,7 @@ Dependências críticas de bloqueio:
 
 ### 4.5 Step 4 — Convite de Líder (condicional) `[A]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/steps/Step4Invite.tsx`:
+- [x] Criar `apps/web/src/components/onboarding/wizard/steps/Step4Invite.tsx`:
   - Exibida SOMENTE se `stepData.mode !== 'demo'`; auto-skip se modo-demo (não renderiza)
   - Campos: nome e e-mail do líder
   - Reusa mecanismo de convite existente (invites module, Epic 4-3)
@@ -379,7 +379,7 @@ Dependências críticas de bloqueio:
 
 ### 4.6 Step 5 — Radar Pastoral `[C]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/steps/Step5Radar.tsx`:
+- [x] Criar `apps/web/src/components/onboarding/wizard/steps/Step5Radar.tsx`:
   - Explicação do semáforo pastoral: 3 cores e significado (PT-BR)
   - Preview modo-demo: `GET /api/v1/onboarding/demo-radar` com rótulo `WIZARD_DEMO_PREVIEW_LABEL`
   - Preview modo-real: dados reais do tenant (ou prompt "aguarde primeiros sinais")
@@ -389,12 +389,12 @@ Dependências críticas de bloqueio:
 
 ### 4.7 Testes unitários e de acessibilidade dos componentes `[C]`
 
-- [ ] Criar `apps/web/src/components/onboarding/wizard/__tests__/OnboardingWizard.spec.tsx`:
+- [x] Criar `apps/web/src/components/onboarding/wizard/__tests__/OnboardingWizard.spec.tsx`:
   - `expect(await axe(container)).toHaveNoViolations()` para cada step (WCAG AA — SC-5)
   - Sem exceções suprimidas
   - Navegação por teclado: tab entre campos, enter para avançar
   - Modo `readOnly=true`: forms desabilitados, nenhum submit ao backend
-- [ ] Criar testes unitários para cada Step (`Step1Profile.spec.tsx`, `Step2Community.spec.tsx`, ...):
+- [x] Criar testes unitários para cada Step (`Step1Profile.spec.tsx`, `Step2Community.spec.tsx`, ...):
   - Render sem erro
   - Submit com dados válidos chama API correta
   - Erro de upload → mensagem PT-BR visível, botão avançar habilitado
@@ -402,13 +402,13 @@ Dependências críticas de bloqueio:
 
 ### 4.8 Chaves PT-BR em messages/pt-BR.json `[A]`
 
-- [ ] Adicionar seção `onboardingWizard` em `apps/web/messages/pt-BR.json`:
+- [x] Adicionar seção `onboardingWizard` em `apps/web/messages/pt-BR.json`:
   - Labels das 5 etapas
   - Labels de ação: `concluir`, `pular`, `fazerDepois`, `rerverTutorial`
   - Mensagens de erro acionáveis: upload inválido, tamanho excedido, grupo duplicado, e-mail inválido
   - Confirmação de conclusão
   - Rótulo demo preview: `"Exemplo de como o radar funciona"`
-- [ ] Confirmar que todas as strings user-facing dos Steps referenciam `pt-BR.json` (sem strings hardcoded)
+- [x] Confirmar que todas as strings user-facing dos Steps referenciam `pt-BR.json` (sem strings hardcoded)
 
 ---
 
