@@ -22,22 +22,23 @@
 
 ### 0.1 Adicionar dependências novas ao frontend `[C]`
 
-- [ ] Adicionar `papaparse` e `@types/papaparse` ao `apps/web/package.json`
+- [x] Adicionar `papaparse` e `@types/papaparse` ao `apps/web/package.json`
   - Ref: plan.md §Technical Context; checklist RQ-08-G1
   - Fixar versão mínima: `papaparse@5.4.1`
-- [ ] Adicionar `xlsx` (SheetJS) ao `apps/web/package.json`
+- [x] Adicionar `xlsx` (SheetJS) ao `apps/web/package.json`
   - Fixar versão mínima: `xlsx@0.18.5` (last OSS release)
   - Decisão padrão (API-12): usar `xlsx@0.18.5` (última versão OSS) com `pnpm audit` no CI; avaliar `read-excel-file` como alternativa se audit reprovar
+  - **EXECUTADO**: xlsx@0.18.5 rejeitado por audit high (GHSA-4r6h-8v6p-xvw6, GHSA-5pgg-2g8v-p4x9, patched: <0.0.0 = sem fix OSS); substituído por `read-excel-file` conforme decisão API-12
   - Ref: checklist API-12; plan.md §Notas de Segurança item 1
-- [ ] Commitar `pnpm-lock.yaml` atualizado junto ao PR
+- [x] Commitar `pnpm-lock.yaml` atualizado junto ao PR
   - Ref: plan.md §Gotchas CI
-- [ ] Rodar `pnpm audit` e garantir 0 vulnerabilidades críticas/high nas novas deps
+- [x] Rodar `pnpm audit` e garantir 0 vulnerabilidades críticas/high nas novas deps
   - Ref: checklist RQ-08-G1; plan.md §Notas de Segurança item 1
 
 ### 0.2 Criar schemas Zod compartilhados (packages/types) `[C]`
 
-- [ ] Criar diretório `packages/types/src/onboarding/` se não existir
-- [ ] Criar `packages/types/src/onboarding/csv-import.ts` com:
+- [x] Criar diretório `packages/types/src/onboarding/` se não existir
+- [x] Criar `packages/types/src/onboarding/csv-import.ts` com:
   - `CSVRowSchema` (nome, email, telefone?, papel?)
   - `CSVValidationStatusSchema` (enum: `critico` | `aviso` | `ok`)
   - `CSVValidationResultSchema` (rows, summary, multiSheetWarning)
@@ -45,9 +46,10 @@
   - `checkEmailsResponseSchema` (data: array { email, exists })
   - Todos os tipos exportados (re-export em `packages/types/src/index.ts`)
   - Ref: contracts/csv-import.types.md; plan.md §Project Structure
-- [ ] Editar `packages/types/src/index.ts` para exportar o novo módulo
-- [ ] Criar `packages/types/src/__tests__/csv-import.snapshot.spec.ts`
+- [x] Editar `packages/types/src/index.ts` para exportar o novo módulo
+- [x] Criar `packages/types/src/__tests__/csv-import.snapshot.spec.ts`
   - Snapshot test obrigatório contra breaking change nos schemas Zod
+  - 17 testes passando, 13 snapshots gerados
   - Ref: plan.md §Plano de Testes §Gotchas CI; checklist TST-02
 
 ---
