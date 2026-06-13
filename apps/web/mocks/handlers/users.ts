@@ -45,4 +45,16 @@ export const usersHandlers = [
       },
     }),
   ),
+
+  // PATCH /api/v1/users/me — update user profile (Story 10-1)
+  http.patch('*/api/v1/users/me', () =>
+    HttpResponse.json({
+      data: {
+        id: MOCK_USER_ID,
+        name: 'João Silva',
+        profilePhotoUrl: null,
+        roleTitle: null,
+      },
+    }),
+  ),
 ];

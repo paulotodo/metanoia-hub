@@ -1,5 +1,5 @@
-// Server Component — fetches wizard status SSR and passes to OnboardingWizard.
-// The wizard itself is a Client Component ('use client') rendered full-screen.
+// Server Component — renders OnboardingWizard in read-only mode.
+// dec-010, FR-09: onboardingProgress is NOT modified in replay mode.
 import { cookies } from 'next/headers';
 import { ONBOARDING_PROGRESS_DEFAULT, OnboardingStatusResponseSchema } from '@metanoia/types';
 import { OnboardingWizard } from '@/components/onboarding';
@@ -23,8 +23,7 @@ async function getWizardStatus(accessToken: string) {
   }
 }
 
-export default async function BoasVindasPage() {
-  // Read access token from session cookie (set by Keycloak callback).
+export default async function ReverTutorialPage() {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get('accessToken')?.value ?? '';
 
@@ -37,6 +36,7 @@ export default async function BoasVindasPage() {
     <OnboardingWizard
       initialProgress={initialProgress}
       hasRealGroups={hasRealGroups}
+      readOnly={true}
     />
   );
 }

@@ -114,11 +114,13 @@ export class TenantsService {
         newProgress = parsed as unknown as Prisma.InputJsonValue;
       }
 
-      // Perform update with explicit field mapping (anti-mass-assignment)
+      // Perform update with explicit field mapping (anti-mass-assignment).
+      // `name` is optional in UpdateTenantProfileSchema to support progress-only
+      // updates (Steps 3 and 5 of the wizard). Fall back to current value.
       const updated = await tx.tenant.update({
         where: { id: tenantId },
         data: {
-          name: dto.name,
+          name: dto.name ?? current.name,
           logoUrl: dto.logoUrl !== undefined ? dto.logoUrl : current.logoUrl,
           metadata: updatedMetadata as Prisma.InputJsonValue,
           onboardingProgress: newProgress ?? Prisma.JsonNull,

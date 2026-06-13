@@ -1,5 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { DemoRadarResponseSchema, DemoStatusResponseSchema } from '@metanoia/types';
+import {
+  DemoRadarResponseSchema,
+  DemoStatusResponseSchema,
+  OnboardingStatusResponseSchema,
+  UpdateTenantProfileResponseSchema,
+  UpdateUserProfileResponseSchema,
+  type UpdateTenantProfile,
+  type UpdateUserProfile,
+} from '@metanoia/types';
 import { apiClient } from '../client';
 import { envelopeClient } from '../envelope';
 
@@ -7,6 +15,7 @@ export const onboardingKeys = {
   all: ['onboarding'] as const,
   demoRadar: () => [...onboardingKeys.all, 'demo-radar'] as const,
   demoStatus: () => [...onboardingKeys.all, 'demo-status'] as const,
+  wizardStatus: () => [...onboardingKeys.all, 'wizard-status'] as const,
 };
 
 export function useDemoRadar() {
@@ -37,6 +46,50 @@ export function useDeleteDemoData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: onboardingKeys.demoStatus() });
+    },
+  });
+}
+
+/** Fetch tenant wizard status (progress + hasRealGroups). Server-derived — never computed in FE. */
+export function useWizardStatus() {
+  return useQuery({
+    queryKey: onboardingKeys.wizardStatus(),
+    queryFn: () =>
+      apiClient.getEnvelope('/onboarding/status', OnboardingStatusResponseSchema),
+    staleTime: 1000 * 60,
+  });
+}
+
+/** Update tenant profile and/or onboarding progress. */
+export function useUpdateTenantProfile() {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ReturnType<typeof UpdateTenantProfileResponseSchema.shape.data.parse>,
+    Error,
+    UpdateTenantProfile
+  >({
+    mutationFn: async (body: UpdateTenantProfile): Promise<ReturnType<typeof UpdateTenantProfileResponseSchema.shape.data.parse>> => {
+      return apiClient.patch('/tenants/me', UpdateTenantProfileResponseSchema.shape.data, body);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: onboardingKeys.wizardStatus() });
+    },
+  });
+}
+
+/** Update user profile (name, profilePhotoUrl, roleTitle). */
+export function useUpdateUserProfile() {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ReturnType<typeof UpdateUserProfileResponseSchema.shape.data.parse>,
+    Error,
+    UpdateUserProfile
+  >({
+    mutationFn: async (body: UpdateUserProfile): Promise<ReturnType<typeof UpdateUserProfileResponseSchema.shape.data.parse>> => {
+      return apiClient.patch('/users/me', UpdateUserProfileResponseSchema.shape.data, body);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['users', 'profile'] });
     },
   });
 }

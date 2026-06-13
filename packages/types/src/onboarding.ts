@@ -92,7 +92,9 @@ export type OnboardingStatusResponse = z.infer<typeof OnboardingStatusResponseSc
 
 export const UpdateTenantProfileSchema = z
   .object({
-    name: z.string().min(1),
+    // Optional to allow progress-only updates (Steps 3 and 5) without repeating name.
+    // FR-04: name is required when advancing Step 2 — enforced in the UI component, not here.
+    name: z.string().min(1).optional(),
     denomination: z.string().optional(),
     city: z.string().optional(),
     state: z.string().optional(),
