@@ -416,35 +416,35 @@ Dependências críticas de bloqueio:
 
 ### 5.1 Engatar guard existente com condição TRIPLA + rota /app/admin/boas-vindas `[C]`
 
-- [ ] Modificar `apps/web/app/(authenticated)/_components/onboarding-redirect-guard.tsx`:
-  - Adicionar chamada a `GET /api/v1/onboarding/status` (via TanStack Query ou fetch)
+- [x] Modificar `apps/web/app/(authenticated)/_components/onboarding-redirect-guard.tsx`:
+  - Adicionar chamada a `GET /api/v1/onboarding/status` via `useWizardStatus` (TanStack Query)
   - Checar condição TRIPLA (FR-01): `progress.completed === false AND progress.skippedAt === null AND hasRealGroups === false`
   - `super_admin` NÃO redireciona ao wizard (condição de role verificada do token)
   - Loop prevention: não redireciona se já em `/app/admin/boas-vindas`
-- [ ] Criar/modificar `apps/web/app/(authenticated)/app/admin/boas-vindas/page.tsx`:
+- [x] `apps/web/app/(authenticated)/app/admin/boas-vindas/page.tsx` já existia da FASE 4:
   - Server Component que busca `GET /onboarding/status` e passa dados ao wizard
-  - Renderizar `<OnboardingWizard initialProgress={...} hasRealGroups={...} />`
-  - Preservar apenas o que for substituído pelo wizard (remover conteúdo antigo se obsoleto)
+  - Renderiza `<OnboardingWizard initialProgress={...} hasRealGroups={...} />` ✓
 
 ### 5.2 Rota de replay /app/admin/configuracoes/rever-tutorial `[A]`
 
-- [ ] Criar `apps/web/app/(authenticated)/app/admin/configuracoes/rever-tutorial/page.tsx`:
-  - Renderizar `<OnboardingWizard readOnly={true} initialProgress={...} hasRealGroups={...} />`
+- [x] `apps/web/app/(authenticated)/app/admin/configuracoes/rever-tutorial/page.tsx` já existia da FASE 4:
+  - Renderiza `<OnboardingWizard readOnly={true} initialProgress={...} hasRealGroups={...} />` ✓
   - `readOnly=true`: forms desabilitados, sem submit ao backend
   - `onboardingProgress` NÃO alterado (dec-010, FR-09)
-- [ ] Adicionar link "Rever tutorial" em `apps/web/messages/pt-BR.json` (seção configurações ou nav)
+- [x] Link "Rever tutorial" (`replayTutorial`) já presente em `apps/web/messages/pt-BR.json` ✓
 
 ### 5.3 Testes de integração guard + rotas `[C]`
 
-- [ ] Adicionar casos em `onboarding-redirect-guard.spec.tsx`:
+- [x] Adicionados casos em `onboarding-redirect-guard.spec.tsx` (13 testes):
   - Condição TRIPLA verdadeira → redireciona a `/app/admin/boas-vindas`
   - `progress.completed=true` → não redireciona
   - `progress.skippedAt=<date>` → não redireciona
   - `hasRealGroups=true` → não redireciona
   - `super_admin` → não redireciona
   - Já em `/app/admin/boas-vindas` → não redireciona (loop prevention)
-- [ ] Teste de página `/app/admin/boas-vindas` renderiza `OnboardingWizard`
-- [ ] Teste de página `/app/admin/configuracoes/rever-tutorial` renderiza wizard com `readOnly=true`
+  - lider/participante: lógica legada mantida
+- [x] Teste de página `/app/admin/boas-vindas` renderiza `OnboardingWizard` (3 casos)
+- [x] Teste de página `/app/admin/configuracoes/rever-tutorial` renderiza wizard com `readOnly=true` (3 casos)
 
 ---
 
