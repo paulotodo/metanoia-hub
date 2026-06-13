@@ -1,16 +1,52 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Query, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import type { CurrentUser, OnboardingCompleteResponse } from '@metanoia/types';
-import { UpdateUserProfileSchema } from '@metanoia/types';
+import { checkEmailsQuerySchema, UpdateUserProfileSchema } from '@metanoia/types';
+import type { CheckEmailsQuery } from '@metanoia/types';
 import type { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { ScrubPiiInterceptor } from '../common/interceptors/scrub-pii.interceptor';
 import { UsersService } from './users.service';
+import { CheckEmailsRateLimitGuard } from './check-emails-rate-limit.guard';
 
 @Controller('api/v1/users')
 @UseGuards(KeycloakAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  /**
+   * GET /api/v1/users/check-emails
+   *
+   * Checks which emails in the provided CSV list already exist within the
+   * current tenant. Returns a result per email preserving input order.
+   *
+   * Auth: Keycloak JWT + admin_tenant role required (security dec-009 / API3).
+   * Rate-limit: 30 req/min/tenant (API-08) via CheckEmailsRateLimitGuard.
+   * Validation: ZodValidationPipe(checkEmailsQuerySchema) — splits CSV, trims,
+   *   lowercases, validates emails, enforces ≤ 500 cap (FR-20).
+   *
+   * IMPORTANT: this route MUST be declared BEFORE 'me' routes so NestJS
+   * path-matching does not accidentally shadow 'check-emails' with 'me/:sub'.
+   * (The controller-level @UseGuards already wraps all routes in KeycloakAuthGuard.)
+   */
+  @Get('check-emails')
+  @UseGuards(RolesGuard, CheckEmailsRateLimitGuard)
+  @Roles(Role.ADMIN_TENANT)
+  async checkEmails(
+    @Query(new ZodValidationPipe(checkEmailsQuerySchema)) query: CheckEmailsQuery,
+  ): Promise<{
+    data: { results: { email: string; exists: boolean }[] };
+    meta: { checkedCount: number; tenantScoped: true };
+  }> {
+    const results = await this.usersService.checkEmailsInTenant(query.emails);
+    return {
+      data: { results },
+      meta: { checkedCount: query.emails.length, tenantScoped: true },
+    };
+  }
 
   /**
    * GET /api/v1/users/me
