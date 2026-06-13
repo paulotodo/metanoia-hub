@@ -35,6 +35,7 @@ function makeTrail(overrides = {}) {
     createdAt: new Date('2026-06-10T12:00:00.000Z'),
     updatedAt: new Date('2026-06-10T12:00:00.000Z'),
     deletedAt: null,
+    isDemoData: false,
     ...overrides,
   };
 }
@@ -50,6 +51,7 @@ function makeModule(overrides = {}) {
     createdAt: new Date('2026-06-10T12:00:00.000Z'),
     updatedAt: new Date('2026-06-10T12:00:00.000Z'),
     deletedAt: null,
+    isDemoData: false,
     ...overrides,
   };
 }
@@ -74,6 +76,7 @@ function makeLesson(overrides = {}) {
     createdAt: new Date('2026-06-10T12:00:00.000Z'),
     updatedAt: new Date('2026-06-10T12:00:00.000Z'),
     deletedAt: null,
+    isDemoData: false,
     ...overrides,
   };
 }
