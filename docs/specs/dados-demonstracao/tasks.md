@@ -132,37 +132,37 @@ FASE 0 → FASE 1 → FASE 2 → FASE 3 → FASE 4
 
 ### 2.1 Criar demo-data.seed.ts com seedDemoData idempotente `[C]`
 
-- [ ] Criar `apps/api/src/onboarding/seed/demo-data.seed.ts`
-- [ ] Definir UUIDs v7 fixos com prefixo `01989b10-1002-7000-8000-` para todos os registros (4 users, 1 group, 4 groupMembers, 1 trail, 2 modules, 4 lessons, 3 trailProgress, 3 moduleProgress, 1 meeting, 3 meetingAttendance, 3 meetingTelemetry, 3 pastoralActions)
-- [ ] Semáforo por participante: Ana Costa (verde: TrailProgress 100%, presenceType `integral`, PastoralAction positiva), Pedro Santos (amarelo: TrailProgress 50%, presenceType `parcial`), Maria Oliveira (vermelho: TrailProgress 0%, presenceType `ausente`, PastoralAction urgente), Marcos Silva (líder com role=leader)
-- [ ] `seedDemoData(tenantId: string)`: upserts na ordem correta (pais antes de filhos — User → Group → GroupMember → Trail → Module → Lesson → TrailProgress → ModuleProgress → Meeting → MeetingAttendance → MeetingTelemetry → PastoralAction)
-- [ ] Cada upsert usa `where: { id: UUID_FIXO }` + `isDemoData: true` em todos os registros
-- [ ] Implementar `main()` para CLI: parsear `--tenant-id` de `process.argv` e chamar `seedDemoData(tenantId)`
+- [x] Criar `apps/api/src/onboarding/seed/demo-data.seed.ts`
+- [x] Definir UUIDs v7 fixos com prefixo `01989b10-1002-7000-8000-` para todos os registros (4 users, 1 group, 4 groupMembers, 1 trail, 2 modules, 4 lessons, 3 trailProgress, 6 moduleProgress, 1 meeting, 3 meetingAttendance, 3 meetingTelemetry, 3 pastoralActions)
+- [x] Semáforo por participante: Ana Costa (verde: TrailProgress 80%, presenceType `integral`, PastoralAction positiva), Pedro Santos (amarelo: TrailProgress 40%, presenceType `parcial`), Maria Oliveira (vermelho: TrailProgress 10%, presenceType `ausente`, PastoralAction urgente), Marcos Silva (líder com role=lider)
+- [x] `seedDemoData(tenantId: string)`: upserts na ordem correta (pais antes de filhos — User → Group → GroupMember → Trail → Module → Lesson → TrailProgress → ModuleProgress → Meeting → MeetingAttendance → MeetingTelemetry → PastoralAction)
+- [x] Cada upsert usa `where: { id: UUID_FIXO }` + `isDemoData: true` em todos os registros
+- [x] Implementar `main()` para CLI: parsear `--tenant-id` de `process.argv` e chamar `seedDemoData(tenantId)`
 
 ### 2.2 Criar DemoDataService (NestJS) `[C]`
 
-- [ ] Criar `apps/api/src/onboarding/demo-data.service.ts` com decorator `@Injectable()`
-- [ ] `seedDemoData(tenantId: string)`: delega para a função do arquivo de seed; envolve em try/catch (falha loga mas não propaga — FR-05)
-- [ ] `deleteDemoData(tenantId: string)`: `prisma.$transaction()` com `withTenantTx` deletando na ordem inversa (PastoralAction → MeetingTelemetry → MeetingAttendance → Meeting → ModuleProgress → TrailProgress → Lesson → Module → Trail → GroupMember → Group → User), filtrando `where: { isDemoData: true }`; idempotente (retorna sem erro se sem dados demo)
-- [ ] `getDemoStatus(tenantId: string)`: queries `count()` com `isDemoData: true` + check `Tenant.metadata.demoDismissedAt`; retorna objeto compatível com `DemoStatusResponse`
-- [ ] `dismissNudge(tenantId: string)`: `prisma.tenant.update` com spread de metadata e `demoDismissedAt: new Date().toISOString()`
+- [x] Criar `apps/api/src/onboarding/demo-data.service.ts` com decorator `@Injectable()`
+- [x] `seedDemoData(tenantId: string)`: delega para a função do arquivo de seed; envolve em try/catch (falha loga mas não propaga — FR-05)
+- [x] `deleteDemoData(tenantId: string)`: `withTenantTx` deletando na ordem inversa (PastoralAction → MeetingTelemetry → MeetingAttendance → Meeting → ModuleProgress → TrailProgress → Lesson → Module → Trail → GroupMember → Group → User), filtrando `where: { isDemoData: true }`; idempotente (retorna sem erro se sem dados demo)
+- [x] `getDemoStatus(tenantId: string)`: queries `count()` com `isDemoData: true` + check `Tenant.metadata.demoDismissedAt`; retorna objeto compatível com `DemoStatusResponse`
+- [x] `dismissNudge(tenantId: string)`: `withTenantTx` com spread de metadata e `demoDismissedAt: new Date().toISOString()`
 
 ### 2.3 Adicionar script CLI e entrada turbo `[A]`
 
-- [ ] Em `apps/api/package.json`: adicionar `"db:seed:demo-data": "tsx src/onboarding/seed/demo-data.seed.ts"` (ou `ts-node`); confirmar não duplica `db:seed:demo` do Story 7-2 (RECONCILIACAO §6)
-- [ ] Em `turbo.json`: adicionar pipeline `"db:seed:demo-data": { "cache": false }`
-- [ ] Testar execução: `pnpm --filter @metanoia/api db:seed:demo-data -- --tenant-id <UUID>`
+- [x] Em `apps/api/package.json`: adicionado `"db:seed:demo-data": "tsx src/onboarding/seed/demo-data.seed.ts"`; não duplica `db:seed:demo` do Story 7-2 (RECONCILIACAO §6 — scripts coexistem)
+- [x] Em `turbo.json`: adicionado pipeline `"db:seed:demo-data": { "cache": false }`
+- [ ] Testar execução: `pnpm --filter @metanoia/api db:seed:demo-data -- --tenant-id <UUID>` (requer DB disponível)
 
 ### 2.4 Criar testes unitários do DemoDataService `[C]`
 
-- [ ] Criar `apps/api/src/onboarding/demo-data.service.spec.ts`
-- [ ] Mock do PrismaService com `vi.fn()` para os modelos usados
-- [ ] Teste: `seedDemoData` invoca upsert para as 12 entidades
-- [ ] Teste: `deleteDemoData` invoca transação com deleções na ordem correta
-- [ ] Teste: `getDemoStatus` retorna `{ hasDemoData: true, hasRealData: false, demoRecordCount: N, nudgeDismissed: false }` com dados demo e sem dados reais
-- [ ] Teste: `getDemoStatus` retorna `nudgeDismissed: true` quando `Tenant.metadata.demoDismissedAt` está setado
-- [ ] Teste: `dismissNudge` chama `tenant.update` com o campo correto
-- [ ] Teste: `seedDemoData` não propaga exceção quando o seed lança erro (FR-05)
+- [x] Criar `apps/api/src/onboarding/demo-data.service.spec.ts`
+- [x] Mock do PrismaService com `vi.fn()` para os modelos usados
+- [x] Teste: `seedDemoData` invoca upsert para as 12 entidades — PASS (11/11)
+- [x] Teste: `deleteDemoData` invoca transação com deleções na ordem correta — PASS
+- [x] Teste: `getDemoStatus` retorna `{ hasDemoData: true, hasRealData: false, demoRecordCount: 35, nudgeDismissed: false }` com dados demo e sem dados reais — PASS
+- [x] Teste: `getDemoStatus` retorna `nudgeDismissed: true` quando `Tenant.metadata.demoDismissedAt` está setado — PASS
+- [x] Teste: `dismissNudge` chama `tenant.updateMany` com o campo correto — PASS
+- [x] Teste: `seedDemoData` não propaga exceção quando o seed lança erro (FR-05) — PASS
 
 ---
 
