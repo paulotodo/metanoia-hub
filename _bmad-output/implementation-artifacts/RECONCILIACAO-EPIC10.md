@@ -138,11 +138,11 @@ Ao mergear as 4: marcar `10-1/10-2/10-3/10-4: done` + `epic-10: done` em `sprint
 
 ---
 
-## 10. Itens que exigem decisão antes de codar (revisão humana)
+## 10. Decisões (resolvidas 2026-06-13)
 
-1. **§1.4 / §3**: coexistência demo 7-2 (tenant) × 10-2 (por-registro) — confirmar que **mantemos os dois** (recomendado) e extraímos só a lógica de geração de semáforo.
-2. **§1.2 / §1.3**: criar `PATCH /tenants/me` e `PATCH /users/me` (perfil) — confirmar nomenclatura `/me` (não `/current`) e que são endpoints novos.
-3. **§6**: `check-emails` (10-3) reporta existência só no tenant ou também "existe em outro tenant" — definir se o preview precisa da checagem global ou se fica só no processamento (10-4).
-4. **§8.3**: política de limite de plano no import em massa (rejeitar antes vs. parar no limite + reportar).
-5. **§3**: confirmar nomes reais das 9 tabelas/colunas de progresso/telemetria/ações antes da migration `isDemoData`.
-6. **§7**: confirmar ordem 10-2→10-1 (recomendado) vs. paralelo do sprint-roadmap.
+1. **✅ RESOLVIDO** — §1.4/§3: **mantemos os dois** modelos de demo (7-2 tenant dedicado + 10-2 por-registro no tenant real). 10-2 extrai só a lógica de geração de semáforo de 7-2.
+2. **✅ CONFIRMADO** — §1.2/§1.3: criar `PATCH /tenants/me` e `PATCH /users/me` (perfil) como endpoints NOVOS, nomenclatura `/me` (não `/current`).
+3. **✅ RESOLVIDO** — §6: `check-emails` (10-3) reporta existência **apenas no tenant corrente** (RLS-scoped). A desambiguação "existe em outro tenant" (FR03) acontece **só no processamento server-side do 10-4** (checagem global de `users.email @unique`). Preview não faz checagem global.
+4. **✅ RESOLVIDO** — §8.3: import em massa **valida o total contra o limite de plano ANTES de processar**; se exceder, **rejeita o import inteiro** com mensagem acionável (ex.: "Importar 200 participantes excederia o limite do seu plano (100). Faça upgrade ou reduza a lista."). Sem import parcial. Alinha com Story 7-3 (erros acionáveis).
+5. **⏳ IMPL-TIME** — §3: confirmar nomes reais das 9 tabelas/colunas de progresso/telemetria/ações no schema antes da migration `isDemoData` (checar no arranque de 10-2).
+6. **✅ CONFIRMADO** — §7: ordem **10-2 → 10-1 → 10-3 → 10-4**.
