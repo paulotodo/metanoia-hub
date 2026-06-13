@@ -109,7 +109,7 @@
 
 ### 2.1 Implementar csv-template.ts `[M]`
 
-- [ ] Criar `apps/web/src/lib/onboarding/csv-template.ts`
+- [x] Criar `apps/web/src/lib/onboarding/csv-template.ts`
   - Função `downloadTemplate()`: gera CSV client-side com colunas `nome,email,telefone,papel`
   - Incluir uma linha de exemplo: `João Silva,joao@exemplo.com,11999990000,participante`
   - Nome do arquivo: `template-importacao-participantes.csv`
@@ -119,53 +119,57 @@
 
 ### 2.2 Implementar csv-parser.ts `[C]`
 
-- [ ] Criar `apps/web/src/lib/onboarding/csv-parser.ts`
-  - Auto-detect encoding: UTF-8 → ISO-8859-1 → Windows-1252 (BOM + byte scan)
+- [x] Criar `apps/web/src/lib/onboarding/csv-parser.ts`
+  - Auto-detect encoding: UTF-8 → ISO-8859-1 → Windows-1252 (BOM + byte scan + UTF-8 validity)
   - Parse CSV via papaparse (colunas por nome, case-insensitive — FR-08)
-  - Parse XLSX via `import('xlsx')` dynamic — NÃO carregar no bundle inicial (FR-06)
+  - Parse XLSX via `import('read-excel-file/browser')` dynamic — NÃO carregar no bundle inicial (FR-06, SC-004)
   - Para XLSX: usar só a 1ª aba; emitir `multiSheetWarning: true` se >1 aba (FR-07)
   - Arquivo vazio (0 linhas de dados) → erro com mensagem "Arquivo sem participantes"
   - Células extras silenciosamente ignoradas; células opcionais ausentes → undefined
   - Ref: spec.md FR-05/06/07/08/09; checklist UX-02-G1
-- [ ] Criar `apps/web/src/lib/onboarding/csv-parser.spec.ts`
+  - Nota: usa `read-excel-file/browser` (dec-018) em vez de `xlsx@0.18.5` rejeitado por audit
+- [x] Criar `apps/web/src/lib/onboarding/csv-parser.spec.ts`
   - Fixtures: UTF-8, ISO-8859-1, Windows-1252 (nomes: "Natália", "João", "José")
   - XLSX 1 aba; XLSX múltiplas abas (multiSheetWarning: true)
   - CSV sem cabeçalho / colunas fora de ordem (por nome)
   - Arquivo vazio → erro correto
   - Dynamic import xlsx: mock para confirmar que branch CSV não instancia SheetJS
+  - 14 testes passando
   - Ref: plan.md §Plano de Testes; checklist RQ-02-G2 (bundle)
 
 ### 2.3 Implementar csv-validator.ts `[C]`
 
-- [ ] Criar `apps/web/src/lib/onboarding/csv-validator.ts`
+- [x] Criar `apps/web/src/lib/onboarding/csv-validator.ts`
   - Classificar cada linha em `critico | aviso | ok`
   - Crítico: email ausente, email inválido (RFC), nome < 2 chars, coluna obrigatória ausente no header
   - Aviso: `papel` com valor não reconhecido (usa default `participante`); `email exists: true` da API
-  - Mensagens de erro em PT-BR pastoral (ref: pt-BR.json `import.*`)
+  - Mensagens de erro em PT-BR pastoral
   - `canProceed: false` se ≥1 crítico (FR-15)
   - Ref: spec.md FR-11/12/13/14/15; checklist UX-06-G1
-- [ ] Criar `apps/web/src/lib/onboarding/csv-validator.spec.ts`
+- [x] Criar `apps/web/src/lib/onboarding/csv-validator.spec.ts`
   - Linha crítica (email vazio, email inválido, nome curto)
   - Linha aviso (papel inválido, email exists)
   - Linha ok
   - Coluna obrigatória ausente → crítico de header
   - canProceed: false quando ≥1 crítico
+  - 20 testes passando
 
 ### 2.4 Implementar use-check-emails.ts (TanStack Query hook) `[A]`
 
-- [ ] Criar `apps/web/src/lib/api/hooks/use-check-emails.ts`
+- [x] Criar `apps/web/src/lib/api/hooks/use-check-emails.ts`
   - TanStack Query: `GET /api/v1/users/check-emails`
   - Batching automático: `ceil(totalEmails / 500)` chamadas (FR-20)
   - Falha parcial no batching (API-09-G1): se batch N falha, marcar e-mails do batch N como `exists: false` e emitir `partialCheckWarning: true`; demais batches usam resultados reais
   - Degradação graciosa (FR-21): timeout/5xx → array vazio + `apiUnavailable: true`
   - Validar resposta com `checkEmailsResponseSchema.parse()` (Princípio IV)
   - Ref: spec.md FR-18/19/20/21; checklist API-09-G1; contracts/check-emails.api.md
-- [ ] Criar `apps/web/src/lib/api/hooks/__tests__/use-check-emails.spec.ts`
+- [x] Criar `apps/web/src/lib/api/hooks/__tests__/use-check-emails.spec.ts`
   - Batching ≤500 (1 request)
   - Batching >500 (2 requests, ordem preservada)
   - Falha parcial: batch 2 de 3 falha → batches 1+3 ok, batch 2 = não verificado
   - Degradação graciosa (API down → apiUnavailable: true)
   - Validação de schema (shape incorreta → erro capturado)
+  - 8 testes passando
 
 ---
 
