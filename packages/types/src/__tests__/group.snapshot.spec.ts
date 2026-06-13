@@ -76,6 +76,7 @@ describe('GroupResponseSchema snapshot', () => {
       time: '19:30',
       recurrence: 'weekly',
       notes: null,
+      isDemoData: false,
       createdAt: '2026-04-13T12:00:00.000Z',
       updatedAt: '2026-04-13T12:00:00.000Z',
     });
@@ -87,6 +88,7 @@ describe('GroupResponseSchema snapshot', () => {
       time: '19:30',
       recurrence: 'weekly',
       notes: null,
+      isDemoData: false,
       createdAt: 'not-a-date',
       updatedAt: 'not-a-date',
     });
@@ -100,6 +102,7 @@ describe('GroupResponseSchema snapshot', () => {
           "createdAt": "2026-04-13T12:00:00.000Z",
           "dayOfWeek": "thu",
           "id": "019756c0-0001-7000-8000-000000000001",
+          "isDemoData": false,
           "name": "Célula de Quinta",
           "notes": null,
           "recurrence": "weekly",

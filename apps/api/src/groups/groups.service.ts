@@ -92,6 +92,7 @@ export class GroupsService {
       time: group.time,
       recurrence: group.recurrence,
       notes: group.notes,
+      isDemoData: group.isDemoData,
       createdAt: group.createdAt.toISOString(),
       updatedAt: group.updatedAt.toISOString(),
     });

@@ -39,6 +39,7 @@ export const GroupResponseSchema = z.object({
   time: z.string().regex(TIME_HH_MM_REGEX),
   recurrence: GroupRecurrenceSchema.nullable(),
   notes: z.string().nullable(),
+  isDemoData: z.boolean(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });

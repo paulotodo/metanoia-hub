@@ -97,6 +97,15 @@
     }
   },
   "group": {
+    "list": {
+      "title": "Grupos",
+      "subtitle": "Gerencie os grupos da sua comunidade.",
+      "newGroup": "Novo grupo",
+      "empty": "Nenhum grupo criado ainda.",
+      "emptyAction": "Criar primeiro grupo",
+      "loading": "Carregando grupos...",
+      "error": "Nao foi possivel carregar os grupos. Tente novamente."
+    },
     "create": {
       "title": "Vamos criar seu primeiro grupo",
       "titleNormal": "Criar novo grupo",

@@ -197,6 +197,9 @@ Decisões resolvidas autonomamente pela fase clarify (answerer score >=2). Q4 re
 ### Escopo Excluído
 
 - **Filtro automático de dados demo em relatórios e exportações:** dados marcados com `isDemoData=true` aparecem normalmente em relatórios, dashboard do Radar e exportações. Filtro automático foi explicitamente deferido para story posterior (dec-010). O admin que não quiser ver dados demo executa a limpeza via FR-06.
+
+**CHK032 — Regra de coexistência demo + real no Radar Pastoral:**
+Semáforos calculados pelo Radar Pastoral para grupos e participantes demo (status fixos definidos pelo seed, ex.: `attention`, `healthy`) **coexistem** com semáforos de grupos reais (calculados dinamicamente pelo motor de sinais). Não há isolamento automático nem filtragem por `isDemoData` no Radar nesta story. O admin é informado da presença de dados demo pelo `DemoDataNudge` (exibido quando `hasDemoData && hasRealData`) e pode removê-los via FR-06. Implementar filtro automático de dados demo no Radar (dashboard + métricas + relatórios) está **deferido para story posterior** (dec-010).
 - **Credenciais de autenticação para usuários fictícios:** usuários demo existem apenas como registros de dados (não têm conta Keycloak). Gestão de contas Keycloak está fora do escopo desta story (FR-12).
 - **Validação de limite de plano na limpeza:** a operação `DELETE /onboarding/demo-data` deleta registros demo sem interação com `PlanLimitsService` — é operação administrativa de limpeza, não criação de conteúdo.
 
