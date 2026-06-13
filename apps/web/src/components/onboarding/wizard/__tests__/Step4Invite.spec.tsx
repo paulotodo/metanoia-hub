@@ -51,7 +51,8 @@ describe('Step4Invite', () => {
       target: { value: 'not-an-email' },
     });
     // Submit the form directly (bypasses button disabled check)
-    const form = screen.getByTestId('step4-leader-name').closest('form')!;
+    const form = screen.getByTestId('step4-leader-name').closest('form');
+    if (!form) throw new Error('form not found');
     fireEvent.submit(form);
     // Error message appears after handleSubmit sets state
     await waitFor(() => {
