@@ -20,6 +20,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigModule } from '@nestjs/config';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -54,7 +55,15 @@ describe('SuperAdmin Plans (integration)', () => {
 
   beforeAll(async () => {
     moduleRef = await Test.createTestingModule({
-      imports: [PrismaModule, PlanLimitsModule, RedisModule],
+      // ConfigModule (global in AppModule) provides ConfigService that PrismaService/
+      // RedisService depend on. Read from process.env (CI sets DATABASE_*/REDIS_*);
+      // no validateEnv here to avoid coupling to vars unused by this suite.
+      imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        PrismaModule,
+        PlanLimitsModule,
+        RedisModule,
+      ],
       providers: [SuperAdminPlansService, SuperAdminPlansRepository],
     }).compile();
     await moduleRef.init();
