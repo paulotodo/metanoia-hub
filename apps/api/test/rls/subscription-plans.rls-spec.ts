@@ -11,8 +11,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { uuidv7 } from 'uuidv7';
-import { TENANT_A_ID } from './rls-test.helper';
 
 const TEST_PLAN_ID = '01900001-0000-7000-8000-000000000099';
 
@@ -64,27 +62,21 @@ afterAll(async () => {
 });
 
 describe('subscription_plans RLS authorization', () => {
-  it('app_user session CANNOT INSERT into subscription_plans', async () => {
-    // The app_user role has no INSERT policy on subscription_plans (global table).
-    // Attempt to insert with a tenant context set.
-    await expect(
-      appClient.$transaction(async (tx) => {
-        await tx.$executeRawUnsafe(
-          `SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`,
-        );
-        await tx.$executeRawUnsafe(`
-          INSERT INTO subscription_plans (id, name, tier, limits, created_at, updated_at)
-          VALUES (
-            '${uuidv7()}'::uuid,
-            'Unauthorized Plan',
-            'unauthorized_tier',
-            '{"maxGroups":1,"maxMembersPerGroup":1,"maxLeadersPerTenant":1}'::jsonb,
-            NOW(),
-            NOW()
-          )
-        `);
-      }),
-    ).rejects.toThrow();
+  it('app_user CAN read subscription_plans without tenant context (global config, no RLS isolation)', async () => {
+    // subscription_plans is a GLOBAL table: no tenant_id, no RLS by tenant
+    // (RECONCILIACAO-EPIC11 §4/§8, FR-INFRA-06). The app role must be able to
+    // SELECT it without any tenant context — this is the read path that
+    // PlanLimitsService.getLimits() relies on (runs on the app connection).
+    //
+    // Authorization for WRITES is enforced at the APPLICATION layer
+    // (@Roles(SUPER_ADMIN) on super-admin-plans.controller — verified in
+    // super-admin-plans.integration-spec.ts via 403 for ADMIN_TENANT), NOT at
+    // the DB layer. There is intentionally no RLS write policy on this table.
+    const rows = await appClient.$queryRawUnsafe<{ tier: string }[]>(
+      `SELECT tier FROM subscription_plans WHERE id = '${TEST_PLAN_ID}'::uuid`,
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.tier).toBe('rls_test_tier');
   });
 
   it('privileged connection (bypass RLS) CAN UPDATE limits', async () => {

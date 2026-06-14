@@ -18,9 +18,24 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { AppModule } from '../../src/app.module';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { RedisService } from '../../src/redis/redis.service';
+
+/**
+ * Privileged client (DATABASE_URL / bypass-RLS) for seeding RLS-protected rows.
+ * The `tenants` table has an RLS WITH CHECK policy that blocks INSERTs from the
+ * app role without a tenant context — so tenant fixtures must be seeded/cleaned
+ * via the privileged connection, mirroring test/rls/*.rls-spec.ts. The global
+ * `subscription_plans` table has no RLS, so plans are seeded via the app client.
+ */
+function makePrivilegedClient(): PrismaClient {
+  const connectionString = process.env['DATABASE_URL'];
+  if (!connectionString) throw new Error('DATABASE_URL not set');
+  return new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+}
 
 // Fixed test UUIDs (v7-style format, deterministic)
 const PLAN_FREE_ID = '01900011-0000-7000-8000-000000000001';
@@ -38,6 +53,7 @@ describe('SuperAdmin Plans (integration)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let redis: RedisService;
+  let privileged: PrismaClient;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -49,9 +65,10 @@ describe('SuperAdmin Plans (integration)', () => {
 
     prisma = module.get(PrismaService);
     redis = module.get(RedisService);
+    privileged = makePrivilegedClient();
 
-    // Seed a test tenant on 'free' plan
-    await prisma.client.tenant.upsert({
+    // Seed a test tenant on 'free' plan via privileged connection (tenants has RLS)
+    await privileged.tenant.upsert({
       where: { id: TENANT_ID },
       create: {
         id: TENANT_ID,
@@ -112,13 +129,14 @@ describe('SuperAdmin Plans (integration)', () => {
     await prisma.client.subscriptionPlan
       .deleteMany({ where: { tier: { in: ['free-integ', 'pro-integ', 'enterprise-integ'] } } })
       .catch(() => undefined);
-    await prisma.client.tenant
+    await privileged.tenant
       .delete({ where: { id: TENANT_ID } })
       .catch(() => undefined);
 
     // Clear test Redis keys
     await redis.del(`cache:plan-limits:${TENANT_ID}`).catch(() => undefined);
 
+    await privileged.$disconnect().catch(() => undefined);
     await app.close();
   });
 
@@ -274,8 +292,8 @@ describe('SuperAdmin Plans (integration)', () => {
     });
 
     it('TC-PATCH-10: write-through — Redis cache updated for tenant on plan tier', async () => {
-      // Pre-warm: ensure tenant is on the test plan tier
-      await prisma.client.tenant.update({
+      // Pre-warm: ensure tenant is on the test plan tier (fixture via privileged conn — tenants RLS)
+      await privileged.tenant.update({
         where: { id: TENANT_ID },
         data: { plan: 'free-integ' },
       });
@@ -297,8 +315,8 @@ describe('SuperAdmin Plans (integration)', () => {
         expect(typeof parsed['maxGroups']).toBe('number');
       }
 
-      // Restore tenant plan
-      await prisma.client.tenant.update({
+      // Restore tenant plan (fixture via privileged conn — tenants RLS)
+      await privileged.tenant.update({
         where: { id: TENANT_ID },
         data: { plan: 'free' },
       });
