@@ -9,6 +9,6 @@ import { GroupMembersRepository } from './group-members.repository';
   imports: [PrismaModule, PlanLimitsModule],
   controllers: [GroupMembersController],
   providers: [GroupMembersService, GroupMembersRepository],
-  exports: [GroupMembersService],
+  exports: [GroupMembersService, GroupMembersRepository],
 })
 export class GroupMembersModule {}

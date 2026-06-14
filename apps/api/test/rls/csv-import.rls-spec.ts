@@ -129,7 +129,18 @@ async function countGroupMembersInTenant(
   });
 }
 
-async function cleanup(prisma: PrismaClient, groupNames: string[], userIds: string[]) {
+/**
+ * Cleanup test-created data. Global users are persistent across tests (created
+ * once in beforeAll); only delete them when `deleteUsers` is true (afterAll).
+ * Deleting them in beforeEach would orphan the user_tenants FK and break the
+ * bindUserToTenant inserts (FK user_tenants_user_id_fkey, error 23503).
+ */
+async function cleanup(
+  prisma: PrismaClient,
+  groupNames: string[],
+  userIds: string[],
+  deleteUsers = true,
+) {
   for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
@@ -142,7 +153,7 @@ async function cleanup(prisma: PrismaClient, groupNames: string[], userIds: stri
       );
     });
   }
-  // user_tenants and users are not RLS-filtered in cleanup — use bypass
+  // user_tenants bindings are mutable per-test data — always reset them.
   if (userIds.length > 0) {
     const idList = userIds.map((id) => `'${id}'::uuid`).join(',');
     for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
@@ -153,12 +164,15 @@ async function cleanup(prisma: PrismaClient, groupNames: string[], userIds: stri
         );
       });
     }
-    await prisma.$transaction(async (tx) => {
-      await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
-      await tx.$executeRawUnsafe(
-        `DELETE FROM users WHERE id IN (${idList})`,
-      );
-    });
+    // Global users persist between tests — only remove on full teardown.
+    if (deleteUsers) {
+      await prisma.$transaction(async (tx) => {
+        await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${TENANT_A_ID}'`);
+        await tx.$executeRawUnsafe(
+          `DELETE FROM users WHERE id IN (${idList})`,
+        );
+      });
+    }
   }
 }
 
@@ -195,7 +209,9 @@ describe('RLS Isolation: CSV import (user_tenants + group_members)', () => {
   });
 
   beforeEach(async () => {
-    await cleanup(prisma, [GROUP_A_NAME, GROUP_B_NAME], [IMPORT_USER_A_ID, IMPORT_USER_B_ID]);
+    // Reset only mutable per-test data (groups + user_tenants bindings); keep
+    // the global users created in beforeAll so bindUserToTenant FKs resolve.
+    await cleanup(prisma, [GROUP_A_NAME, GROUP_B_NAME], [IMPORT_USER_A_ID, IMPORT_USER_B_ID], false);
   });
 
   afterAll(async () => {
