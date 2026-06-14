@@ -7,6 +7,12 @@
 @import "tailwindcss";
 
 @theme {
+  /* === Tenant Custom Brand Colors (Story 11-2) === */
+  /* Injected at runtime via CSS custom props on <body> by the authenticated layout. */
+  /* Fallback to brand-teal so UI is never broken when tenant has no custom colors. */
+  --color-brand-primary: var(--color-brand-teal, #2b7a78);
+  --color-brand-secondary: var(--color-brand-terracotta, #c1666b);
+
   /* === Brand Colors === */
   --color-brand-teal: #2b7a78;
   --color-brand-teal-light: #3aafa9;

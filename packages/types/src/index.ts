@@ -1,5 +1,14 @@
 export { PaginationSchema, type Pagination } from './pagination';
 export {
+  HEX_COLOR_REGEX,
+  BrandingColorSchema,
+  type BrandingColor,
+  UpdateBrandingSchema,
+  type UpdateBrandingInput,
+  BrandingResponseSchema,
+  type BrandingResponse,
+} from './tenants/branding';
+export {
   PlanLimitsSchema,
   type PlanLimits,
   PlanLimitsOverrideSchema,

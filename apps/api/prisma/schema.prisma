@@ -276,6 +276,9 @@ model Tenant {
   onboardingProgress    Json?    @map("onboarding_progress") @db.JsonB
   planLimitsOverride    Json?    @map("plan_limits_override") @db.JsonB
   logoUrl               String?  @map("logo_url")
+  brandPrimaryColor     String?  @map("brand_primary_color") @db.VarChar(9)
+  brandSecondaryColor   String?  @map("brand_secondary_color") @db.VarChar(9)
+  displayName           String?  @map("display_name") @db.VarChar(100)
   createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
