@@ -15,7 +15,7 @@
  *   - downgrade guard: override cannot exceed plan tier
  */
 
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ExecutionContext } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { PrismaClient } from '@prisma/client';
@@ -23,6 +23,8 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { AppModule } from '../../src/app.module';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { RedisService } from '../../src/redis/redis.service';
+import { KeycloakAuthGuard } from '../../src/auth/keycloak.guard';
+import { Role } from '../../src/auth/enums/role.enum';
 
 /**
  * Privileged client (DATABASE_URL / bypass-RLS) for seeding RLS-protected rows.
@@ -56,9 +58,32 @@ describe('SuperAdmin Plans (integration)', () => {
   let privileged: PrismaClient;
 
   beforeAll(async () => {
+    // Override the Keycloak JWT guard: the project has no MSW/JWKS infra for
+    // full-stack HTTP integration, so map the deterministic test bearer tokens
+    // to roles. The real RolesGuard still runs downstream (SUPER_ADMIN bypass vs
+    // 403 for ADMIN_TENANT), so RBAC is genuinely exercised.
     const module = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(KeycloakAuthGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext): boolean => {
+          const req = context.switchToHttp().getRequest();
+          const auth: string = req.headers?.authorization ?? '';
+          let roles: string[] | null = null;
+          if (auth.includes('test-super-admin-token')) roles = [Role.SUPER_ADMIN];
+          else if (auth.includes('test-admin-tenant-token')) roles = [Role.ADMIN_TENANT];
+          if (!roles) return false;
+          req.user = {
+            userId: '01900011-0000-7000-8000-0000000000aa',
+            tenantId: TENANT_ID,
+            roles,
+            email: 'integ@test.example',
+          };
+          return true;
+        },
+      })
+      .compile();
 
     app = module.createNestApplication();
     await app.init();
