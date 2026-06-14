@@ -396,6 +396,42 @@ Usuários com withdrawal ativo para `'focus_monitoring'` **não** recebem o bann
 
 ---
 
+## Clarifications
+
+> Decisões tomadas na fase clarify (onda-002). Ref: dec-008 a dec-012.
+
+### Q1 — GET /tenants/me/policies: estado do tenant ou personalizado por usuário? (dec-008, score 3)
+
+**Decisão: A — GET reflete sempre o estado administrativo do tenant.**
+
+O endpoint é admin-only (`@ADMIN_TENANT`). O campo `focusMonitoring` retorna o valor de `tenant.focusIndicatorEnabled` sem considerar se o usuário autenticado tem withdrawal ativo. A exemption por consent withdrawal (§6.2.h.ii) é enforcement de runtime aplicado nas próprias features (radar, heartbeat, banner) — não neste endpoint de configuração. Usuários com withdrawal não recebem o banner (§8.5), mas isso é responsabilidade do consumer da feature, não do endpoint de políticas.
+
+### Q2 — Mecanismo para disparar transparency banner ao ativar focusMonitoring (dec-009, score 2)
+
+**Decisão: A — EventEmitter2 interno (NestJS).**
+
+Spec §6.2.h.i especifica "evento interno". O padrão do projeto para eventos internos NestJS é EventEmitter2 (já usado em tenants.service.ts, meetings.service.ts, groups.service.ts, onboarding). O transparency-banner.tsx (Story 5-5) é prop-driven, exibido no meeting room — não é notificação push cross-session. `PoliciesService` emite `focus-monitoring.enabled` via `EventEmitter2`; o módulo de reuniões/SSE já consome eventos internos por esse canal.
+
+### Q3 — policyVersion incrementa em todo PATCH ou apenas em toggles Pro? (dec-010, score 3)
+
+**Decisão: A — incrementa em todo PATCH.**
+
+Spec §6.2 passo 3.e define `policyVersion = currentVersion + 1` sem qualquer condicional. §9 tabela de testes confirma: "policyVersion incrementa a cada PATCH". §8.3 usa mismatch de policyVersion para disparar re-fetch via TanStack Query — comportamento correto exige incremento consistente independente do toggle alterado.
+
+### Q4 — ConsentRepository já exportado de ConsentModule? (dec-011, score 3)
+
+**Decisão: B — já exportado.**
+
+Evidência direta: `apps/api/src/consent/consent.module.ts` exporta explicitamente `[ConsentService, ConsentGuard, ConsentRepository]`. Esta story apenas importa `ConsentModule` em `TenantsModule` — nenhuma alteração em `consent.module.ts` necessária.
+
+### Q5 — GET /tenants/me/policies: 200 com tierInfo completo ou 403 para campos Pro? (dec-012, score 3)
+
+**Decisão: A — GET retorna sempre 200 com tierInfo completo.**
+
+Spec §5.1 `PoliciesResponseSchema` define `tierInfo` com todos os toggles sem condicional por tier. Fluxo GET §6.1 passo 2f retorna `{policies, policyVersion, tierInfo}` sem exceção. O 403 está exclusivamente no PATCH (§6.2 passo 3b): tenant Free tentando ativar toggle Pro recebe `ForbiddenException`. O GET é informativo — expõe `tierInfo` para que a UI renderize tier badges e upgrade prompts.
+
+---
+
 ## Referências
 
 - `_bmad-output/implementation-artifacts/RECONCILIACAO-EPIC11.md` — §3, §4, §5, §6, §8, §10
