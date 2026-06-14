@@ -273,3 +273,33 @@ describe('parseFile — unsupported format', () => {
     await expect(parseFile(file)).rejects.toThrow('Formato não suportado');
   });
 });
+
+// ---------------------------------------------------------------------------
+// Performance — SC-001: parse 200 rows < 3000ms
+// ---------------------------------------------------------------------------
+
+describe('performance SC-001 — 200 rows parse latency', () => {
+  it('parses 200-row CSV fixture in < 3000ms', async () => {
+    // Build a 200-row CSV in memory (mirrors __fixtures__/200-linhas.csv)
+    const roles = ['participante', 'lider', 'participante', 'participante'];
+    const dataRows = Array.from({ length: 200 }, (_, idx) => {
+      const i = idx + 1;
+      const role = roles[idx % 4];
+      return `Participante ${i},participante${i}@fixture.test,119${String(i).padStart(8, '0')},${role}`;
+    });
+    const content = ['nome,email,telefone,papel', ...dataRows].join('\n');
+    const file = makeCSVFile(content, '200-linhas.csv');
+
+    const start = Date.now();
+    const result = await parseFile(file);
+    const elapsed = Date.now() - start;
+
+    // Structural assertions
+    expect(result.rows).toHaveLength(200);
+    expect(result.missingRequiredColumns).toHaveLength(0);
+    expect(result.encoding).toBe('utf-8');
+
+    // Latency assertion (SC-001): < 3000ms
+    expect(elapsed).toBeLessThan(3000);
+  });
+});

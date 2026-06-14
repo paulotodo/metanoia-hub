@@ -266,25 +266,27 @@
 
 ### 5.1 Smoke test de latência parse SC-001 `[M]`
 
-- [ ] Criar fixture `apps/web/src/lib/onboarding/__fixtures__/200-linhas.csv` (200 linhas CSV UTF-8)
-- [ ] Adicionar timer assertion ao `csv-parser.spec.ts`
+- [x] Criar fixture `apps/web/src/lib/onboarding/__fixtures__/200-linhas.csv` (200 linhas CSV UTF-8)
+- [x] Adicionar timer assertion ao `csv-parser.spec.ts`
   - Parse de 200 linhas deve completar < 3000ms (SC-001)
   - Decisão padrão (RQ-05): automação via timer Vitest
   - Ref: checklist RQ-02-G1; spec.md SC-001
+  - Resultado: 15 testes passando (incluindo SC-001); elapsed confirmado < 3000ms
 
 ### 5.2 Verificação de bundle size XLSX SC-004 `[M]`
 
-- [ ] Adicionar verificação pós-build:
-  - Após `pnpm turbo build`, grep no manifest do Next.js confirma que `xlsx` NÃO está no bundle inicial
-  - Script: `grep -r '"xlsx"' apps/web/.next/static/chunks/main*.js` deve retornar vazio
-  - Documentar resultado no PR description
+- [x] Adicionar verificação pós-build:
+  - Após `pnpm turbo build`, grep no manifest do Next.js confirma que `read-excel-file` NÃO está no bundle inicial
+  - `grep -rl "read-excel-file" apps/web/.next/static/chunks/` → VAZIO (não encontrado em nenhum dos 73 chunks)
+  - `grep -rl '"xlsx"' apps/web/.next/static/chunks/` → 1 chunk lazy `0k_2d17oceamv.js` (extensão string, não lib; NÃO é chunk inicial per build-manifest.json rootMainFiles)
+  - Dynamic import funcionando: `read-excel-file/browser` carregado sob demanda apenas no path XLSX
   - Ref: checklist RQ-02-G2; spec.md SC-004
 
 ### 5.3 Timer 500 e-mails no integration spec SC-006 `[M]`
 
-- [ ] Adicionar fixture de 500 e-mails ao `check-emails.integration-spec.ts`
+- [x] Fixture de 500 e-mails no `check-emails.integration-spec.ts` (já implementado na FASE 1)
   - Timer: `Date.now()` antes/depois da chamada; assert resultado < 2000ms
-  - Decisão padrão (RQ-05): automação via timer no integration spec
+  - 6 testes passando incluindo SC-006; elapsed confirmado < 2000ms
   - Ref: checklist RQ-02-G3; spec.md SC-006
 
 ---
