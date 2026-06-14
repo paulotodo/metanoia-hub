@@ -461,4 +461,8 @@ Override em `tailwind.preset.ts`: usar `--color-brand-primary` como valor de `th
 
 ## Clarifications
 
-_Nenhuma questão aberta — todas as decisões foram fixadas a partir da reconciliação e das sondagens do código real._
+### Session 2026-06-14
+
+- Q: O GET /me/branding deve expor somente `logoUrl` (nav 128×128) ou também `logoFavUrl` (64×64) separadamente no BrandingResponseSchema? → A: Apenas `logoUrl` (nav 128×128). O `BrandingResponseSchema` (§5.1) define apenas `logoUrl: z.string().url().nullable()`, consistente com RF-01 e `uploadLogo` em §7.3 step 9 que retorna `{ logoUrl: signedUrl }`. Favicon é resolvido internamente pelo layout via CSS/HTML com a mesma URL.
+- Q: Deve existir uma forma de remover o logo customizado (voltar ao default) nesta story? → A: Fora de escopo desta story. Remoção pode ser feita futuramente via `PATCH /me/branding` com `{ logoUrl: null }`. Nenhum AC (AC1-AC10) nem §12 lista endpoint de remoção; PRs devem ser focados (Constitution VII).
+- Q: No cache miss do GET branding, o service deve regenerar a signed URL (nova chamada StorageService.getSignedUrl) ou retornar a URL armazenada no DB como está? → A: Retornar a URL do DB como está. O cold path de RF-01 é "DB + write Redis" sem nova chamada ao StorageService. §7.3 `getBranding()` steps 1-4 confirmam isso. Signed URL TTL 4h vs cache TTL 1h cobre a janela de expiração de forma aceitável para MVP.
