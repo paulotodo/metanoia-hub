@@ -287,11 +287,28 @@ model Tenant {
   radarStatuses      ParticipantRadarStatus[]
   statusImprovements ParticipantStatusImproved[]
   auditEvents        AuditEvent[]
+  policies           TenantPolicies?
 
   @@index([tenantId])
   @@index([status])
   @@index([plan])
   @@map("tenants")
+}
+
+/// TenantPolicies — 1:0..1 with Tenant; stores 4 JSONB toggles + policy version.
+/// focusMonitoring is NOT stored here — it maps tenant.focusIndicatorEnabled (Story 5).
+/// RLS: tenant-scoped via tenant_id.
+model TenantPolicies {
+  id            String   @id @db.Uuid
+  tenantId      String   @unique @map("tenant_id") @db.Uuid
+  policies      Json     @default("{}") @map("policies")
+  policyVersion Int      @default(1) @map("policy_version")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("tenant_policies")
 }
 
 /// Invite — pre-tenant onboarding token for admin/leader signup (5-leg flow)

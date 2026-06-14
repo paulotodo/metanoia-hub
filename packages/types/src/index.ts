@@ -1,5 +1,15 @@
 export { PaginationSchema, type Pagination } from './pagination';
 export {
+  TenantPoliciesSchema,
+  type TenantPolicies,
+  UpdatePoliciesSchema,
+  type UpdatePoliciesDto,
+  TierInfoSchema,
+  type TierInfo,
+  PoliciesResponseSchema,
+  type PoliciesResponse,
+} from './policies/tenant-policies';
+export {
   HEX_COLOR_REGEX,
   BrandingColorSchema,
   type BrandingColor,

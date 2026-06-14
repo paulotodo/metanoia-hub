@@ -39,6 +39,7 @@ describe('Audit constants snapshot', () => {
           "export",
           "import",
           "plan_limits_override",
+          "policy_change",
         ],
         "AUDIT_EVENTS_PAGE_SIZE": 50,
         "AUDIT_EXPORT_QUEUE_NAME": "audit-export",
@@ -73,6 +74,11 @@ describe('AuditActionSchema', () => {
   it('includes plan_limits_override (Story 11-1)', () => {
     expect(AUDIT_ACTIONS).toContain('plan_limits_override');
     expect(AuditActionSchema.safeParse('plan_limits_override').success).toBe(true);
+  });
+
+  it('includes policy_change (Story 11-3)', () => {
+    expect(AUDIT_ACTIONS).toContain('policy_change');
+    expect(AuditActionSchema.safeParse('policy_change').success).toBe(true);
   });
 
   it('rejects unknown action', () => {

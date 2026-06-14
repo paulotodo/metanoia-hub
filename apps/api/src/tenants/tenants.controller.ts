@@ -6,15 +6,18 @@ import {
   HttpStatus,
   Patch,
   Post,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ScrubPiiInterceptor } from '../common/interceptors/scrub-pii.interceptor';
-import { UpdateTenantProfileSchema, UpdateBrandingSchema } from '@metanoia/types';
+import { UpdateTenantProfileSchema, UpdateBrandingSchema, UpdatePoliciesSchema } from '@metanoia/types';
+import type { UpdatePoliciesDto } from '@metanoia/types';
 import type { UpdateTenantProfileDto } from './dto/update-tenant-profile.dto';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -23,13 +26,17 @@ import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { TenantsService } from './tenants.service';
 import { BrandingService, type MulterFile } from './branding.service';
+import { PoliciesService } from './policies.service';
 
+@ApiTags('tenants')
+@ApiBearerAuth()
 @Controller('api/v1/tenants')
 @UseGuards(KeycloakAuthGuard)
 export class TenantsController {
   constructor(
     private readonly service: TenantsService,
     private readonly brandingService: BrandingService,
+    private readonly policiesService: PoliciesService,
   ) {}
 
   @Get('me')
@@ -107,5 +114,54 @@ export class TenantsController {
   @ApiOperation({ summary: 'Upload tenant logo (PNG/JPG/SVG ≤2MB)' })
   async uploadLogo(@UploadedFile() file: MulterFile | undefined) {
     return { data: await this.brandingService.uploadLogo(file) };
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Policies endpoints (Story 11-3)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * GET /api/v1/tenants/me/policies
+   *
+   * Returns the current tenant's behavioural policy toggles.
+   * Cache: Redis cache:policies:{tenantId} (TTL 1h, write-through on PATCH).
+   * Header X-Policy-Version: current version for FE stale-check.
+   * ADMIN_TENANT only — super-admin has no /me context (CHK013).
+   */
+  @Get('me/policies')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN_TENANT)
+  @ApiOperation({ summary: 'Get tenant policy toggles (behavioural configuration)' })
+  @ApiResponse({ status: 200, description: 'Policy toggles + tier info returned' })
+  @ApiResponse({ status: 403, description: 'Insufficient role (requires ADMIN_TENANT)' })
+  async getMyPolicies(@Res({ passthrough: true }) res: Response) {
+    const result = await this.policiesService.getPolicies();
+    res.set('X-Policy-Version', String(result.policyVersion));
+    return { data: { policies: result.policies, policyVersion: result.policyVersion, tierInfo: result.tierInfo } };
+  }
+
+  /**
+   * PATCH /api/v1/tenants/me/policies
+   *
+   * Partially update tenant policy toggles.
+   * Pro-only toggles (focusMonitoring, mandatoryCamera): 403 on Free tier.
+   * policyVersion always increments, even on empty body (dec-010/CHK033).
+   * Header X-Policy-Version: new version for FE stale-check.
+   * ADMIN_TENANT only — super-admin has no /me context (CHK013).
+   */
+  @Patch('me/policies')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN_TENANT)
+  @ApiOperation({ summary: 'Update tenant policy toggles (partial update)' })
+  @ApiResponse({ status: 200, description: 'Policies updated; X-Policy-Version header set' })
+  @ApiResponse({ status: 403, description: 'Pro-only toggle attempted by Free tenant, or insufficient role' })
+  async updateMyPolicies(
+    @Body(new ZodValidationPipe(UpdatePoliciesSchema)) dto: UpdatePoliciesDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.policiesService.updatePolicies(dto);
+    res.set('X-Policy-Version', String(result.policyVersion));
+    return { data: { policies: result.policies, policyVersion: result.policyVersion, tierInfo: result.tierInfo } };
   }
 }
