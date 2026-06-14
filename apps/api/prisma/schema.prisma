@@ -274,6 +274,7 @@ model Tenant {
   focusIndicatorEnabled Boolean  @default(false) @map("focus_indicator_enabled")
   metadata              Json     @default("{}") @map("metadata") @db.JsonB
   onboardingProgress    Json?    @map("onboarding_progress") @db.JsonB
+  planLimitsOverride    Json?    @map("plan_limits_override") @db.JsonB
   logoUrl               String?  @map("logo_url")
   createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz
@@ -906,4 +907,21 @@ model DeletionRequest {
   @@index([userId], map: "idx_deletion_requests_user_id")
   @@index([tenantId, userId], map: "idx_deletion_requests_tenant_user")
   @@map("deletion_requests")
+}
+
+/// SubscriptionPlan — global table (no tenant_id / no RLS by tenant).
+/// SUPER_ADMIN manages tiers; PlanLimitsService reads for getLimits().
+/// Story 11-1 / FR-INFRA-02, FR-INFRA-06.
+model SubscriptionPlan {
+  id        String   @id @db.Uuid
+  name      String   @db.VarChar(100)
+  tier      String   @unique @db.VarChar(20)
+  limits    Json     @db.JsonB
+  features  Json     @default("{}") @db.JsonB
+  metadata  Json     @default("{}") @db.JsonB
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("subscription_plans")
 }

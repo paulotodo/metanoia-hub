@@ -90,13 +90,13 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 1.1 Criar `packages/types/src/plans/subscription.ts` com 4 schemas `[C]`
 
-- [ ] 1.1.1 Criar `packages/types/src/plans/subscription.ts`:
+- [x] 1.1.1 Criar `packages/types/src/plans/subscription.ts`:
   - `PlanLimitsSchema`: campos `maxGroups`, `maxMembersPerGroup`, `maxLeadersPerTenant` — cada um `z.number().positive().nullable()` (positivo ou `null` = ilimitado/usar-default)
   - `PlanLimitsOverrideSchema`: shape de persistência/leitura — `.partial()` de `PlanLimitsSchema`; representa JSONB salvo no banco
   - `PlanLimitsOverrideInputSchema`: shape de validação do PATCH body — campos inteiros positivos estritamente; rejeita negativos com mensagem pt-BR; `{}` é válido (zera override)
   - `SubscriptionPlanSchema`: `id` (uuid), `name` (string), `tier` (reusar `TenantPlanSchema` de `packages/types/src/super-admin-tenant.ts`), `limits` (`PlanLimitsSchema`), `features` (`z.record(z.unknown())`), `metadata` (`z.record(z.unknown())`), `isActive` (boolean), `createdAt` (string ISO), `updatedAt` (string ISO), `tenantCount` (`z.number().optional()` — resposta de listagem)
-- [ ] 1.1.2 Adicionar re-export em `packages/types/src/index.ts`: `export * from './plans/subscription'`
-- [ ] 1.1.3 **Teste**: criar `packages/types/src/__tests__/plans-subscription.snapshot.spec.ts` com casos:
+- [x] 1.1.2 Adicionar re-export em `packages/types/src/index.ts`: `export * from './plans/subscription'`
+- [x] 1.1.3 **Teste**: criar `packages/types/src/__tests__/plans-subscription.snapshot.spec.ts` com casos:
   - Snapshot de cada um dos 4 schemas (`toMatchSnapshot`)
   - `PlanLimitsOverrideInputSchema.parse({maxGroups: -1})` deve lançar `ZodError` (rejeita negativos)
   - `PlanLimitsOverrideInputSchema.parse({})` deve retornar `{}` sem erro (US5 AC#3 — zera override)
@@ -104,8 +104,8 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 1.2 Adicionar `'plan_limits_override'` ao `AUDIT_ACTIONS` `[C]`
 
-- [ ] 1.2.1 Editar `packages/types/src/audit/index.ts` — append `'plan_limits_override'` ao array `AUDIT_ACTIONS` existente (não recriar o array, apenas estender)
-- [ ] 1.2.2 **Teste**: criar/atualizar `packages/types/src/__tests__/audit.snapshot.spec.ts` — confirmar que `'plan_limits_override'` aparece no snapshot e que o snapshot falha ao mudar o array
+- [x] 1.2.1 Editar `packages/types/src/audit/index.ts` — append `'plan_limits_override'` ao array `AUDIT_ACTIONS` existente (não recriar o array, apenas estender)
+- [x] 1.2.2 **Teste**: criar/atualizar `packages/types/src/__tests__/audit.snapshot.spec.ts` — confirmar que `'plan_limits_override'` aparece no snapshot e que o snapshot falha ao mudar o array
 
 ---
 
@@ -116,16 +116,16 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 2.1 Editar schema Prisma + gerar cliente `[C]`
 
-- [ ] 2.1.1 Adicionar model `SubscriptionPlan` ao `apps/api/prisma/schema.prisma`:
+- [x] 2.1.1 Adicionar model `SubscriptionPlan` ao `apps/api/prisma/schema.prisma`:
   - Campos: `id String @id`, `name String @db.VarChar(100)`, `tier String @unique @db.VarChar(20)`, `limits Json`, `features Json @default("{}")`, `metadata Json @default("{}")`, `isActive Boolean @default(true) @map("is_active")`, `createdAt DateTime @default(now()) @map("created_at")`, `updatedAt DateTime @updatedAt @map("updated_at")`
   - `@@map("subscription_plans")` (snake_case na DB, camelCase no Prisma)
   - `id` sem `@default` no schema — seed fornece via `uuidv7()` no `create.data.id`
-- [ ] 2.1.2 Adicionar campo `planLimitsOverride Json? @map("plan_limits_override")` ao model `Tenant` existente
-- [ ] 2.1.3 Executar `pnpm prisma generate --schema=apps/api/prisma/schema.prisma` e confirmar zero erros TypeScript
+- [x] 2.1.2 Adicionar campo `planLimitsOverride Json? @map("plan_limits_override")` ao model `Tenant` existente
+- [x] 2.1.3 Executar `pnpm prisma generate --schema=apps/api/prisma/schema.prisma` e confirmar zero erros TypeScript
 
 ### 2.2 Criar migration SQL `11-1-subscription-plans` `[C]`
 
-- [ ] 2.2.1 Criar `apps/api/prisma/migrations/<YYYYMMDDHHMMSS>_11-1-subscription-plans/migration.sql`:
+- [x] 2.2.1 Criar `apps/api/prisma/migrations/<YYYYMMDDHHMMSS>_11-1-subscription-plans/migration.sql`:
 
   ```sql
   -- Tabela global de planos (sem RLS por tenant — configuração de produto; apenas SUPER_ADMIN escreve)
@@ -157,12 +157,12 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
   > **CT-5 absorvido**: `idx_tenants_plan` permite `WHERE plan = $1` eficiente ao iterar tenants
   > para write-through Redis após PATCH de `SubscriptionPlan`.
 
-- [ ] 2.2.2 Criar `apps/api/test/rls/subscription-plans.rls-spec.ts` — spec de **autorização SUPER_ADMIN** (tabela global, não isolamento de linha):
+- [x] 2.2.2 Criar `apps/api/test/rls/subscription-plans.rls-spec.ts` — spec de **autorização SUPER_ADMIN** (tabela global, não isolamento de linha):
   - Setup: inserir 1 row em `subscription_plans` com `created_at` e `updated_at` NOT NULL explícitos (gotcha RLS specs)
   - Teste 1: sessão de role `app_user` (tenant comum) NÃO pode `INSERT` em `subscription_plans`
   - Teste 2: sessão SUPER_ADMIN (bypass RLS) PODE `UPDATE limits`
   - Teardown: `DELETE FROM subscription_plans WHERE id = $test_id`
-- [ ] 2.2.3 Criar `apps/api/test/rls/tenant-plan-override.rls-spec.ts` — spec de **isolamento** de `plan_limits_override`:
+- [x] 2.2.3 Criar `apps/api/test/rls/tenant-plan-override.rls-spec.ts` — spec de **isolamento** de `plan_limits_override`:
   - Setup: 2 tenants (A e B); `SET LOCAL app.current_tenant_id` para cada um
   - Tenant A: `UPDATE tenants SET plan_limits_override = '{"maxGroups":10}'::jsonb WHERE id = $tenantA`
   - Teste: com `current_tenant_id = $tenantB`, `SELECT plan_limits_override FROM tenants WHERE id = $tenantA` → 0 rows (RLS bloqueia)
@@ -177,20 +177,20 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 3.1 Criar `subscription-plans-seed.ts` + script npm `[A]`
 
-- [ ] 3.1.1 Criar `apps/api/prisma/seeds/subscription-plans-seed.ts`:
+- [x] 3.1.1 Criar `apps/api/prisma/seeds/subscription-plans-seed.ts`:
   - Imports: `{ PrismaClient }` de `@prisma/client`; `uuidv7` de `uuidv7`
   - `main()` async: upsert dos 3 tiers via `prisma.subscriptionPlan.upsert({ where: { tier }, update: {...}, create: { id: uuidv7(), tier, name, limits, metadata } })`:
     - **free**: `name:"Free"`, `limits:{maxGroups:3, maxMembersPerGroup:30, maxLeadersPerTenant:5}` (**NÃO** 15 do artifact 11-1 — spec.md é autoritativa, C4), `metadata:{priceBRL:0}`
     - **pro**: `name:"Pro"`, `limits:{maxGroups:25, maxMembersPerGroup:100, maxLeadersPerTenant:50}` (**NÃO** 20 do artifact 11-1), `metadata:{priceBRL:99}`
     - **enterprise**: `name:"Enterprise"`, `limits:{maxGroups:null, maxMembersPerGroup:null, maxLeadersPerTenant:null}` (null = ilimitado no JSONB; getLimits mapeia null→Infinity), `metadata:{price:"Sob consulta"}`
   - Guard CLI obrigatório (evita disparo ao importar o módulo em testes): `if (process.argv[1]?.includes('subscription-plans-seed')) { void main().catch(console.error) }`
-- [ ] 3.1.2 Adicionar script ao `apps/api/package.json`:
+- [x] 3.1.2 Adicionar script ao `apps/api/package.json`:
   ```json
-  "db:seed:plans": "ts-node --project tsconfig.json prisma/seeds/subscription-plans-seed.ts"
+  "db:seed:plans": "tsx prisma/seeds/subscription-plans-seed.ts"
   ```
-- [ ] 3.1.3 **Teste idempotência**: verificar que executar `main()` duas vezes consecutivas resulta em exatamente 3 rows em `subscription_plans` (upsert por `tier`)
-- [ ] 3.1.4 **Teste valores canônicos**: após seed, confirmar `free.limits.maxGroups === 3`, `pro.limits.maxGroups === 25`, `enterprise.limits.maxGroups === null`
-- [ ] 3.1.5 **Teste boot sem seed (US1 AC#4)**: com tabela vazia → `PlanLimitsService.getLimits(tenantId)` retorna `PLAN_LIMITS_FALLBACK` + `logger.warn` chamado + NUNCA lança 500 (verificado também na FASE 4)
+- [x] 3.1.3 **Teste idempotência**: verificar que executar `main()` duas vezes consecutivas resulta em exatamente 3 rows em `subscription_plans` (upsert por `tier`)
+- [x] 3.1.4 **Teste valores canônicos**: após seed, confirmar `free.limits.maxGroups === 3`, `pro.limits.maxGroups === 25`, `enterprise.limits.maxGroups === null`
+- [x] 3.1.5 **Teste boot sem seed (US1 AC#4)**: com tabela vazia → `PlanLimitsService.getLimits(tenantId)` retorna `PLAN_LIMITS_FALLBACK` + `logger.warn` chamado + NUNCA lança 500 (verificado em unit test 4.2.1)
 
 ---
 
@@ -201,10 +201,10 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 4.1 Evoluir `plan-limits.config.ts`, `plan-limits.service.ts` e `plan-limits.module.ts` `[C]`
 
-- [ ] 4.1.1 Editar `apps/api/src/common/plan-limits/plan-limits.config.ts`:
+- [x] 4.1.1 Editar `apps/api/src/common/plan-limits/plan-limits.config.ts`:
   - Renomear `PLAN_LIMITS` → `PLAN_LIMITS_FALLBACK` (mantém shape e valores idênticos de 3-3 sem alteração)
   - Atualizar qualquer referência interna ao novo nome
-- [ ] 4.1.2 Editar `apps/api/src/common/plan-limits/plan-limits.service.ts` — adicionar método `getLimits(tenantId: string)`:
+- [x] 4.1.2 Editar `apps/api/src/common/plan-limits/plan-limits.service.ts` — adicionar método `getLimits(tenantId: string)`:
   - Triplo fallback (NUNCA 500):
     1. `redis.get('cache:plan-limits:{tenantId}')` → hit: `JSON.parse()` + return imediato
     2. DB: `prisma.client.tenant.findUniqueOrThrow` (plan + planLimitsOverride) + `prisma.client.subscriptionPlan.findFirst({ where: { tier: tenant.plan, isActive: true } })` → merge override + write-through `redis.set`
@@ -213,14 +213,14 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
   - Retorna shape `{ maxGroups: number; maxMembersPerGroup: number; maxLeadersPerTenant: number }` (Infinity é `number` válido em TypeScript — C3)
   - Refatorar `hasCapacity(tenantId, resource)` para usar `await getLimits(tenantId)` em vez de `getLimit(plan, resource)` hardcoded
   - **NÃO regredir (US3 AC#4)**: `hasCapacity(tenantId, 'membersPerGroup')` retorna `{allowed: true}` (curto-circuito; enforce manual permanece em `group-members.service`)
-- [ ] 4.1.3 Editar `apps/api/src/common/plan-limits/plan-limits.module.ts`:
+- [x] 4.1.3 Editar `apps/api/src/common/plan-limits/plan-limits.module.ts`:
   - Adicionar `RedisModule` a `imports` (explícito, defesa contra remoção do `@Global`)
   - Injetar `RedisService` no construtor de `PlanLimitsService`
   - Confirmar que `PlanLimitsService` está em `providers` E `exports`
 
 ### 4.2 Unit tests de `getLimits` (todos os caminhos de fallback) `[C]`
 
-- [ ] 4.2.1 Criar/editar `apps/api/src/common/plan-limits/plan-limits.service.spec.ts`:
+- [x] 4.2.1 Criar/editar `apps/api/src/common/plan-limits/plan-limits.service.spec.ts`:
   - **Cache hit**: `redis.get` retorna JSON serializado → `getLimits` retorna sem chamar Prisma
   - **Cold read + write-through**: `redis.get` → null; Prisma retorna free sem override → resultado correto `{maxGroups:3,...}` + `redis.set('cache:plan-limits:{tenantId}',...)` chamado
   - **Fallback tabela vazia**: `subscriptionPlan.findFirst` → null → retorna `PLAN_LIMITS_FALLBACK['free']` + `logger.warn` chamado; sem 500
@@ -239,14 +239,14 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 5.1 Criar `super-admin-plans.{controller,service,repository}` + evoluir tenants `[A]`
 
-- [ ] 5.1.1 Criar `apps/api/src/super-admin/super-admin-plans.repository.ts`:
+- [x] 5.1.1 Criar `apps/api/src/super-admin/super-admin-plans.repository.ts`:
   - Injeta `PrismaService`; usa `this.prisma.client` direto (tabela global, bypass RLS intencional documentado)
   - `findAll()`: `prisma.client.subscriptionPlan.findMany({ where: { isActive: true }, orderBy: { createdAt: 'asc' } })`
   - `findByIdOrThrow(id: string)`: lança `NotFoundException` se não encontrado
   - `updateLimits(id: string, data: Partial<SubscriptionPlan>)`: `prisma.client.subscriptionPlan.update({ where: { id }, data })`
   - `findTenantsByPlan(tier: string)`: `prisma.client.tenant.findMany({ where: { plan: tier }, select: { id: true } })` (usa `idx_tenants_plan`)
 
-- [ ] 5.1.2 Criar `apps/api/src/super-admin/super-admin-plans.service.ts`:
+- [x] 5.1.2 Criar `apps/api/src/super-admin/super-admin-plans.service.ts`:
   - Injeta: `SuperAdminPlansRepository`, `PlanLimitsService`, `RedisService`
   - `listPlans()`: `findAll()` + `COUNT(tenants WHERE plan = tier)` para cada plano → retorna array com `tenantCount`
   - `patchPlan(planId: string, dto)`:
@@ -256,13 +256,13 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
     4. Write-through Redis via pipeline (C2): `const pipeline = this.redis.pipeline(); tenants.forEach(t => pipeline.set('cache:plan-limits:' + t.id, JSON.stringify(mergedLimits))); await pipeline.exec()`
     5. Retornar plano atualizado com `{data: plan}`
 
-- [ ] 5.1.3 Criar `apps/api/src/super-admin/super-admin-plans.controller.ts`:
+- [x] 5.1.3 Criar `apps/api/src/super-admin/super-admin-plans.controller.ts`:
   - `@Controller('api/v1/admin/super/plans')`, `@UseGuards(KeycloakAuthGuard, RolesGuard)`, `@Roles(Role.SUPER_ADMIN)`
   - `@Get()` → `listPlans()` → `200 { data: [...] }`
   - `@Patch(':planId')` → `patchPlan(planId, @Body(new ZodValidationPipe(PatchSubscriptionPlanInputSchema)) dto)` → `200 { data: {...} }`
   - `PatchSubscriptionPlanInputSchema`: `z.object({ limits: PlanLimitsSchema.partial().optional(), ... })`
 
-- [ ] 5.1.4 Editar `apps/api/src/super-admin/super-admin-tenants.controller.ts` e `.service.ts`:
+- [x] 5.1.4 Editar `apps/api/src/super-admin/super-admin-tenants.controller.ts` e `.service.ts`:
   - Adicionar campo `planLimitsOverride?: z.infer<typeof PlanLimitsOverrideInputSchema>` ao DTO de PATCH de tenant
   - `.service.ts patchTenant`: se `planLimitsOverride` presente:
     - `{}` → `plan_limits_override = null` no banco (C5: zera override)
@@ -270,14 +270,14 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
     - `AuditService.createEvent({ action: 'plan_limits_override', resource: 'tenant', resourceId: id, tenantId: id })` — fire-and-forget, NUNCA propaga erro ao caller (envolver em `try { ... } catch { /* log only */ }`)
     - Write-through: `redis.set('cache:plan-limits:' + id, JSON.stringify(mergedLimits))`
 
-- [ ] 5.1.5 Editar módulo super-admin (`super-admin.module.ts` ou `super-admin-tenants.module.ts`):
+- [x] 5.1.5 Editar módulo super-admin (`super-admin.module.ts` ou `super-admin-tenants.module.ts`):
   - Adicionar `SuperAdminPlansController` a `controllers`
   - Adicionar `SuperAdminPlansService`, `SuperAdminPlansRepository` a `providers`
   - Adicionar `PlanLimitsModule` a `imports` (expõe `PlanLimitsService` — DI obrigatório; sem isso o boot crasha)
 
 ### 5.2 Integration tests dos endpoints `[C]`
 
-- [ ] 5.2.1 Criar `apps/api/test/integration/super-admin-plans.integration-spec.ts`:
+- [x] 5.2.1 Criar `apps/api/test/integration/super-admin-plans.integration-spec.ts`:
   - **GET 200 SUPER_ADMIN**: retorna 3 planos com `tenantCount` correto (US4 AC#1)
   - **GET 403 ADMIN_TENANT**: rejeita acesso sem role SUPER_ADMIN (US4 AC#2)
   - **PATCH 200 atualiza plano + write-through**: `{limits:{maxGroups:5}}` → banco atualizado + `redis.get('cache:plan-limits:{tenantId}')` retorna novo valor (US4 AC#3)
@@ -298,7 +298,7 @@ FASE 5 (Endpoints) ─→ FASE 6 (Wire-up/CI)
 
 ### 6.1 Verificação integridade DI, paridade contratual e CI `[C]`
 
-- [ ] 6.1.1 Build sem crash de DI: `pnpm build --filter=api` → zero erros; confirmar ausência de `Nest can't resolve dependencies` nos logs
+- [x] 6.1.1 Build sem crash de DI: `pnpm build --filter=api` → zero erros; confirmar ausência de `Nest can't resolve dependencies` nos logs
 - [ ] 6.1.2 **Contract test de paridade** (US3 AC#1 + AC#3): cenário E2E mínimo:
   - Tabela vazia → `getLimits(tenantId-free)` = `PLAN_LIMITS_FALLBACK['free']` (idêntico ao hardcoded)
   - Tabela seed → `getLimits(tenantId-free)` = `{maxGroups:3, maxMembersPerGroup:30, maxLeadersPerTenant:5}` (mesma resposta)

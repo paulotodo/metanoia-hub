@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PlanLimitsOverrideInputSchema } from './plans/subscription';
 
 // ============================================================================
 // Super Admin (Paulo) — tenant management contracts. Cenário 09.
@@ -192,9 +193,16 @@ export const TenantPatchInputSchema = z
     // metadata: opaque JSONB bag for operational notes; merged (not replaced)
     // server-side — send only the keys you want to update.
     metadata: z.record(z.string(), z.unknown()).optional(),
+    // planLimitsOverride: JSONB per-tenant override. {} zeros out all overrides (US5 AC#3).
+    // Positive integers only; validated by PlanLimitsOverrideInputSchema (Story 11-1).
+    planLimitsOverride: PlanLimitsOverrideInputSchema.optional(),
   })
   .refine(
-    (v) => v.name !== undefined || v.status !== undefined || v.metadata !== undefined,
+    (v) =>
+      v.name !== undefined ||
+      v.status !== undefined ||
+      v.metadata !== undefined ||
+      v.planLimitsOverride !== undefined,
     { message: 'at_least_one_field_required' },
   );
 export type TenantPatchInput = z.infer<typeof TenantPatchInputSchema>;

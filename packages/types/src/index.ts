@@ -1,5 +1,17 @@
 export { PaginationSchema, type Pagination } from './pagination';
 export {
+  PlanLimitsSchema,
+  type PlanLimits,
+  PlanLimitsOverrideSchema,
+  type PlanLimitsOverride,
+  PlanLimitsOverrideInputSchema,
+  type PlanLimitsOverrideInput,
+  SubscriptionPlanSchema,
+  type SubscriptionPlan,
+  PatchSubscriptionPlanInputSchema,
+  type PatchSubscriptionPlanInput,
+} from './plans/subscription';
+export {
   AUDIT_EVENTS_PAGE_SIZE,
   AUDIT_EXPORT_QUEUE_NAME,
   AUDIT_EXPORT_TTL_SECONDS,

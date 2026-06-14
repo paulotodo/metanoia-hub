@@ -23,6 +23,7 @@
     "db:seed:demo:clean": "tsx prisma/seeds/demo-seed-clean.ts",
     "db:seed:demo:keycloak": "tsx prisma/seeds/demo-seed-keycloak.ts",
     "db:seed:demo-data": "tsx src/onboarding/seed/demo-data.seed.ts",
+    "db:seed:plans": "tsx prisma/seeds/subscription-plans-seed.ts",
     "start:e2e": "node dist/main.js"
   },
   "dependencies": {

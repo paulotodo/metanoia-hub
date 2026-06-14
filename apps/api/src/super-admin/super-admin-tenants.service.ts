@@ -18,6 +18,9 @@ import {
 } from '@metanoia/types';
 import { SuperAdminTenantsRepository } from './super-admin-tenants.repository';
 import { DemoDataService } from '../onboarding/demo-data.service';
+import { PlanLimitsService } from '../common/plan-limits/plan-limits.service';
+import { RedisService } from '../redis/redis.service';
+import { AuditService } from '../audit/audit.service';
 
 interface SagaState {
   step: 1 | 2 | 3;
@@ -49,6 +52,9 @@ export class SuperAdminTenantsService {
   constructor(
     private readonly repo: SuperAdminTenantsRepository,
     private readonly demoDataService: DemoDataService,
+    private readonly planLimitsService: PlanLimitsService,
+    private readonly redis: RedisService,
+    private readonly auditService: AuditService,
   ) {}
 
   async list(query: TenantsListQuery): Promise<TenantsListResponse> {
@@ -186,6 +192,48 @@ export class SuperAdminTenantsService {
 
     if (input.metadata !== undefined) {
       await this.repo.updateMetadata(id, input.metadata);
+    }
+
+    if (input.planLimitsOverride !== undefined) {
+      // {} means zero out all overrides (C5 / US5 AC#3)
+      const isEmpty =
+        input.planLimitsOverride !== null &&
+        typeof input.planLimitsOverride === 'object' &&
+        Object.keys(input.planLimitsOverride).length === 0;
+
+      const overrideValue = isEmpty ? null : input.planLimitsOverride;
+
+      await this.repo.updatePlanLimitsOverride(id, overrideValue);
+
+      // Audit: fire-and-forget — NEVER propagate error to caller (API-2.4)
+      try {
+        await this.auditService.createEvent({
+          userId: null,
+          action: 'plan_limits_override',
+          resource: 'tenant',
+          resourceId: id,
+          ipAddress: '0.0.0.0',
+          userAgent: 'super-admin',
+          newState: { planLimitsOverride: overrideValue },
+        });
+      } catch (auditErr) {
+        this.logger.warn(
+          `Audit fire-and-forget failed for tenant ${id} plan_limits_override: ${auditErr instanceof Error ? auditErr.message : String(auditErr)}`,
+        );
+      }
+
+      // Write-through: update Redis cache immediately (C2)
+      try {
+        const resolved = await this.planLimitsService.getLimits(id);
+        await this.redis.set(
+          `cache:plan-limits:${id}`,
+          JSON.stringify(resolved),
+        );
+      } catch (cacheErr) {
+        this.logger.warn(
+          `Write-through cache failed for tenant ${id}: ${cacheErr instanceof Error ? cacheErr.message : String(cacheErr)}`,
+        );
+      }
     }
 
     return this.detail(id);
