@@ -160,7 +160,35 @@ Para garantir type-safety entre FE e BE e prevenir breaking changes silenciosos.
 
 ## Clarifications
 
-> (Seção reservada para respostas do clarify — não há perguntas pendentes. Todas as decisões foram resolvidas na RECONCILIACAO-EPIC11 §10.)
+> Respostas integradas pela fase clarify (onda 2). Decisões de infraestrutura em RECONCILIACAO-EPIC11 §10 permanecem FIXADAS.
+
+**C1 — Dois schemas Zod distintos para override** (dec-008, score 3):
+- `PlanLimitsOverrideSchema`: schema de **persistência/leitura** — representa o shape salvo no banco. Campos: numéricos > 0 ou `null` (onde `null` = usar default do plano). Usado ao ler/gravar `plan_limits_override` do banco.
+- `PlanLimitsOverrideInputSchema`: schema de **validação de input** do endpoint PATCH. Pode ter coerção adicional; é o que `ZodValidationPipe` usa no body do PATCH. Campos inválidos (negativos, não-numéricos) → 422.
+- Create-tasks deve criar os dois schemas distintos em `packages/types/src/plans/subscription.ts`.
+
+**C2 — Write-through Redis ao PATCH de plano: síncrono via pipeline** (dec-009, score 3):
+- Ao PATCH de um `SubscriptionPlan`, o serviço itera os tenants do plano e faz `SET cache:plan-limits:{tenantId}` para cada um usando **pipeline Redis** (execução em batch, sem esperar resposta individual — eficiência).
+- Proibido usar `DEL` (invalidação): a regra é escrever o novo valor merged imediatamente (RECONCILIACAO-EPIC11 §6).
+- Nenhum job BullMQ nesta operação: é síncrono na request (resposta 200 após pipeline concluído).
+
+**C3 — getLimits() mapeia null do banco para `Infinity`** (dec-010, score 3):
+- Enterprise armazena `null` no JSONB para campos sem cap. `getLimits()` deve mapear `null → Infinity` antes de retornar.
+- Tipo TypeScript: campos do objeto retornado são `number` (Infinity é `number` válido em TS/JS).
+- Contrato de paridade com código de 3-3: `plan-limits.config.ts` enterprise usa `Infinity` nos 3 campos.
+- `hasCapacity`: comparação `current < limit` funciona corretamente com `Infinity` (qualquer número é menor que Infinity).
+
+**C4 — Valores canônicos do seed: spec.md é fonte autoritativa** (dec-011, score 3):
+- Free: `maxGroups=3, maxMembersPerGroup=30, maxLeadersPerTenant=5` (artifact 11-1 tem 15 por erro — IGNORAR).
+- Pro: `maxGroups=25, maxMembersPerGroup=100, maxLeadersPerTenant=50` (artifact 11-1 tem 20 por erro — IGNORAR).
+- Enterprise: `maxGroups=null, maxMembersPerGroup=null, maxLeadersPerTenant=null`.
+- Create-tasks usa spec.md como fonte autoritativa (pós-RECONCILIACAO-EPIC11 §1.3).
+
+**C5 — PATCH com planLimitsOverride={} zera o override existente** (dec-012, score 2):
+- `PATCH /admin/super/tenants/{id}` com `{planLimitsOverride: {}}` → seta `plan_limits_override = null` no banco.
+- Tenant volta a usar o plano base integralmente (sem override ativo).
+- Para remover apenas um campo do override: enviar `{planLimitsOverride: {maxGroups: null}}` — que usa o default do plano para aquele campo.
+- Não existe endpoint separado de "remover override"; é via PATCH com `{}` ou campos nulos.
 
 ---
 
@@ -168,10 +196,12 @@ Para garantir type-safety entre FE e BE e prevenir breaking changes silenciosos.
 
 - `SubscriptionPlan` é global (sem `tenant_id`, sem RLS por tenant). `tenants.plan_limits_override` é tenant-scoped (coberto pela RLS existente de `tenants`).
 - IDs: UUID v7 via `uuidv7()` — nunca `@default(uuid())`.
-- Cache namespace: `cache:plan-limits:{tenantId}` — write-through (SET, não só DEL).
+- Cache namespace: `cache:plan-limits:{tenantId}` — write-through via `SET` (nunca `DEL`); pipeline Redis ao atualizar todos os tenants de um plano.
+- Enterprise JSONB armazena `null` para campos sem cap; `getLimits()` mapeia `null → Infinity` antes de retornar (contrato de paridade com 3-3). Tipo de retorno: `number` (Infinity é number TS válido).
+- Dois schemas Zod distintos: `PlanLimitsOverrideSchema` (persistência/leitura) e `PlanLimitsOverrideInputSchema` (validação do PATCH body). Ver C1 acima.
 - Triplo fallback: Redis → DB → `PLAN_LIMITS_FALLBACK` (nunca 500).
 - Contagem de recursos: direta no DB via `withTenantTx` (sem Redis INCR).
-- Override: `null` no campo = usar default do plano. Override inválido (negativo, não-numérico) = 422.
+- Override: `null` no campo = usar default do plano. Override inválido (negativo, não-numérico) = 422. `{}` = zera override (plan_limits_override=null).
 - `AUDIT_ACTIONS` extensível: adicionar `'plan_limits_override'` ao array + regenerar snapshot.
 - Seed: `apps/api/prisma/seeds/subscription-plans-seed.ts` + guard CLI `if (process.argv[1]?.includes('subscription-plans-seed')) void main()`.
 - DI: `PlanLimitsModule` precisa importar `RedisModule` (para cache) + exportar `PlanLimitsService`.
