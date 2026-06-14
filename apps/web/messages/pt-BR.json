@@ -1054,8 +1054,12 @@
       "mfaRequired": "Confirme o código MFA para continuar."
     },
     "plan": {
-      "limitReached": "Limite do plano atingido ({current}/{limit} {resource}). Fale com o administrador para upgrade.",
-      "limitReachedGeneric": "Você atingiu o limite do seu plano. Fale com o administrador para upgrade."
+      "limit": {
+        "groups": "Você alcançou o limite de comunidades de cuidado do seu plano ({current}/{limit}). Fale com o administrador para ampliar o plano.",
+        "membersPerGroup": "Esta comunidade de cuidado já reúne o máximo de participantes do grupo ({current}/{limit}) permitido no plano. Fale com o administrador para ampliar o plano.",
+        "leadersPerTenant": "Você alcançou o limite de pastores/líderes ativos do seu plano ({current}/{limit}). Fale com o administrador para ampliar o plano."
+      },
+      "limitGeneric": "Você alcançou um limite do seu plano. Fale com o administrador para ampliar o plano."
     },
     "notFound": {
       "generic": "Recurso não encontrado. Verifique o endereço ou volte ao início.",

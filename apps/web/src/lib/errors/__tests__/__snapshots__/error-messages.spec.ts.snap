@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RESOURCE_TO_KEY pastoral mapping (snapshot) > resource groups → distinct PT-BR pastoral message 1`] = `"Você alcançou o limite de comunidades de cuidado do seu plano (2/5). Fale com o administrador para ampliar o plano."`;
+
+exports[`RESOURCE_TO_KEY pastoral mapping (snapshot) > resource leadersPerTenant → distinct PT-BR pastoral message 1`] = `"Você alcançou o limite de pastores/líderes ativos do seu plano (2/5). Fale com o administrador para ampliar o plano."`;
+
+exports[`RESOURCE_TO_KEY pastoral mapping (snapshot) > resource membersPerGroup → distinct PT-BR pastoral message 1`] = `"Esta comunidade de cuidado já reúne o máximo de participantes do grupo (2/5) permitido no plano. Fale com o administrador para ampliar o plano."`;
