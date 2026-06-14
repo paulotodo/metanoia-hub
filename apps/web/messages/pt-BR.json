@@ -1433,5 +1433,20 @@
       "download": "Baixar relatório",
       "processing": "Importação em andamento…"
     }
+  },
+  "settings": {
+    "branding": {
+      "title": "Identidade Visual da Igreja",
+      "logoLabel": "Logo da Igreja",
+      "logoHint": "Formatos aceitos: PNG, JPG, SVG. Tamanho máximo: 2 MB. Dimensões: 64×64 a 512×512 pixels.",
+      "primaryColorLabel": "Cor Principal",
+      "secondaryColorLabel": "Cor Secundária",
+      "displayNameLabel": "Nome de Exibição",
+      "saveButton": "Salvar Identidade Visual",
+      "contrastWarning": "A cor escolhida pode ter baixo contraste em fundos claros. Considere usar uma cor mais escura para melhor legibilidade.",
+      "upgradePlan": "Personalize logo e cores com os planos Pro ou Enterprise. Entre em contato para fazer upgrade.",
+      "saveSuccess": "Identidade visual da igreja atualizada com sucesso.",
+      "saveError": "Não foi possível salvar. Verifique sua conexão e tente novamente."
+    }
   }
 }
