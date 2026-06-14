@@ -1447,6 +1447,37 @@
       "upgradePlan": "Personalize logo e cores com os planos Pro ou Enterprise. Entre em contato para fazer upgrade.",
       "saveSuccess": "Identidade visual da igreja atualizada com sucesso.",
       "saveError": "Não foi possível salvar. Verifique sua conexão e tente novamente."
+    },
+    "policies": {
+      "title": "Políticas da Comunidade",
+      "description": "Configure como a sua comunidade participa dos encontros e trilhas de discipulado.",
+      "toggles": {
+        "focusMonitoring": {
+          "label": "Indicador de Foco",
+          "description": "Registra sinais de atenção durante os encontros para apoiar o acompanhamento pastoral. Os participantes são informados quando ativado."
+        },
+        "mandatoryCamera": {
+          "label": "Câmera Obrigatória",
+          "description": "Requer que os participantes ativem a câmera ao ingressar nos encontros online. Líderes podem conceder exceções."
+        },
+        "sequentialTrailAccess": {
+          "label": "Acesso Sequencial às Trilhas",
+          "description": "Os participantes devem concluir cada aula antes de acessar a próxima. Estimula a progressão ordenada no discipulado."
+        },
+        "autoPresenceTracking": {
+          "label": "Registro Automático de Presença",
+          "description": "A presença nos encontros é registrada automaticamente com base no tempo de participação. Facilita o acompanhamento pastoral sem esforço manual."
+        },
+        "expressMode": {
+          "label": "Modo Express",
+          "description": "Permite que participantes concluam trilhas com leituras resumidas e avaliações simplificadas. Ideal para períodos de alta demanda."
+        }
+      },
+      "requiresPlan": "Disponível no plano {planName}",
+      "privacyWarning": "Esta funcionalidade envolve o monitoramento de dados de comportamento dos participantes durante os encontros. Certifique-se de que os participantes foram informados conforme a LGPD antes de ativar.",
+      "upgradePrompt": "Para usar esta funcionalidade, faça upgrade para o plano Pro.",
+      "saveSuccess": "Políticas da comunidade atualizadas com sucesso.",
+      "saveError": "Não foi possível salvar as políticas. Verifique sua conexão e tente novamente."
     }
   }
 }

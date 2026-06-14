@@ -33,6 +33,7 @@ export const AUDIT_ACTIONS = [
   'export',
   'import',
   'plan_limits_override',
+  'policy_change',
 ] as const;
 
 /**
