@@ -1405,7 +1405,8 @@
       "emailMissing": "E-mail obrigatório não informado",
       "nameTooShort": "Nome deve ter pelo menos 2 caracteres",
       "columnMissing": "Coluna obrigatória ausente: {{column}}",
-      "roleInvalid": "Papel não reconhecido — será tratado como \"participante\""
+      "roleInvalid": "Papel não reconhecido — será tratado como \"participante\"",
+      "planLimit": "Limite do plano atingido. Seu plano permite {{limit}} membros por grupo e o grupo já tem {{current}}."
     },
     "warning": {
       "duplicate": "Este e-mail já é membro da comunidade",
@@ -1419,6 +1420,18 @@
       "empty": "Nenhum participante encontrado no arquivo.",
       "proceed": "Avançar para confirmação",
       "blockedByCritical": "Corrija os erros críticos antes de continuar"
+    },
+    "confirm": {
+      "button": "Confirmar Importação",
+      "disabled": "Não há participantes válidos para importar."
+    },
+    "result": {
+      "imported": "Importados",
+      "existing": "Já existentes",
+      "invited": "Convites enviados",
+      "failed": "Falhas",
+      "download": "Baixar relatório",
+      "processing": "Importação em andamento…"
     }
   }
 }
