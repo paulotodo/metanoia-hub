@@ -17,7 +17,7 @@
 
 import { INestApplication, ExecutionContext } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import * as request from 'supertest';
+import request from 'supertest';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { AppModule } from '../../src/app.module';
