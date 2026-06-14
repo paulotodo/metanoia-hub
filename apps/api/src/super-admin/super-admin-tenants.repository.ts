@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 /**
@@ -144,6 +144,25 @@ export class SuperAdminTenantsRepository {
     return this.prisma.client.tenant.update({
       where: { id },
       data: { provisioningState: state },
+    });
+  }
+
+  /**
+   * Sets or clears plan_limits_override for a tenant.
+   * null = clear all overrides (US5 AC#3).
+   * Story 11-1 / US5.
+   */
+  async updatePlanLimitsOverride(
+    id: string,
+    override: Record<string, number | undefined> | null,
+  ) {
+    return this.prisma.client.tenant.update({
+      where: { id },
+      data: {
+        planLimitsOverride: override === null
+          ? Prisma.JsonNull
+          : (override as Prisma.InputJsonValue),
+      },
     });
   }
 
