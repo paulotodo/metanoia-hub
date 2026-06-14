@@ -13,6 +13,7 @@ import { OnboardingWizardService } from './onboarding-wizard.service';
 import { CsvImportService } from './csv-import.service';
 import { CsvImportController, CsvImportJobController } from './csv-import.controller';
 import { CsvImportProcessor } from './csv-import.processor';
+import { CsvImportRateLimitGuard } from './csv-import-rate-limit.guard';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { CsvImportProcessor } from './csv-import.processor';
     AuditModule,
   ],
   controllers: [OnboardingController, CsvImportController, CsvImportJobController],
-  providers: [DemoDataService, OnboardingWizardService, CsvImportService, CsvImportProcessor],
+  providers: [DemoDataService, OnboardingWizardService, CsvImportService, CsvImportProcessor, CsvImportRateLimitGuard],
   exports: [DemoDataService, OnboardingWizardService],
 })
 export class OnboardingModule {}

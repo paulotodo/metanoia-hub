@@ -33,6 +33,7 @@ import { getRequestContext } from '../common/context/request-context';
 import { PrismaService } from '../prisma/prisma.service';
 import { withTenantTx } from '../prisma/with-tenant-tx';
 import { CsvImportService } from './csv-import.service';
+import { CsvImportRateLimitGuard } from './csv-import-rate-limit.guard';
 
 @Controller('api/v1/groups/:groupId/members')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
@@ -50,6 +51,7 @@ export class CsvImportController {
    * Async (>100 rows) → 202 + { jobId, message }
    */
   @Post('import')
+  @UseGuards(CsvImportRateLimitGuard)
   @ApiOperation({ summary: 'Import CSV members into a group' })
   async importMembers(
     @Param('groupId', ParseUUIDPipe) groupId: string,
