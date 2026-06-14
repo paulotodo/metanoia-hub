@@ -1386,5 +1386,39 @@
       "saveFailed": "Não foi possível salvar as alterações. Tente novamente.",
       "skipFailed": "Não foi possível registrar o pulo. Tente novamente."
     }
+  },
+  "import": {
+    "dropzone": {
+      "idle": "Arraste um arquivo CSV ou XLSX aqui, ou clique para selecionar",
+      "dragover": "Solte o arquivo aqui",
+      "accepted": "Arquivo aceito",
+      "errorSize": "Arquivo muito grande. O limite é 5 MB.",
+      "errorType": "Formato não suportado. Use .csv ou .xlsx.",
+      "parsing": "Processando arquivo…"
+    },
+    "template": {
+      "downloadLabel": "Baixar modelo de importação",
+      "filename": "template-importacao-participantes.csv"
+    },
+    "error": {
+      "emailInvalid": "E-mail inválido",
+      "emailMissing": "E-mail obrigatório não informado",
+      "nameTooShort": "Nome deve ter pelo menos 2 caracteres",
+      "columnMissing": "Coluna obrigatória ausente: {{column}}",
+      "roleInvalid": "Papel não reconhecido — será tratado como \"participante\""
+    },
+    "warning": {
+      "duplicate": "Este e-mail já é membro da comunidade",
+      "multipleSheets": "O arquivo XLSX tem mais de uma aba. Apenas a primeira aba foi importada.",
+      "apiUnavailable": "Não foi possível verificar duplicatas agora. Continue mesmo assim se preferir.",
+      "partialCheck": "Alguns e-mails não puderam ser verificados. O resultado pode estar incompleto."
+    },
+    "preview": {
+      "summary": "{{total}} participantes lidos — {{ok}} válidos, {{critical}} críticos, {{warning}} avisos",
+      "showing": "Mostrando {{shown}} de {{total}} linhas",
+      "empty": "Nenhum participante encontrado no arquivo.",
+      "proceed": "Avançar para confirmação",
+      "blockedByCritical": "Corrija os erros críticos antes de continuar"
+    }
   }
 }

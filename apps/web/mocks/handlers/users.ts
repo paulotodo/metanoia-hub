@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw';
+import { checkEmailsResponseSchema } from '@metanoia/types';
 
 const MOCK_USER_ID = '01912345-6789-7000-8000-0000000000a1';
 
@@ -57,4 +58,29 @@ export const usersHandlers = [
       },
     }),
   ),
+
+  // GET /api/v1/users/check-emails — Story 10-3 (CSV import preview)
+  // Returns existence check per email. Shape validated via checkEmailsResponseSchema.
+  http.get('*/api/v1/users/check-emails', ({ request }) => {
+    const url = new URL(request.url);
+    const emailsParam = url.searchParams.get('emails') ?? '';
+    const emails = emailsParam
+      .split(',')
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+
+    // Default mock: no email is a pre-existing member (all exists: false).
+    // Override with server.use() in tests that need specific scenarios.
+    const results = emails.map((email) => ({ email, exists: false }));
+
+    const payload = {
+      data: { results },
+      meta: { checkedCount: results.length, tenantScoped: true as const },
+    };
+
+    // Runtime shape assertion — ensures mock stays in sync with schema
+    checkEmailsResponseSchema.parse(payload);
+
+    return HttpResponse.json(payload);
+  }),
 ];

@@ -5,6 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { withTenantTx } from '../prisma/with-tenant-tx';
 import { getRequestContext } from '../common/context/request-context';
 
+export interface EmailCheckResult {
+  email: string;
+  exists: boolean;
+}
+
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
@@ -201,6 +206,59 @@ export class UsersService {
         roleTitle: user.roleTitle ?? null,
       },
     };
+  }
+
+  /**
+   * Check which emails from the provided list already exist within the current tenant.
+   *
+   * Tenant-scope: uses withTenantTx so the RLS policy on user_tenants confines
+   * the lookup to the active tenant from AsyncLocalStorage. No cross-tenant leakage.
+   *
+   * Conflict API-10-C1 resolved: findMany does NOT preserve input order in Postgres.
+   * We build a Set from DB results and re-map in input order.
+   *
+   * PII log policy (RQ-06-G1): only { checkedCount, tenantId } are logged — never
+   * the email list itself.
+   *
+   * @param emails Normalised (lowercase, trimmed) email list; ≤ 500 items.
+   */
+  async checkEmailsInTenant(emails: string[]): Promise<EmailCheckResult[]> {
+    const { tenantId } = getRequestContext();
+
+    // RLS-aware query: withTenantTx sets the tenant context so that RLS policies
+    // on user_tenants restrict which users are visible to this tenant.
+    // We query users whose email is in the list AND who are members of this tenant.
+    const dbRows = await withTenantTx(this.prisma, (tx) =>
+      tx.user.findMany({
+        where: {
+          email: { in: emails },
+          userTenants: {
+            some: {
+              deletedAt: null,
+              // tenantId is injected by the Prisma RLS extension — no explicit filter needed
+            },
+          },
+        },
+        select: { email: true },
+      }),
+    );
+
+    // Build Set for O(1) lookup — resolves API-10-C1 (DB does not preserve order)
+    const found = new Set(dbRows.map((u) => u.email));
+
+    // Preserve input order
+    const results: EmailCheckResult[] = emails.map((email) => ({
+      email,
+      exists: found.has(email),
+    }));
+
+    // Log count only — PII policy (RQ-06-G1): never log the email list
+    this.logger.log(
+      { checkedCount: emails.length, tenantId, foundCount: found.size },
+      'checkEmailsInTenant completed',
+    );
+
+    return results;
   }
 
   /**

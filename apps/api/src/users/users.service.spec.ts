@@ -212,3 +212,94 @@ describe('UsersService.updateProfile', () => {
     ).rejects.toThrow('updateProfile requires userId');
   });
 });
+
+// ─── UsersService.checkEmailsInTenant ────────────────────────────────────────
+
+describe('UsersService.checkEmailsInTenant', () => {
+  const mockFindMany = vi.fn();
+
+  // Mock withTenantTx to execute the callback with a mock tx
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    vi.spyOn(withTenantTxModule, 'withTenantTx').mockImplementation(
+      async (_prisma, fn) =>
+        fn({
+          user: { findMany: mockFindMany },
+        } as unknown as Parameters<typeof fn>[0]),
+    );
+  });
+
+  function makePrisma() {
+    return { client: { user: { findMany: mockFindMany } } };
+  }
+
+  it('returns exists:true for emails found in tenant, exists:false otherwise', async () => {
+    mockFindMany.mockResolvedValue([{ email: 'joao@igreja.org' }]);
+
+    const service = new UsersService(makePrisma() as never);
+    const result = await withCtx(USER_ID, () =>
+      service.checkEmailsInTenant(['joao@igreja.org', 'maria@igreja.org']),
+    );
+
+    expect(result).toEqual([
+      { email: 'joao@igreja.org', exists: true },
+      { email: 'maria@igreja.org', exists: false },
+    ]);
+  });
+
+  it('preserves INPUT ORDER even when DB returns in different order (API-10-C1)', async () => {
+    // DB returns 'a@x.com' first even though input has 'b@x.com' first
+    mockFindMany.mockResolvedValue([
+      { email: 'a@x.com' },
+      { email: 'b@x.com' },
+    ]);
+
+    const service = new UsersService(makePrisma() as never);
+    const result = await withCtx(USER_ID, () =>
+      service.checkEmailsInTenant(['b@x.com', 'a@x.com']),
+    );
+
+    // Must respect input order: b first, then a
+    expect(result[0]).toEqual({ email: 'b@x.com', exists: true });
+    expect(result[1]).toEqual({ email: 'a@x.com', exists: true });
+  });
+
+  it('returns all exists:false when DB returns no rows', async () => {
+    mockFindMany.mockResolvedValue([]);
+
+    const service = new UsersService(makePrisma() as never);
+    const result = await withCtx(USER_ID, () =>
+      service.checkEmailsInTenant(['unknown@x.com']),
+    );
+
+    expect(result).toEqual([{ email: 'unknown@x.com', exists: false }]);
+  });
+
+  it('does NOT log the email list — only counts (PII policy RQ-06-G1)', async () => {
+    mockFindMany.mockResolvedValue([]);
+
+    const service = new UsersService(makePrisma() as never);
+    const logSpy = vi.spyOn((service as unknown as { logger: { log: (...args: unknown[]) => void } }).logger, 'log');
+
+    await withCtx(USER_ID, () =>
+      service.checkEmailsInTenant(['secret@example.com']),
+    );
+
+    // logger.log was called, but the email list must NOT appear in any argument
+    for (const call of logSpy.mock.calls) {
+      const callStr = JSON.stringify(call);
+      expect(callStr).not.toContain('secret@example.com');
+    }
+  });
+
+  it('handles empty list gracefully (returns empty array)', async () => {
+    mockFindMany.mockResolvedValue([]);
+
+    const service = new UsersService(makePrisma() as never);
+    const result = await withCtx(USER_ID, () =>
+      service.checkEmailsInTenant([]),
+    );
+
+    expect(result).toEqual([]);
+  });
+});
