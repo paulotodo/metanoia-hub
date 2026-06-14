@@ -37,6 +37,7 @@ describe('Audit constants snapshot', () => {
           "auth_failure",
           "config_change",
           "export",
+          "import",
         ],
         "AUDIT_EVENTS_PAGE_SIZE": 50,
         "AUDIT_EXPORT_QUEUE_NAME": "audit-export",

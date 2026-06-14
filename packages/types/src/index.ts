@@ -448,6 +448,28 @@ export {
   UpdateUserProfileResponseSchema,
   type UpdateUserProfileResponse,
 } from './onboarding';
+// Story 10-3 — CSV Preview (exported via onboarding barrel above)
+// Story 10-4 — CSV Process
+export {
+  IMPORT_SYNC_THRESHOLD,
+  IMPORT_MAX_ROWS,
+  CSV_IMPORT_QUEUE_NAME,
+  CSV_IMPORT_JOB_TTL_SECONDS,
+  ImportRowInputSchema,
+  type ImportRowInput,
+  ImportRequestSchema,
+  type ImportRequest,
+  importActionSchema,
+  type ImportAction,
+  ImportResultLineSchema,
+  type ImportResultLine,
+  ImportResultSummarySchema,
+  type ImportResultSummary,
+  importJobStatusSchema,
+  type ImportJobStatusEnum,
+  ImportJobStatusSchema,
+  type ImportJobStatus,
+} from './onboarding/csv-import-result';
 export {
   UserStatusSchema,
   type UserStatus,

@@ -31,6 +31,7 @@ export const AUDIT_ACTIONS = [
   'auth_failure',
   'config_change',
   'export',
+  'import',
 ] as const;
 
 /**
