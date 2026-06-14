@@ -20,4 +20,4 @@ CREATE TABLE "tenant_policies" (
 ALTER TABLE "tenant_policies" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "tenant_policies_isolation" ON "tenant_policies"
-  USING (tenant_id = (current_setting('app.current_tenant_id', true))::uuid);
+  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);
