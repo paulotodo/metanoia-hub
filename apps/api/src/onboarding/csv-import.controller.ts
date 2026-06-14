@@ -65,8 +65,11 @@ export class CsvImportController {
     // Validate group belongs to tenant
     await this.requireGroupInTenant(groupId, tenantId);
 
-    const { rows, defaultGroupId } = body;
-    const effectiveGroupId = defaultGroupId;
+    const { rows } = body;
+    // Use the validated path param groupId as the authoritative source (plan.md §2.1).
+    // body.defaultGroupId is accepted for schema compatibility but ignored — the path
+    // param is already tenant-validated by requireGroupInTenant above.
+    const effectiveGroupId = groupId;
 
     // Enforce plan limit before processing (FR04 — full reject if exceeded)
     await this.csvImportService.enforcePlanLimit(effectiveGroupId, rows.length);
