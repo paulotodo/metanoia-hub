@@ -23,7 +23,5 @@ ALTER TABLE tenants
 -- Permite WHERE plan = $1 eficiente ao invalidar cache após edição de SubscriptionPlan
 CREATE INDEX idx_tenants_plan ON tenants(plan);
 
--- Trigger updated_at (padrão do projeto)
-CREATE TRIGGER set_subscription_plans_updated_at
-  BEFORE UPDATE ON subscription_plans
-  FOR EACH ROW EXECUTE FUNCTION trigger_set_timestamp();
+-- updated_at é gerenciado pela camada de aplicação (Prisma @updatedAt),
+-- padrão real do projeto — não há trigger de DB. O DEFAULT NOW() cobre o INSERT.
