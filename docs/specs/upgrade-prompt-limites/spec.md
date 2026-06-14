@@ -1,7 +1,7 @@
 # Spec: Melhoria das Mensagens de Limite de Plano
 
 **Feature**: upgrade-prompt-limites  
-**Status**: Draft  
+**Status**: Clarified  
 **Criado em**: 2026-06-14  
 **Gerado por**: pipeline feature-00c (specify)
 
@@ -48,7 +48,7 @@ Quando um tenant atinge o limite de recursos do seu plano (grupos, membros por g
 
 **Acceptance Criteria:**
 - Mensagem diferencia "capacidade do grupo" de "limite da conta"
-- Sugere dividir o grupo ou fazer upgrade para aumentar a capacidade por grupo
+- Sugere falar com o administrador para upgrade de plano (a funcionalidade "dividir grupo" não existe no sistema e não faz parte do escopo desta feature)
 - Valores atual/máximo visíveis
 
 ### P3 — Admin vê mensagem ao atingir limite de líderes por tenant
@@ -89,7 +89,7 @@ Quando um tenant atinge o limite de recursos do seu plano (grupos, membros por g
 
 **FR-005** — O sistema DEVE garantir que nenhum placeholder não-interpolado (`{current}`, `{limit}`, `{resource}`) seja exibido ao usuário, caindo no fallback genérico quando detalhes estiverem ausentes.
 
-**FR-006** — A mensagem interna do backend (campo `message` no JSON de erro) PODE permanecer em inglês (é dado técnico de log/debug), mas os `details` retornados DEVEM conter chaves estruturadas suficientes para o frontend interpolar a mensagem localizada correta.
+**FR-006** — A mensagem interna do backend (campo `message` no JSON de erro) DEVE permanecer em inglês (é dado técnico de log/debug — conforme constitution §III e regra de linguagem do projeto: código, logs e comentários em inglês), mas os `details` retornados DEVEM conter chaves estruturadas suficientes para o frontend interpolar a mensagem localizada correta.
 
 **FR-007** — Os `details` do erro 403 de limite DEVEM incluir pelo menos: `{ resource, plan, current, limit }` onde `resource` é um dos valores canônicos: `groups`, `membersPerGroup`, `leadersPerTenant`.
 
@@ -125,10 +125,38 @@ Quando um tenant atinge o limite de recursos do seu plano (grupos, membros por g
 
 ## Clarifications
 
-> Nenhum `[NEEDS CLARIFICATION]` pendente — spec completa com base nos artefatos existentes.
+> Resolvido em pipeline feature-00c (clarify, onda-002, 2026-06-14). Todas as ambiguidades resolvidas autonomamente via asker/answerer (score ≥ 1 em todas as perguntas; nenhum bloqueio humano).
 
-### Decisões tomadas na spec
+### Decisões tomadas na clarify (dec-007 a dec-011)
 
-- **Vocabulário pastoral por recurso**: a spec define intenção (pastoral, acionável, por tipo) mas não prescreve o texto final — o `/plan` e o `/clarify` podem refinar os termos exatos conforme o briefing e o glossário pastoral do projeto.
-- **Backend message em inglês**: mantida pois é dado de log/debug, alinhado com a regra "código/log em inglês" da constitution. Apenas os `details` e a interpolação FE são user-facing.
+**Q1 — Termos pastorais canônicos por recurso (score 2, dec-007)**
+- `groups` → "comunidades de cuidado"
+- `membersPerGroup` → "participantes do grupo"
+- `leadersPerTenant` → "pastores/líderes ativos"
+
+Evidência: literais extraídos dos ACs de P1 e P3 na própria spec. Constitution III MUST vocabulário pastoral.
+
+**Q2 — Remover "dividir grupo" do AC de P2 (score 1, dec-008)**
+- A funcionalidade `splitGroup`/dividir-grupo **não existe** no código (`apps/api/src`, `apps/web/src` — busca confirmada).
+- AC de P2 corrigido: mensagem sugere falar com administrador para upgrade de plano.
+- Manter referência a funcionalidade inexistente criaria confusão de UX sem suporte técnico.
+
+**Q3 — Campo `message` do 403 DEVE permanecer em inglês (score 3, dec-009)**
+- FR-006 corrigido de "PODE" para "DEVE".
+- Três fontes convergem: briefing §7 ("código/log em inglês"), constitution §III (MUST), spec FR-006 ("dado técnico de log/debug").
+- Frontend interpola PT-BR pastoral exclusivamente a partir de `details.resource` — nunca exibe `message` ao usuário.
+
+**Q4 — Ação de upgrade: texto orientativo sem link (score 1, dec-010)**
+- Mensagens usam texto orientativo: "fale com o administrador para ampliar o plano" (sem link para /planos ou /configuracoes).
+- Rota `/planos` existe (PR #65, contexto marketing), mas misturar contexto marketing em erro autenticado aumenta blast radius sem ganho claro.
+- FR-004 aceita "contato para upgrade" como orientação suficiente.
+
+**Q5 — Escopo: apenas strings em pt-BR.json (score 2, dec-011)**
+- A feature cobre apenas `pt-BR.json` e `error-messages.ts`.
+- O mecanismo de exibição (toast) já existe e não é alterado.
+- Constitution §VII (PRs focados) e spec FR-010 (testes de interpolação) confirmam escopo cirúrgico.
+
+### Decisões mantidas da specify
+
+- **Backend message em inglês**: mantida e reforçada (ver Q3 acima).
 - **Nenhum novo endpoint**: a feature é puramente de melhoria de mensagens sobre infraestrutura existente (guard + pt-BR.json + error-messages.ts).
