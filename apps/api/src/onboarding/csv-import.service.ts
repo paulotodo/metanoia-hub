@@ -39,6 +39,22 @@ function sanitizeCsvCell(value: string): string {
   return value;
 }
 
+/**
+ * Build a fully RFC 4180 compliant CSV field that is also safe against CSV
+ * injection. First applies the anti-injection guard (sanitizeCsvCell), then —
+ * if the resulting value contains a delimiter (,), a quote ("), or a line break
+ * (\n / \r) — wraps it in double quotes and escapes inner quotes by doubling
+ * them. Without this, a nome/reason containing a comma or quote would break the
+ * report columns (FR07).
+ */
+function csvField(value: string): string {
+  const guarded = sanitizeCsvCell(value);
+  if (/[",\n\r]/.test(guarded)) {
+    return `"${guarded.replace(/"/g, '""')}"`;
+  }
+  return guarded;
+}
+
 @Injectable()
 export class CsvImportService implements OnModuleInit {
   private readonly logger = new Logger(CsvImportService.name);
@@ -90,6 +106,76 @@ export class CsvImportService implements OnModuleInit {
   }
 
   /**
+   * FR04 — enforce members-per-group plan limit PER DESTINATION GROUP before
+   * processing any rows. Each row may target a different group (row.grupo name
+   * resolves to a group; absent → defaultGroupId). Rows whose group name does
+   * not resolve are ignored (they become `failed` later, no member added).
+   *
+   * Conservative tally: counts every row projecting into a resolved group as a
+   * potential new member (aligned with the previous rows.length behaviour — we
+   * do not predict existing/invited). Rejects the ENTIRE import (no partial
+   * import, §10.4) if ANY destination group would exceed its limit, naming the
+   * offending group in a PT-BR actionable message.
+   */
+  async enforcePlanLimits(defaultGroupId: string, rows: ImportRowInput[]): Promise<void> {
+    const { tenantId } = getRequestContext();
+
+    // Tally projected new members per resolved destination groupId, keeping the
+    // group display name for the error message.
+    const tally = new Map<string, { name: string; count: number }>();
+
+    await withTenantTx(this.prisma, async (tx) => {
+      for (const row of rows) {
+        let groupId = defaultGroupId;
+        let groupName: string;
+
+        if (row.grupo) {
+          const group = await tx.group.findFirst({
+            where: { name: row.grupo, tenantId },
+            select: { id: true, name: true },
+          });
+          // Unresolved group name → ignored (will be `failed`, no member added).
+          if (!group) continue;
+          groupId = group.id;
+          groupName = group.name;
+        } else {
+          const group = await tx.group.findFirst({
+            where: { id: defaultGroupId, tenantId },
+            select: { id: true, name: true },
+          });
+          groupName = group?.name ?? defaultGroupId;
+        }
+
+        const entry = tally.get(groupId);
+        if (entry) {
+          entry.count += 1;
+        } else {
+          tally.set(groupId, { name: groupName, count: 1 });
+        }
+      }
+    });
+
+    // Apply the per-group limit. Reuses enforcePlanLimit's plan/limit logic but
+    // raises a group-named message instead of the generic one.
+    const plan = await this.planLimitsService.getPlan(tenantId);
+    const limit = getLimit(plan, 'membersPerGroup');
+    if (!Number.isFinite(limit)) return;
+
+    for (const [groupId, { name, count }] of tally) {
+      if (count === 0) continue;
+      const current = await this.groupMembersRepository.countByGroup(groupId);
+      if (current + count > limit) {
+        throw new ForbiddenException({
+          statusCode: 403,
+          error: 'PlanLimitReached',
+          message: `Limite do plano atingido para o grupo '${name}'. Seu plano permite ${limit} membros e o grupo já tem ${current} (${count} novos excederiam o limite).`,
+          details: { resource: 'membersPerGroup', groupId, current, limit },
+        });
+      }
+    }
+  }
+
+  /**
    * FR03 — process rows with 4-state machine per row:
    *   created   → user new to platform (created + added to group)
    *   existing  → user already in this tenant's group
@@ -99,6 +185,10 @@ export class CsvImportService implements OnModuleInit {
   async processRows(rows: ImportRowInput[], defaultGroupId: string): Promise<ImportResultSummary> {
     const { tenantId } = getRequestContext();
     const lines: ImportResultLine[] = [];
+    // FIX: invites must NOT be created inside the tx — adminInvitesService uses
+    // its own Prisma client (not tx), so on rollback the invite would persist
+    // (partial side-effect). Accumulate intents here and flush AFTER commit.
+    const pendingInvites: Array<{ inviteeEmail: string; inviteeName: string; groupId: string }> = [];
 
     await withTenantTx(this.prisma, async (tx) => {
       for (const row of rows) {
@@ -208,23 +298,13 @@ export class CsvImportService implements OnModuleInit {
           continue;
         }
 
-        // State 3: user exists but in another tenant — send invite
-        // Check idempotency: don't send duplicate invite for same email+group
-        try {
-          await this.adminInvitesService.create({
-            kind: 'group_member',
-            inviteeEmail: row.email.toLowerCase(),
-            inviteeName: row.nome,
-            groupId: resolvedGroupId,
-            expiresInDays: 30,
-          });
-        } catch (err) {
-          // ConflictException = invite already pending (idempotent)
-          const isConflict = (err as { status?: number }).status === 409;
-          if (!isConflict) {
-            this.logger.warn(`Invite creation failed for ${row.email}: ${(err as Error).message}`);
-          }
-        }
+        // State 3: user exists but in another tenant — queue invite for AFTER
+        // commit. Creating it here would persist outside the tx (see above).
+        pendingInvites.push({
+          inviteeEmail: row.email.toLowerCase(),
+          inviteeName: row.nome,
+          groupId: resolvedGroupId,
+        });
         lines.push({
           rowIndex: row.rowIndex,
           email: row.email,
@@ -234,6 +314,27 @@ export class CsvImportService implements OnModuleInit {
         });
       }
     });
+
+    // Flush invites only after the import transaction has committed, so a
+    // rollback never leaves orphan invites. Preserves idempotency: a pending
+    // duplicate invite (409 ConflictException) is silently ignored.
+    for (const invite of pendingInvites) {
+      try {
+        await this.adminInvitesService.create({
+          kind: 'group_member',
+          inviteeEmail: invite.inviteeEmail,
+          inviteeName: invite.inviteeName,
+          groupId: invite.groupId,
+          expiresInDays: 30,
+        });
+      } catch (err) {
+        // ConflictException = invite already pending (idempotent)
+        const isConflict = (err as { status?: number }).status === 409;
+        if (!isConflict) {
+          this.logger.warn(`Invite creation failed for ${invite.inviteeEmail}: ${(err as Error).message}`);
+        }
+      }
+    }
 
     const imported = lines.filter((l) => l.action === 'created').length;
     const existing = lines.filter((l) => l.action === 'existing').length;
@@ -263,10 +364,10 @@ export class CsvImportService implements OnModuleInit {
   ): Promise<string> {
     const header = 'nome,email,status,reason\n';
     const bodyRows = summary.lines.map((line) => {
-      const nome = sanitizeCsvCell(line.nome);
-      const email = sanitizeCsvCell(line.email);
-      const status = sanitizeCsvCell(line.action);
-      const reason = sanitizeCsvCell(line.reason ?? '');
+      const nome = csvField(line.nome);
+      const email = csvField(line.email);
+      const status = csvField(line.action);
+      const reason = csvField(line.reason ?? '');
       return `${nome},${email},${status},${reason}`;
     });
     const csv = header + bodyRows.join('\n');

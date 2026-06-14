@@ -71,8 +71,9 @@ export class CsvImportController {
     // param is already tenant-validated by requireGroupInTenant above.
     const effectiveGroupId = groupId;
 
-    // Enforce plan limit before processing (FR04 — full reject if exceeded)
-    await this.csvImportService.enforcePlanLimit(effectiveGroupId, rows.length);
+    // Enforce plan limit per destination group before processing
+    // (FR04 — full reject if any target group would exceed its limit)
+    await this.csvImportService.enforcePlanLimits(effectiveGroupId, rows);
 
     const ip = (req.headers['x-forwarded-for'] as string | undefined) ?? req.socket?.remoteAddress ?? '';
     const ua = req.headers['user-agent'] ?? '';
