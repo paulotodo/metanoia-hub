@@ -135,6 +135,7 @@ function makeJobStatus(
 function makeServiceMock() {
   return {
     enforcePlanLimit: vi.fn().mockResolvedValue(undefined),
+    enforcePlanLimits: vi.fn().mockResolvedValue(undefined),
     processRows: vi.fn().mockImplementation(() => Promise.resolve(makeSyncSummary())),
     generateReport: vi.fn().mockImplementation((_s: ImportResultSummary) => {
       _s.reportUrl = 'https://storage.example.com/report.csv';
@@ -374,12 +375,12 @@ describe('CsvImportController', () => {
 
   describe('PlanLimit', () => {
     it('throws ForbiddenException with error: PlanLimitReached when limit exceeded', async () => {
-      serviceMock.enforcePlanLimit.mockRejectedValue(
+      serviceMock.enforcePlanLimits.mockRejectedValue(
         new ForbiddenException({
           statusCode: 403,
           error: 'PlanLimitReached',
-          message: 'Limite do plano atingido.',
-          details: { resource: 'membersPerGroup', plan: 'free', current: 50, limit: 50 },
+          message: "Limite do plano atingido para o grupo 'Grupo Teste'.",
+          details: { resource: 'membersPerGroup', groupId: GROUP_ID, current: 50, limit: 50 },
         }),
       );
 
