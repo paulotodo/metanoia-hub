@@ -179,7 +179,7 @@ development_status:
   # Sprint 16: 11-1, 11-2, 11-3, 11-4
   epic-11: in-progress
   11-1-planos-de-assinatura-limites-dinamicos: done
-  11-2-branding-customizado-do-tenant: ready-for-dev
+  11-2-branding-customizado-do-tenant: done
   11-3-politicas-feature-toggles-por-tenant: ready-for-dev
   11-4-prompt-de-upgrade-gestao-de-limites: ready-for-dev
   epic-11-retrospective: optional
