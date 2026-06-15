@@ -28,6 +28,13 @@ COPY packages/config packages/config
 COPY apps/web apps/web
 COPY turbo.json package.json pnpm-workspace.yaml ./
 
+# Build-time public env (inlined into the Next bundle). Values come from
+# build.args in docker-compose.prod.yml; safe defaults keep local builds working.
+ARG NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+ARG NEXT_PUBLIC_API_MOCKING=disabled
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_MOCKING=$NEXT_PUBLIC_API_MOCKING
+
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm turbo build --filter=@metanoia/web
 
