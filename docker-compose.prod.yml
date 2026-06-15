@@ -9,6 +9,13 @@
 #     dedicada (8090-8099 + 7880) — evita 5432/6379/80/443/9000/3000 já em uso.
 #   - Rede e volumes próprios, prefixados pelo project name (-p metanoia-prod).
 #
+# Acesso externo por domínio (HTTPS): os serviços web/api/keycloak/minio/livekit
+# também entram na rede overlay externa `metanoia-edge`, à qual o Traefik do Swarm
+# está anexado. As labels traefik.* abaixo geram as rotas + TLS (Let's Encrypt).
+# A rede `metanoia-edge` precisa existir e estar no serviço Traefik:
+#   docker network create -d overlay --attachable metanoia-edge
+#   docker service update --network-add metanoia-edge traefik_traefik
+#
 # Uso:
 #   cp .env.production.example .env.production   # e preencha os segredos
 #   docker compose -p metanoia-prod --env-file .env.production \
@@ -59,7 +66,6 @@ services:
     container_name: metanoia-prod-keycloak
     restart: unless-stopped
     # Modo produção (NÃO start-dev). Atrás de reverse proxy use KC_PROXY_HEADERS.
-    # Sem TLS direto: HTTP habilitado + hostname-strict desligado (deploy por IP).
     # Sem --optimized: a imagem stock não foi pré-buildada para postgres, então o
     # Keycloak precisa rodar o build automático no start (lê KC_DB=postgres). Com
     # --optimized ele usaria o build default (H2) e falharia com a URL postgres.
@@ -73,8 +79,8 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?set KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD}
       KEYCLOAK_API_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET:?set KEYCLOAK_API_CLIENT_SECRET}
-      # Hostname público do Keycloak (IP:porta ou domínio). DEVE bater com o
-      # issuer dos tokens que a API valida.
+      # Hostname público do Keycloak (domínio HTTPS). DEVE bater com o issuer dos
+      # tokens que a API valida. TLS termina no Traefik (KC_PROXY_HEADERS).
       KC_HOSTNAME: ${KEYCLOAK_PUBLIC_URL:?set KEYCLOAK_PUBLIC_URL}
       KC_HOSTNAME_STRICT: 'false'
       KC_HTTP_ENABLED: 'true'
@@ -86,9 +92,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    networks: [metanoia-net]
+    networks: [metanoia-net, metanoia-edge]
     ports:
       - '${KEYCLOAK_HOST_PORT:-8092}:8080'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=metanoia-edge'
+      - 'traefik.http.routers.metanoia-keycloak.rule=Host(`auth.metanoia-hub.todo-tips.com`)'
+      - 'traefik.http.routers.metanoia-keycloak.entrypoints=web,websecure'
+      - 'traefik.http.routers.metanoia-keycloak.tls.certresolver=letsencryptresolver'
+      - 'traefik.http.services.metanoia-keycloak.loadbalancer.server.port=8080'
     healthcheck:
       test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/8080 && echo -e "GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q 200']
       interval: 10s
@@ -104,13 +117,30 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?set MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?set MINIO_SECRET_KEY}
+      # URL pública do console (usada em redirects). Bate com a rota Traefik.
+      MINIO_BROWSER_REDIRECT_URL: https://console-storage.metanoia-hub.todo-tips.com
     volumes:
       - minio-data:/data
-    networks: [metanoia-net]
+    networks: [metanoia-net, metanoia-edge]
     ports:
       # API S3 exposta para servir objetos públicos (bucket /public). Console p/ admin.
       - '${MINIO_API_HOST_PORT:-8094}:9000'
       - '${MINIO_CONSOLE_HOST_PORT:-8093}:9001'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=metanoia-edge'
+      # S3 API (objetos / URLs pré-assinadas)
+      - 'traefik.http.routers.metanoia-storage.rule=Host(`storage.metanoia-hub.todo-tips.com`)'
+      - 'traefik.http.routers.metanoia-storage.entrypoints=web,websecure'
+      - 'traefik.http.routers.metanoia-storage.tls.certresolver=letsencryptresolver'
+      - 'traefik.http.routers.metanoia-storage.service=metanoia-storage'
+      - 'traefik.http.services.metanoia-storage.loadbalancer.server.port=9000'
+      # Console de administração
+      - 'traefik.http.routers.metanoia-console.rule=Host(`console-storage.metanoia-hub.todo-tips.com`)'
+      - 'traefik.http.routers.metanoia-console.entrypoints=web,websecure'
+      - 'traefik.http.routers.metanoia-console.tls.certresolver=letsencryptresolver'
+      - 'traefik.http.routers.metanoia-console.service=metanoia-console'
+      - 'traefik.http.services.metanoia-console.loadbalancer.server.port=9001'
     healthcheck:
       test: ['CMD-SHELL', 'mc ready local || exit 1']
       interval: 10s
@@ -144,12 +174,21 @@ services:
     restart: unless-stopped
     # ATENÇÃO: '--dev' é só para validação. Para produção real, troque por um
     # config file (--config /etc/livekit.yaml) com keys, redis e faixa UDP/TURN.
+    # A rota Traefik abaixo cobre só a SINALIZAÇÃO (WebSocket). A mídia WebRTC usa
+    # UDP e exige faixa de portas/TURN — não resolvida por DNS/Traefik.
     command: ['--dev', '--bind', '0.0.0.0']
     environment:
       LIVEKIT_KEYS: '${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET}'
-    networks: [metanoia-net]
+    networks: [metanoia-net, metanoia-edge]
     ports:
       - '${LIVEKIT_HOST_PORT:-7880}:7880'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=metanoia-edge'
+      - 'traefik.http.routers.metanoia-video.rule=Host(`video.metanoia-hub.todo-tips.com`)'
+      - 'traefik.http.routers.metanoia-video.entrypoints=web,websecure'
+      - 'traefik.http.routers.metanoia-video.tls.certresolver=letsencryptresolver'
+      - 'traefik.http.services.metanoia-video.loadbalancer.server.port=7880'
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider http://localhost:7880 || exit 1']
       interval: 10s
@@ -206,6 +245,8 @@ services:
       KEYCLOAK_API_CLIENT_ID: ${KEYCLOAK_API_CLIENT_ID:-metanoia-api}
       KEYCLOAK_API_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET}
       KEYCLOAK_EXPECTED_AUDIENCE: ${KEYCLOAK_EXPECTED_AUDIENCE:-metanoia-api}
+      # URL pública do frontend (CORS + links em e-mails)
+      FRONTEND_URL: ${FRONTEND_URL:-https://app.metanoia-hub.todo-tips.com}
       # MinIO interno (a API fala com o S3 pela rede do compose)
       MINIO_ENDPOINT: http://minio:9000
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
@@ -227,9 +268,16 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-    networks: [metanoia-net]
+    networks: [metanoia-net, metanoia-edge]
     ports:
       - '${API_HOST_PORT:-8091}:3001'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=metanoia-edge'
+      - 'traefik.http.routers.metanoia-api.rule=Host(`api.metanoia-hub.todo-tips.com`)'
+      - 'traefik.http.routers.metanoia-api.entrypoints=web,websecure'
+      - 'traefik.http.routers.metanoia-api.tls.certresolver=letsencryptresolver'
+      - 'traefik.http.services.metanoia-api.loadbalancer.server.port=3001'
 
   web:
     build:
@@ -253,14 +301,26 @@ services:
       NEXT_PUBLIC_API_MOCKING: 'disabled'
     depends_on:
       - api
-    networks: [metanoia-net]
+    networks: [metanoia-net, metanoia-edge]
     ports:
       - '${WEB_HOST_PORT:-8090}:3000'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=metanoia-edge'
+      - 'traefik.http.routers.metanoia-web.rule=Host(`app.metanoia-hub.todo-tips.com`)'
+      - 'traefik.http.routers.metanoia-web.entrypoints=web,websecure'
+      - 'traefik.http.routers.metanoia-web.tls.certresolver=letsencryptresolver'
+      - 'traefik.http.services.metanoia-web.loadbalancer.server.port=3000'
 
 networks:
   metanoia-net:
     name: metanoia-prod-net
     driver: bridge
+  # Rede overlay externa compartilhada com o Traefik do Swarm (criada à parte:
+  # docker network create -d overlay --attachable metanoia-edge).
+  metanoia-edge:
+    name: metanoia-edge
+    external: true
 
 volumes:
   postgres-data:
@@ -276,7 +336,8 @@ volumes:
 # 1. PORTAS expostas no host (faixa dedicada, sem conflito com o Swarm):
 #      web      -> 8090   api      -> 8091   keycloak     -> 8092
 #      minio    -> 8094   console  -> 8093   livekit      -> 7880
-#    Postgres/Redis ficam SÓ na rede interna (sem porta no host).
+#    Postgres/Redis ficam SÓ na rede interna (sem porta no host). Com o Traefik
+#    roteando por domínio (HTTPS), essas portas viram fallback de debug.
 #
 # 2. SEGREDOS: nunca commitar .env.production. Gere senhas fortes para
 #    POSTGRES_PASSWORD, KEYCLOAK_ADMIN_PASSWORD, KEYCLOAK_API_CLIENT_SECRET,
@@ -284,9 +345,8 @@ volumes:
 #    deve casar com o configurado no realm/cliente do Keycloak.
 #
 # 3. NEXT_PUBLIC_API_URL é build-time no Next. Aponte para a URL PÚBLICA da API
-#    (ex.: http://178.156.254.243:8091/api/v1) e ajuste o Dockerfile do web para
-#    consumir o ARG (ver comentário no serviço web), senão o cliente usará o
-#    default embutido na imagem.
+#    (ex.: https://api.metanoia-hub.todo-tips.com/api/v1). Trocar o valor exige
+#    REBUILD da imagem web (não basta recriar o container).
 #
 # 4. MIGRATIONS: rode o serviço db-migrate (stage `migrator` dedicado — código
 #    completo + prisma CLI + bash/psql). Aplica migrations E policies RLS num só
@@ -295,7 +355,14 @@ volumes:
 #        -f docker-compose.prod.yml --profile migrate up db-migrate
 #    Encerra ao terminar (restart: no). Rode antes/junto do primeiro `up`.
 #
-# 5. KEYCLOAK em modo `start --optimized` exige hostname (KC_HOSTNAME via
-#    KEYCLOAK_PUBLIC_URL) e, idealmente, TLS por trás de um reverse proxy.
-#    Sem domínio/TLS (deploy por IP) o login funciona, mas trate como staging.
+# 5. KEYCLOAK atrás do Traefik: KC_HOSTNAME = KEYCLOAK_PUBLIC_URL (https://auth...),
+#    KC_PROXY_HEADERS=xforwarded e KC_HTTP_ENABLED=true (TLS termina no Traefik).
+#    O issuer dos tokens passa a ser o domínio https — a API valida por ele.
+#
+# 6. TRAEFIK / DOMÍNIOS: a rede `metanoia-edge` (overlay attachable) deve existir e
+#    estar anexada ao serviço Traefik do Swarm:
+#      docker network create -d overlay --attachable metanoia-edge
+#      docker service update --network-add metanoia-edge traefik_traefik
+#    As labels traefik.* de cada serviço criam as rotas + certificado Let's Encrypt
+#    (resolver `letsencryptresolver`, já configurado no Traefik).
 # ============================================================

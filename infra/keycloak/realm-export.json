@@ -59,17 +59,19 @@
       "implicitFlowEnabled": false,
       "serviceAccountsEnabled": false,
       "protocol": "openid-connect",
-      "rootUrl": "http://localhost:3000",
+      "rootUrl": "https://app.metanoia-hub.todo-tips.com",
       "baseUrl": "/",
       "redirectUris": [
+        "https://app.metanoia-hub.todo-tips.com/*",
         "http://localhost:3000/*"
       ],
       "webOrigins": [
+        "https://app.metanoia-hub.todo-tips.com",
         "http://localhost:3000"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:3000/*"
+        "post.logout.redirect.uris": "https://app.metanoia-hub.todo-tips.com/*##http://localhost:3000/*"
       },
       "protocolMappers": [
         {
