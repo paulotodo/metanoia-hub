@@ -79,9 +79,11 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?set KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD}
       KEYCLOAK_API_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET:?set KEYCLOAK_API_CLIENT_SECRET}
-      # Hostname público do Keycloak (domínio HTTPS). DEVE bater com o issuer dos
-      # tokens que a API valida. TLS termina no Traefik (KC_PROXY_HEADERS).
-      KC_HOSTNAME: ${KEYCLOAK_PUBLIC_URL:?set KEYCLOAK_PUBLIC_URL}
+      # URL pública completa do Keycloak (domínio HTTPS). KC_HOSTNAME_URL aceita a
+      # URL com esquema (KC_HOSTNAME espera só o host e geraria um issuer malformado
+      # tipo https://https//...). DEVE bater com o issuer dos tokens que a API valida.
+      # TLS termina no Traefik (KC_PROXY_HEADERS=xforwarded).
+      KC_HOSTNAME_URL: ${KEYCLOAK_PUBLIC_URL:?set KEYCLOAK_PUBLIC_URL}
       KC_HOSTNAME_STRICT: 'false'
       KC_HTTP_ENABLED: 'true'
       KC_PROXY_HEADERS: 'xforwarded'
