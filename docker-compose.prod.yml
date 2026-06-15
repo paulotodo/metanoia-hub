@@ -160,14 +160,17 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    image: metanoia-prod/api:latest
+      target: migrator
+    image: metanoia-prod/api-migrator:latest
     container_name: metanoia-prod-db-migrate
     restart: 'no'
     profiles: ['migrate']   # roda só com: --profile migrate
     environment:
       DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL}
       DATABASE_APP_URL: ${DATABASE_APP_URL:?set DATABASE_APP_URL}
-    command: ['sh', '-c', 'npx prisma migrate deploy && echo "migrations OK"']
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # CMD do stage `migrator`: prisma migrate deploy + pnpm run db:rls.
     depends_on:
       postgres:
         condition: service_healthy
@@ -178,6 +181,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
+      target: runner
     image: metanoia-prod/api:latest
     container_name: metanoia-prod-api
     restart: unless-stopped
@@ -281,12 +285,12 @@ volumes:
 #    consumir o ARG (ver comentário no serviço web), senão o cliente usará o
 #    default embutido na imagem.
 #
-# 4. MIGRATIONS: o serviço db-migrate assume `npx prisma migrate deploy` na
-#    imagem da API. Se o runner não tiver o schema/CLI do Prisma, rode as
-#    migrations a partir de um container com o código completo, ex.:
+# 4. MIGRATIONS: rode o serviço db-migrate (stage `migrator` dedicado — código
+#    completo + prisma CLI + bash/psql). Aplica migrations E policies RLS num só
+#    passo (CMD: prisma migrate deploy && pnpm run db:rls):
 #      docker compose -p metanoia-prod --env-file .env.production \
 #        -f docker-compose.prod.yml --profile migrate up db-migrate
-#    e aplique as policies RLS (pnpm db:rls) conforme docs do projeto.
+#    Encerra ao terminar (restart: no). Rode antes/junto do primeiro `up`.
 #
 # 5. KEYCLOAK em modo `start --optimized` exige hostname (KC_HOSTNAME via
 #    KEYCLOAK_PUBLIC_URL) e, idealmente, TLS por trás de um reverse proxy.

@@ -27,6 +27,15 @@ COPY turbo.json package.json pnpm-workspace.yaml ./
 
 RUN pnpm turbo build --filter=@metanoia/api
 
+# ---- Migrator (one-shot: prisma migrate deploy + RLS policies) ----
+# Derives from `build` (has schema, migrations, prisma CLI and scripts/).
+# Used by the db-migrate compose service (target: migrator) — NOT the runtime image.
+# bash + psql are required by scripts/apply-rls.sh.
+FROM build AS migrator
+RUN apk add --no-cache bash postgresql-client
+WORKDIR /app/apps/api
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm run db:rls"]
+
 # ---- Runner ----
 FROM node:20-alpine AS runner
 RUN addgroup -g 1001 -S app && adduser -S app -u 1001
