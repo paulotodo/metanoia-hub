@@ -25,6 +25,10 @@ COPY packages/config packages/config
 COPY apps/api apps/api
 COPY turbo.json package.json pnpm-workspace.yaml ./
 
+# Generate Prisma Client before compiling. Without this, @prisma/client exposes
+# only stub `{}` types and tsc fails (every query result typed as `{}`).
+RUN cd apps/api && pnpm exec prisma generate
+
 RUN pnpm turbo build --filter=@metanoia/api
 
 # ---- Migrator (one-shot: prisma migrate deploy + RLS policies) ----
