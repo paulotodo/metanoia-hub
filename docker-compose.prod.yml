@@ -60,7 +60,10 @@ services:
     restart: unless-stopped
     # Modo produção (NÃO start-dev). Atrás de reverse proxy use KC_PROXY_HEADERS.
     # Sem TLS direto: HTTP habilitado + hostname-strict desligado (deploy por IP).
-    command: ['start', '--import-realm', '--optimized']
+    # Sem --optimized: a imagem stock não foi pré-buildada para postgres, então o
+    # Keycloak precisa rodar o build automático no start (lê KC_DB=postgres). Com
+    # --optimized ele usaria o build default (H2) e falharia com a URL postgres.
+    command: ['start', '--import-realm']
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
