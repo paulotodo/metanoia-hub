@@ -54,6 +54,12 @@ COPY --from=build --chown=app:app /app/node_modules ./node_modules
 COPY --from=build --chown=app:app /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=build --chown=app:app /app/apps/api/dist ./apps/api/dist
 COPY --from=build --chown=app:app /app/apps/api/package.json ./apps/api/package.json
+# Workspace packages are symlinked from apps/api/node_modules/@metanoia/* into
+# /app/packages/*. Copy their built output or those symlinks dangle at runtime
+# (e.g. Cannot find module '@metanoia/types'). types is required at runtime;
+# config is dev-only but copied so its symlink does not dangle.
+COPY --from=build --chown=app:app /app/packages/types ./packages/types
+COPY --from=build --chown=app:app /app/packages/config ./packages/config
 
 USER app
 EXPOSE 3001
