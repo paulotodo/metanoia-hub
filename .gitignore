@@ -4,6 +4,9 @@ dist/
 .next/
 .env
 .env.local
+# Ignore all per-environment secret files but keep *.example templates versioned
+.env.*
+!.env*.example
 *.tsbuildinfo
 coverage/
 apps/web/playwright-report/

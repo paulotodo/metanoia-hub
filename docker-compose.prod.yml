@@ -1,0 +1,294 @@
+# ============================================================
+# metanoia-hub — Stack de PRODUÇÃO dedicada
+# ============================================================
+# Stack isolada e auto-contida para a VPS (ex.: 178.156.254.243).
+#
+# Princípios de isolamento (não conflitar com outros projetos da VPS):
+#   - Postgres / Redis / MinIO-API NÃO publicam porta no host (só rede interna).
+#   - Apenas web/api/keycloak/minio-console/livekit expõem portas, em faixa
+#     dedicada (8090-8099 + 7880) — evita 5432/6379/80/443/9000/3000 já em uso.
+#   - Rede e volumes próprios, prefixados pelo project name (-p metanoia-prod).
+#
+# Uso:
+#   cp .env.production.example .env.production   # e preencha os segredos
+#   docker compose -p metanoia-prod --env-file .env.production \
+#     -f docker-compose.prod.yml up -d --build
+#
+# Migrations (rodar UMA vez após o postgres subir — ver serviço db-migrate
+# e as notas no fim do arquivo).
+# ============================================================
+
+services:
+  # ---------------- Infra (rede interna, sem porta no host) ----------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: metanoia-prod-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/00-init-keycloak-schema.sql:/docker-entrypoint-initdb.d/00-init-keycloak-schema.sql:ro
+      - ./docker/postgres/init-app-role.sql:/docker-entrypoint-initdb.d/01-init-app-role.sql:ro
+    networks: [metanoia-net]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: metanoia-prod-redis
+    restart: unless-stopped
+    # Senha opcional (recomendado): descomente e defina REDIS_PASSWORD.
+    # command: ['redis-server', '--requirepass', '${REDIS_PASSWORD}']
+    volumes:
+      - redis-data:/data
+    networks: [metanoia-net]
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: metanoia-prod-keycloak
+    restart: unless-stopped
+    # Modo produção (NÃO start-dev). Atrás de reverse proxy use KC_PROXY_HEADERS.
+    # Sem TLS direto: HTTP habilitado + hostname-strict desligado (deploy por IP).
+    command: ['start', '--import-realm', '--optimized']
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_DB_SCHEMA: keycloak
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?set KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_API_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET:?set KEYCLOAK_API_CLIENT_SECRET}
+      # Hostname público do Keycloak (IP:porta ou domínio). DEVE bater com o
+      # issuer dos tokens que a API valida.
+      KC_HOSTNAME: ${KEYCLOAK_PUBLIC_URL:?set KEYCLOAK_PUBLIC_URL}
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HTTP_ENABLED: 'true'
+      KC_PROXY_HEADERS: 'xforwarded'
+      KC_HEALTH_ENABLED: 'true'
+      KC_METRICS_ENABLED: 'false'
+    volumes:
+      - ./infra/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [metanoia-net]
+    ports:
+      - '${KEYCLOAK_HOST_PORT:-8092}:8080'
+    healthcheck:
+      test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/8080 && echo -e "GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q 200']
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  minio:
+    image: minio/minio:latest
+    container_name: metanoia-prod-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?set MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?set MINIO_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    networks: [metanoia-net]
+    ports:
+      # API S3 exposta para servir objetos públicos (bucket /public). Console p/ admin.
+      - '${MINIO_API_HOST_PORT:-8094}:9000'
+      - '${MINIO_CONSOLE_HOST_PORT:-8093}:9001'
+    healthcheck:
+      test: ['CMD-SHELL', 'mc ready local || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: metanoia-prod-minio-init
+    restart: 'no'
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        mc alias set myminio http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}
+        mc mb --ignore-existing myminio/${MINIO_BUCKET:-metanoia-storage}
+        mc anonymous set download myminio/${MINIO_BUCKET:-metanoia-storage}/public
+        echo "Bucket '${MINIO_BUCKET:-metanoia-storage}' pronto"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET:-metanoia-storage}
+    depends_on:
+      minio:
+        condition: service_healthy
+    networks: [metanoia-net]
+
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: metanoia-prod-livekit
+    restart: unless-stopped
+    # ATENÇÃO: '--dev' é só para validação. Para produção real, troque por um
+    # config file (--config /etc/livekit.yaml) com keys, redis e faixa UDP/TURN.
+    command: ['--dev', '--bind', '0.0.0.0']
+    environment:
+      LIVEKIT_KEYS: '${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET}'
+    networks: [metanoia-net]
+    ports:
+      - '${LIVEKIT_HOST_PORT:-7880}:7880'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q --spider http://localhost:7880 || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ---------------- Migrations (one-shot, antes da API servir) ----------------
+  # Sobe, aplica migrations + policies RLS, e encerra. Usa a imagem da API.
+  # Requer que o Dockerfile da API exponha os scripts de migration (ver NOTA 4).
+  db-migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: metanoia-prod/api:latest
+    container_name: metanoia-prod-db-migrate
+    restart: 'no'
+    profiles: ['migrate']   # roda só com: --profile migrate
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL}
+      DATABASE_APP_URL: ${DATABASE_APP_URL:?set DATABASE_APP_URL}
+    command: ['sh', '-c', 'npx prisma migrate deploy && echo "migrations OK"']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [metanoia-net]
+
+  # ---------------- Aplicação ----------------
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: metanoia-prod/api:latest
+    container_name: metanoia-prod-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      # Banco (admin p/ migrations + app role p/ RLS) — hosts internos
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_APP_URL: ${DATABASE_APP_URL}
+      # Redis interno
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+      # Keycloak — JWKS via rede interna; issuer/audience públicos
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:-metanoia}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID:-metanoia-web}
+      KEYCLOAK_API_CLIENT_ID: ${KEYCLOAK_API_CLIENT_ID:-metanoia-api}
+      KEYCLOAK_API_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET}
+      KEYCLOAK_EXPECTED_AUDIENCE: ${KEYCLOAK_EXPECTED_AUDIENCE:-metanoia-api}
+      # MinIO interno (a API fala com o S3 pela rede do compose)
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET:-metanoia-storage}
+      # LiveKit interno
+      LIVEKIT_URL: ws://livekit:7880
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      # Observabilidade (opcional)
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.2}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks: [metanoia-net]
+    ports:
+      - '${API_HOST_PORT:-8091}:3001'
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      # NOTA 3: NEXT_PUBLIC_* é embutido em BUILD TIME. Para o valor de produção
+      # ser inlined, o Dockerfile do web precisa declarar ARG/ENV NEXT_PUBLIC_API_URL
+      # antes do `turbo build`. Os args abaixo já ficam prontos para esse ajuste.
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_API_MOCKING: 'disabled'
+    image: metanoia-prod/web:latest
+    container_name: metanoia-prod-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # Rewrite server-side Next → NestJS (runtime, rede interna)
+      API_REWRITE_TARGET: http://api:3001
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      NEXT_PUBLIC_API_MOCKING: 'disabled'
+    depends_on:
+      - api
+    networks: [metanoia-net]
+    ports:
+      - '${WEB_HOST_PORT:-8090}:3000'
+
+networks:
+  metanoia-net:
+    name: metanoia-prod-net
+    driver: bridge
+
+volumes:
+  postgres-data:
+    name: metanoia-prod-postgres-data
+  redis-data:
+    name: metanoia-prod-redis-data
+  minio-data:
+    name: metanoia-prod-minio-data
+
+# ============================================================
+# NOTAS (ler antes do primeiro deploy)
+# ------------------------------------------------------------
+# 1. PORTAS expostas no host (faixa dedicada, sem conflito com o Swarm):
+#      web      -> 8090   api      -> 8091   keycloak     -> 8092
+#      minio    -> 8094   console  -> 8093   livekit      -> 7880
+#    Postgres/Redis ficam SÓ na rede interna (sem porta no host).
+#
+# 2. SEGREDOS: nunca commitar .env.production. Gere senhas fortes para
+#    POSTGRES_PASSWORD, KEYCLOAK_ADMIN_PASSWORD, KEYCLOAK_API_CLIENT_SECRET,
+#    MINIO_SECRET_KEY, LIVEKIT_API_SECRET. O KEYCLOAK_API_CLIENT_SECRET também
+#    deve casar com o configurado no realm/cliente do Keycloak.
+#
+# 3. NEXT_PUBLIC_API_URL é build-time no Next. Aponte para a URL PÚBLICA da API
+#    (ex.: http://178.156.254.243:8091/api/v1) e ajuste o Dockerfile do web para
+#    consumir o ARG (ver comentário no serviço web), senão o cliente usará o
+#    default embutido na imagem.
+#
+# 4. MIGRATIONS: o serviço db-migrate assume `npx prisma migrate deploy` na
+#    imagem da API. Se o runner não tiver o schema/CLI do Prisma, rode as
+#    migrations a partir de um container com o código completo, ex.:
+#      docker compose -p metanoia-prod --env-file .env.production \
+#        -f docker-compose.prod.yml --profile migrate up db-migrate
+#    e aplique as policies RLS (pnpm db:rls) conforme docs do projeto.
+#
+# 5. KEYCLOAK em modo `start --optimized` exige hostname (KC_HOSTNAME via
+#    KEYCLOAK_PUBLIC_URL) e, idealmente, TLS por trás de um reverse proxy.
+#    Sem domínio/TLS (deploy por IP) o login funciona, mas trate como staging.
+# ============================================================
