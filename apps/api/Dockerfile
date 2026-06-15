@@ -45,11 +45,17 @@ FROM node:20-alpine AS runner
 RUN addgroup -g 1001 -S app && adduser -S app -u 1001
 WORKDIR /app
 
-COPY --from=build --chown=app:app /app/apps/api/dist ./dist
-COPY --from=build --chown=app:app /app/apps/api/node_modules ./node_modules
-COPY --from=build --chown=app:app /app/apps/api/package.json ./package.json
+# pnpm uses a symlinked node_modules: apps/api/node_modules symlinks into the
+# workspace-root .pnpm store (/app/node_modules/.pnpm). The runtime must preserve
+# that layout — copying only apps/api/node_modules leaves every dependency a
+# dangling symlink (e.g. Cannot find module '@sentry/nestjs'). So we copy the
+# root store too and keep the app under /app/apps/api.
+COPY --from=build --chown=app:app /app/node_modules ./node_modules
+COPY --from=build --chown=app:app /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=build --chown=app:app /app/apps/api/dist ./apps/api/dist
+COPY --from=build --chown=app:app /app/apps/api/package.json ./apps/api/package.json
 
 USER app
 EXPOSE 3001
 
-CMD ["node", "dist/main"]
+CMD ["node", "apps/api/dist/main"]
