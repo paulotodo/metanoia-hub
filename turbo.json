@@ -9,7 +9,8 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**"]
+      "outputs": [".next/**", "dist/**"],
+      "env": ["API_REWRITE_TARGET"]
     },
     "lint": {
       "dependsOn": ["^build"]
