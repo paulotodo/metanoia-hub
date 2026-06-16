@@ -35,6 +35,12 @@ ARG NEXT_PUBLIC_API_MOCKING=disabled
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_MOCKING=$NEXT_PUBLIC_API_MOCKING
 
+# next.config rewrites() é avaliado em BUILD TIME — o destino de /api/v1/* é
+# congelado no manifest. Por isso API_REWRITE_TARGET precisa estar presente no
+# build (não só em runtime), senão o proxy aponta para o fallback localhost:3001.
+ARG API_REWRITE_TARGET=http://localhost:3001
+ENV API_REWRITE_TARGET=$API_REWRITE_TARGET
+
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm turbo build --filter=@metanoia/web
 

@@ -295,6 +295,9 @@ services:
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
         NEXT_PUBLIC_API_MOCKING: 'disabled'
+        # Destino do rewrite /api/v1/* (proxy SSR Next → API). Build-time porque
+        # rewrites() é congelado no manifest. Aponta para o serviço na rede interna.
+        API_REWRITE_TARGET: ${API_REWRITE_TARGET:-http://api:3001}
     image: metanoia-prod/web:latest
     container_name: metanoia-prod-web
     restart: unless-stopped
