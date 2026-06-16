@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function RecoverPasswordPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4">
       <RecoveryForm />
-    </main>
+    </div>
   );
 }

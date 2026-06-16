@@ -48,7 +48,7 @@ export function NavigationShell({ children }: NavigationShellProps) {
         header={<TenantSwitcher className="w-full" />}
         className="hidden lg:flex"
       />
-      <main className="pb-16 lg:ml-60 lg:pb-0">
+      <main id="conteudo" className="pb-16 lg:ml-60 lg:pb-0">
         <div className="mx-auto max-w-7xl px-4">{children}</div>
       </main>
       <BottomTabs

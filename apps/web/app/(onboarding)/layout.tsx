@@ -11,7 +11,7 @@ export default function OnboardingLayout({
 }) {
   return (
     <AppQueryProvider>
-      <main className="min-h-dvh bg-background">{children}</main>
+      <main id="conteudo" className="min-h-dvh bg-background">{children}</main>
     </AppQueryProvider>
   );
 }

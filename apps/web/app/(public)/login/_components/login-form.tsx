@@ -14,6 +14,7 @@ interface FieldErrors {
 export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -107,16 +108,31 @@ export function LoginForm() {
           <label htmlFor="login-password" className="text-body-sm mb-1 block text-text-secondary">
             {t.password}
           </label>
-          <Input
-            id="login-password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            aria-invalid={!!errors.password}
-            aria-describedby={errors.password ? 'login-password-error' : undefined}
-          />
+          {/* A11y: wrapper div with relative so toggle is positioned inside the input area.
+              Tab order: input -> toggle button (natural DOM order, no tabIndex needed).
+              Shift+Tab reversal is guaranteed by DOM order — no positive tabIndex used.
+              CHK005 resolved: reverse tab order matches forward DOM order naturally. */}
+          <div className="relative">
+            <Input
+              id="login-password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? 'login-password-error' : undefined}
+            />
+            <button
+              type="button"
+              className="text-caption absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm"
+              onClick={() => setShowPassword((s) => !s)}
+              aria-label={showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword}
+              data-testid="login-toggle-password"
+            >
+              {showPassword ? '🙈' : '👁'}
+            </button>
+          </div>
           {errors.password && (
             <p id="login-password-error" className="text-caption mt-1 text-state-danger" role="alert">
               {errors.password[0]}
