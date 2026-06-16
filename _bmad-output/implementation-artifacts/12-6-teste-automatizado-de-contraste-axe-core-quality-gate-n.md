@@ -12,8 +12,9 @@ So that contrast regressions and a11y violations are caught before merge and nev
 
 **Given** the project's design tokens
 **When** the CI contrast script (`scripts/check-contrast.ts`) runs
-**Then** it receives the token file path as parameter (`--tokens-path`), defaulting to `packages/config/tailwind.preset.ts` — never hardcoded
-**And** it extracts all color tokens: text colors (`brand-*`, `care-*`, `neutral-*`) and surface colors (`surface-*`, `white`, `brand-*-dark`)
+**Then** it receives the token file path as parameter (`--tokens-path`), defaulting to `packages/config/tailwind.preset.css` — never hardcoded
+> **NOTE (reconciliação Epic 12):** the real token source is `packages/config/tailwind.preset.css` (a Tailwind v4 `@theme { … }` block with literal hex), **not** a `.ts` file. The script must parse CSS custom properties (`--color-*: #hex;`) and resolve relative-color values such as `--color-interactive-focus-ring: oklch(from #2b7a78 l c h / 0.4)`.
+**And** it extracts all color tokens from the `@theme` block: text colors (`--color-text-*`), brand (`--color-brand-*`), care/pastoral (`--color-care-*`) and surface colors (`--color-surface-*`, `--color-border-*`)
 **And** it generates a matrix of all text × surface combinations
 **And** it calculates WCAG contrast ratio for each pair using `color2k` (tree-shakeable, actively maintained — preferido sobre `wcag-contrast` que tem manutenção questionável)
 **And** it flags any pair below 4.5:1 (normal text) or 3:1 (large text/graphics)
@@ -53,8 +54,8 @@ So that contrast regressions and a11y violations are caught before merge and nev
 
 - [ ] Task 1: Create contrast check script (AC: #1, #2, #3)
   - [ ] 1.1 Create `scripts/check-contrast.ts`
-  - [ ] 1.2 Accept `--tokens-path` parameter (default: `packages/config/tailwind.preset.ts`)
-  - [ ] 1.3 Parse token file to extract color values (text and surface colors)
+  - [ ] 1.2 Accept `--tokens-path` parameter (default: `packages/config/tailwind.preset.css`)
+  - [ ] 1.3 Parse the CSS `@theme { … }` block to extract `--color-*` custom properties; resolve `oklch(from … )` relative-color values to a comparable form (text and surface colors)
   - [ ] 1.4 Generate text × surface combination matrix
   - [ ] 1.5 Calculate WCAG contrast ratios using `color2k`
   - [ ] 1.6 Flag pairs below 4.5:1 (normal) or 3:1 (large)
@@ -116,7 +117,7 @@ So that contrast regressions and a11y violations are caught before merge and nev
 - `.github/workflows/a11y-checks.yml` — CI workflow
 - `a11y-pages.json` — extensible page list for axe-core
 - `apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts` — E2E axe test suite
-- `packages/config/tailwind.preset.ts` — design tokens (input to contrast script)
+- `packages/config/tailwind.preset.css` — design tokens (`@theme` block, input to contrast script)
 
 ### Libraries & Versions
 - `color2k` — tree-shakeable contrast ratio calculator (preferred over `wcag-contrast`)
@@ -142,8 +143,9 @@ So that contrast regressions and a11y violations are caught before merge and nev
 
 ### Dependencies
 - Story 12.3 — contrast fixes applied before this gate catches regressions
-- Epic 1 (Story 1.7) — `tailwind.preset.ts` design tokens
+- Epic 1 (Story 1.7) — `tailwind.preset.css` design tokens
 - Epic 1 (Story 1.3) — GitHub Actions CI pipeline
+- Reuse opportunity: `apps/web/src/lib/contrast-checker.ts` already exports `relativeLuminance` / `contrastRatio` (WCAG 2.1) from Story 11-2; prefer `color2k` in the CLI for consistency with the new dep, keeping `contrast-checker.ts` as the runtime utility
 
 ### Project Structure Notes
 - Script at root `scripts/` directory
