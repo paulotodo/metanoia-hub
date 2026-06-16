@@ -257,6 +257,11 @@ executar novamente e comparar - o numero de violacoes deve ser igual ou menor.
 
 ### Edge Cases
 
+> **Note (CHK028)**: Edge cases below are documented as **informative context**, not
+> normative requirements. They guide implementation awareness but do not generate
+> explicit FRs or ACs in this story. Formal treatment for cases requiring FR-level
+> coverage will be addressed in Story 12.2 (authenticated flows) or future iterations.
+
 - O que acontece se o usuario pressionar Shift+Tab (tabulacao reversa)? A ordem
   de foco deve ser o inverso da ordem de tabulacao para frente (WCAG 2.1 AA 2.4.3).
 - O que acontece se o usuario fechar um modal com Escape e o trigger original
@@ -342,6 +347,8 @@ executar novamente e comparar - o numero de violacoes deve ser igual ou menor.
 
 - **SC-006**: The automated accessibility scan final report shows zero new
   violations introduced by this story's changes (regressions = zero).
+  Pre-existing violations found in the axe baseline report are accepted as tech debt
+  and must be documented in the axe-delta-report.md without blocking story completion.
 
 - **SC-007**: All 6 functional areas (skip nav, login, register, modals, dropdowns,
   skeletons) have corresponding automated E2E keyboard interaction tests that pass
@@ -351,6 +358,8 @@ executar novamente e comparar - o numero de violacoes deve ser igual ou menor.
   MANUAL CHECKLIST in Task 9 — NOT automated multi-browser CI. All keyboard
   navigation scenarios must pass the manual checklist with documented severity
   classification (blocker / major / minor) for any residual finding.
+  Gate criterion: zero blockers = pass; majors must be documented as tech debt
+  with a ticket opened; minors are acceptable with written justification.
   (Decision dec-012, score 3 — human answer Q1=A, 2026-06-16)
 
 ---

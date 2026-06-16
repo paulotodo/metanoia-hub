@@ -666,11 +666,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-16T21:27:54Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T21:41:37Z",
-      "description": "onda-005 concluida; proxima fase: create-tasks"
     }
   ]
 }

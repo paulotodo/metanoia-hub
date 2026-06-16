@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar fase create-tasks: spec.md + plan.md + checklist a11y.md prontos. Invocar Skill(create-tasks) para gerar tasks.md com todas as tasks de implementacao da feature (Tasks 0-9 conforme plan.md). Aplicar gates de template-fidelity e docs-render pos-geracao. Registrar decisoes. Fechar onda.",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar fase checklist: spec.md + plan.md prontos (plan validado/aterrado na onda-004). Invocar Skill(checklist) com dominio a11y para validar qualidade dos requisitos (FR-001..FR-013, SC-001..SC-008). Registrar decisoes. Fechar onda.",
   "waves": [
     {
       "id": "onda-001",
@@ -125,11 +125,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-16T21:36:23Z",
-      "finished_at": "2026-06-16T21:41:10Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 287,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -555,44 +555,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-16T21:40:33Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execucao da fase checklist: validacao de qualidade de requisitos FR-001..FR-013 + SC-001..SC-008 com dominio a11y",
-      "options_considered": [
-        "executar-checklist-completo",
-        "executar-parcial",
-        "skip"
-      ],
-      "choice": "executar-checklist-completo",
-      "rationale": "spec.md Clarified com 13 FRs e 8 SCs; plan.md validado; 7 US com Independent Test; nenhum bloqueio pendente; gate formal pre-create-tasks",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-16T21:40:45Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resultado do checklist a11y: 34 items auto-resolvidos [x], 8 gaps identificados; 3 gaps materiais corrigidos na spec (CHK024 SC-008 gate criterion, CHK028 edge cases note, CHK032 SC-006 pre-existing violations)",
-      "options_considered": [
-        "corrigir-gaps-materiais-e-avancar",
-        "pausar-para-humano",
-        "abortar"
-      ],
-      "choice": "corrigir-gaps-materiais-e-avancar",
-      "rationale": "Gaps identificados: CHK005 Shift+Tab sem FR formal (informativo, WCAG 2.4.3 implicito), CHK007/CHK011 Radix comportamento nativo suficiente, CHK013 i18n menor, CHK024/CHK032/CHK028 corrigidos inline. Nenhum gap bloqueia implementacao. Sem ambiguidade material restante.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -627,12 +589,12 @@
     "current_wave_start": "2026-06-16T21:36:23Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1809,
+    "wallclock_total_seconds": 1522,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 24,
+    "decisions_total": 22,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -666,11 +628,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-16T21:27:54Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T21:41:37Z",
-      "description": "onda-005 concluida; proxima fase: create-tasks"
     }
   ]
 }
