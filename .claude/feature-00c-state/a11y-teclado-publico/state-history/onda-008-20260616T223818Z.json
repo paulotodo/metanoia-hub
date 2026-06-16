@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Avançar para review-task (FASE 8): verificar spec.md vs implementação (tasks 8.1-8.3), gerar relatório final de qualidade. Todas as tasks 0-7 concluídas. 43 E2E keyboard passando. axe-delta: 5→2 violations (DoD met).",
+  "current_stage": "execute-task",
+  "next_instruction": "Continuar execute-task: FASE 6 (testes E2E Playwright keyboard), FASE 7 (axe-final delta), FASE 8 (checklist manual + review-task). Branch: feat/a11y-12-1-teclado-publico. FASEs 0-5 concluidas.",
   "waves": [
     {
       "id": "onda-001",
@@ -197,19 +197,6 @@
           "decision_id": "dec-036"
         }
       ]
-    },
-    {
-      "id": "onda-009",
-      "started_at": "2026-06-16T22:38:18Z",
-      "finished_at": "2026-06-16T22:58:48Z",
-      "executed_stages": [
-        "execute-task"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 1230,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -929,24 +916,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-039",
-      "wave_id": "onda-009",
-      "timestamp": "2026-06-16T22:48:29Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 6 + FASE 7 concluidas: 43 E2E passando, axe-final gerado, delta -3 violations",
-      "options_considered": [
-        "marcar-concluido",
-        "retry-falhas"
-      ],
-      "choice": "marcar-concluido",
-      "rationale": "43/43 E2E keyboard specs passando. Axe-final: 2 violations (vs baseline 5). Fixed: 3 (landmark-main-is-top-level, landmark-no-duplicate-main, landmark-unique). Unchanged: 2 (color-contrast em /, link-in-text-block em /login - tech debt aceito CHK032). Sem regressoes. DoD SC-006 met.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -978,15 +947,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-16T22:38:18Z"
+    "current_wave_start": "2026-06-16T22:25:43Z"
   },
   "accumulated_metrics": {
-    "waves_total": 9,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 5007,
+    "wallclock_total_seconds": 3777,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 39,
+    "decisions_total": 38,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1231,75 +1200,6 @@
       "lint_ok": true,
       "touched_files": [],
       "recorded_at": "2026-06-16T22:32:53Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "6.1",
-      "title": "Criar testes E2E de navegação por teclado",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/keyboard/skip-nav.spec.ts",
-        "apps/web/e2e/keyboard/login-keyboard.spec.ts",
-        "apps/web/e2e/keyboard/register-keyboard.spec.ts",
-        "apps/web/e2e/keyboard/modal-focus-trap.spec.ts",
-        "apps/web/e2e/keyboard/dropdown-keyboard.spec.ts",
-        "apps/web/e2e/keyboard/skeleton-focus.spec.ts",
-        "apps/web/e2e/keyboard/recovery-keyboard.spec.ts"
-      ],
-      "recorded_at": "2026-06-16T22:48:19Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "6.2",
-      "title": "Executar e validar testes E2E",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 43,
-      "tests_passed": 43,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/keyboard/skip-nav.spec.ts",
-        "apps/web/e2e/keyboard/login-keyboard.spec.ts",
-        "apps/web/e2e/keyboard/register-keyboard.spec.ts",
-        "apps/web/e2e/keyboard/modal-focus-trap.spec.ts",
-        "apps/web/e2e/keyboard/dropdown-keyboard.spec.ts",
-        "apps/web/e2e/keyboard/skeleton-focus.spec.ts",
-        "apps/web/e2e/keyboard/recovery-keyboard.spec.ts"
-      ],
-      "recorded_at": "2026-06-16T22:48:19Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.1",
-      "title": "Criar script axe-final e gerar relatório",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 4,
-      "tests_passed": 4,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/a11y/axe-final.spec.ts",
-        "_bmad-output/implementation-artifacts/a11y/axe-final-public.json"
-      ],
-      "recorded_at": "2026-06-16T22:48:19Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.2",
-      "title": "Gerar delta-report e documentar tech debt",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 4,
-      "tests_passed": 4,
-      "lint_ok": true,
-      "touched_files": [
-        "_bmad-output/implementation-artifacts/a11y/axe-delta-report.json"
-      ],
-      "recorded_at": "2026-06-16T22:48:19Z",
       "source": "execute-task"
     }
   ]

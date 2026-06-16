@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
+  "current_stage": "execute-task",
   "next_instruction": "Avançar para review-task (FASE 8): verificar spec.md vs implementação (tasks 8.1-8.3), gerar relatório final de qualidade. Todas as tasks 0-7 concluídas. 43 E2E keyboard passando. axe-delta: 5→2 violations (DoD met).",
   "waves": [
     {
