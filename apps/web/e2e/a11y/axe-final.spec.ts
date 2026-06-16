@@ -201,7 +201,9 @@ test.describe('axe final scan -- public pages (FASE 7, post-code-change)', () =>
       // Unchanged: in both
       for (const bv of baselineViolations) {
         if (finalIds.has(bv.id)) {
-          const fv = finalViolations.find((v) => v.id === bv.id)!;
+          // Non-null safe: finalIds.has(bv.id) guarantees find returns a value
+          const fv = finalViolations.find((v) => v.id === bv.id);
+          if (!fv) continue;
           entries.push({
             id: bv.id,
             impact: bv.impact,

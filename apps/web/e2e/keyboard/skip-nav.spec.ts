@@ -54,7 +54,9 @@ test.describe('Skip Navigation -- keyboard access (US1)', () => {
     // Accept y >= -5 as "effectively visible" (within 5px of viewport edge)
     const box = await skipNav.boundingBox();
     expect(box).not.toBeNull();
-    expect(box!.y).toBeGreaterThanOrEqual(-5);
+    // Use optional chaining to avoid non-null assertion (eslint @typescript-eslint/no-non-null-assertion)
+    const boxY = box?.y ?? -9999;
+    expect(boxY).toBeGreaterThanOrEqual(-5);
   });
 
   test('Enter on SkipNav moves focus to main content area (#conteudo)', async ({ page }) => {
