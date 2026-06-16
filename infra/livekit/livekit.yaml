@@ -1,0 +1,32 @@
+# ============================================================
+# LiveKit server — configuração de PRODUÇÃO (substitui o modo --dev)
+# ============================================================
+# As API keys NÃO ficam aqui: vêm da env LIVEKIT_KEYS (formato "key: secret"),
+# definida pelo compose a partir do .env.production. Mantém segredos fora do git.
+#
+# Sinalização (WebSocket) entra pela porta 7880 via Traefik (wss://video...).
+# A MÍDIA WebRTC usa as portas RTC abaixo, publicadas direto no host (o Traefik
+# não faz proxy de UDP): precisam estar abertas no firewall/cloud.
+# ============================================================
+
+port: 7880
+
+rtc:
+  # Porta TCP de fallback para clientes em redes que bloqueiam UDP.
+  tcp_port: 7881
+  # Porta única UDP (mux) para toda a mídia — simples para firewall e Docker
+  # (uma porta em vez de uma faixa de milhares).
+  udp_port: 7882
+  # Anuncia o IP público nos candidatos ICE (essencial atrás de NAT/Docker).
+  # Detectado via STUN no boot; em cloud resolve para o IP externo do host.
+  use_external_ip: true
+
+logging:
+  level: info
+  json: false
+
+# Webhooks (room/participant events → API) ficam como próximo passo:
+# webhook:
+#   api_key: <LIVEKIT_API_KEY>            # id da key (não o secret)
+#   urls:
+#     - http://api:3001/api/v1/meetings/webhooks/livekit

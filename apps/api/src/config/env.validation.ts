@@ -17,7 +17,11 @@ export const envSchema = z.object({
   MINIO_ACCESS_KEY: z.string().default('minioadmin'),
   MINIO_SECRET_KEY: z.string().default('minioadmin'),
   MINIO_BUCKET: z.string().default('metanoia-storage'),
+  // Internal URL the API uses to manage rooms (server-side RoomServiceClient).
   LIVEKIT_URL: z.string().default('ws://localhost:7880'),
+  // Public signaling URL handed to the browser (wss via reverse proxy). The
+  // client connects here, then media flows over UDP to the advertised IP.
+  LIVEKIT_PUBLIC_URL: z.string().default('ws://localhost:7880'),
   LIVEKIT_API_KEY: z.string().default('devkey'),
   LIVEKIT_API_SECRET: z.string().default('secret_dev_only_not_for_production'),
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),

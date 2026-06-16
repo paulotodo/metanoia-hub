@@ -27,11 +27,17 @@ export class LiveKitAdapter implements VideoProviderAdapter {
   private readonly apiKey: string;
   private readonly apiSecret: string;
   private readonly livekitUrl: string;
+  private readonly livekitPublicUrl: string;
 
   constructor(configService: ConfigService<EnvConfig, true>) {
     this.apiKey = configService.get('LIVEKIT_API_KEY', { infer: true });
     this.apiSecret = configService.get('LIVEKIT_API_SECRET', { infer: true });
+    // Internal URL for server-side room management (RoomServiceClient).
     this.livekitUrl = configService.get('LIVEKIT_URL', { infer: true });
+    // Public signaling URL handed to browser clients (wss via reverse proxy).
+    this.livekitPublicUrl = configService.get('LIVEKIT_PUBLIC_URL', {
+      infer: true,
+    });
     this.roomClient = new RoomServiceClient(
       this.livekitUrl,
       this.apiKey,
@@ -45,7 +51,7 @@ export class LiveKitAdapter implements VideoProviderAdapter {
   }
 
   getProviderUrl(): string {
-    return this.livekitUrl;
+    return this.livekitPublicUrl;
   }
 
   async createRoom(options: CreateRoomOptions): Promise<ProviderRoom> {
@@ -66,7 +72,7 @@ export class LiveKitAdapter implements VideoProviderAdapter {
     return {
       roomId: created.sid,
       roomName: options.roomName,
-      livekitUrl: this.livekitUrl,
+      livekitUrl: this.livekitPublicUrl,
     };
   }
 

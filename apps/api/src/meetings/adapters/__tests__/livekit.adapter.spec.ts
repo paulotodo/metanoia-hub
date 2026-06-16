@@ -33,6 +33,7 @@ function buildAdapter() {
         LIVEKIT_API_KEY: 'devkey',
         LIVEKIT_API_SECRET: 'secret',
         LIVEKIT_URL: 'ws://localhost:7880',
+        LIVEKIT_PUBLIC_URL: 'ws://localhost:7880',
       };
       return map[key]!;
     },

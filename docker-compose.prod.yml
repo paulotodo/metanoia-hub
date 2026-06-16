@@ -174,16 +174,19 @@ services:
     image: livekit/livekit-server:latest
     container_name: metanoia-prod-livekit
     restart: unless-stopped
-    # ATENÇÃO: '--dev' é só para validação. Para produção real, troque por um
-    # config file (--config /etc/livekit.yaml) com keys, redis e faixa UDP/TURN.
-    # A rota Traefik abaixo cobre só a SINALIZAÇÃO (WebSocket). A mídia WebRTC usa
-    # UDP e exige faixa de portas/TURN — não resolvida por DNS/Traefik.
-    command: ['--dev', '--bind', '0.0.0.0']
+    # Produção: config file (não --dev). Sinalização (7880) entra via Traefik
+    # (wss://video...). A MÍDIA WebRTC usa as portas RTC publicadas no host:
+    # 7882/udp (mux) + 7881/tcp (fallback) — o Traefik não faz proxy de UDP.
+    command: ['--config', '/etc/livekit.yaml']
     environment:
       LIVEKIT_KEYS: '${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET}'
+    volumes:
+      - ./infra/livekit/livekit.yaml:/etc/livekit.yaml:ro
     networks: [metanoia-net, metanoia-edge]
     ports:
       - '${LIVEKIT_HOST_PORT:-7880}:7880'
+      - '${LIVEKIT_RTC_TCP_PORT:-7881}:7881/tcp'
+      - '${LIVEKIT_RTC_UDP_PORT:-7882}:7882/udp'
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=metanoia-edge'
@@ -254,8 +257,9 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_BUCKET: ${MINIO_BUCKET:-metanoia-storage}
-      # LiveKit interno
+      # LiveKit: URL interna p/ gerenciar salas; URL pública (wss) p/ o browser
       LIVEKIT_URL: ws://livekit:7880
+      LIVEKIT_PUBLIC_URL: ${LIVEKIT_PUBLIC_URL:-wss://video.metanoia-hub.todo-tips.com}
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
       LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
       # Observabilidade (opcional)
