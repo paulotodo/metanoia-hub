@@ -34,13 +34,19 @@ export class KeycloakAuthGuard implements CanActivate, OnModuleInit {
 
   onModuleInit(): void {
     const keycloakUrl = this.config.get('KEYCLOAK_URL', { infer: true });
+    const publicUrl = this.config.get('KEYCLOAK_PUBLIC_URL', { infer: true });
     const realm = this.config.get('KEYCLOAK_REALM', { infer: true });
-    this.issuer = `${keycloakUrl}/realms/${realm}`;
+    // Tokens carry the PUBLIC issuer (Keycloak KC_HOSTNAME_URL); validate the
+    // `iss` claim against it — not the internal URL used to fetch JWKS.
+    this.issuer = `${publicUrl}/realms/${realm}`;
     this.expectedAudience = this.config.get('KEYCLOAK_EXPECTED_AUDIENCE', {
       infer: true,
     });
 
-    const jwksUrl = new URL(`${this.issuer}/protocol/openid-connect/certs`);
+    // JWKS is fetched over the INTERNAL URL (fast, no external/DNS dependency).
+    const jwksUrl = new URL(
+      `${keycloakUrl}/realms/${realm}/protocol/openid-connect/certs`,
+    );
     this.jwks = createRemoteJWKSet(jwksUrl);
     this.logger.log(
       `JWKS endpoint configured: ${jwksUrl.toString()} (audience: ${this.expectedAudience})`,

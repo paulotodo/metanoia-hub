@@ -18,6 +18,7 @@ const mockConfig = {
   get: vi.fn((key: string) => {
     const map: Record<string, string> = {
       KEYCLOAK_URL: 'http://localhost:8080',
+      KEYCLOAK_PUBLIC_URL: 'http://localhost:8080',
       KEYCLOAK_REALM: 'metanoia',
       KEYCLOAK_EXPECTED_AUDIENCE: 'metanoia-api',
     };

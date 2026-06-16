@@ -7,7 +7,11 @@ export const envSchema = z.object({
   DATABASE_APP_URL: z.string().url(),
   REDIS_HOST: z.string().default('localhost'),
   REDIS_PORT: z.coerce.number().int().default(6379),
+  // Internal URL the API uses to fetch JWKS (server-to-server).
   KEYCLOAK_URL: z.string().url().default('http://localhost:8080'),
+  // Public URL Keycloak embeds as the token `iss` (KC_HOSTNAME_URL). Token
+  // issuer is validated against this; JWKS is still fetched over KEYCLOAK_URL.
+  KEYCLOAK_PUBLIC_URL: z.string().url().default('http://localhost:8080'),
   KEYCLOAK_REALM: z.string().default('metanoia'),
   KEYCLOAK_CLIENT_ID: z.string().default('metanoia-web'),
   KEYCLOAK_API_CLIENT_ID: z.string().default('metanoia-api'),
