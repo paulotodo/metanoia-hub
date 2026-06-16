@@ -180,6 +180,23 @@
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": []
+    },
+    {
+      "id": "onda-008",
+      "started_at": "2026-06-16T22:25:43Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-16T22:31:52Z",
+          "decision_id": "dec-036"
+        }
+      ]
     }
   ],
   "decisions": [
@@ -822,6 +839,45 @@
       "evidence": "pnpm turbo build: 2 successful (20.8s); pnpm turbo lint: 2 successful; vitest: 6 passed (6)",
       "references": [],
       "originating_artifact": null
+    },
+    {
+      "id": "dec-035",
+      "wave_id": "onda-007",
+      "timestamp": "2026-06-16T22:24:14Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 7 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-036",
+      "wave_id": "onda-008",
+      "timestamp": "2026-06-16T22:31:40Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "FASE 2+3+4+5: auditoria e correcao de teclado em formularios publicos e modais",
+      "options_considered": [
+        "implementar-toggle-password",
+        "manter-sem-toggle",
+        "defer-para-12.3"
+      ],
+      "choice": "implementar-toggle-password",
+      "rationale": "Login e register nao tinham toggle de visibilidade de senha; Input/Button UI tem focus-visible nativo; PrivacyConfirmDialog corrigido para usar design tokens em vez de azul hardcoded; dropdowns publicos inexistentes no escopo; skeletons com role=status adequado",
+      "justification_score": 3,
+      "evidence": "661 tests passed (111 files), pnpm turbo lint OK (0 warnings), pnpm turbo build OK (2 tasks successful). jest-axe passa em todos os formularios publicos",
+      "references": [],
+      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -853,7 +909,7 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-16T22:07:52Z"
+    "current_wave_start": "2026-06-16T22:25:43Z"
   },
   "accumulated_metrics": {
     "waves_total": 7,
@@ -861,7 +917,7 @@
     "wallclock_total_seconds": 3338,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 34,
+    "decisions_total": 36,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

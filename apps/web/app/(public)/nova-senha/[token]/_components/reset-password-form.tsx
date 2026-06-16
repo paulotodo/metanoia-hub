@@ -206,7 +206,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
             />
             <button
               type="button"
-              className="text-caption absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary"
+              className="text-caption absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm"
               onClick={() => setShowPassword((s) => !s)}
               aria-label={showPassword ? t.hidePassword : t.showPassword}
               data-testid="toggle-password"

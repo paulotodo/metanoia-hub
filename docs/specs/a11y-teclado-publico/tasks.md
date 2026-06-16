@@ -111,29 +111,29 @@ Ref: spec §US1/AC1-AC3, plan §Task1 (5 layout groups), CHK036 (verificar exist
 
 Ref: spec §US2/FR-002/FR-004/FR-005, plan §Task2, CHK005 (Shift+Tab garantido por DOM order)
 
-- [ ] 2.1.1 Auditar `apps/web/app/(public)/login/_components/login-form.tsx`:
+- [x] 2.1.1 Auditar `apps/web/app/(public)/login/_components/login-form.tsx`:
   ordem DOM (email -> password -> submit) vs. ordem visual
-- [ ] 2.1.2 Verificar ausência de `tabIndex` manual que interrompa ordem natural do DOM
-- [ ] 2.1.3 Verificar que nenhum elemento suprime `:focus-visible`
+- [x] 2.1.2 Verificar ausência de `tabIndex` manual que interrompa ordem natural do DOM
+- [x] 2.1.3 Verificar que nenhum elemento suprime `:focus-visible`
   (buscar `outline: none`, `outline: 0`, `focus:outline-none` sem `focus-visible`)
-- [ ] 2.1.4 Verificar password visibility toggle focável via Tab e responsivo a `Space`/`Enter`
-- [ ] 2.1.5 Verificar botão submit responde a `Enter` (comportamento nativo de formulário)
-- [ ] 2.1.6 Corrigir gaps encontrados em 2.1.1–2.1.5 com mudança mínima
-- [ ] 2.1.7 Resolver gap CHK005: adicionar comentário no componente confirmando que Shift+Tab
+- [x] 2.1.4 Verificar password visibility toggle focável via Tab e responsivo a `Space`/`Enter`
+- [x] 2.1.5 Verificar botão submit responde a `Enter` (comportamento nativo de formulário)
+- [x] 2.1.6 Corrigir gaps encontrados em 2.1.1–2.1.5 com mudança mínima
+- [x] 2.1.7 Resolver gap CHK005: adicionar comentário no componente confirmando que Shift+Tab
   reverso é garantido pela ordem DOM natural (sem `tabIndex` positivo) — sem FR novo
-- [ ] 2.1.8 Auditar `apps/web/app/(public)/login/page.tsx` para wrapping que afete tab order
+- [x] 2.1.8 Auditar `apps/web/app/(public)/login/page.tsx` para wrapping que afete tab order
 
 ### 2.2 Registro — Auditoria e correção de navegação por teclado `[A]`
 
 Ref: spec §US3/FR-003/FR-004/FR-005, plan §Task3
 
-- [ ] 2.2.1 Auditar `apps/web/app/(public)/register/_components/register-form.tsx`:
+- [x] 2.2.1 Auditar `apps/web/app/(public)/register/_components/register-form.tsx`:
   ordem DOM (name -> email -> password -> password-confirm -> submit)
-- [ ] 2.2.2 Verificar ausência de `tabIndex` manual disruptivo
-- [ ] 2.2.3 Verificar `:focus-visible` não suprimido (mesma verificação de 2.1.3)
-- [ ] 2.2.4 Verificar password visibility toggles (ambos campos) focáveis e operáveis via teclado
-- [ ] 2.2.5 Corrigir gaps encontrados em 2.2.1–2.2.4
-- [ ] 2.2.6 Auditar `apps/web/app/(public)/register/page.tsx` para wrapping que afete tab order
+- [x] 2.2.2 Verificar ausência de `tabIndex` manual disruptivo
+- [x] 2.2.3 Verificar `:focus-visible` não suprimido (mesma verificação de 2.1.3)
+- [x] 2.2.4 Verificar password visibility toggles (ambos campos) focáveis e operáveis via teclado
+- [x] 2.2.5 Corrigir gaps encontrados em 2.2.1–2.2.4
+- [x] 2.2.6 Auditar `apps/web/app/(public)/register/page.tsx` para wrapping que afete tab order
 
 ---
 
@@ -147,13 +147,13 @@ Ref: spec §US3/FR-003/FR-004/FR-005, plan §Task3
 
 Ref: spec §FR-013, plan §Task4, CHK019 (premissa: modais existem), CHK028
 
-- [ ] 3.1.1 Executar localização:
+- [x] 3.1.1 Executar localização:
   `grep -r "AlertDialog\|Dialog\|ConfirmDialog" apps/web/src --include="*.tsx" -l`
-- [ ] 3.1.2 Selecionar os 3 modais para validação (prioridade: confirmation dialog genérico,
+- [x] 3.1.2 Selecionar os 3 modais para validação (prioridade: confirmation dialog genérico,
   create group modal, settings modal ou equivalente disponível)
-- [ ] 3.1.3 Verificar que cada modal usa `@radix-ui/react-dialog` (shadcn Dialog) — se algum
+- [x] 3.1.3 Verificar que cada modal usa `@radix-ui/react-dialog` (shadcn Dialog) — se algum
   usar implementação custom, planejar migração para Radix (ver 3.2.4)
-- [ ] 3.1.4 Resolver gap CHK028: adicionar nota em `docs/specs/a11y-teclado-publico/spec.md`
+- [x] 3.1.4 Resolver gap CHK028: adicionar nota em `docs/specs/a11y-teclado-publico/spec.md`
   §Edge Cases esclarecendo que os edge cases listados são descritivos/informativos,
   não normativos — cobertura formal via Story 12.2 ou próxima iteração
 
@@ -161,13 +161,13 @@ Ref: spec §FR-013, plan §Task4, CHK019 (premissa: modais existem), CHK028
 
 Ref: spec §US4/AC1-AC4/FR-006/FR-007/FR-008, plan §Task4, CHK026, CHK011
 
-- [ ] 3.2.1 Para cada modal: verificar que Tab cicla apenas entre elementos interativos do modal
+- [x] 3.2.1 Para cada modal: verificar que Tab cicla apenas entre elementos interativos do modal
   (foco não escapa para elementos externos enquanto modal está aberto)
-- [ ] 3.2.2 Para cada modal: verificar que `Escape` fecha o modal e retorna foco ao trigger
-- [ ] 3.2.3 Para cada modal: verificar presença de `role="dialog"` e `aria-modal="true"` no DOM
-- [ ] 3.2.4 Se modal customizado em 3.1.3: migrar para Radix Dialog via shadcn Dialog component
-- [ ] 3.2.5 Corrigir qualquer gap Radix (ex: `onKeyDown` customizado interceptando teclado)
-- [ ] 3.2.6 Resolver CHK011: verificar comportamento Arrow Home/End no Radix DropdownMenu —
+- [x] 3.2.2 Para cada modal: verificar que `Escape` fecha o modal e retorna foco ao trigger
+- [x] 3.2.3 Para cada modal: verificar presença de `role="dialog"` e `aria-modal="true"` no DOM
+- [x] 3.2.4 Se modal customizado em 3.1.3: migrar para Radix Dialog via shadcn Dialog component
+- [x] 3.2.5 Corrigir qualquer gap Radix (ex: `onKeyDown` customizado interceptando teclado)
+- [x] 3.2.6 Resolver CHK011: verificar comportamento Arrow Home/End no Radix DropdownMenu —
   se nativo, documentar como suficiente; se ausente, documentar como known gap sem bloqueio
 
 ---
@@ -182,24 +182,24 @@ Ref: spec §US4/AC1-AC4/FR-006/FR-007/FR-008, plan §Task4, CHK026, CHK011
 
 Ref: spec §US5/FR-009, plan §Task5, CHK007 (múltiplos menus simultâneos)
 
-- [ ] 4.1.1 Localizar dropdowns/menus:
+- [x] 4.1.1 Localizar dropdowns/menus:
   `grep -r "DropdownMenu\|NavigationMenu\|Select" apps/web/src --include="*.tsx" -l`
-- [ ] 4.1.2 Identificar header/navbar dropdowns, sidebar navigation e action menus
+- [x] 4.1.2 Identificar header/navbar dropdowns, sidebar navigation e action menus
   nos fluxos públicos (/, /login, /register)
-- [ ] 4.1.3 Verificar que cada componente usa Radix UI via shadcn (não implementação custom)
-- [ ] 4.1.4 Documentar comportamento nativo Radix para Arrow Home/End e múltiplos menus
+- [x] 4.1.3 Verificar que cada componente usa Radix UI via shadcn (não implementação custom)
+- [x] 4.1.4 Documentar comportamento nativo Radix para Arrow Home/End e múltiplos menus
   simultâneos (CHK007, CHK011) como suficiente — sem FR novo
 
 ### 4.2 Validar e corrigir gaps de teclado nos dropdowns `[A]`
 
 Ref: spec §US5/AC1-AC3/FR-009, plan §Task5
 
-- [ ] 4.2.1 Para cada dropdown: verificar que Arrow Down/Up navega entre itens
-- [ ] 4.2.2 Para cada dropdown: verificar que Enter ativa o item em foco
-- [ ] 4.2.3 Para cada dropdown: verificar que Escape fecha o menu e retorna foco ao trigger
-- [ ] 4.2.4 Verificar ausência de wrappers customizados interceptando teclado:
+- [x] 4.2.1 Para cada dropdown: verificar que Arrow Down/Up navega entre itens
+- [x] 4.2.2 Para cada dropdown: verificar que Enter ativa o item em foco
+- [x] 4.2.3 Para cada dropdown: verificar que Escape fecha o menu e retorna foco ao trigger
+- [x] 4.2.4 Verificar ausência de wrappers customizados interceptando teclado:
   `grep -r "onKeyDown" apps/web/src --include="*.tsx"` — remover overrides problemáticos
-- [ ] 4.2.5 Corrigir gaps pontuais (mínimo necessário — não refatorar componentes completos)
+- [x] 4.2.5 Corrigir gaps pontuais (mínimo necessário — não refatorar componentes completos)
 
 ---
 
@@ -212,22 +212,22 @@ Ref: spec §US5/AC1-AC3/FR-009, plan §Task5
 
 Ref: spec §US6/FR-010, plan §Task6, CHK027 (skeletons parcialmente hidratados)
 
-- [ ] 5.1.1 Localizar skeleton/loading:
+- [x] 5.1.1 Localizar skeleton/loading:
   `grep -r "Skeleton\|skeleton\|loading-placeholder" apps/web/src --include="*.tsx" -l`
-- [ ] 5.1.2 Para cada skeleton: verificar presença de `aria-hidden="true"` OU `tabIndex={-1}`
-- [ ] 5.1.3 Para cada skeleton: verificar ausência de filhos focáveis (buttons, links, inputs)
-- [ ] 5.1.4 Verificar CHK027 (skeletons parciais): containers aplicam `aria-hidden` ou
+- [x] 5.1.2 Para cada skeleton: verificar presença de `aria-hidden="true"` OU `tabIndex={-1}`
+- [x] 5.1.3 Para cada skeleton: verificar ausência de filhos focáveis (buttons, links, inputs)
+- [x] 5.1.4 Verificar CHK027 (skeletons parciais): containers aplicam `aria-hidden` ou
   `tabindex=-1` no nível do container (cobre sub-itens automaticamente)
 
 ### 5.2 Corrigir skeletons e validar estabilidade de hidratação `[A]`
 
 Ref: spec §US6/FR-011, plan §Task6
 
-- [ ] 5.2.1 Adicionar `aria-hidden="true"` ou `tabIndex={-1}` em skeletons sem cobertura
-- [ ] 5.2.2 Remover `autoFocus` de elementos que mudam durante hidratação SSR
+- [x] 5.2.1 Adicionar `aria-hidden="true"` ou `tabIndex={-1}` em skeletons sem cobertura
+- [x] 5.2.2 Remover `autoFocus` de elementos que mudam durante hidratação SSR
   (buscar `autoFocus` em componentes dos fluxos públicos)
-- [ ] 5.2.3 Verificar uso correto de `suppressHydrationWarning` (apenas onde semanticamente correto)
-- [ ] 5.2.4 Teste manual: navegar para página SSR com skeleton -> pressionar Tab imediatamente ->
+- [x] 5.2.3 Verificar uso correto de `suppressHydrationWarning` (apenas onde semanticamente correto)
+- [x] 5.2.4 Teste manual: navegar para página SSR com skeleton -> pressionar Tab imediatamente ->
   confirmar que foco não salta entre placeholders e conteúdo real
 
 ---

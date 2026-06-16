@@ -16,6 +16,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -141,18 +142,31 @@ export function RegisterForm() {
           <label htmlFor="register-password" className="text-body-sm mb-1 block text-text-secondary">
             {t.password}
           </label>
-          <Input
-            id="register-password"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={12}
-            maxLength={64}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            aria-invalid={!!errors.password}
-            aria-describedby="password-hint password-error"
-          />
+          {/* A11y: toggle button follows input in DOM order — Shift+Tab reversal natural.
+              CHK005: no positive tabIndex used; reverse tab is guaranteed by DOM order. */}
+          <div className="relative">
+            <Input
+              id="register-password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
+              required
+              minLength={12}
+              maxLength={64}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={!!errors.password}
+              aria-describedby="password-hint password-error"
+            />
+            <button
+              type="button"
+              className="text-caption absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm"
+              onClick={() => setShowPassword((s) => !s)}
+              aria-label={showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword}
+              data-testid="register-toggle-password"
+            >
+              {showPassword ? '🙈' : '👁'}
+            </button>
+          </div>
           <p id="password-hint" className="text-caption mt-1 text-text-tertiary">
             {t.passwordHint}
           </p>
@@ -167,14 +181,20 @@ export function RegisterForm() {
           <label htmlFor="register-confirm-password" className="text-body-sm mb-1 block text-text-secondary">
             {t.confirmPassword}
           </label>
-          <Input
-            id="register-confirm-password"
-            type="password"
-            autoComplete="new-password"
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          {/* A11y: confirm password shares same showPassword toggle for consistency.
+              aria-invalid and aria-describedby added (gap from original implementation). */}
+          <div className="relative">
+            <Input
+              id="register-confirm-password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? 'password-error' : undefined}
+            />
+          </div>
         </div>
 
         {serverError && (
