@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Retomar clarify: aplicar resposta ao bloqueio block-001 (Q1+Q2). Q3 ja decidida (dec-009, score2): US5 eh validacao Radix. Apos integrar respostas, invocar Skill(clarify) para atualizar spec.md e avancar para plan.",
+  "next_instruction": "Iniciar etapa clarify - invocar clarify-asker e clarify-answerer.",
   "waves": [
     {
       "id": "onda-001",
@@ -52,11 +52,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-16T19:41:03Z",
-      "finished_at": "2026-06-16T19:48:25Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 442,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -306,9 +306,9 @@
     "current_wave_start": "2026-06-16T19:41:03Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 957,
+    "wallclock_total_seconds": 515,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 10,
@@ -335,11 +335,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-16T19:26:26Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T19:48:58Z",
-      "description": "onda-002 clarify bloqueio_humano block-001 Q1+Q2"
     }
   ]
 }

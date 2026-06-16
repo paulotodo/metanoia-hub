@@ -6,7 +6,7 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.1 (Epic 12) - Navegacao por teclado: fluxos publicos e infraestrutura (NFR-A1). Skip-nav global mais main id nos layouts; focus-visible em todos os interativos; tab order login e registro; validar focus-trap de 3+ modais Radix; dropdown e menu por teclado; estabilidade de foco em loading. Baseline axe-core antes das correcoes. Spec: _bmad-output/implementation-artifacts/12-1-navegacao-por-teclado-fluxos-publicos-infraestrutura-nf.md",
     "suggested_stack": null,
-    "status": "aguardando_humano",
+    "status": "em_andamento",
     "termination_reason": null,
     "started_at": "2026-06-16T19:24:33Z",
     "finished_at": null
@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Retomar clarify: aplicar resposta ao bloqueio block-001 (Q1+Q2). Q3 ja decidida (dec-009, score2): US5 eh validacao Radix. Apos integrar respostas, invocar Skill(clarify) para atualizar spec.md e avancar para plan.",
+  "next_instruction": "Iniciar etapa clarify - invocar clarify-asker e clarify-answerer.",
   "waves": [
     {
       "id": "onda-001",
@@ -52,11 +52,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-16T19:41:03Z",
-      "finished_at": "2026-06-16T19:48:25Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 442,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -67,16 +67,6 @@
         {
           "skill": "model-selector",
           "timestamp": "2026-06-16T19:43:48Z",
-          "decision_id": "dec-008"
-        },
-        {
-          "skill": "clarify-asker",
-          "timestamp": "2026-06-16T19:47:53Z",
-          "decision_id": "dec-007"
-        },
-        {
-          "skill": "clarify-answerer",
-          "timestamp": "2026-06-16T19:47:53Z",
           "decision_id": "dec-008"
         }
       ]
@@ -274,24 +264,7 @@
       "originating_artifact": null
     }
   ],
-  "human_blocks": [
-    {
-      "id": "block-001",
-      "decision_id": "dec-010",
-      "question": "CLARIFY Q1+Q2: Duas ambiguidades da Story 12.1 requerem decisao antes do plan. Q1: playwright.config cross-browser — A) SC-008 via checklist manual Task9 (nao alterar config) ou B) expandir config para Firefox+WebKit no CI? Q2: edge case foco pos-redirect — A) tech debt via Task8.3 (deferir) ou B) adicionar FR+AC+teste E2E nesta story? Responda: Q1:A Q2:A (ou variantes Q1:B Q2:A etc.)",
-      "context_for_answer": "Q1 evidencia: story Task9 'Cross-browser manual testing' subtasks 9.1-9.4; playwright.config.ts atual tem apenas chromium. Q2 evidencia: edge case listado sem FR/SC; Task8.3 'Document issues as tech debt'; WCAG 2.4.3 exige foco gerenciado em redirects. Q3 ja decidida: US5 eh validacao Radix (score2).",
-      "recommended_options": [
-        "Q1:A Q2:A",
-        "Q1:A Q2:B",
-        "Q1:B Q2:A",
-        "Q1:B Q2:B"
-      ],
-      "status": "aguardando",
-      "human_answer": null,
-      "answered_at": null,
-      "triggered_at": "2026-06-16T19:47:44Z"
-    }
-  ],
+  "human_blocks": [],
   "budgets": {
     "max_recursion": 3,
     "current_subagent_depth": 1,
@@ -306,13 +279,13 @@
     "current_wave_start": "2026-06-16T19:41:03Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 957,
+    "wallclock_total_seconds": 515,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 10,
-    "human_blocks_total": 1,
+    "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
     "cache": {
@@ -335,11 +308,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-16T19:26:26Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T19:48:58Z",
-      "description": "onda-002 clarify bloqueio_humano block-001 Q1+Q2"
     }
   ]
 }

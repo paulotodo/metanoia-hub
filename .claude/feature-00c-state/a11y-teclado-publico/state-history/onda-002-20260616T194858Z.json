@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Retomar clarify: aplicar resposta ao bloqueio block-001 (Q1+Q2). Q3 ja decidida (dec-009, score2): US5 eh validacao Radix. Apos integrar respostas, invocar Skill(clarify) para atualizar spec.md e avancar para plan.",
+  "next_instruction": "Iniciar etapa clarify - invocar clarify-asker e clarify-answerer.",
   "waves": [
     {
       "id": "onda-001",
