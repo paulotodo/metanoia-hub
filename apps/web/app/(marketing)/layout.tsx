@@ -32,7 +32,7 @@ export default function MarketingLayout({
   return (
     <div className="flex min-h-dvh flex-col bg-surface-base text-text-primary">
       <MarketingNav />
-      <main className="flex-1">{children}</main>
+      <main id="conteudo" className="flex-1">{children}</main>
       <MarketingFooter />
     </div>
   );
