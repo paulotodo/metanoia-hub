@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Continuar execute-task: FASE 2 (login/register form audit), FASE 3 (recuperar-senha keyboard), FASE 4 (convite), FASE 5 (root layout landmarks), depois FASE 6 (marketing), FASE 7 (axe-final delta), FASE 8 (review-task). Branch: feat/a11y-12-1-teclado-publico. FASE 0 (axe-baseline) e FASE 1 (skip-nav) concluidas na onda-007.",
+  "next_instruction": "Continuar execute-task: FASE 6 (testes E2E Playwright keyboard), FASE 7 (axe-final delta), FASE 8 (checklist manual + review-task). Branch: feat/a11y-12-1-teclado-publico. FASEs 0-5 concluidas.",
   "waves": [
     {
       "id": "onda-001",
@@ -184,11 +184,11 @@
     {
       "id": "onda-008",
       "started_at": "2026-06-16T22:25:43Z",
-      "finished_at": null,
+      "finished_at": "2026-06-16T22:33:02Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 0,
-      "termination_reason": null,
+      "wallclock_seconds": 439,
+      "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -912,9 +912,9 @@
     "current_wave_start": "2026-06-16T22:25:43Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3338,
+    "wallclock_total_seconds": 3777,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 36,
@@ -1029,6 +1029,139 @@
         "apps/web/app/(public)/nova-senha/[token]/page.tsx"
       ],
       "recorded_at": "2026-06-16T22:17:49Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.1",
+      "title": "Login — Auditoria e correcao de navegacao por teclado",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 5,
+      "tests_passed": 5,
+      "lint_ok": true,
+      "touched_files": [
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json",
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json.sha256",
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/_components/privacy-confirm-dialog.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "docs/specs/a11y-teclado-publico/tasks.md"
+      ],
+      "recorded_at": "2026-06-16T22:32:38Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.2",
+      "title": "Registro — Auditoria e correcao de navegacao por teclado",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 3,
+      "tests_passed": 3,
+      "lint_ok": true,
+      "touched_files": [
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json",
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json.sha256",
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/_components/privacy-confirm-dialog.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "docs/specs/a11y-teclado-publico/tasks.md"
+      ],
+      "recorded_at": "2026-06-16T22:32:38Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.1",
+      "title": "Localizar e selecionar 3 modais para validacao",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json",
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json.sha256",
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/_components/privacy-confirm-dialog.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "docs/specs/a11y-teclado-publico/tasks.md"
+      ],
+      "recorded_at": "2026-06-16T22:32:38Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.2",
+      "title": "Validar focus trap e atributos ARIA em cada modal",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json",
+        ".claude/feature-00c-state/a11y-teclado-publico/state.json.sha256",
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/_components/privacy-confirm-dialog.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "docs/specs/a11y-teclado-publico/tasks.md"
+      ],
+      "recorded_at": "2026-06-16T22:32:38Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.1",
+      "title": "Localizar e auditar componentes de dropdown",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/_components/privacy-confirm-dialog.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx"
+      ],
+      "recorded_at": "2026-06-16T22:32:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.2",
+      "title": "Validar e corrigir gaps de teclado nos dropdowns",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-16T22:32:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.1",
+      "title": "Auditar componentes skeleton",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-16T22:32:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.2",
+      "title": "Corrigir skeletons e validar estabilidade de hidratacao",
+      "wave_id": "onda-008",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-16T22:32:53Z",
       "source": "execute-task"
     }
   ]
