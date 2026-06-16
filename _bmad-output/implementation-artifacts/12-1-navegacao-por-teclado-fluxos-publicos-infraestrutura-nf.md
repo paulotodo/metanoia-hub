@@ -59,8 +59,9 @@ So that I can access the platform from the first interaction without depending o
 ## Tasks / Subtasks
 
 - [ ] Task 0: Generate axe-core baseline report (AC: baseline)
+  - [ ] 0.0 Install `@axe-core/playwright` in `apps/web` devDependencies **now** (do not wait for Story 12.6, which only formalizes the permanent gate over the same dep) + `pnpm install` and commit `pnpm-lock.yaml`; run `pnpm --filter @metanoia/web exec playwright install` for browsers
   - [ ] 0.1 Run `@axe-core/playwright` on all public flows before any fixes
-  - [ ] 0.2 Save baseline report as artifact for comparison
+  - [ ] 0.2 Save baseline report as artifact for comparison (e.g. `_bmad-output/implementation-artifacts/a11y/axe-baseline-public.json`)
 
 - [ ] Task 1: Implement skip navigation link (AC: #3)
   - [ ] 1.1 Create `apps/web/src/components/a11y/skip-nav.tsx`
@@ -68,7 +69,7 @@ So that I can access the platform from the first interaction without depending o
   - [ ] 1.3 Visually hidden by default (`sr-only`), visible on focus (`focus:not-sr-only`)
   - [ ] 1.4 Solid background `surface-elevated`, high contrast text, `z-50`
   - [ ] 1.5 Activating moves focus to `<main>` element
-  - [ ] 1.6 Add to root layout (`apps/web/src/app/layout.tsx`)
+  - [ ] 1.6 Add to root layout (`apps/web/app/layout.tsx`) and ensure a stable `<main id="conteudo">` target exists in the route-group layouts (`apps/web/app/(public)/layout.tsx`, `apps/web/app/(authenticated)/layout.tsx`, `apps/web/app/(marketing)/layout.tsx`)
 
 - [ ] Task 2: Audit and fix login flow keyboard navigation (AC: #1)
   - [ ] 2.1 Verify tab order: email → password → submit (top-to-bottom)
@@ -122,7 +123,8 @@ So that I can access the platform from the first interaction without depending o
 
 ### File Paths
 - `apps/web/src/components/a11y/skip-nav.tsx` — new skip navigation component
-- `apps/web/src/app/layout.tsx` — add skip nav to root layout
+- `apps/web/app/layout.tsx` — add skip nav to root layout (App Router lives in `apps/web/app/`, **not** `apps/web/src/app/`)
+- `apps/web/app/(public)/layout.tsx`, `apps/web/app/(authenticated)/layout.tsx`, `apps/web/app/(marketing)/layout.tsx` — route-group layouts needing a stable `<main id="conteudo">`
 - `apps/web/e2e/a11y/keyboard-public.e2e-spec.ts` — E2E tests
 - Existing components to audit: login page, registration page, sidebar, modals, skeletons
 
@@ -131,6 +133,14 @@ So that I can access the platform from the first interaction without depending o
 - `@axe-core/playwright` for automated accessibility checks
 - Radix UI (via shadcn/ui) for modal/dialog focus trap
 - Tailwind CSS 4.2.2 for `sr-only`, `focus:not-sr-only`, `focus-visible:ring-*`
+
+### Local CI Validation (reconciliação Epic 12)
+- **`prisma generate` does NOT run from the repo root** (`prisma` is a dependency of `apps/api`). Running `pnpm exec prisma generate` from root fails with `Command "prisma" not found` and the API build then collapses with ~564 false TS errors. Use:
+  ```bash
+  pnpm --filter @metanoia/api exec prisma generate
+  pnpm turbo build && pnpm turbo lint   # lint uses --max-warnings 0
+  ```
+- After adding any dependency (e.g. `@axe-core/playwright`): `pnpm install` + commit `pnpm-lock.yaml`.
 
 ### Guardrails Arquiteturais
 - Multi-tenancy: tenant_id em toda tabela, RLS obrigatório, AsyncLocalStorage (nunca parâmetro)
