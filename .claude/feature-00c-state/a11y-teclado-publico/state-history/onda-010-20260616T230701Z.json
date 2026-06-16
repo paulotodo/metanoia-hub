@@ -1142,11 +1142,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-16T22:19:06Z",
       "description": "onda-007 concluida: FASE 0 (axe-baseline) + FASE 1 (skip-nav). Aguardando proxima onda para FASE 2-8."
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T23:07:01Z",
-      "description": "onda-010 review-task concluida; PR#155 aberto"
     }
   ],
   "tasks": [

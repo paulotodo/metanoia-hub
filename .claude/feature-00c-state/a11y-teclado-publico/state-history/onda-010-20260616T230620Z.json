@@ -10,8 +10,7 @@
     "termination_reason": "concluido",
     "started_at": "2026-06-16T19:24:33Z",
     "finished_at": "2026-06-16T23:06:20Z",
-    "pr_number": "155",
-    "pr_url": "https://github.com/paulotodo/metanoia-hub/pull/155"
+    "pr_number": "155"
   },
   "prerequisites": {
     "briefing": {
@@ -216,11 +215,11 @@
     {
       "id": "onda-010",
       "started_at": "2026-06-16T23:04:27Z",
-      "finished_at": "2026-06-16T23:06:27Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 120,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -1093,9 +1092,9 @@
     "current_wave_start": "2026-06-16T23:04:27Z"
   },
   "accumulated_metrics": {
-    "waves_total": 10,
+    "waves_total": 9,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 5127,
+    "wallclock_total_seconds": 5007,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 44,
@@ -1142,11 +1141,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-16T22:19:06Z",
       "description": "onda-007 concluida: FASE 0 (axe-baseline) + FASE 1 (skip-nav). Aguardando proxima onda para FASE 2-8."
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T23:07:01Z",
-      "description": "onda-010 review-task concluida; PR#155 aberto"
     }
   ],
   "tasks": [
