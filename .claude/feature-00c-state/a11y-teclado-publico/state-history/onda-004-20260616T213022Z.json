@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "checklist",
-  "next_instruction": "Iniciar fase checklist: spec.md + plan.md prontos (plan validado/aterrado na onda-004). Invocar Skill(checklist) com dominio a11y para validar qualidade dos requisitos (FR-001..FR-013, SC-001..SC-008). Registrar decisoes. Fechar onda.",
+  "next_instruction": "Iniciar fase plan: spec.md e plan.md ja existem (clarify concluido). Invocar Skill(plan) passando spec.md + plan.md como entrada. Rodar gates pos-plan: validate-documentation + owasp-security (skip justificado se UI-only). Registrar decisoes. Fechar onda.",
   "waves": [
     {
       "id": "onda-001",
@@ -103,11 +103,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-16T21:27:42Z",
-      "finished_at": "2026-06-16T21:30:30Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 168,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -552,9 +552,9 @@
     "current_wave_start": "2026-06-16T21:27:42Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1522,
+    "wallclock_total_seconds": 1354,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 21,

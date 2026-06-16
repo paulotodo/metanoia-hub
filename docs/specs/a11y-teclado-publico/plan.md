@@ -2,9 +2,15 @@
 
 **Feature**: `a11y-teclado-publico`
 **Plan Date**: 2026-06-16
-**Status**: Draft
+**Status**: Validated (definitive technical design — paths grounded against repo)
 **Spec**: docs/specs/a11y-teclado-publico/spec.md
 **Story**: _bmad-output/implementation-artifacts/12-1-navegacao-por-teclado-fluxos-publicos-infraestrutura-nf.md
+
+> **Repo grounding (2026-06-16)**: file paths in this plan were verified against
+> the actual `apps/web/app/` tree. Key corrections vs. earlier draft:
+> registration route is `register/` (NOT `cadastro/`); there are FIVE App Router
+> layout groups including `(onboarding)`; login/register forms live in
+> `*/_components/*-form.tsx`.
 
 ---
 
@@ -32,7 +38,7 @@ Run BEFORE any code change.
 Package: @axe-core/playwright (already installed per RECONCILIACAO-EPIC12.md)
 Script: apps/web/e2e/a11y/axe-baseline.spec.ts
 Output: _bmad-output/implementation-artifacts/a11y/axe-baseline-public.json
-Flows audited: /, /login, /cadastro, /sobre (all public routes)
+Flows audited: /, /login, /register (all public routes under (public)/(marketing))
 ```
 
 The baseline is the reference for SC-006 (zero regressions introduced).
@@ -77,23 +83,31 @@ CSS (Tailwind utility class or global CSS):
 **Integration points** — add `<SkipNav />` as first child of `<body>` and
 `id="conteudo"` to `<main>` in ALL public layouts:
 
-| Layout | Path |
-|--------|------|
-| Public layout | `apps/web/app/(public)/layout.tsx` |
-| Marketing layout | `apps/web/app/(marketing)/layout.tsx` |
-| Authenticated layout | `apps/web/app/(authenticated)/layout.tsx` |
-| Root layout | `apps/web/app/layout.tsx` |
+| Layout | Path | In scope (this story) |
+|--------|------|------------------------|
+| Root layout | `apps/web/app/layout.tsx` | SkipNav as first child of `<body>` |
+| Public layout | `apps/web/app/(public)/layout.tsx` | `<main id="conteudo">` wrap | 
+| Marketing layout | `apps/web/app/(marketing)/layout.tsx` | `<main id="conteudo">` wrap |
+| Onboarding layout | `apps/web/app/(onboarding)/layout.tsx` | `<main id="conteudo">` wrap |
+| Authenticated layout | `apps/web/app/(authenticated)/layout.tsx` | `<main id="conteudo">` wrap (infra only; full authenticated keyboard nav is Story 12.2) |
 
-If a layout does not have a `<main>` element yet, wrap the `{children}` in
-`<main id="conteudo">`.
+ALL FIVE layout groups exist in the repo. The SkipNav anchor itself is placed
+once in the ROOT layout (`apps/web/app/layout.tsx`) as the first focusable
+element, satisfying FR-001 globally. Each route-group layout must expose a
+`<main id="conteudo">` target. If a layout does not have a `<main>` element yet,
+wrap `{children}` in `<main id="conteudo">`.
+
+> Scope note: touching `(authenticated)/layout.tsx` here is INFRASTRUCTURE
+> (the `<main>` target + SkipNav reach), NOT the full authenticated-area
+> keyboard audit — that remains Story 12.2 per spec Out-of-Scope.
 
 ---
 
 ### Task 2 — Login Flow Keyboard Navigation (US2, FR-002, FR-004, FR-005)
 
-**Files to audit/fix**:
-- `apps/web/app/(public)/login/page.tsx` (or equivalent path)
-- Login form component (locate via `grep -r "LoginForm\|login-form" apps/web/src`)
+**Files to audit/fix** (verified to exist):
+- `apps/web/app/(public)/login/page.tsx`
+- `apps/web/app/(public)/login/_components/login-form.tsx` (the interactive form)
 
 **Checklist**:
 - [ ] Tab order matches visual top-to-bottom order (email → password → submit)
@@ -110,9 +124,9 @@ on login form elements.
 
 ### Task 3 — Registration Flow Keyboard Navigation (US3, FR-003, FR-004, FR-005)
 
-**Files to audit/fix**:
-- `apps/web/app/(public)/cadastro/page.tsx` (or equivalent)
-- Registration form component
+**Files to audit/fix** (verified to exist):
+- `apps/web/app/(public)/register/page.tsx`
+- `apps/web/app/(public)/register/_components/register-form.tsx` (the interactive form)
 
 **Checklist**:
 - [ ] Tab order: name → email → password → password-confirm → submit
@@ -240,10 +254,11 @@ Severity classification for any finding: **blocker** (prevents use) / **major** 
 | `apps/web/src/components/a11y/skip-nav.tsx` | CREATE new | US1 |
 | `apps/web/app/(public)/layout.tsx` | MODIFY: add SkipNav + id="conteudo" on main | US1 |
 | `apps/web/app/(marketing)/layout.tsx` | MODIFY: add SkipNav + id="conteudo" on main | US1 |
-| `apps/web/app/(authenticated)/layout.tsx` | MODIFY: add SkipNav + id="conteudo" on main | US1 |
+| `apps/web/app/(authenticated)/layout.tsx` | MODIFY: add id="conteudo" on main (infra only) | US1 |
+| `apps/web/app/(onboarding)/layout.tsx` | MODIFY: add id="conteudo" on main | US1 |
 | `apps/web/app/layout.tsx` | MODIFY: add SkipNav as first child of body | US1 |
-| `apps/web/app/(public)/login/page.tsx` | AUDIT/FIX: tab order, focus-visible | US2 |
-| `apps/web/app/(public)/cadastro/page.tsx` | AUDIT/FIX: tab order, toggles | US3 |
+| `apps/web/app/(public)/login/_components/login-form.tsx` | AUDIT/FIX: tab order, focus-visible, password toggle | US2 |
+| `apps/web/app/(public)/register/_components/register-form.tsx` | AUDIT/FIX: tab order, toggles | US3 |
 | Skeleton components (multiple) | AUDIT/FIX: aria-hidden or tabindex=-1 | US6 |
 | `apps/web/e2e/a11y/axe-baseline.spec.ts` | CREATE new | US7 |
 | `apps/web/e2e/a11y/axe-final.spec.ts` | CREATE new | US7 |

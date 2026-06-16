@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar fase checklist: spec.md + plan.md prontos (plan validado/aterrado na onda-004). Invocar Skill(checklist) com dominio a11y para validar qualidade dos requisitos (FR-001..FR-013, SC-001..SC-008). Registrar decisoes. Fechar onda.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar fase plan: spec.md e plan.md ja existem (clarify concluido). Invocar Skill(plan) passando spec.md + plan.md como entrada. Rodar gates pos-plan: validate-documentation + owasp-security (skip justificado se UI-only). Registrar decisoes. Fechar onda.",
   "waves": [
     {
       "id": "onda-001",
@@ -97,28 +97,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-16T21:23:25Z",
           "decision_id": "dec-014"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-16T21:27:42Z",
-      "finished_at": "2026-06-16T21:30:30Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 168,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-16T21:28:29Z",
-          "decision_id": null
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-16T21:30:09Z",
-          "decision_id": "dec-019"
         }
       ]
     }
@@ -425,99 +403,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-16T21:28:03Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-teclado-publico)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados da feature: story epic navegacao teclado fluxos publicos infraestrutura; achados sobre Tab+Arrow keys e validacao a11y de execucoes passadas como referencia historica nao-autoritativa",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-16T21:29:27Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Validar/refinar plan.md como desenho tecnico definitivo, fiel a spec Clarified e aterrado no repo real",
-      "options_considered": [
-        "aceitar-plan-as-is",
-        "refinar-com-grounding-no-repo",
-        "reescrever"
-      ],
-      "choice": "refinar-com-grounding-no-repo",
-      "rationale": "find apps/web/app revelou 3 discrepancias factuais no plan draft: rota e register/ (nao cadastro/), existem 5 grupos de layout incluindo (onboarding) ausente no plano, forms em login/_components/login-form.tsx e register/_components/register-form.tsx. Plan corrigido com paths verificados.",
-      "justification_score": 3,
-      "evidence": "apps/web/app/(public)/register/page.tsx existe; apps/web/app/(public)/login/_components/login-form.tsx existe; layouts: (authenticated) (marketing) (onboarding) (public) + root layout.tsx; diretorio cadastro/ NAO existe",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-16T21:30:09Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality pos-plan: skill validate-documentation NAO instalada neste ambiente; aplicado check estrutural deterministico (Bash) em plan.md",
-      "options_considered": [
-        "rodar-skill",
-        "substituto-deterministico",
-        "skip"
-      ],
-      "choice": "substituto-deterministico",
-      "rationale": "validate-documentation ausente em ~/.claude/skills; check Bash confirmou: 0 placeholders TBD/TODO, 6/6 secoes obrigatorias presentes, 13/13 FRs e 7/7 US referenciados, 0 refs orfas a cadastro. Sem findings critical.",
-      "justification_score": 3,
-      "evidence": "grep TBD|TODO|FIXME = NONE; 6 secoes OK; FR-001..FR-013 ref; US1..US7 ref; cadastro so na nota de grounding (NOT cadastro/)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-16T21:30:09Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate owasp-security: feature UI-only/stateless (navegacao por teclado nos fluxos publicos), sem endpoint novo, sem authz, sem dados sensiveis, sem persistencia/DB/RLS",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Arquitetura do plan.md confirma escopo UI-only: zero API/DB/RLS, mudancas confinadas a apps/web (componente skip-nav, layouts, audit de forms, testes Playwright). Sem nova superficie de ataque OWASP/ASVS. Spec declara explicitamente feature stateless (zero scheduling/cripto/token/estado cross-pod).",
-      "justification_score": 3,
-      "evidence": "plan.md Architecture Overview: 'No database changes, no API changes, no server-side logic'; spec L9-11: feature stateless, zero token externo, sem estado cross-pod",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-16T21:30:22Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase plan concluida: plan.md validado como desenho tecnico definitivo, gates pos-plan resolvidos. Avancar para checklist.",
-      "options_considered": [
-        "avancar-para-checklist",
-        "retro-para-clarify",
-        "bloquear"
-      ],
-      "choice": "avancar-para-checklist",
-      "rationale": "plan.md aterrado no repo, fiel a spec Clarified, 13 FRs + 7 US cobertos, escopo UI-only confirmado. Gates: doc-quality pass, owasp skip auditavel.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -549,15 +434,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-16T21:27:42Z"
+    "current_wave_start": "2026-06-16T21:17:13Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1522,
+    "wallclock_total_seconds": 1354,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 21,
+    "decisions_total": 16,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -586,11 +471,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-16T19:48:58Z",
       "description": "onda-002 clarify bloqueio_humano block-001 Q1+Q2"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-16T21:27:54Z",
-      "description": "etapa=plan hits=4"
     }
   ]
 }
