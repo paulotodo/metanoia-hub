@@ -1,0 +1,77 @@
+{
+  "feature": "a11y-teclado-publico",
+  "phase": "FASE-7-final",
+  "note": "Post-implementation axe scan. Compare with axe-baseline-public.json for delta.",
+  "scanDate": "2026-06-16T22:47:41.676Z",
+  "pages": [
+    {
+      "url": "/",
+      "timestamp": "2026-06-16T22:47:36.898Z",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 25
+        }
+      ],
+      "violationCount": 1,
+      "bySeverity": {
+        "critical": 0,
+        "serious": 1,
+        "moderate": 0,
+        "minor": 0
+      }
+    },
+    {
+      "url": "/login",
+      "timestamp": "2026-06-16T22:47:38.517Z",
+      "violations": [
+        {
+          "id": "link-in-text-block",
+          "impact": "serious",
+          "description": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+          "nodes": 1
+        }
+      ],
+      "violationCount": 1,
+      "bySeverity": {
+        "critical": 0,
+        "serious": 1,
+        "moderate": 0,
+        "minor": 0
+      }
+    },
+    {
+      "url": "/register",
+      "timestamp": "2026-06-16T22:47:39.961Z",
+      "violations": [],
+      "violationCount": 0,
+      "bySeverity": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0
+      }
+    },
+    {
+      "url": "/recuperar-senha",
+      "timestamp": "2026-06-16T22:47:41.540Z",
+      "violations": [],
+      "violationCount": 0,
+      "bySeverity": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0
+      }
+    }
+  ],
+  "totalViolations": 2,
+  "aggregatedBySeverity": {
+    "critical": 0,
+    "serious": 2,
+    "moderate": 0,
+    "minor": 0
+  }
+}
