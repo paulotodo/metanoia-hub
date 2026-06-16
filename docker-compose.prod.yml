@@ -371,4 +371,14 @@ volumes:
 #      docker service update --network-add metanoia-edge traefik_traefik
 #    As labels traefik.* de cada serviço criam as rotas + certificado Let's Encrypt
 #    (resolver `letsencryptresolver`, já configurado no Traefik).
+#
+# 7. LIVEKIT / MÍDIA UDP: a mídia WebRTC usa 7882/udp (mux) + 7881/tcp (fallback),
+#    publicadas no host — abra essas portas no firewall de borda (ex.: Hetzner
+#    Cloud Firewall) além do 443. Tuning de host recomendado (o LiveKit avisa que
+#    o buffer UDP default é pequeno) — criar /etc/sysctl.d/99-metanoia-livekit-udp.conf:
+#      net.core.rmem_max = 5000000
+#      net.core.wmem_max = 5000000
+#    e aplicar: sysctl -p /etc/sysctl.d/99-metanoia-livekit-udp.conf (depois
+#    reinicie o livekit). A URL pública (wss) é entregue ao browser via
+#    LIVEKIT_PUBLIC_URL; LIVEKIT_URL (interno) é só para a API gerenciar salas.
 # ============================================================
