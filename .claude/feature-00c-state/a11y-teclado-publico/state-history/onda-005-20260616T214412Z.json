@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar fase execute-task: tasks.md pronto (FASE 0-8, 19 tarefas). Executar Task 0.1 (axe-baseline) e Task 0.2 (baseline scan) primeiro — ANTES de qualquer code change. Depois FASE 1 (skip-nav component + layouts). Branch: feat/a11y-12-1-teclado-publico. PR -> CI -> squash-merge em dev.",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar fase create-tasks: spec.md + plan.md + checklist a11y.md prontos. Invocar Skill(create-tasks) para gerar tasks.md com todas as tasks de implementacao da feature (Tasks 0-9 conforme plan.md). Aplicar gates de template-fidelity e docs-render pos-geracao. Registrar decisoes. Fechar onda.",
   "waves": [
     {
       "id": "onda-001",
@@ -136,35 +136,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-16T21:40:25Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-006",
-      "started_at": "2026-06-16T21:45:43Z",
-      "finished_at": "2026-06-16T22:00:17Z",
-      "executed_stages": [
-        "create-tasks"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 874,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-16T21:56:36Z",
-          "decision_id": "dec-026"
-        },
-        {
-          "skill": "validate-tasks-template",
-          "timestamp": "2026-06-16T21:59:23Z",
-          "decision_id": "dec-027"
-        },
-        {
-          "skill": "validate-docs-rendered",
-          "timestamp": "2026-06-16T21:59:49Z",
-          "decision_id": "dec-028"
         }
       ]
     }
@@ -622,100 +593,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-16T21:44:12Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 5 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-16T21:46:10Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio fase create-tasks: spec.md + plan.md + checklist prontos. Tasks 0-9 definidas no plan.md",
-      "options_considered": [
-        "iniciar",
-        "abortar"
-      ],
-      "choice": "iniciar",
-      "rationale": "Spec clarificada (dec-012,dec-013,dec-009), plan.md aterrado/validado, 0 bloqueios pendentes, BUDGET_OK",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-16T21:59:23Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: validate-tasks-template.sh critical=0 warning=0",
-      "options_considered": [
-        "aceitar-conformante",
-        "re-normalizar",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-conformante",
-      "rationale": "Primeira versão falhou (tags sem backticks, legendas com nomes diferentes). Corrigida e revalidada: critical=0 warning=0.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-16T21:59:49Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate docs-render: 1 bloco Mermaid válido, todos code blocks fechados, sem links 404",
-      "options_considered": [
-        "aceitar-conformante",
-        "corrigir",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-conformante",
-      "rationale": "Mermaid flowchart TD parseável, 2 code blocks abertura/fechamento verificados, zero links MD internos no arquivo",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-16T22:00:03Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase create-tasks concluída: tasks.md gerado (FASE 0-8, 19 tarefas, 90 subtarefas)",
-      "options_considered": [
-        "concluir-e-avançar-para-execute-task",
-        "abortar"
-      ],
-      "choice": "concluir-e-avançar-para-execute-task",
-      "rationale": "tasks.md gerado e aprovado nos gates template-fidelity (critical=0,warning=0) e docs-render (Mermaid OK). Próxima fase: execute-task (Task 0 = axe-baseline)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -747,15 +624,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-16T21:45:43Z"
+    "current_wave_start": "2026-06-16T21:36:23Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2683,
+    "wallclock_total_seconds": 1809,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 29,
+    "decisions_total": 24,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
