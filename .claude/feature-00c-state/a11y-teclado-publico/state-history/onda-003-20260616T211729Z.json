@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar fase plan: spec.md e plan.md ja existem (clarify concluido). Invocar Skill(plan) passando spec.md + plan.md como entrada. Rodar gates pos-plan: validate-documentation + owasp-security (skip justificado se UI-only). Registrar decisoes. Fechar onda.",
+  "current_stage": "clarify",
+  "next_instruction": "Retomar clarify: aplicar resposta ao bloqueio block-001 (Q1+Q2). Q3 ja decidida (dec-009, score2): US5 eh validacao Radix. Apos integrar respostas, invocar Skill(clarify) para atualizar spec.md e avancar para plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -84,21 +84,13 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-16T21:17:13Z",
-      "finished_at": "2026-06-16T21:23:50Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 397,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-16T21:23:25Z",
-          "decision_id": "dec-014"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -329,60 +321,6 @@
       "evidence": "human_answer block-001: Q1 = A (manual checklist task 9, nao expandir playwright CI)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-16T21:17:29Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q2 block-001: edge case foco apos redirect pos-login — tech debt vs FR/AC/teste nesta story",
-      "options_considered": [
-        "tech-debt-task8.3-deferir-12.2",
-        "adicionar-fr-ac-teste-nesta-story"
-      ],
-      "choice": "tech-debt-task8.3-deferir-12.2",
-      "rationale": "Resposta humana Q2=A: edge case de foco apos redirect pos-login eh TECH DEBT. Documentar no relatorio axe (Task 8.3) e DEFERIR para Story 12.2 (fluxos autenticados). NAO adicionar FR/AC/teste E2E para isso nesta story.",
-      "justification_score": 3,
-      "evidence": "human_answer block-001: Q2 = A (tech debt Task 8.3, deferir Story 12.2)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-16T21:17:38Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Aplicacao de respostas humanas block-001 — integrar Q1+Q2+Q3(ja decidida dec-009) na spec.md",
-      "options_considered": [
-        "aplicar-respostas",
-        "solicitar-clarificacao-adicional"
-      ],
-      "choice": "aplicar-respostas",
-      "rationale": "Q1=A(manual checklist), Q2=A(tech debt Task8.3), Q3=ja_decidida(dec-009 validacao-radix). Atualizar spec.md: SC-008 torna-se manual; edge case foco pos-redirect vai para section Tech Debt; US5 mantida com Radix.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-16T21:23:25Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Conclusao da fase clarify — todas perguntas respondidas, spec.md atualizada com Clarifications+TechDebt, plan.md criado",
-      "options_considered": [
-        "avancar-para-plan",
-        "solicitar-mais-clarificacoes"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "Q1+Q2+Q3 respondidas (dec-012, dec-013, dec-009). spec.md atualizado com secao Clarifications e TechDebt Deferido. plan.md criado com 9 tasks cobrindo US1-US7. Nenhuma ambiguidade restante.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -417,12 +355,12 @@
     "current_wave_start": "2026-06-16T21:17:13Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1354,
+    "wallclock_total_seconds": 957,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 15,
+    "decisions_total": 12,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

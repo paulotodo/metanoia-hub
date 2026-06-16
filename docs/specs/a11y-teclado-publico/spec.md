@@ -12,6 +12,30 @@
 
 ---
 
+## Clarifications
+
+Decisoes de clarify aplicadas em 2026-06-16 (block-001 respondido):
+
+- **Q1 — Cross-browser testing strategy** (dec-012, score 3):
+  SC-008 e verificado via CHECKLIST MANUAL (Task 9) em Chrome, Firefox e
+  Safari. O `playwright.config.ts` NAO e expandido com projetos Firefox/WebKit
+  no CI — a automatizacao E2E permanece apenas em Chromium. Qualquer finding
+  residual cross-browser deve ser classificado como blocker/major/minor no
+  checklist manual da Task 9.
+
+- **Q2 — Focus edge case after post-login redirect** (dec-013, score 3):
+  O cenario de foco apos redirect pos-login e TECH DEBT desta story. Sera
+  documentado no relatorio axe (Task 8.3) e DEFERIDO para a Story 12.2
+  (fluxos autenticados). Esta story NAO adiciona FR, AC nem teste E2E para
+  esse cenario. Ver secao "Tech Debt Deferido" ao final desta spec.
+
+- **Q3 — US5 Dropdowns e sidebar** (dec-009, score 2):
+  Menus dropdown e sidebar usam Radix UI via shadcn (DropdownMenu, NavigationMenu).
+  A abordagem e validacao E2E + correcao pontual de gaps no comportamento Radix
+  existente — NAO implementacao custom de comportamento de teclado.
+
+---
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Skip Navigation Link (Priority: P1)
@@ -321,8 +345,31 @@ executar novamente e comparar - o numero de violacoes deve ser igual ou menor.
 
 - **SC-007**: All 6 functional areas (skip nav, login, register, modals, dropdowns,
   skeletons) have corresponding automated E2E keyboard interaction tests that pass
-  in CI.
+  in CI (Chromium only — single-browser automated CI per Q1 decision dec-012).
 
-- **SC-008**: Cross-browser verification passes in Chrome, Firefox, and Safari for
-  all keyboard navigation scenarios in this story, with documented severity
+- **SC-008**: Cross-browser verification (Chrome, Firefox, Safari) is performed via
+  MANUAL CHECKLIST in Task 9 — NOT automated multi-browser CI. All keyboard
+  navigation scenarios must pass the manual checklist with documented severity
   classification (blocker / major / minor) for any residual finding.
+  (Decision dec-012, score 3 — human answer Q1=A, 2026-06-16)
+
+---
+
+## Tech Debt Deferido
+
+### TD-001 — Focus management after post-login redirect
+
+**Scope**: After the login form submits and redirects to the authenticated area,
+the browser focus position is undefined — it may land on `body` or be lost
+entirely, disorienting keyboard users.
+
+**Why deferred**: This story covers PUBLIC flows (pre-auth) only. The redirect
+target is an authenticated page (Story 12.2 scope). Adding FR/AC/E2E tests for
+this edge case here would expand the scope beyond public flows and create coupling
+between stories.
+
+**Action**: Document in the axe audit report (Task 8.3) under "Known Issues /
+Accepted Tech Debt". Assign to Story 12.2 (authenticated flows, keyboard
+navigation).
+
+**Reference**: block-001 Q2=A, dec-013, score 3.
