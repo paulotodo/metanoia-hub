@@ -171,13 +171,11 @@
     {
       "id": "onda-007",
       "started_at": "2026-06-16T22:07:52Z",
-      "finished_at": "2026-06-16T22:18:47Z",
-      "executed_stages": [
-        "execute-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 655,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": []
     }
@@ -856,9 +854,9 @@
     "current_wave_start": "2026-06-16T22:07:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3338,
+    "wallclock_total_seconds": 2683,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 34,
@@ -900,11 +898,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-16T21:41:37Z",
       "description": "onda-005 concluida; proxima fase: create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T22:19:06Z",
-      "description": "onda-007 concluida: FASE 0 (axe-baseline) + FASE 1 (skip-nav). Aguardando proxima onda para FASE 2-8."
     }
   ],
   "tasks": [

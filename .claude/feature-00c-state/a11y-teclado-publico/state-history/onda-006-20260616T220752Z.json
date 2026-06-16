@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Continuar execute-task: FASE 2 (login/register form audit), FASE 3 (recuperar-senha keyboard), FASE 4 (convite), FASE 5 (root layout landmarks), depois FASE 6 (marketing), FASE 7 (axe-final delta), FASE 8 (review-task). Branch: feat/a11y-12-1-teclado-publico. FASE 0 (axe-baseline) e FASE 1 (skip-nav) concluidas na onda-007.",
+  "next_instruction": "Iniciar fase execute-task: tasks.md pronto (FASE 0-8, 19 tarefas). Executar Task 0.1 (axe-baseline) e Task 0.2 (baseline scan) primeiro — ANTES de qualquer code change. Depois FASE 1 (skip-nav component + layouts). Branch: feat/a11y-12-1-teclado-publico. PR -> CI -> squash-merge em dev.",
   "waves": [
     {
       "id": "onda-001",
@@ -167,19 +167,6 @@
           "decision_id": "dec-028"
         }
       ]
-    },
-    {
-      "id": "onda-007",
-      "started_at": "2026-06-16T22:07:52Z",
-      "finished_at": "2026-06-16T22:18:47Z",
-      "executed_stages": [
-        "execute-task"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 655,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -749,79 +736,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-031",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-16T22:08:00Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio de execucao onda-007: FASE 0 axe-baseline",
-      "options_considered": [
-        "iniciar-fase0",
-        "aguardar",
-        "abortar"
-      ],
-      "choice": "iniciar-fase0",
-      "rationale": "State hash OK, 0 bloqueios pendentes, budget OK. Executar Task 0.1 (setup axe-core) e Task 0.2 (baseline scan) antes de qualquer mudanca de codigo.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-032",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-16T22:12:48Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 0.1 completa: @axe-core/playwright instalado e browsers configurados",
-      "options_considered": [
-        "instalar-axe",
-        "pular"
-      ],
-      "choice": "instalar-axe",
-      "rationale": "@axe-core/playwright ^4.11.3 adicionado ao package.json de apps/web; playwright install chromium executado com sucesso.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-033",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-16T22:12:57Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 0.2 completa: axe-baseline scan executado, 5 violacoes pre-existentes documentadas",
-      "options_considered": [
-        "executar-scan",
-        "diferir"
-      ],
-      "choice": "executar-scan",
-      "rationale": "4 paginas escaneadas: total=5 violations (critical:0 serious:2 moderate:3 minor:0). Salvo em _bmad-output/implementation-artifacts/a11y/axe-baseline-public.json. CHK032 aplicado: violacoes sao tech debt.",
-      "justification_score": 3,
-      "evidence": "4 passed (8.8s): home-marketing 1viol(serious:1), login 1viol(serious:1), register 0viol, recuperar-senha 3viol(moderate:3)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-034",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-16T22:17:49Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 1 concluida: SkipNav criado e integrado em todos os 5 layouts",
-      "options_considered": [
-        "concluir-fase1",
-        "diferir"
-      ],
-      "choice": "concluir-fase1",
-      "rationale": "Build OK, lint OK, 6/6 testes vitest passando. SkipNav em root layout + id=conteudo em 4 layouts (public/marketing/onboarding/authenticated). Landmark duplicate main em recuperar-senha/nova-senha corrigido.",
-      "justification_score": 3,
-      "evidence": "pnpm turbo build: 2 successful (20.8s); pnpm turbo lint: 2 successful; vitest: 6 passed (6)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -853,15 +767,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-16T22:07:52Z"
+    "current_wave_start": "2026-06-16T21:45:43Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3338,
+    "wallclock_total_seconds": 2683,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 34,
+    "decisions_total": 30,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -900,80 +814,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-16T21:41:37Z",
       "description": "onda-005 concluida; proxima fase: create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T22:19:06Z",
-      "description": "onda-007 concluida: FASE 0 (axe-baseline) + FASE 1 (skip-nav). Aguardando proxima onda para FASE 2-8."
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "0.1",
-      "title": "Verificar instalacao e configurar ambiente axe",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/package.json",
-        "apps/web/playwright.config.ts"
-      ],
-      "recorded_at": "2026-06-16T22:13:04Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "0.2",
-      "title": "Criar script axe-baseline e gerar relatorio",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 4,
-      "tests_passed": 4,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/a11y/axe-baseline.spec.ts",
-        "_bmad-output/implementation-artifacts/a11y/axe-baseline-public.json",
-        "_bmad-output/implementation-artifacts/a11y/axe-baseline-notes.md"
-      ],
-      "recorded_at": "2026-06-16T22:13:10Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.1",
-      "title": "Criar componente SkipNav",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 6,
-      "tests_passed": 6,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/a11y/skip-nav.tsx",
-        "apps/web/src/components/a11y/__tests__/skip-nav.spec.tsx",
-        "apps/web/messages/pt-BR.json"
-      ],
-      "recorded_at": "2026-06-16T22:17:38Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.2",
-      "title": "Integrar SkipNav nos layouts App Router",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/layout.tsx",
-        "apps/web/app/(public)/layout.tsx",
-        "apps/web/app/(marketing)/layout.tsx",
-        "apps/web/app/(onboarding)/layout.tsx",
-        "apps/web/app/(authenticated)/_components/navigation-shell.tsx",
-        "apps/web/app/(public)/recuperar-senha/page.tsx",
-        "apps/web/app/(public)/nova-senha/[token]/page.tsx"
-      ],
-      "recorded_at": "2026-06-16T22:17:49Z",
-      "source": "execute-task"
     }
   ]
 }

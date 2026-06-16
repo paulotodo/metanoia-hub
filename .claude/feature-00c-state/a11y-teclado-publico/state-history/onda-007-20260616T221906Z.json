@@ -900,11 +900,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-16T21:41:37Z",
       "description": "onda-005 concluida; proxima fase: create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-16T22:19:06Z",
-      "description": "onda-007 concluida: FASE 0 (axe-baseline) + FASE 1 (skip-nav). Aguardando proxima onda para FASE 2-8."
     }
   ],
   "tasks": [
