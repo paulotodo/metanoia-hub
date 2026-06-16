@@ -22,6 +22,9 @@ env:
   REDIS_PORT: '6380'
   REDIS_URL: redis://localhost:6380
   KEYCLOAK_URL: http://localhost:8081
+  # Issuer is validated against KEYCLOAK_PUBLIC_URL (auth fix ccfccfd). In CI the test
+  # Keycloak runs start-dev on localhost:8081, so tokens carry that issuer.
+  KEYCLOAK_PUBLIC_URL: http://localhost:8081
   KEYCLOAK_REALM: metanoia
   KEYCLOAK_CLIENT_ID: metanoia-web
   MINIO_ENDPOINT: http://localhost:9002

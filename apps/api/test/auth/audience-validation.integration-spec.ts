@@ -79,6 +79,9 @@ describe('Audience validation (integration with real jose)', () => {
             get: (key: string) => {
               const map: Record<string, string> = {
                 KEYCLOAK_URL: 'http://localhost:8080',
+                // Issuer is validated against KEYCLOAK_PUBLIC_URL (auth fix ccfccfd);
+                // it must match the ISSUER the test signs tokens with.
+                KEYCLOAK_PUBLIC_URL: 'http://localhost:8080',
                 KEYCLOAK_REALM: 'metanoia',
                 KEYCLOAK_EXPECTED_AUDIENCE: EXPECTED_AUDIENCE,
               };
