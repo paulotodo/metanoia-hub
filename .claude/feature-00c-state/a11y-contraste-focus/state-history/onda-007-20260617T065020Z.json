@@ -170,17 +170,6 @@
           "decision_id": "dec-027"
         }
       ]
-    },
-    {
-      "id": "onda-008",
-      "started_at": "2026-06-17T06:50:20Z",
-      "finished_at": null,
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 0,
-      "termination_reason": null,
-      "next_wave_scheduled_for": null,
-      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -751,25 +740,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-031",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T06:54:39Z",
-      "stage": "execute-task-fase5",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 5 concluída: relatório final gerado, gates passando, tasks.md 100% done",
-      "options_considered": [
-        "concluir",
-        "reabrir-fase-anterior",
-        "abortar"
-      ],
-      "choice": "concluir",
-      "rationale": "Gates: build 3/3, lint 4/4, tests 783/783, check-contrast 0 HARD, focus-ring 0 proibidas. Relatório final criado em docs/specs/a11y-contraste-focus/final-report.md. Todas as 60 tasks marcadas done.",
-      "justification_score": 3,
-      "evidence": "check-contrast-tokens.mjs: 0 falha(s) HARD | 1 aviso(s) WARN; check-focus-ring-variants.sh: focus-ring-guard: OK (0 variantes proibidas); Tests: 783 passed (783)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -784,7 +754,7 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T06:50:20Z"
+    "current_wave_start": "2026-06-17T06:35:34Z"
   },
   "accumulated_metrics": {
     "waves_total": 8,
@@ -792,7 +762,7 @@
     "wallclock_total_seconds": 3490,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 31,
+    "decisions_total": 30,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

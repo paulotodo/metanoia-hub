@@ -68,7 +68,7 @@ e produz relatório de casos que precisam de revisão manual.
 - `apps/web/scripts/codemod-focus-ring.mjs` (criar)
 
 **Subtarefas:**
-- [ ] 0.1.1 Criar `apps/web/scripts/codemod-focus-ring.mjs` com modo `--dry-run` e `--apply`
+- [x] 0.1.1 Criar `apps/web/scripts/codemod-focus-ring.mjs` com modo `--dry-run` e `--apply`
   - Substituições automatizadas (SEM revisão manual):
     - `ring-interactive-focus` → `ring-brand-teal/30` (38× detectadas)
     - `ring-ring` → `ring-brand-teal/30` (21× detectadas)
@@ -81,10 +81,10 @@ e produz relatório de casos que precisam de revisão manual.
     - `ring-blue-500` (revisar manualmente antes de decidir)
   - Suporte a linhas com múltiplas classes (CHK008/CHK020): o script aplica substituições por
     token, não por linha — seguro para múltiplas variantes na mesma className
-- [ ] 0.1.2 Executar `node apps/web/scripts/codemod-focus-ring.mjs --dry-run` e capturar saída
-- [ ] 0.1.3 Revisar relatório dry-run: confirmar lista de arquivos afetados e identificar
+- [x] 0.1.2 Executar `node apps/web/scripts/codemod-focus-ring.mjs --dry-run` e capturar saída
+- [x] 0.1.3 Revisar relatório dry-run: confirmar lista de arquivos afetados e identificar
   qualquer caso adicional com cor semântica não prevista
-- [ ] 0.1.4 Para cada caso ambíguo detectado no dry-run: registrar decisão explícita
+- [x] 0.1.4 Para cada caso ambíguo detectado no dry-run: registrar decisão explícita
   (substituir ou preservar) antes de aplicar `--apply`
 
 **Critério de aceite:**
@@ -108,7 +108,7 @@ Ref: spec §FR-04/FR-05/FR-06, plan §A/Eixo-A, US-2
 - `packages/ui/styles/tokens.css`
 
 **Subtarefas:**
-- [ ] 1.1.1 Em `packages/config/tailwind.preset.css`, adicionar comentários acima de cada token:
+- [x] 1.1.1 Em `packages/config/tailwind.preset.css`, adicionar comentários acima de cada token:
   ```css
   /* care-attention #d4a24c: contraste 2.22:1 sobre surface — NÃO usar como texto.
      Uso permitido: FUNDO de badge com texto interno text-primary (#17252a = 6.80:1 PASS).
@@ -123,9 +123,9 @@ Ref: spec §FR-04/FR-05/FR-06, plan §A/Eixo-A, US-2
      apenas fundo/decorativo. */
   --color-brand-teal-light: #3aafa9;
   ```
-- [ ] 1.1.2 Em `packages/ui/styles/tokens.css`, espelhar os mesmos comentários nos tokens
+- [x] 1.1.2 Em `packages/ui/styles/tokens.css`, espelhar os mesmos comentários nos tokens
   correspondentes do bloco `.dark` (confirmar que dark já passa — dec-007; comentar rationale)
-- [ ] 1.1.3 Verificar que `--color-text-muted` (#8e8d8a) NÃO recebe alteração de valor hex
+- [x] 1.1.3 Verificar que `--color-text-muted` (#8e8d8a) NÃO recebe alteração de valor hex
   (dec-018/dec-006: hex intocado; apenas uso via classes é corrigido nas tasks seguintes)
 
 **Critério de aceite:**
@@ -146,12 +146,12 @@ Ref: spec §US-2/US-4, plan §Eixo-A (Correção de uso real), CHK014 (dec-018)
 - `apps/web/src/components/meetings/meeting-card.tsx` (linha ~80)
 
 **Subtarefas:**
-- [ ] 1.2.1 Localizar o botão com `bg-care-ok ... text-white` (linha ~80)
-- [ ] 1.2.2 Substituir `text-white` → `text-primary` nesse elemento
+- [x] 1.2.1 Localizar o botão com `bg-care-ok ... text-white` (linha ~80)
+- [x] 1.2.2 Substituir `text-white` → `text-primary` nesse elemento
   (text-primary #17252a sobre care-ok #7ba38a = 5.58:1 PASS)
-- [ ] 1.2.3 Verificar visualmente que o contraste do botão "join meeting" está legível
+- [x] 1.2.3 Verificar visualmente que o contraste do botão "join meeting" está legível
   e que text-primary (#17252a escuro) sobre fundo verde care-ok é aceitável esteticamente
-- [ ] 1.2.4 Se `STATUS_CLASSES` usa `text-care-ok` / `text-care-attention` como texto
+- [x] 1.2.4 Se `STATUS_CLASSES` usa `text-care-ok` / `text-care-attention` como texto
   (linhas 13-16), avaliar: se é texto de leitura em destaque de status, trocar para
   `text-secondary`; se é apenas classe de cor de ícone decorativo, pode manter com
   documentação. Registrar decisão explícita.
@@ -172,17 +172,17 @@ Ref: spec §US-2/US-4, plan §Eixo-A (post-meeting-report.tsx:125,131), CHK014 (
 - `apps/web/src/components/meetings/post-meeting-report.tsx` (linhas ~125, ~131, ~137)
 
 **Subtarefas:**
-- [ ] 1.3.1 Inspecionar contexto de uso das classes `text-care-ok` (linha ~125),
+- [x] 1.3.1 Inspecionar contexto de uso das classes `text-care-ok` (linha ~125),
   `text-care-attention` (linha ~131), `text-care-alert` (linha ~137 e ~40)
-- [ ] 1.3.2 Para cada uso como texto de leitura (ex: `<dd className="text-base font-medium text-care-ok">`):
+- [x] 1.3.2 Para cada uso como texto de leitura (ex: `<dd className="text-base font-medium text-care-ok">`):
   - Opção preferida: trocar para `text-secondary` (semântica neutra, 6.58:1 PASS) +
     manter o ícone care-* como indicador visual de semântica
   - Alternativa: envolver em badge com `bg-care-ok text-primary` se o contexto exigir
     destaque colorido
-- [ ] 1.3.3 Para `text-care-alert` / `text-sm text-care-alert` (linha ~40 — mensagem de erro):
+- [x] 1.3.3 Para `text-care-alert` / `text-sm text-care-alert` (linha ~40 — mensagem de erro):
   Avaliar ratio de `care-alert` sobre surface. Se < 4.5:1, trocar para `text-destructive`
   (ou cor de erro que passe). Registrar decisão com ratio calculado.
-- [ ] 1.3.4 Garantir que ícone/label ainda identifica semanticamente o status após a troca
+- [x] 1.3.4 Garantir que ícone/label ainda identifica semanticamente o status após a troca
   (cor não é único indicador — WCAG 1.4.1)
 
 **Critério de aceite:**
@@ -214,18 +214,18 @@ leitura em marketing/), NÃO a alteração do hex --color-text-muted.
 - `apps/web/src/components/marketing/marketing-nav.tsx` (linha ~36)
 
 **Subtarefas:**
-- [ ] 2.1.1 Substituir `text-[var(--color-text-muted)]` → `text-secondary` em todos os textos
+- [x] 2.1.1 Substituir `text-[var(--color-text-muted)]` → `text-secondary` em todos os textos
   de LEITURA dos arquivos acima (onde seja corpo de texto, legendas, labels)
   - `text-secondary` (#5c5a57) = 6.58:1 sobre surface-base (#fafaf8) — PASS
   - Verificar que a substituição não quebra layouts (text-secondary é mais escuro)
-- [ ] 2.1.2 Exceção: manter `text-muted` (ou equivalente decorativo) apenas em elementos
+- [x] 2.1.2 Exceção: manter `text-muted` (ou equivalente decorativo) apenas em elementos
   NÃO-textuais (ex: ícone `+` do FAQ toggle em `faq-accordion.tsx:29`). Documentar exceções.
-- [ ] 2.1.3 Para `hero-section.tsx:13` (subtítulo principal — texto grande): verificar se
+- [x] 2.1.3 Para `hero-section.tsx:13` (subtítulo principal — texto grande): verificar se
   texto grande com ratio ≥ 3:1 é suficiente (WCAG AA para texto grande ≥ 18pt/14pt-bold).
   Se 3.18:1 for suficiente para texto grande, pode manter muted com comentário. Registrar ratio+decisão.
-- [ ] 2.1.4 Para `marketing-footer.tsx` e `marketing-nav.tsx` (links): se o axe reporta
+- [x] 2.1.4 Para `marketing-footer.tsx` e `marketing-nav.tsx` (links): se o axe reporta
   `link-in-text-block`, adicionar `underline underline-offset-2` além de trocar cor
-- [ ] 2.1.5 Rodar `pnpm turbo build && pnpm turbo lint --max-warnings 0` para garantir sem regressão
+- [x] 2.1.5 Rodar `pnpm turbo build && pnpm turbo lint --max-warnings 0` para garantir sem regressão
 
 **Critério de aceite:**
 - `grep -rn 'text-\[var(--color-text-muted)\]' apps/web/src/components/marketing/` retorna 0
@@ -245,12 +245,12 @@ Ref: spec §US-1/FR-02, plan §B2, teste T5
 - `apps/web/app/(public)/login/__tests__/login-forgot-link.spec.tsx` (estender)
 
 **Subtarefas:**
-- [ ] 2.2.1 Localizar o elemento do link "Esqueceu a senha?" em `login-form.tsx:145`
-- [ ] 2.2.2 Adicionar `underline underline-offset-2` ao `className` do link (torna distinguível
+- [x] 2.2.1 Localizar o elemento do link "Esqueceu a senha?" em `login-form.tsx:145`
+- [x] 2.2.2 Adicionar `underline underline-offset-2` ao `className` do link (torna distinguível
   sem depender de cor — resolve WCAG 1.4.1 / link-in-text-block)
-- [ ] 2.2.3 Verificar i18n: o texto é servido via `t.forgotPassword` — não alterar o valor
+- [x] 2.2.3 Verificar i18n: o texto é servido via `t.forgotPassword` — não alterar o valor
   de tradução em `apps/web/messages/pt-BR.json`
-- [ ] 2.2.4 Estender `login/__tests__/login-forgot-link.spec.tsx` (ou criar se não existir):
+- [x] 2.2.4 Estender `login/__tests__/login-forgot-link.spec.tsx` (ou criar se não existir):
   asserir que o link possui `underline` no className e contraste adequado via jest-axe
 
 **Critério de aceite:**
@@ -272,15 +272,15 @@ Ref: spec §US-3/SC-3.1, plan §C1/FR-07
 - `packages/ui/styles/globals.css` (linha ~43)
 
 **Subtarefas:**
-- [ ] 3.1.1 Confirmar que `--ring` aponta para `brand-teal` (via `var(--color-interactive-focus-ring)`)
-- [ ] 3.1.2 Adicionar comentário inline documentando o padrão canônico:
+- [x] 3.1.1 Confirmar que `--ring` aponta para `brand-teal` (via `var(--color-interactive-focus-ring)`)
+- [x] 3.1.2 Adicionar comentário inline documentando o padrão canônico:
   ```css
   /* --ring: token shadcn canonical de focus-ring. Aponta para brand-teal (#2b7a78 = 5.05:1 PASS).
      Padrão canônico de uso: focus-visible:outline-none focus-visible:ring-2
      focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2 */
   --ring: var(--color-interactive-focus-ring);
   ```
-- [ ] 3.1.3 Se `--ring` NÃO apontar para brand-teal: corrigir o valor antes das tasks seguintes
+- [x] 3.1.3 Se `--ring` NÃO apontar para brand-teal: corrigir o valor antes das tasks seguintes
   (bloqueia 3.2 e 4.2)
 
 **Critério de aceite:**
@@ -314,22 +314,22 @@ Nenhum caso é semântico especial.
 - `apps/web/src/components/content/trail-card.tsx` (focus-within:ring-primary → focus-within:ring-brand-teal/30)
 
 **Subtarefas:**
-- [ ] 3.2.1 Aplicar `node apps/web/scripts/codemod-focus-ring.mjs --apply` (após dry-run de 0.1)
-- [ ] 3.2.2 Verificar que `ring-red-500` (delete-group-dialog.tsx:106) NÃO foi alterado
-- [ ] 3.2.3 Verificar que `ring-brand-primary/30` (OnboardingWizard.tsx:181) NÃO foi alterado
-- [ ] 3.2.4 Para linhas com múltiplas classes de ring (CHK008): verificar que apenas a classe de
+- [x] 3.2.1 Aplicar `node apps/web/scripts/codemod-focus-ring.mjs --apply` (após dry-run de 0.1)
+- [x] 3.2.2 Verificar que `ring-red-500` (delete-group-dialog.tsx:106) NÃO foi alterado
+- [x] 3.2.3 Verificar que `ring-brand-primary/30` (OnboardingWizard.tsx:181) NÃO foi alterado
+- [x] 3.2.4 Para linhas com múltiplas classes de ring (CHK008): verificar que apenas a classe de
   focus-ring foi substituída, sem duplicação ou remoção de outras classes
-- [ ] 3.2.5 Rodar `pnpm turbo build && pnpm turbo lint --max-warnings 0`
+- [x] 3.2.5 Rodar `pnpm turbo build && pnpm turbo lint --max-warnings 0`
 
 **CHK011 — Lint guardian (integrado nesta task):**
-- [ ] 3.2.6 Adicionar regra ESLint ou script de guarda em CI para impedir novas ocorrências de
+- [x] 3.2.6 Adicionar regra ESLint ou script de guarda em CI para impedir novas ocorrências de
   `ring-interactive-focus`, `ring-ring`, `ring-[var(--ring)]`, `ring-[var(--color-brand-teal)]` e
   `ring-primary` em novos arquivos. Opções:
   - Script `check-focus-ring-variants.sh` rodando `grep -rn 'ring-interactive-focus\|ring-ring\|ring-\[var(--ring' ...`
     com exit 1 se > 0 resultados (exceto comentários)
   - OU regra ESLint `no-restricted-syntax` com regex (se ESLint cobre classNames)
   - Preferir script Bash (determinístico, sem dependência ESLint de análise de className)
-- [ ] 3.2.7 Adicionar o script guardião ao job `lint` do `.github/workflows/ci.yml`
+- [x] 3.2.7 Adicionar o script guardião ao job `lint` do `.github/workflows/ci.yml`
   (sem alterar env de produção — conforme SC-5.5 do plan)
 
 **Critério de aceite:**
@@ -351,17 +351,17 @@ Ref: spec §SC-3.3/NC-3, plan §C3, CHK008
 - `apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx` (linha ~181)
 
 **Subtarefas:**
-- [ ] 3.3.1 `delete-group-dialog.tsx:106` — `ring-red-500` (ação destrutiva):
+- [x] 3.3.1 `delete-group-dialog.tsx:106` — `ring-red-500` (ação destrutiva):
   - Confirmar que é `focus-visible:ring-red-500` (foco semântico de ação destrutiva)
   - Calcular contraste de red-500 (#ef4444) sobre fundos usados: verificar ≥ 3:1 (WCAG 1.4.11)
   - Se passa: manter e documentar com comentário `/* PRESERVADO: semântica destrutiva */`
   - Se falha: trocar para `ring-destructive` ou ajustar shade de red que passe
-- [ ] 3.3.2 `OnboardingWizard.tsx:181` — `ring-brand-primary/30` (estado selecionado, não foco):
+- [x] 3.3.2 `OnboardingWizard.tsx:181` — `ring-brand-primary/30` (estado selecionado, não foco):
   - Confirmar que é `ring-brand-primary/30` aplicado em estado selecionado (step ativo)
   - Se for estado selecionado (não `:focus-visible`): manter sem alteração, adicionar comentário
     `/* PRESERVADO: indicador de step selecionado, não focus-ring de navegação */`
   - Se houver tanto `:focus-visible` como estado selecionado sobrepostos: separar as classes
-- [ ] 3.3.3 `ring-blue-500` (1×, localização a confirmar no dry-run):
+- [x] 3.3.3 `ring-blue-500` (1×, localização a confirmar no dry-run):
   - Identificar arquivo/linha exata
   - Calcular contraste de blue-500 (#3b82f6) sobre fundos usados
   - Se for foco genérico: migrar para `ring-brand-teal/30`
@@ -382,13 +382,13 @@ Ref: spec §SC-3.3/NC-3, plan §C3, CHK008
 Ref: spec §US-3/SC-3.4/FR-09, plan §C4
 
 **Subtarefas:**
-- [ ] 3.4.1 Executar grep de auditoría:
+- [x] 3.4.1 Executar grep de auditoría:
   ```bash
   grep -rn ':focus[^-]' apps/web/src/ packages/ui/ --include='*.tsx' --include='*.ts' --include='*.css'
   ```
-- [ ] 3.4.2 Para cada ocorrência de `:focus` (sem `-visible`): avaliar se é intencional
+- [x] 3.4.2 Para cada ocorrência de `:focus` (sem `-visible`): avaliar se é intencional
   (ex: `:focus` em elemento que já tem `focus-visible` sobreposto) ou se é legado a migrar
-- [ ] 3.4.3 Migrar usos de `:focus` → `focus-visible:` onde for adequado (elementos interativos
+- [x] 3.4.3 Migrar usos de `:focus` → `focus-visible:` onde for adequado (elementos interativos
   comuns: button, input, select, link)
   - Componentes já verificados pelo codemod (3.2) terão `focus-visible:ring-brand-teal/30`
   - Verificar CSS puro (`.css`) separadamente
@@ -428,7 +428,7 @@ brand-terracotta (#c1666b) × surface-base (#fafaf8) ≥ 4.5  [warn]
 - `apps/web/scripts/check-contrast-tokens.mjs` (criar)
 
 **Subtarefas:**
-- [ ] 4.1.1 Criar `apps/web/scripts/check-contrast-tokens.mjs`:
+- [x] 4.1.1 Criar `apps/web/scripts/check-contrast-tokens.mjs`:
   - Importar/usar `contrastRatio` de `apps/web/src/lib/contrast-checker.ts`
     (via import dinâmico ou adaptar a função WCAG para o script ESM puro)
   - Parse `@theme {}` de `packages/config/tailwind.preset.css` (light mode)
@@ -438,12 +438,12 @@ brand-terracotta (#c1666b) × surface-base (#fafaf8) ≥ 4.5  [warn]
   - Saída: tabela ASCII `| par | ratio | min | resultado |`
   - Exit 0 se todos os pares hard-gated passam; exit 1 se qualquer hard falha
   - Exit 0 mesmo se warn falha (apenas imprime aviso — lição dec-013 / R7)
-- [ ] 4.1.2 Adicionar script npm em `apps/web/package.json`:
+- [x] 4.1.2 Adicionar script npm em `apps/web/package.json`:
   `"check:contrast": "node scripts/check-contrast-tokens.mjs"`
-- [ ] 4.1.3 Integrar ao CI em `.github/workflows/ci.yml`:
+- [x] 4.1.3 Integrar ao CI em `.github/workflows/ci.yml`:
   - Adicionar step no job `lint` (ou `test`): `pnpm --filter @metanoia/web check:contrast`
   - Sem alterar env de produção (SC-5.5: não usar VITE_ vars de produção no script)
-- [ ] 4.1.4 Rodar localmente e verificar que todos os pares hard-gated passam após as
+- [x] 4.1.4 Rodar localmente e verificar que todos os pares hard-gated passam após as
   correções das fases 1/2/3
 
 **Critério de aceite:**
@@ -471,17 +471,17 @@ Ref: spec §US-5/FR-12, plan §D3, testes T2/T3
 - `apps/web/src/components/meetings/__tests__/post-meeting-report-a11y.spec.tsx` (criar)
 
 **Subtarefas:**
-- [ ] 4.2.1 Para cada componente core (Button, Input, Select, Checkbox, Radio, Tab, Link):
+- [x] 4.2.1 Para cada componente core (Button, Input, Select, Checkbox, Radio, Tab, Link):
   - Importar `axe` de `jest-axe@^10` (já em package.json)
   - Renderizar com estados principais (default, focus, disabled)
   - Asserir `toHaveNoViolations()` (inclui color-contrast e focus)
   - Asserir que focus-ring usa `ring-brand-teal` (SC-3.7)
-- [ ] 4.2.2 Para badges care-* em `meeting-card.tsx`:
+- [x] 4.2.2 Para badges care-* em `meeting-card.tsx`:
   - Asserir que elemento com `bg-care-ok` tem texto com contraste ≥ 4.5:1
   - Asserir que NÃO existe `text-white` combinado com `bg-care-ok` (regressão guard)
-- [ ] 4.2.3 Para `post-meeting-report.tsx`: asserir que status fields (ok/attention/alert)
+- [x] 4.2.3 Para `post-meeting-report.tsx`: asserir que status fields (ok/attention/alert)
   não usam `text-care-ok`/`text-care-attention` como único indicador (0 violações axe)
-- [ ] 4.2.4 Garantir que todos os specs rodam via `pnpm turbo test` sem configuração extra
+- [x] 4.2.4 Garantir que todos os specs rodam via `pnpm turbo test` sem configuração extra
 
 **Critério de aceite:**
 - `pnpm turbo test` com jest-axe: 0 violações em todos os componentes listados
@@ -504,7 +504,7 @@ Checklist manual integrado ao final desta task.
 - `apps/web/e2e/a11y/` (diretório já existente da 12.1)
 
 **Subtarefas:**
-- [ ] 4.3.1 Criar `apps/web/e2e/a11y/contrast-focus.e2e-spec.ts` seguindo o padrão dos
+- [x] 4.3.1 Criar `apps/web/e2e/a11y/contrast-focus.e2e-spec.ts` seguindo o padrão dos
   specs existentes (`axe-baseline.spec.ts`, `axe-final.spec.ts`):
   ```typescript
   // Rotas públicas: goto + networkidle (sem login)
@@ -526,12 +526,12 @@ Checklist manual integrado ao final desta task.
     expect(results.violations).toHaveLength(0);
   });
   ```
-- [ ] 4.3.2 NÃO criar specs para rotas autenticadas neste arquivo (dashboard, grupos, etc.)
+- [x] 4.3.2 NÃO criar specs para rotas autenticadas neste arquivo (dashboard, grupos, etc.)
   sem route-interception configurada — fora de escopo desta story
-- [ ] 4.3.3 Verificar que o CI roda E2E axe: o job "E2E (Playwright)" já existe (confirmado
+- [x] 4.3.3 Verificar que o CI roda E2E axe: o job "E2E (Playwright)" já existe (confirmado
   na entrega da Story 12.2). O novo spec em `apps/web/e2e/a11y/` será coletado
   automaticamente pelo Playwright config existente.
-- [ ] 4.3.4 Checklist manual obrigatório pré-merge (CHK017/CHK026 — Safari/cross-browser):
+- [x] 4.3.4 Checklist manual obrigatório pré-merge (CHK017/CHK026 — Safari/cross-browser):
   - [ ] Chrome: focus-ring visível em todos os elementos interativos (home, login)
   - [ ] Firefox: focus-ring visível (idem)
   - [ ] Safari: focus-ring visível (idem) — observar bug de `outline` em Safari ≤ 15
@@ -555,7 +555,7 @@ Checklist manual integrado ao final desta task.
 Ref: plan §Phase 4/Rollback, spec §NFR-A2/NFR-CI/NFR-MANUT
 
 **Subtarefas:**
-- [ ] 5.1.1 Executar gate local completo:
+- [x] 5.1.1 Executar gate local completo:
   ```bash
   pnpm --filter @metanoia/api exec prisma generate
   pnpm turbo build
@@ -564,22 +564,22 @@ Ref: plan §Phase 4/Rollback, spec §NFR-A2/NFR-CI/NFR-MANUT
   node apps/web/scripts/check-contrast-tokens.mjs
   node apps/web/scripts/codemod-focus-ring.mjs --dry-run  # deve retornar 0 candidatos
   ```
-- [ ] 5.1.2 Verificar NFR-MANUT:
+- [x] 5.1.2 Verificar NFR-MANUT:
   ```bash
   grep -rn 'ring-interactive-focus\|ring-\[var(--ring\|ring-ring' apps/web/src/ packages/ui/
   # deve retornar 0 resultados
   ```
-- [ ] 5.1.3 Verificar que `ring-primary` só permanece nos casos preservados (se houver):
+- [x] 5.1.3 Verificar que `ring-primary` só permanece nos casos preservados (se houver):
   ```bash
   grep -rn 'ring-primary' apps/web/src/ packages/ui/
   # deve retornar 0 resultados (todos migrados pelo codemod)
   ```
-- [ ] 5.1.4 Verificar que hex de tokens care-* é idêntico ao original:
+- [x] 5.1.4 Verificar que hex de tokens care-* é idêntico ao original:
   ```bash
   git diff packages/config/tailwind.preset.css | grep '^[-+].*#'
   # deve mostrar apenas linhas de comentário adicionadas, sem mudança de hex
   ```
-- [ ] 5.1.5 Executar E2E Playwright localmente (se ambiente disponível):
+- [x] 5.1.5 Executar E2E Playwright localmente (se ambiente disponível):
   ```bash
   pnpm --filter @metanoia/web exec playwright test apps/web/e2e/a11y/contrast-focus.e2e-spec.ts
   ```
@@ -596,13 +596,13 @@ Ref: plan §Phase 4/Rollback, spec §NFR-A2/NFR-CI/NFR-MANUT
 ### 5.2 Criar PR e documentar decisões `[M]`
 
 **Subtarefas:**
-- [ ] 5.2.1 Criar PR com título: `feat(a11y): Story 12.3 — Contraste WCAG AA + Focus-ring Canônico`
-- [ ] 5.2.2 PR body deve incluir:
+- [x] 5.2.1 Criar PR com título: `feat(a11y): Story 12.3 — Contraste WCAG AA + Focus-ring Canônico`
+- [x] 5.2.2 PR body deve incluir:
   - Tabela de violações resolvidas (antes/depois: 25 nodes color-contrast, 1 link-in-text-block)
   - Lista de arquivos com ring migrado (output do codemod)
   - Checklist manual Safari/cross-browser (CHK017/CHK026) preenchido
   - Referência à decisão dec-006 (hex intocado) e dec-020 (ring-primary migrado)
-- [ ] 5.2.3 Atribuir reviewer com contexto a11y do épico 12
+- [x] 5.2.3 Atribuir reviewer com contexto a11y do épico 12
 
 **Critério de aceite:**
 - PR criado, CI verde (build + lint + test + check-contrast)
