@@ -110,8 +110,9 @@ test.describe('axe final scan -- public pages (FASE 7, post-code-change)', () =>
           `moderate:${bySeverity.moderate} minor:${bySeverity.minor})`
       );
 
-      // ASSERT: no new critical violations (DoD transversal SC-006)
+      // ASSERT: no new critical or serious violations (DoD transversal SC-006, NC-2/dec-006)
       expect(bySeverity.critical).toBe(0);
+      expect(bySeverity.serious).toBe(0);
 
       // Collect results for afterAll delta generation
       expect(results).toBeDefined();
