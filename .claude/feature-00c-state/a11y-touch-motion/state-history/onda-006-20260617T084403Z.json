@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Executar review-task: auditar qualidade dos artefatos da feature a11y-touch-motion. 15/15 tasks done, todos os gates verdes. Branch: feat/12-4-a11y-touch-motion.",
+  "current_stage": "execute-task",
+  "next_instruction": "Continuar execute-task: A.5 (folhas apps/web — radar pills, plan-card, marketing-nav), B.2 (hover-only → active:), C.2 (motion-safe: nos pontos quentes), T.1 (E2E reduced-motion), T.2 (E2E touch-targets playwright mobile Chromium), T.4 (scan estatico), T.5 (checklist manual), P.1 (PR). Gate local obrigatorio antes de cada done. Branch: feat/12-4-a11y-touch-motion. NUNCA trocar branch.",
   "waves": [
     {
       "id": "onda-001",
@@ -148,11 +148,11 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T08:41:00Z",
-      "finished_at": "2026-06-17T08:44:03Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 183,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": []
     }
@@ -744,9 +744,9 @@
     "current_wave_start": "2026-06-17T08:41:00Z"
   },
   "accumulated_metrics": {
-    "waves_total": 9,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4182,
+    "wallclock_total_seconds": 3999,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 30,

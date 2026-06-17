@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "review-task",
-  "next_instruction": "Executar review-task: auditar qualidade dos artefatos da feature a11y-touch-motion. 15/15 tasks done, todos os gates verdes. Branch: feat/12-4-a11y-touch-motion.",
+  "next_instruction": "Continuar execute-task: A.5 (folhas apps/web — radar pills, plan-card, marketing-nav), B.2 (hover-only → active:), C.2 (motion-safe: nos pontos quentes), T.1 (E2E reduced-motion), T.2 (E2E touch-targets playwright mobile Chromium), T.4 (scan estatico), T.5 (checklist manual), P.1 (PR). Gate local obrigatorio antes de cada done. Branch: feat/12-4-a11y-touch-motion. NUNCA trocar branch.",
   "waves": [
     {
       "id": "onda-001",
