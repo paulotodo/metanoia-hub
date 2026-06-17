@@ -44,7 +44,8 @@ const BottomTabs = React.forwardRef<HTMLElement, BottomTabsProps>(
             );
 
             const linkClasses = cn(
-              "flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] px-2 py-2",
+              // A.3 — min-h/w-[44px] ja presentes; active:opacity-80 (FR-2.1 / B.2)
+              "flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] px-2 py-2 active:opacity-80",
               "motion-safe:transition-colors duration-200",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-md",
               isActive

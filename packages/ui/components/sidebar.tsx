@@ -176,8 +176,9 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
             );
 
             const linkClasses = cn(
-              "flex items-center gap-3 rounded-lg px-4 py-3",
-              "motion-safe:transition-colors duration-200",
+              // A.3 — min-h-[44px] explicito (WCAG 2.5.5 / FR-1.1); active:opacity-80 (FR-2.1)
+              "flex items-center gap-3 rounded-lg px-4 py-3 min-h-[44px]",
+              "motion-safe:transition-colors duration-200 active:opacity-80",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2",
               isActive
                 ? "bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] text-[var(--primary)]"

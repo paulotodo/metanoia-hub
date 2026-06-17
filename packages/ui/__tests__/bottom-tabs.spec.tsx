@@ -123,3 +123,35 @@ describe("BottomTabs", () => {
     expect(nav.className).toContain("custom-class");
   });
 });
+
+describe("BottomTabs — touch feedback (A.3 / B.2 / T.3 — NFR-A2 / FR-2.1)", () => {
+  it("links tem active:opacity-80 para feedback tatil (FR-2.1)", () => {
+    const { container } = render(
+      <BottomTabs items={mockItems} activeKey="home" />,
+    );
+    const links = container.querySelectorAll("a");
+    for (const link of links) {
+      expect(link.className).toContain("active:opacity-80");
+    }
+  });
+
+  it("links continuam com min-h-[44px] e min-w-[44px] (WCAG 2.5.5)", () => {
+    const { container } = render(
+      <BottomTabs items={mockItems} activeKey="home" />,
+    );
+    const links = container.querySelectorAll("a");
+    for (const link of links) {
+      expect(link.className).toContain("min-h-[44px]");
+      expect(link.className).toContain("min-w-[44px]");
+    }
+  });
+
+  it("passa verificacao de acessibilidade com novos estilos", async () => {
+    const { container } = render(
+      <BottomTabs items={mockItems} activeKey="home" />,
+    );
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+

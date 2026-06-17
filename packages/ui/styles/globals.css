@@ -66,3 +66,68 @@
   20%, 60% { transform: translateX(-6px); }
   40%, 80% { transform: translateX(6px); }
 }
+
+/* =============================================================================
+ * Reduced-Motion Safety Net (FR-3.3 / C.1 — dec-007 / CHK025)
+ * Backstop universal: cobre toda animacao/transicao nao prefixada com
+ * motion-safe:, incluindo @keyframes onboarding-shake acima.
+ * SOMENTE neste arquivo (dec-024): NAO adicionar em apps/web/app/globals.css.
+ * ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Guarda explicita para onboarding-shake (sem prefixo motion-safe) */
+  .animate-\[onboarding-shake_0\.4s_ease-in-out\] { animation: none !important; }
+}
+
+/* =============================================================================
+ * Touch Target Utilities (A.1 — NFR-A2 / FR-1 / dec-008 hibrido)
+ * .touch-target       — area minima 44x44px mobile, 24x24px desktop (>=768px)
+ * .touch-target-extend — expande area de toque via ::before sem alterar layout
+ * .touch-feedback     — feedback :active imediato (sem delay de transition)
+ * ============================================================================= */
+
+@layer utilities {
+  .touch-target {
+    position: relative;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  @media (min-width: 768px) {
+    .touch-target {
+      min-height: 24px;
+      min-width: 24px;
+    }
+  }
+
+  /* Pseudo-elemento para icones compactos que nao podem crescer no layout */
+  .touch-target-extend {
+    position: relative;
+  }
+
+  .touch-target-extend::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Feedback visual :active imediato — sem transition (FR-2.1/2.2/2.3) */
+  .touch-feedback {
+    transition: none;
+  }
+
+  .touch-feedback:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
