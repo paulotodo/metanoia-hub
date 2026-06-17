@@ -1,11 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { BottomTabs, Sidebar } from "@metanoia/ui";
 import type { NavigationItem } from "@metanoia/ui";
 import { navigationItems } from "../../../config/navigation";
 import { TenantSwitcher } from "@/components/tenant/tenant-switcher";
+import { AsyncAnnouncerProvider } from "@/components/a11y/async-announcer";
+
+/**
+ * FocusManager importado via dynamic() com ssr:false.
+ * Necessário porque usa usePathname() — hook de rota que não pode ser
+ * executado no servidor (CL-001/TD-001).
+ */
+const FocusManager = dynamic(
+  () =>
+    import("./focus-manager").then((m) => ({ default: m.FocusManager })),
+  { ssr: false },
+);
 
 interface NavigationShellProps {
   children: React.ReactNode;
@@ -34,7 +47,9 @@ export function NavigationShell({ children }: NavigationShellProps) {
   );
 
   return (
-    <>
+    <AsyncAnnouncerProvider>
+      {/* FocusManager: move foco para elemento semântico após mudança de rota */}
+      <FocusManager />
       <header
         data-testid="mobile-tenant-header"
         className="sticky top-0 z-30 flex items-center justify-center border-b border-[var(--border)] bg-[var(--background)] px-4 py-2 lg:hidden"
@@ -57,6 +72,6 @@ export function NavigationShell({ children }: NavigationShellProps) {
         renderLink={renderLink}
         className="lg:hidden"
       />
-    </>
+    </AsyncAnnouncerProvider>
   );
 }

@@ -107,13 +107,13 @@ Detalhes por task na coluna "Depende de" abaixo.
   `usePathname()` + `useSearchParams()` quando necessário (CHK036: premissa
   documentada no comentário do hook).
 - **Critério de aceite:**
-  - [ ] Hook exportado e tipado com `strict: true`
-  - [ ] Testes unitários cobrem: foco no `[data-autofocus]`, fallback h1, fallback
+  - [x] Hook exportado e tipado com `strict: true`
+  - [x] Testes unitários cobrem: foco no `[data-autofocus]`, fallback h1, fallback
         `#conteudo`, no-op quando pathname não muda
-  - [ ] CHK036: comentário documenta premissa sobre `usePathname()` com rotas dinâmicas
-  - [ ] CHK007: sequência de seleção "primeiro elemento interativo significativo"
+  - [x] CHK036: comentário documenta premissa sobre `usePathname()` com rotas dinâmicas
+  - [x] CHK007: sequência de seleção "primeiro elemento interativo significativo"
         está comentada e implementada conforme Decision 2 do plan
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ### 1.2 Componente `FocusManager` [crit]
 
@@ -127,10 +127,10 @@ Detalhes por task na coluna "Depende de" abaixo.
   Não renderiza DOM visível — efeito puro. Deve ser lazy-importado para não
   impactar o bundle do Server Component pai.
 - **Critério de aceite:**
-  - [ ] Componente não renderiza elementos DOM visíveis
-  - [ ] Teste verifica que `useFocusOnRouteChange` é chamado na montagem
-  - [ ] Importado em `navigation-shell.tsx` via `dynamic()` com `ssr: false`
-  - [ ] Gate local passa
+  - [x] Componente não renderiza elementos DOM visíveis
+  - [x] Teste verifica que `useFocusOnRouteChange` é chamado na montagem
+  - [x] Importado em `navigation-shell.tsx` via `dynamic()` com `ssr: false`
+  - [x] Gate local passa
 
 ### 1.3 Hook `useRovingTabindex` + testes unitários [crit]
 
@@ -150,12 +150,12 @@ Detalhes por task na coluna "Depende de" abaixo.
   ): { activeIndex: number; setActiveIndex: (i: number) => void }
   ```
 - **Critério de aceite:**
-  - [ ] Arrow Up/Down navega entre itens
-  - [ ] Home vai ao primeiro; End vai ao último
-  - [ ] Wrap circular: Arrow Down no último vai ao primeiro (e vice-versa)
-  - [ ] Testes cobrem todos os casos acima + borda de lista vazia
-  - [ ] CHK009: comportamento de wrap e Home/End documentado em comentário
-  - [ ] Gate local passa
+  - [x] Arrow Up/Down navega entre itens
+  - [x] Home vai ao primeiro; End vai ao último
+  - [x] Wrap circular: Arrow Down no último vai ao primeiro (e vice-versa)
+  - [x] Testes cobrem todos os casos acima + borda de lista vazia
+  - [x] CHK009: comportamento de wrap e Home/End documentado em comentário
+  - [x] Gate local passa
 
 ### 1.4 Componente `AsyncAnnouncer` + hook `useAsyncAnnouncer` [crit]
 
@@ -176,13 +176,13 @@ Detalhes por task na coluna "Depende de" abaixo.
   export function useAsyncAnnouncer(): (message: string) => void
   ```
 - **Critério de aceite:**
-  - [ ] `AsyncAnnouncerProvider` renderiza região `aria-live="polite"` visível
+  - [x] `AsyncAnnouncerProvider` renderiza região `aria-live="polite"` visível
         apenas para leitores de tela (`sr-only`)
-  - [ ] `useAsyncAnnouncer()` retorna função que atualiza o conteúdo da região
-  - [ ] Lança erro descritivo se usado fora do Provider
-  - [ ] Testes com jest-axe verificam que a região não tem violações de acessibilidade
-  - [ ] Mensagens PT-BR adicionadas em `pt-BR.json` (sem texto hardcoded)
-  - [ ] Gate local passa
+  - [x] `useAsyncAnnouncer()` retorna função que atualiza o conteúdo da região
+  - [x] Lança erro descritivo se usado fora do Provider
+  - [x] Testes com jest-axe verificam que a região não tem violações de acessibilidade
+  - [x] Mensagens PT-BR adicionadas em `pt-BR.json` (sem texto hardcoded)
+  - [x] Gate local passa
 
 ### 1.5 Integrar `AsyncAnnouncerProvider` no `navigation-shell.tsx` [crit]
 
@@ -195,10 +195,10 @@ Detalhes por task na coluna "Depende de" abaixo.
   Provider é responsabilidade desta fase (não distribuída implicitamente nas
   features individuais).
 - **Critério de aceite:**
-  - [ ] `AsyncAnnouncerProvider` envolve `<main id="conteudo">` no shell
-  - [ ] `FocusManager` (1.2) importado via `dynamic()` no mesmo arquivo
-  - [ ] Nenhum componente Server Component filho quebrado (verificar build)
-  - [ ] Gate local passa
+  - [x] `AsyncAnnouncerProvider` envolve `<main id="conteudo">` no shell
+  - [x] `FocusManager` (1.2) importado via `dynamic()` no mesmo arquivo
+  - [x] Nenhum componente Server Component filho quebrado (verificar build)
+  - [x] Gate local passa
 
 ---
 
