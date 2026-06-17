@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "plan",
   "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
@@ -77,26 +77,13 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-17T23:33:57Z",
-      "finished_at": "2026-06-17T23:41:10Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 433,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-17T23:39:24Z",
-          "decision_id": "dec-015"
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-17T23:40:45Z",
-          "decision_id": "dec-017"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -348,79 +335,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T23:34:27Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=relatorio-lider); destaque: BOLA em getJobStatus(jobId) sem bind tenant/requester na Story 13.1",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados da feature: story relat rio consolidado der fr79 endpoint; finding BOLA da relatorio-reuniao informa authz/tenant-binding do leader-summary",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T23:39:24Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Plano técnico gerado: plan/research/data-model/contracts/quickstart em docs/specs/relatorio-lider; estende ReportsService 13.1; corrige 3 nomes de tabela e rota UI face à spec",
-      "options_considered": [
-        "gerar-plano",
-        "abortar"
-      ],
-      "choice": "gerar-plano",
-      "rationale": "sonda do repo confirmou módulo apps/api/src/reports + models Prisma reais (group_members plural, RadarStatus participantId); constitution 7 MUST PASS; sem migration",
-      "justification_score": 3,
-      "evidence": "schema.prisma: model GroupMember @@map(group_members); enum RadarStatus{verde,amarelo,vermelho}; reports.controller.ts @Controller('api/v1/reports') @Roles(ADMIN_TENANT,LIDER); withTenantTx SET LOCAL app.current_tenant_id",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T23:39:43Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate doc-quality (validate-documentation): skill nao registrada/disponivel nesta sessao do harness (nao consta na available-skills list); artefatos revisados manualmente pelo orquestrador",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "validate-documentation indisponivel; coerencia cross-artefato verificada na geracao (paths reais sondados, sem TBD exceto bloco do gate de seguranca a preencher); owasp-security (disponivel) sera executado",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T23:40:45Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security: 6 findings; S1(BOLA groupId), S2(cross-tenant), S3(enumeracao) mitigados como acceptance criteria + testes obrigatorios (P6,P8); nenhum critical/high bloqueante",
-      "options_considered": [
-        "aceitar-risco-com-justificativa",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "corrigir-agora",
-      "rationale": "Mitigacoes incorporadas no contrato/quickstart: groupId e FILTRO sobre universo derivado de ctx.userId+role (espelha resolveParticipantUserIds linha 559), nunca seletor; RLS via withTenantTx+SET LOCAL; escopo-vazio em vez de 403 (nao vaza existencia); RolesGuard deny-by-default + TenantGuard fail-closed",
-      "justification_score": 3,
-      "evidence": "reports.service.ts:559 where{tenantId,userId:user.userId,role:'lider'}; TenantGuard fail-closed FR-01 OWASP A01 'If RequestContext unavailable reject 403'; withTenantTx 'Refusing SET LOCAL with non-UUID tenant_id'",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -438,12 +352,12 @@
     "current_wave_start": "2026-06-17T23:33:57Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 874,
+    "wallclock_total_seconds": 441,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 17,
+    "decisions_total": 13,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -474,11 +388,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T23:34:10Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T23:41:10Z",
-      "description": "plan concluido; proxima fase checklist"
     }
   ]
 }

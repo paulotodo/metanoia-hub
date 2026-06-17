@@ -474,11 +474,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T23:34:10Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T23:41:10Z",
-      "description": "plan concluido; proxima fase checklist"
     }
   ]
 }
