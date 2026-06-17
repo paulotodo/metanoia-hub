@@ -167,7 +167,6 @@ const BRANDING_FORM_HTML = `
 // ---------------------------------------------------------------------------
 
 test.describe('Configurações do Tenant — keyboard accessibility (US6)', () => {
-  test.use({ browserName: 'chromium' });
 
   test('AC1: Tab percorre todos os campos na ordem visual (FR-019)', async ({ page }) => {
     await page.setContent(BRANDING_FORM_HTML);
