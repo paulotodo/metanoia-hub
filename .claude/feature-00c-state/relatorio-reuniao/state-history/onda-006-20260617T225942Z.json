@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.1 — Relatório por Reunião (FR63): endpoint GET /api/v1/meetings/:id/report com métricas de presença e engagement score (participantDuration/meetingDuration, classificação alto/médio/baixo), export CSV assíncrono via BullMQ queue:reports (202 + polling), e página UI acessível /app/gestao/meetings/:id/report. Analytics como supporting subdomain (service direto Prisma), reusar apps/api/src/reports existente, multi-tenant RLS/AsyncLocalStorage, Zod em packages/types, gate a11y permanente.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T21:23:23Z",
-    "finished_at": "2026-06-17T23:00:45Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -150,25 +150,6 @@
       "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": []
-    },
-    {
-      "id": "onda-007",
-      "started_at": "2026-06-17T22:59:42Z",
-      "finished_at": "2026-06-17T23:00:31Z",
-      "executed_stages": [
-        "review-task"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 49,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "review-task",
-          "timestamp": "2026-06-17T23:00:08Z",
-          "decision_id": "dec-029"
-        }
-      ]
     }
   ],
   "decisions": [
@@ -666,62 +647,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T22:59:57Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Divergência 1: fórmula engagementScore FR-03 divergia da spec",
-      "options_considered": [
-        "corrigir-ratio-simples",
-        "manter-blend-existente",
-        "escalar-humano"
-      ],
-      "choice": "corrigir-ratio-simples",
-      "rationale": "spec FR63 + dec-006 mandatam score = durationSeconds/meetingDurationSeconds; blend 0.7*presence+0.3*camera era herança incorreta da Story 5.6",
-      "justification_score": 3,
-      "evidence": "computeParticipantEngagement: removed 0.7*presenceFrac+0.3*cameraFrac; now score=clamp(durationSeconds/meetingDurationSeconds); 517+12+837 tests passing",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T22:59:57Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Divergência 2: thresholds classifyEngagementLevel divergiam da spec",
-      "options_considered": [
-        "corrigir-thresholds-spec",
-        "manter-thresholds-existentes"
-      ],
-      "choice": "corrigir-thresholds-spec",
-      "rationale": "spec FR63 fixa: high>=0.75, medium>=0.50, low<0.50; código tinha >0.75=high, >=0.4=medium — boundary 0.75 era médio, deveria ser alto",
-      "justification_score": 3,
-      "evidence": "classifyEngagementLevel: changed score>0.75 to score>=0.75 (high), score>=0.4 to score>=0.5 (medium); API test 0.75→high passes: 12/12",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T23:00:08Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Review geral: S1, contratos, a11y — sem regressões detectadas",
-      "options_considered": [
-        "aprovar",
-        "rejeitar",
-        "escalar-humano"
-      ],
-      "choice": "aprovar",
-      "rationale": "S1 CHK035: chave Redis cache:reports:export-job:<tenantId>:<jobId> correta, requesterUserId no payload para auth; contratos {data,meta?} presentes; a11y: badges icon+text, aria-label contextual, scope=col, aria-hidden em ícones decorativos",
-      "justification_score": 3,
-      "evidence": "report.controller.ts:93 return { data: result.data, meta: { view: result.kind } }; meeting-report-leader-view.tsx:228 aria-label=Engajamento:...",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -755,12 +680,12 @@
     "current_wave_start": "2026-06-17T22:59:42Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3774,
+    "wallclock_total_seconds": 3725,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 29,
+    "decisions_total": 26,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

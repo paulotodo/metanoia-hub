@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.1 — Relatório por Reunião (FR63): endpoint GET /api/v1/meetings/:id/report com métricas de presença e engagement score (participantDuration/meetingDuration, classificação alto/médio/baixo), export CSV assíncrono via BullMQ queue:reports (202 + polling), e página UI acessível /app/gestao/meetings/:id/report. Analytics como supporting subdomain (service direto Prisma), reusar apps/api/src/reports existente, multi-tenant RLS/AsyncLocalStorage, Zod em packages/types, gate a11y permanente.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T21:23:23Z",
-    "finished_at": "2026-06-17T23:00:45Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -154,13 +154,11 @@
     {
       "id": "onda-007",
       "started_at": "2026-06-17T22:59:42Z",
-      "finished_at": "2026-06-17T23:00:31Z",
-      "executed_stages": [
-        "review-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 49,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -755,9 +753,9 @@
     "current_wave_start": "2026-06-17T22:59:42Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3774,
+    "wallclock_total_seconds": 3725,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 29,
