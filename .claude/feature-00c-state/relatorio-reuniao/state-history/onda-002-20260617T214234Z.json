@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
@@ -306,11 +306,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T21:25:45Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T21:42:58Z",
-      "description": "onda clarify encerrada; aguardando wakeup para fase plan"
     }
   ]
 }

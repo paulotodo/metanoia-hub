@@ -4,7 +4,7 @@
 **Feature ID**: FR-63
 **Epic**: Epic 13 — Relatórios Avançados & Analytics
 **Story**: 13.1
-**Status**: Draft
+**Status**: Clarified
 **Criado em**: 2026-06-17
 
 ---
@@ -12,6 +12,18 @@
 ## Sumário
 
 Como **Líder de Grupo**, quero visualizar um relatório detalhado para cada reunião concluída — com métricas de presença, duração individual e engajamento — para acompanhar a dinâmica do grupo e identificar membros que precisam de cuidado pastoral.
+
+---
+
+## Clarifications
+
+### Session 2026-06-17
+
+- Q: Qual entidade é a fonte canônica de `participantDuration` para o engagement score? → A: **MeetingAttendance.totalDurationSeconds** — agregado final pós-reunião (Story 5.3). O `report.service.ts` existente já mapeia `a.totalDurationSeconds → durationSeconds` e calcula `presenceFrac = durationSeconds / meetingDurationSeconds`. (dec-006, score 3)
+- Q: Como o endpoint `GET /meetings/:id/report` trata membros sem permissão de gestão? → A: **Response filtrada** (não 403). O mesmo endpoint inclui `Role.PARTICIPANTE` no `@Roles`; quando `canSeeFull=false` retorna `kind:'personal'` com apenas a própria linha. FR63 estende esse padrão. (dec-007, score 3)
+- Q: Qual bucket MinIO e política de retenção para os CSV de export? → A: **Bucket único `metanoia-storage`** (CONTENT_BUCKET) com prefixo `exports/`; signed URL com `REPORTS_JOB_TTL_SECONDS=3600` (1h) é o mecanismo de TTL efetivo. Sem bucket separado nem lifecycle S3 no código. (dec-008, score 3)
+- Q: Por quanto tempo o registro `ExportJob` é retido após conclusão/falha? → A: **TTL Redis alinhado à URL assinada** (`cache:reports:export-job:*`, `REPORTS_JOB_TTL_SECONDS`). ExportJob é Redis-only, sem persistência em DB. Valor concreto a confirmar no plan. (dec-009, score 2)
+- Q: Admin Tenant acessa relatórios de todas as reuniões do tenant ou só dos grupos que administra? → A: **Todas as reuniões do tenant** — o controller usa `admin_tenant` como shortcut que bypassa a verificação de grupo (`adminShortcut → canSeeFull=true`); RLS/AsyncLocalStorage isola o tenant. (dec-010, score 3)
 
 ---
 
@@ -96,7 +108,10 @@ E pode identificar tendências de queda ou melhora na frequência
 
 ### FR-01: Acesso ao relatório de reunião
 
-O sistema deve disponibilizar um endpoint de relatório para cada reunião com status `completed`. O acesso é restrito a líderes do grupo ao qual a reunião pertence e a administradores do tenant. Membros que não têm permissão de gestão recebem apenas sua própria linha de presença (visão pessoal, herança da Story 5.6).
+O sistema deve **estender** o endpoint existente `GET /api/v1/meetings/:id/report` (Story 5.6, em `apps/api/src/meetings/reports/`) com a visão de líder/FR63 — sem duplicá-lo. Para cada reunião com status `completed`:
+- **Líder do grupo / GroupMember com role `lider`|`admin`** → visão completa do relatório (todas as linhas + métricas agregadas).
+- **Admin Tenant** (realm role `admin_tenant`) → visão completa de **todas** as reuniões do tenant, sem filtro por grupo (shortcut `adminShortcut → canSeeFull=true`); o isolamento é garantido por RLS/AsyncLocalStorage. (dec-010)
+- **Membro comum (Participante)** → **resposta filtrada** (não 403): apenas a própria linha de presença (`kind:'personal'`), herança da Story 5.6. (dec-007)
 
 ### FR-02: Composição do relatório
 
@@ -107,6 +122,8 @@ O relatório deve conter:
 ### FR-03: Cálculo do score de engajamento
 
 O score de engajamento de cada participante é calculado como a proporção de tempo que o participante permaneceu na reunião em relação à duração total da reunião (duração-do-participante ÷ duração-da-reunião), clamped entre 0.0 e 1.0.
+
+A **fonte canônica** de `participantDuration` é o campo `MeetingAttendance.totalDurationSeconds` (agregado final pós-reunião, Story 5.3) — não os registros brutos de `MeetingParticipantRecord` nem os sinais de `MeetingTelemetry`. O `report.service.ts` existente já consome essa fonte. (dec-006)
 
 **Classificações**:
 - **Alto**: score ≥ 0.75
@@ -132,9 +149,13 @@ O relatório deve respeitar isolamento absoluto por tenant. Um líder nunca pode
 
 A exportação em CSV deve ser processada de forma assíncrona, através de uma fila de jobs. O líder solicita o export e recebe imediatamente um identificador de job com status "em processamento". Pode consultar o status periodicamente. Quando concluído, recebe URL de download temporária válida por 1 hora. O arquivo CSV deve incluir BOM UTF-8 para compatibilidade com Excel.
 
+O CSV é gravado no bucket único `metanoia-storage` (CONTENT_BUCKET) sob o prefixo `exports/` — reutilizando o `StorageService` existente, sem bucket dedicado. O novo tipo de job `export-meeting-csv` é adicionado à fila compartilhada `queue:reports`. (dec-008)
+
 ### FR-07: Polling de status do export
 
 O sistema deve expor um endpoint de consulta de status do job de export, retornando: identificador do job, status (em processamento / concluído / falhou), URL assinada (quando concluído, nula caso contrário), data de expiração da URL, e motivo de falha (quando falhou, nulo caso contrário).
+
+O registro `ExportJob` é **Redis-only** (chave `cache:reports:export-job:*`), sem persistência em banco. Seu TTL acompanha `REPORTS_JOB_TTL_SECONDS`, mantendo o registro consultável pelo mesmo período da URL assinada. (dec-009)
 
 ### FR-08: Interface de relatório acessível
 
@@ -200,7 +221,13 @@ O link de download do export deve estar disponível em menos de 60 segundos apó
 
 **Decisão de fila assíncrona**: Jobs de export são enfileirados na fila `queue:reports` (BullMQ, padrão Epic 8). A fila já existe no projeto — esta feature adiciona um novo tipo de job (`export-meeting-csv`) à fila compartilhada.
 
-**TTL de URL assinada**: 3600 segundos (1 hora) — alinhado com o padrão existente de exports de trilhas.
+**TTL de URL assinada**: 3600 segundos (1 hora, `REPORTS_JOB_TTL_SECONDS`) — alinhado com o padrão existente de exports de trilhas.
+
+**Storage do CSV**: bucket único `metanoia-storage` (CONTENT_BUCKET) com prefixo `exports/`, via `StorageService` existente. Sem bucket dedicado nem lifecycle S3; a expiração da signed URL é o mecanismo de controle de acesso. (dec-008)
+
+**Retenção do ExportJob**: registro Redis-only (`cache:reports:export-job:*`) com TTL `REPORTS_JOB_TTL_SECONDS`, alinhado à URL assinada; sem persistência em DB. (dec-009)
+
+**Fonte de duração para engagement**: `MeetingAttendance.totalDurationSeconds` (agregado Story 5.3). (dec-006)
 
 **Idempotência de export**: Múltiplas solicitações do mesmo líder para a mesma reunião podem gerar múltiplos jobs independentes. Não há deduplicação automática — o líder recebe um jobId único por solicitação.
 

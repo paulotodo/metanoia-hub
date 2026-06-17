@@ -306,11 +306,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T21:25:45Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T21:42:58Z",
-      "description": "onda clarify encerrada; aguardando wakeup para fase plan"
     }
   ]
 }

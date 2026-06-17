@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
@@ -45,11 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T21:35:22Z",
-      "finished_at": "2026-06-17T21:42:34Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 432,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -61,11 +61,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-17T21:37:46Z",
           "decision_id": "dec-005"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-17T21:42:25Z",
-          "decision_id": null
         }
       ]
     }
@@ -170,99 +165,6 @@
       "evidence": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-006",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T21:41:18Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q1 clarify: fonte canonica de participantDuration para engagement score",
-      "options_considered": [
-        "MeetingAttendance.totalDurationSeconds",
-        "MeetingParticipantRecord(leftAt-joinedAt)",
-        "MeetingTelemetry"
-      ],
-      "choice": "MeetingAttendance.totalDurationSeconds",
-      "rationale": "Agregado final pos-reuniao (Story 5.3); report.service.ts existente ja mapeia a.totalDurationSeconds -> durationSeconds e divide por meetingDurationSeconds. Brutos (B) e telemetria (C) nao sao a duracao consolidada.",
-      "justification_score": 3,
-      "evidence": "model MeetingAttendance { totalDurationSeconds Int @map(\"total_duration_seconds\") } ; report.service.ts: durationSeconds: a.totalDurationSeconds ; computeReportSummary: presenceFrac = durationSeconds / meetingDurationSeconds",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-007",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T21:41:18Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q2 clarify: tratamento de membros sem permissao de gestao no GET /meetings/:id/report",
-      "options_considered": [
-        "Response filtrada (linha propria)",
-        "Acesso negado 403"
-      ],
-      "choice": "Response filtrada (linha propria)",
-      "rationale": "Controller Story 5.6 inclui PARTICIPANTE no @Roles; canSeeFull=false retorna kind=personal com apenas a linha propria. Sem 403. FR63 estende o mesmo endpoint preservando esse padrao.",
-      "justification_score": 3,
-      "evidence": "@Roles(Role.LIDER, ..., Role.PARTICIPANTE); const canSeeFull = adminShortcut ? true : await this.userIsLiderOrAdminOfGroup(...); findForUser quando !canSeeFull retorna kind:personal (own attendee row)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T21:41:18Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q3 clarify: bucket MinIO e retencao para CSV de export de reuniao",
-      "options_considered": [
-        "Bucket metanoia-storage existente + prefixo exports/ + signed URL 1h",
-        "Bucket separado meeting-exports",
-        "Sem retencao"
-      ],
-      "choice": "Bucket metanoia-storage existente + prefixo exports/ + signed URL 1h (REPORTS_JOB_TTL_SECONDS)",
-      "rationale": "StorageService usa bucket unico metanoia-storage (CONTENT_BUCKET); exports usam prefixo exports/ no mesmo bucket (reports.service.ts). Signed URL com REPORTS_JOB_TTL_SECONDS=3600 (1h) e o mecanismo de TTL efetivo. Sem bucket separado nem lifecycle no codigo.",
-      "justification_score": 3,
-      "evidence": "export const CONTENT_BUCKET = 'metanoia-storage'; objectKey = exports/trail-...; const signedUrl = await this.storage.getSignedUrl(objectKey, REPORTS_JOB_TTL_SECONDS); export const REPORTS_JOB_TTL_SECONDS = 3600",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T21:41:18Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q4 clarify: retencao do registro ExportJob apos conclusao/falha",
-      "options_considered": [
-        "7 dias",
-        "TTL alinhado a URL assinada (Redis REPORTS_JOB_TTL_SECONDS)",
-        "Indefinido"
-      ],
-      "choice": "TTL alinhado a URL assinada (Redis cache:reports:export-job, REPORTS_JOB_TTL_SECONDS)",
-      "rationale": "ExportJob e Redis-only (cache:reports:export-job:*), sem persistencia em DB. TTL Redis segue REPORTS_JOB_TTL_SECONDS, mantendo o registro acessivel para polling pelo mesmo periodo da URL assinada. 7 dias sem suporte em codigo; indefinido viola padrao TTL Redis do projeto. Valor concreto a confirmar no plan.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T21:41:18Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q5 clarify: escopo de acesso do Admin Tenant aos relatorios",
-      "options_considered": [
-        "Todas as reunioes do tenant",
-        "Apenas grupos que administra"
-      ],
-      "choice": "Todas as reunioes do tenant",
-      "rationale": "Controller existente: admin_tenant e shortcut que bypassa verificacao de grupo (adminShortcut=true -> canSeeFull=true). RLS/AsyncLocalStorage isola o tenant. Admin Tenant ve todas as reunioes do tenant, sem filtro por grupo. Opcao B contraria o codigo em producao.",
-      "justification_score": 3,
-      "evidence": "const adminShortcut = realmRoles.includes(\"admin_tenant\"); const canSeeFull = adminShortcut ? true : await this.userIsLiderOrAdminOfGroup(...); doc: admin_tenant realm role -> always full view",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -280,12 +182,12 @@
     "current_wave_start": "2026-06-17T21:35:22Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 576,
+    "wallclock_total_seconds": 144,
     "max_depth_reached": 2,
-    "subagents_spawned": 2,
-    "decisions_total": 10,
+    "subagents_spawned": 1,
+    "decisions_total": 5,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -306,11 +208,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T21:25:45Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T21:42:58Z",
-      "description": "onda clarify encerrada; aguardando wakeup para fase plan"
     }
   ]
 }

@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
@@ -45,11 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T21:35:22Z",
-      "finished_at": "2026-06-17T21:42:34Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 432,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -61,11 +61,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-17T21:37:46Z",
           "decision_id": "dec-005"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-17T21:42:25Z",
-          "decision_id": null
         }
       ]
     }
@@ -245,24 +240,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T21:41:18Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q5 clarify: escopo de acesso do Admin Tenant aos relatorios",
-      "options_considered": [
-        "Todas as reunioes do tenant",
-        "Apenas grupos que administra"
-      ],
-      "choice": "Todas as reunioes do tenant",
-      "rationale": "Controller existente: admin_tenant e shortcut que bypassa verificacao de grupo (adminShortcut=true -> canSeeFull=true). RLS/AsyncLocalStorage isola o tenant. Admin Tenant ve todas as reunioes do tenant, sem filtro por grupo. Opcao B contraria o codigo em producao.",
-      "justification_score": 3,
-      "evidence": "const adminShortcut = realmRoles.includes(\"admin_tenant\"); const canSeeFull = adminShortcut ? true : await this.userIsLiderOrAdminOfGroup(...); doc: admin_tenant realm role -> always full view",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -280,12 +257,12 @@
     "current_wave_start": "2026-06-17T21:35:22Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 576,
+    "wallclock_total_seconds": 144,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 10,
+    "decisions_total": 9,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -306,11 +283,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T21:25:45Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T21:42:58Z",
-      "description": "onda clarify encerrada; aguardando wakeup para fase plan"
     }
   ]
 }
