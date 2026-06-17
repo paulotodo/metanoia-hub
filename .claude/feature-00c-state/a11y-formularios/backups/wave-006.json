@@ -160,11 +160,11 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T10:46:20Z",
-      "finished_at": "2026-06-17T11:02:30Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 970,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -805,9 +805,9 @@
     "current_wave_start": "2026-06-17T10:46:20Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3108,
+    "wallclock_total_seconds": 2138,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 32,
