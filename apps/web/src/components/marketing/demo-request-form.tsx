@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Input } from '@metanoia/ui';
+import { Input } from '@metanoia/ui';
 import {
   DemoRequestInputSchema,
   DemoRequestRecordSchema,
@@ -11,6 +11,8 @@ import {
   type ChurchSize,
 } from '@metanoia/types';
 import { apiClient, ApiError } from '@/lib/api/client';
+import { scrollToFirstError } from '@/lib/form-utils';
+import { SubmitButton } from '@/lib/submit-button';
 import messages from '../../../messages/pt-BR.json';
 
 const t = messages.comecar;
@@ -84,7 +86,7 @@ export function DemoRequestForm() {
 
   return (
     <form
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(onSubmit, () => scrollToFirstError())}
       className="mt-12 space-y-6"
       noValidate
     >
@@ -101,10 +103,11 @@ export function DemoRequestForm() {
           type="text"
           autoComplete="name"
           aria-invalid={!!form.formState.errors.fullName}
+          aria-describedby={form.formState.errors.fullName ? 'demo-name-error' : undefined}
           {...form.register('fullName')}
         />
         {form.formState.errors.fullName && (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
+          <p id="demo-name-error" role="alert" className="text-sm text-[var(--color-danger)]">
             {t.error.required}
           </p>
         )}
@@ -123,10 +126,11 @@ export function DemoRequestForm() {
           type="email"
           autoComplete="email"
           aria-invalid={!!form.formState.errors.email}
+          aria-describedby={form.formState.errors.email ? 'demo-email-error' : undefined}
           {...form.register('email')}
         />
         {form.formState.errors.email && (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
+          <p id="demo-email-error" role="alert" className="text-sm text-[var(--color-danger)]">
             {t.error.invalidEmail}
           </p>
         )}
@@ -144,10 +148,11 @@ export function DemoRequestForm() {
           data-testid="demo-form-church"
           type="text"
           aria-invalid={!!form.formState.errors.churchName}
+          aria-describedby={form.formState.errors.churchName ? 'demo-church-error' : undefined}
           {...form.register('churchName')}
         />
         {form.formState.errors.churchName && (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
+          <p id="demo-church-error" role="alert" className="text-sm text-[var(--color-danger)]">
             {t.error.required}
           </p>
         )}
@@ -200,14 +205,13 @@ export function DemoRequestForm() {
         </p>
       )}
 
-      <Button
-        type="submit"
-        data-testid="demo-form-submit"
-        disabled={status === 'submitting'}
+      <SubmitButton
+        label={t.form.submit}
+        pendingLabel={t.form.submitting}
+        isPending={status === 'submitting'}
         className="w-full sm:w-auto"
-      >
-        {status === 'submitting' ? t.form.submitting : t.form.submit}
-      </Button>
+        data-testid="demo-form-submit"
+      />
     </form>
   );
 }

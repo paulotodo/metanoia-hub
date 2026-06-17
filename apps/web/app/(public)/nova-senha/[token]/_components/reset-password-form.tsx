@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Button, Card, Input } from '@metanoia/ui';
+import { Card, Input } from '@metanoia/ui';
+import { scrollToFirstError } from '@/lib/form-utils';
+import { SubmitButton } from '@/lib/submit-button';
 import messages from '../../../../../messages/pt-BR.json';
 
 type TokenState = 'loading' | 'valid' | 'expired' | 'used';
@@ -86,7 +88,10 @@ export function ResetPasswordForm({ token }: { token: string }) {
     e.preventDefault();
     setServerError('');
 
-    if (!validate()) return;
+    if (!validate()) {
+      scrollToFirstError();
+      return;
+    }
 
     setLoading(true);
     try {
@@ -272,14 +277,13 @@ export function ResetPasswordForm({ token }: { token: string }) {
           </p>
         )}
 
-        <Button
-          type="submit"
-          disabled={loading}
+        <SubmitButton
+          label={t.submit}
+          pendingLabel={t.submitting}
+          isPending={loading}
           className="mt-2 w-full"
           data-testid="reset-submit"
-        >
-          {loading ? t.submitting : t.submit}
-        </Button>
+        />
       </form>
     </Card>
   );

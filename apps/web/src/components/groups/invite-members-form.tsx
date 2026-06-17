@@ -109,7 +109,6 @@ export function InviteMembersForm({
             required
             disabled={pending}
             placeholder="nome@exemplo.com"
-            aria-label="Endereço de email do convidado"
             data-testid="invite-email-input"
             className={[
               "h-11 flex-1 rounded-lg border border-[var(--border)]",

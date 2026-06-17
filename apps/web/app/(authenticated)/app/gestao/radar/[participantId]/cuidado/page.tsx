@@ -144,10 +144,12 @@ export default function CareActionPage({
           rows={4}
           placeholder="Vou mandar uma mensagem perguntando se está tudo bem..."
           disabled={pageState === "saving"}
+          aria-required="true"
+          aria-describedby="care-note-counter"
           className="w-full resize-none rounded-lg border border-border-default bg-surface-elevated px-4 py-3 text-base text-text-primary placeholder:text-text-muted focus:border-interactive-focus focus:outline-none focus:ring-2 focus:ring-interactive-focus disabled:opacity-50"
         />
         <div className="flex justify-end">
-          <span className="text-xs text-text-muted">
+          <span id="care-note-counter" className="text-xs text-text-muted">
             {note.length}/280
           </span>
         </div>
@@ -168,6 +170,7 @@ export default function CareActionPage({
         type="button"
         onClick={handleSubmit}
         disabled={!note.trim() || pageState === "saving"}
+        aria-busy={pageState === "saving"}
         className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-3 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:bg-interactive-disabled-bg disabled:text-interactive-disabled-text sm:w-auto"
       >
         {pageState === "saving" ? (

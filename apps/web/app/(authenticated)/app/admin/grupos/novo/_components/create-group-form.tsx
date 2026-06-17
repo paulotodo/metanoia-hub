@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { Button, Input } from '@metanoia/ui';
+import { Input } from '@metanoia/ui';
 import { CreateGroupRequestSchema } from '@metanoia/types';
 import type { CreateGroupRequest, DayOfWeek } from '@metanoia/types';
 import { useCreateGroup } from '@/lib/api/hooks';
+import { scrollToFirstError } from '@/lib/form-utils';
+import { SubmitButton } from '@/lib/submit-button';
 import messages from '../../../../../../../messages/pt-BR.json';
 
 interface CreateGroupFormProps {
@@ -54,7 +56,7 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
   const labelClass = 'text-body-sm text-text-secondary mb-1 block font-medium';
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
+    <form onSubmit={form.handleSubmit(onSubmit, () => scrollToFirstError())} noValidate className="space-y-5">
       <div>
         <label htmlFor="group-name" className={labelClass}>
           {t.field.name.label}
@@ -64,10 +66,11 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
           type="text"
           placeholder={t.field.name.placeholder}
           aria-invalid={!!form.formState.errors.name}
+          aria-describedby={form.formState.errors.name ? 'create-group-name-error' : undefined}
           {...form.register('name')}
         />
         {form.formState.errors.name && (
-          <p className="text-caption mt-1 text-state-danger" role="alert">
+          <p id="create-group-name-error" className="text-caption mt-1 text-state-danger" role="alert">
             {t.field.name.error.required}
           </p>
         )}
@@ -99,6 +102,7 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
             id="group-time"
             type="time"
             aria-invalid={!!form.formState.errors.time}
+            aria-describedby={form.formState.errors.time ? 'create-group-time-error' : undefined}
             {...form.register('time')}
           />
         </div>
@@ -123,9 +127,13 @@ export function CreateGroupForm({ isFirst }: CreateGroupFormProps) {
         </p>
       )}
 
-      <Button type="submit" className="w-full" disabled={createGroup.isPending}>
-        {createGroup.isPending ? '...' : t.action.create}
-      </Button>
+      <SubmitButton
+        label={t.action.create}
+        pendingLabel="Salvando..."
+        isPending={createGroup.isPending}
+        className="w-full"
+        data-testid="create-group-submit"
+      />
     </form>
   );
 }

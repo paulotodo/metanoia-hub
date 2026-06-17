@@ -10,6 +10,7 @@ import {
   type ContactMessageInput,
 } from '@metanoia/types';
 import { apiClient } from '@/lib/api/client';
+import { scrollToFirstError } from '@/lib/form-utils';
 import messages from '../../../messages/pt-BR.json';
 
 const t = messages.contato;
@@ -59,7 +60,7 @@ export function ContactMessageForm() {
 
   return (
     <form
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(onSubmit, () => scrollToFirstError())}
       className="mt-12 space-y-6"
       noValidate
     >
@@ -76,10 +77,11 @@ export function ContactMessageForm() {
           type="text"
           autoComplete="name"
           aria-invalid={!!form.formState.errors.fullName}
+          aria-describedby={form.formState.errors.fullName ? 'contact-name-error' : undefined}
           {...form.register('fullName')}
         />
         {form.formState.errors.fullName && (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
+          <p id="contact-name-error" role="alert" className="text-sm text-[var(--color-danger)]">
             {t.error.required}
           </p>
         )}
@@ -98,10 +100,11 @@ export function ContactMessageForm() {
           type="email"
           autoComplete="email"
           aria-invalid={!!form.formState.errors.email}
+          aria-describedby={form.formState.errors.email ? 'contact-email-error' : undefined}
           {...form.register('email')}
         />
         {form.formState.errors.email && (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
+          <p id="contact-email-error" role="alert" className="text-sm text-[var(--color-danger)]">
             {t.error.invalidEmail}
           </p>
         )}
@@ -120,11 +123,12 @@ export function ContactMessageForm() {
           rows={6}
           placeholder={t.form.messagePlaceholder}
           aria-invalid={!!form.formState.errors.message}
+          aria-describedby={form.formState.errors.message ? 'contact-message-error' : undefined}
           className="flex w-full rounded-md border border-[var(--color-border)] bg-surface-base px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
           {...form.register('message')}
         />
         {form.formState.errors.message && (
-          <p role="alert" className="text-sm text-[var(--color-danger)]">
+          <p id="contact-message-error" role="alert" className="text-sm text-[var(--color-danger)]">
             {t.error.required}
           </p>
         )}
