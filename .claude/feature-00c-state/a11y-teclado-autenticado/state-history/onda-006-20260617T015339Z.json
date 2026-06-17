@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "FASE 1: executar tasks 1.1 (hook useFocusOnRouteChange + testes unitários) e 1.2 (componente FocusManager). Continuar execute-task loop.",
+  "next_instruction": "Fase execute-task: executar tasks do backlog em ordem de fase (FASE 0 → FASE 9). Começar por 0.1 (baseline axe) e 0.2 (setup infra de testes) em paralelo. Gate local obrigatório antes de marcar cada task done: pnpm --filter @metanoia/api exec prisma generate && pnpm turbo build && pnpm turbo lint --max-warnings 0.",
   "waves": [
     {
       "id": "onda-001",
@@ -125,19 +125,13 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T01:53:29Z",
-      "finished_at": "2026-06-17T01:57:13Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 224,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T01:56:28Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -610,43 +604,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-17T01:53:39Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio FASE 0: baseline axe fluxos autenticados + infra de testes",
-      "options_considered": [
-        "executar-FASE0",
-        "abortar"
-      ],
-      "choice": "executar-FASE0",
-      "rationale": "Tasks 0.1 e 0.2: deps ja instaladas, dirs existem (da Story 12.1). Criar spec axe-baseline-authenticated.spec.ts para fluxos autenticados conforme criterios da task 0.1. Confirmar infra para task 0.2.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-17T01:56:40Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 0 concluída: tasks 0.1 e 0.2 passaram gates (build+lint ok)",
-      "options_considered": [
-        "avancar-FASE1",
-        "repetir",
-        "abortar"
-      ],
-      "choice": "avancar-FASE1",
-      "rationale": "Gates: prisma generate ok, turbo build 3/3, turbo lint 4/4 (0 warnings). Task 0.1: axe-baseline-authenticated.spec.ts criado com 6 rotas autenticadas. Task 0.2: deps ja instaladas, keyboard/ dir existente.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -687,12 +644,12 @@
     "current_wave_start": "2026-06-17T01:53:29Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4229,
+    "wallclock_total_seconds": 4005,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 27,
+    "decisions_total": 25,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -741,42 +698,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:47:00Z",
       "description": "onda-005 create-tasks concluida; proximo: execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:57:28Z",
-      "description": "onda-006 encerrada; aguardando wakeup para FASE 1"
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "0.1",
-      "title": "Relatório de Baseline Axe Automático",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/a11y/axe-baseline-authenticated.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T01:56:11Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "0.2",
-      "title": "Configurar @axe-core/playwright no projeto",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/package.json",
-        "apps/web/e2e/keyboard/"
-      ],
-      "recorded_at": "2026-06-17T01:56:22Z",
-      "source": "execute-task"
     }
   ]
 }
