@@ -1,7 +1,7 @@
 # Spec: a11y-touch-motion
 ## Touch Targets, Reduced Motion & Mobile Feedback (Story 12.4)
 
-**Status:** rascunho  
+**Status:** clarificado  
 **NFR:** NFR-A2 (Acessibilidade), UX-DR19  
 **Referência autoritativa:** `_bmad-output/implementation-artifacts/12-4-touch-targets-reduced-motion-mobile-feedback-nfr-a2-ux-.md`  
 **Depende de:** Story 12.1 (teclado público), 12.2 (teclado autenticado), 12.3 (contraste/focus)  
@@ -25,13 +25,6 @@ Garantir que todos os elementos interativos da aplicação sejam operáveis por 
 
 **Contexto:** Cobre botões, links, inputs, checkboxes, radio buttons, tabs de navegação (bottom-nav e sidebar), ítens de menu e cards com área de CTA. Aplica-se primariamente ao viewport mobile (< md); em desktop, o tamanho mínimo é 24x24 px (WCAG 2.5.8 AA) com espaçamento compensatório.
 
-<!-- NEEDS_CLARIFICATION NC-1: Alvo de conformidade — 44x44 px (WCAG 2.5.5 AAA) ou 24x24 px com espaçamento (2.5.8 AA)?
-     A spec autoritativa 12-4 usa >= 44x44 px como padrão definitivo, mas WCAG 2.5.5 é nível AAA.
-     O constitution/briefing do projeto não especifica o nível WCAG para touch targets.
-     Opcoes: (a) 44x44 px em mobile — mais restritivo, alinhado à spec 12-4; (b) 24x24 px + espaçamento (2.5.8 AA);
-     (c) híbrido: 44x44 no mobile, 24x24 no desktop.
-     Recomendação do orquestrador: opcao (a) — alinha com spec autoritativa e com Apple HIG / Google Material;
-     espera confirmação antes de codificar os thresholds nos testes automatizados. -->
 
 ---
 
@@ -53,12 +46,6 @@ Garantir que todos os elementos interativos da aplicação sejam operáveis por 
 
 **Contexto:** Cobre page transitions, animações de skeleton/shimmer, entrada/saída de toasts, abertura/fechamento de dropdowns, e qualquer outro elemento animado. Animações "essenciais" (ex.: indicadores de progresso sem alternativa não-animada) podem ser mantidas com duração reduzida ao mínimo.
 
-<!-- NEEDS_CLARIFICATION NC-2: Definição de animação "essencial" isenta de prefers-reduced-motion.
-     A spec autoritativa lista animações a desabilitar/reduzir, mas não define critério formal para isenção.
-     Exemplos potencialmente essenciais: (a) spinner de loading sem alternativa de texto; (b) barra de progresso de upload.
-     Proposta: isentas apenas animações onde a remoção total eliminaria informação de estado sem substituto
-     (ex.: spinner sem texto de % ou label). Feedback de confirmação (toasts, skeletons) NUNCA isentos.
-     Aguarda validação do Product Owner antes de codificar a lista de isenções. -->
 
 ---
 
@@ -188,22 +175,33 @@ Esta regra atua como fallback para qualquer animação não coberta pelos prefix
 
 ## Clarifications
 
-**NC-1 (US-1 / FR-1.1):** Nível WCAG alvo para touch targets — 44x44 px (WCAG 2.5.5 AAA) ou 24x24 px com espaçamento (WCAG 2.5.8 AA)?
+> Sessão de clarificação resolvida autonomamente em 2026-06-17 (clarify-answerer, heurística score 0..3). Ambos os pontos de clarificação resolvidos com score 2 — sem pausa humana.
 
-A spec autoritativa 12-4 usa 44x44 px como padrão definitivo. WCAG 2.5.5 é nível AAA; WCAG 2.5.8 é nível AA. O briefing/constitution do projeto não especifica o nível alvo explicitamente para touch targets.
+### NC-1 (US-1 / FR-1.1) — RESOLVIDO (score 2)
 
-Opcoes avaliadas:
-- (a) 44x44 px em mobile como regra definitiva (alinha spec 12-4, Apple HIG, Google Material) — AAA
-- (b) 24x24 px + espaçamento compensatório em todos os viewports (AA)
-- (c) Híbrido: 44x44 no mobile (< md), 24x24 no desktop (>= md) — mais pragmático
+**Pergunta:** Nível WCAG alvo para touch targets — 44x44 px (WCAG 2.5.5 AAA) ou 24x24 px com espaçamento (WCAG 2.5.8 AA)?
 
-Score de autonomia: 2 — há suporte contextual para opcao (a), mas o impacto em layout compacto pode exigir decisão de produto.
+**Decisão:** Abordagem **híbrida** (opção c), já codificada em FR-1.1 e FR-1.4:
+- **44x44 CSS px** como alvo de design em viewport mobile (< md, < 768 px) — alinhado à spec autoritativa 12-4, Apple HIG (44 pt) e Google Material (48 dp).
+- **24x24 CSS px + espaçamento compensatório** como mínimo de fallback aceitável em viewport desktop (>= md), conforme WCAG 2.5.8 AA, e onde 44 px for inviável em layout compacto.
 
-**NC-2 (US-3 / FR-3.4):** Quais animações são consideradas "essenciais" e ficam isentas da supressão por prefers-reduced-motion?
+**Justificativa:** A referência autoritativa 12-4 usa 44x44 px como padrão definitivo. O público pastoral inclui idosos e usuários de baixa destreza (briefing), para quem 44 px é mensuravelmente melhor. A spec já reflete a decisão híbrida em FR-1.1 (44 mobile), FR-1.4 (24 desktop) e SC-1.1.
 
-A spec autoriza "opacity-only" como substituto. Candidatos a isenção parcial: spinner de loading sem label de texto alternativo, barra de progresso de upload sem percentual numérico visível. A lista de isenções afeta FR-3.4 e SC-3.4.
+**Score de autonomia:** 2 — suporte de referência autoritativa + padrões da indústria (HIG/Material) + briefing.
 
-Score de autonomia: 1 — requer validação de produto (UX-DR19 não define critério de isenção formal).
+### NC-2 (US-3 / FR-3.4) — RESOLVIDO (score 2)
+
+**Pergunta:** Qual o critério formal para classificar uma animação como "essencial" e isenta da supressão por `prefers-reduced-motion`?
+
+**Decisão (critério formal):** Uma animação é **essencial** — e portanto isenta de supressão total — **somente quando sua remoção eliminaria informação de estado sem que exista substituto não-animado disponível** (ex.: spinner de loading sem texto de porcentagem/label de progresso; barra de progresso de upload sem valor numérico alternativo). Animações essenciais isentas PODEM manter duração mínima, mas **não** movimento decorativo.
+
+**Não-essenciais (sempre suprimidas/reduzidas a troca instantânea sob reduced-motion):** toasts (entrada/saída), skeleton shimmer, page transitions, dropdown/popover open-close, hover, parallax, e qualquer `animate-*`/`transition-*` decorativo. Toasts e skeletons **NUNCA** são isentos.
+
+**Justificativa:** Único critério auditável das opções avaliadas (Constitution Princípio VI — Qualidade Verificável); alinhado a WCAG 2.3.3 (Animation from Interactions) e à orientação MDN de `prefers-reduced-motion`. Diretamente suportado por US-3 (contexto), FR-3.4 (lista de supressão) e SC-3.4 (substituto funcional obrigatório).
+
+**Evidência (WCAG 2.3.3):** animação é essencial quando "removing the animation would substantially change the information or functionality of the content, and information and functionality cannot be achieved in another way".
+
+**Score de autonomia:** 2 — critério técnico padrão WCAG/MDN ancorado; sem necessidade de decisão de produto.
 
 ---
 

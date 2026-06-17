@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Iniciar etapa clarify — invocar clarify-asker/answerer para resolver NEEDS_CLARIFICATION da spec.",
   "waves": [
     {
@@ -47,13 +47,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T07:23:52Z",
-      "finished_at": "2026-06-17T07:29:11Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 319,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -65,11 +63,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-17T07:25:58Z",
           "decision_id": "dec-006"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-17T07:28:18Z",
-          "decision_id": "dec-007"
         }
       ]
     }
@@ -211,25 +204,6 @@
       "evidence": "WCAG 2.3.3: animacao essencial quando 'removing the animation would substantially change the information or functionality of the content, and information and functionality cannot be achieved in another way'. spec SC-3.4: 'Nenhuma animacao essencial (sem substituto nao-animado) e suprimida sem substituto funcional.'",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T07:27:45Z",
-      "stage": "clarify",
-      "agent": "feature-00c-clarify-answerer",
-      "context": "NC-1 (US-1/FR-1.1): nivel WCAG para touch targets — 44x44 (AAA) vs 24x24 (AA)",
-      "options_considered": [
-        "44x44-mobile-definitivo",
-        "24x24-todos-viewports",
-        "hibrido-44mobile-24desktop"
-      ],
-      "choice": "hibrido-44mobile-24desktop",
-      "rationale": "Spec autoritativa 12-4 usa 44x44 como padrao; publico pastoral inclui idosos/baixa destreza (briefing) — 44x44 melhor. Hibrido ja codificado em FR-1.1 (44 mobile) + FR-1.4 (24 desktop, WCAG 2.5.8 AA fallback). Alinhado a Apple HIG (44pt) e Google Material (48dp).",
-      "justification_score": 2,
-      "evidence": "spec FR-1.1: '44x44 CSS px em viewport mobile (< 768px)'. spec FR-1.4: '24x24 CSS px com espacamento compensatorio (WCAG 2.5.8 AA)'. Referencia autoritativa: 12-4-touch-targets spec.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -247,12 +221,12 @@
     "current_wave_start": "2026-06-17T07:23:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 595,
+    "wallclock_total_seconds": 276,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 8,
+    "decisions_total": 7,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
