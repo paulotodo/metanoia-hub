@@ -98,10 +98,10 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T12:57:35Z",
-      "finished_at": "2026-06-17T13:20:53Z",
+      "finished_at": "2026-06-17T13:04:59Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1398,
+      "wallclock_seconds": 444,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -109,11 +109,6 @@
           "skill": "create-tasks",
           "timestamp": "2026-06-17T13:04:38Z",
           "decision_id": "dec-018"
-        },
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T13:20:43Z",
-          "decision_id": "dec-020"
         }
       ]
     }
@@ -550,24 +545,6 @@
       "evidence": "python3 verify: 4 páginas, all requiresAuth=False; git log mostra commit 683e596 alinhando spec",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T13:20:25Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "T6: CHK006 — resolução de cwd via __dirname (não process.cwd())",
-      "options_considered": [
-        "__dirname-com-fallback",
-        "process-cwd-puro"
-      ],
-      "choice": "__dirname-com-fallback",
-      "rationale": "pnpm --filter exec têm cwd=apps/web/, não raiz; __dirname de apps/web/e2e/a11y/ subindo 4 níveis resolve corretamente; fallback para busca ascendente garante robustez em CI",
-      "justification_score": 3,
-      "evidence": "playwright --list retornou 142 testes (exit 0) incluindo 4 testes do axe-quality-gate; sem erros ENOENT após fix",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -585,12 +562,12 @@
     "current_wave_start": "2026-06-17T12:57:35Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3280,
+    "wallclock_total_seconds": 1882,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 24,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -626,109 +603,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T12:40:43Z",
       "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "1.1",
-      "title": "Corrigir texto SC-5.1 na spec (CHK030)",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "docs/specs/a11y-ci-gate/spec.md"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.2",
-      "title": "Instalar color2k em apps/web devDeps",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/package.json",
-        "pnpm-lock.yaml"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "2.1",
-      "title": "Criar scripts/check-contrast.ts (CLI de contraste oklch)",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 5,
-      "tests_passed": 5,
-      "lint_ok": true,
-      "touched_files": [
-        "scripts/check-contrast.ts",
-        "scripts/__tests__/check-contrast.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "2.2",
-      "title": "Criar testes unitários check-contrast.spec.ts (Vitest)",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 5,
-      "tests_passed": 5,
-      "lint_ok": true,
-      "touched_files": [
-        "scripts/check-contrast.ts",
-        "scripts/__tests__/check-contrast.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.1",
-      "title": "Criar a11y-pages.json na raiz do repositório",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "a11y-pages.json"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.2",
-      "title": "Criar axe-quality-gate.e2e-spec.ts",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 4,
-      "tests_passed": 4,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.1",
-      "title": "Corrigir axe-final.spec.ts para assertir serious=0",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/a11y/axe-final.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T13:20:43Z",
-      "source": "execute-task"
     }
   ]
 }

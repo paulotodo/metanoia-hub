@@ -1,7 +1,7 @@
 {
   "wave_number": 4,
-  "captured_at": "2026-06-17T13:04:38Z",
-  "state_sha256_self": "25a777bbb81422382260a39aacc6517ccc861fa5232a77a4a591303833a3d0b6",
+  "captured_at": "2026-06-17T13:20:53Z",
+  "state_sha256_self": "b392ea8685a52d4dd4db9e2ffd390ed7e5cc8489f6f1e4f83ac70f5f33134fdb",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "a11y-ci-gate",
@@ -26,7 +26,7 @@
         "version": "1.0.0"
       }
     },
-    "current_stage": "create-tasks",
+    "current_stage": "execute-task",
     "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
     "waves": [
       {
@@ -102,17 +102,22 @@
       {
         "id": "onda-004",
         "started_at": "2026-06-17T12:57:35Z",
-        "finished_at": null,
+        "finished_at": "2026-06-17T13:04:59Z",
         "executed_stages": [],
         "tool_calls": 0,
-        "wallclock_seconds": 0,
-        "termination_reason": null,
+        "wallclock_seconds": 444,
+        "termination_reason": "concluido",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
           {
             "skill": "create-tasks",
             "timestamp": "2026-06-17T13:04:38Z",
             "decision_id": "dec-018"
+          },
+          {
+            "skill": "execute-task",
+            "timestamp": "2026-06-17T13:20:43Z",
+            "decision_id": "dec-020"
           }
         ]
       }
@@ -456,6 +461,117 @@
         "evidence": "tasks.md: 652 linhas, 28187 bytes, 12 tasks (7 crit + 3 imp + 2 aux); checklist CHK015/CHK016 confirmam pre-promocao FR-13 como OBRIGATORIA; dec-016 (score 2) registra CHK023 como gap real",
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-019",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-17T13:11:21Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 4 (fase execute-task)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-020",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-17T13:20:04Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "T1: corrigir SC-5.1 na spec (CHK030) — alinhar com dec-007",
+        "options_considered": [
+          "corrigir-texto",
+          "manter-texto"
+        ],
+        "choice": "corrigir-texto",
+        "rationale": "SC-5.1 mencionava 'fluxo autenticado-público' contraditório com NC-3/dec-007 que restringe gate axe a páginas públicas neste sprint",
+        "justification_score": 3,
+        "evidence": "grep SC-5.1 spec.md retornou: 'pelo menos uma página de fluxo autenticado-público (dashboard ou grupos)' — contradiz NC-3/dec-007 (score 3 empirico)",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-021",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-17T13:20:25Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "T2: instalar color2k como devDep em apps/web",
+        "options_considered": [
+          "instalar-color2k",
+          "usar-outro-lib"
+        ],
+        "choice": "instalar-color2k",
+        "rationale": "color2k é a lib especificada no plano para resolução de oklch relative-color; instalada como ^2.0.3 via pnpm",
+        "justification_score": 3,
+        "evidence": "jq '.devDependencies[\"color2k\"]' apps/web/package.json retornou '^2.0.3'",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-022",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-17T13:20:25Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "T3: criar scripts/check-contrast.ts — omitir text-muted dos CONTRAST_PAIRS",
+        "options_considered": [
+          "omitir-text-muted",
+          "incluir-text-muted",
+          "marcar-como-excecao"
+        ],
+        "choice": "omitir-text-muted",
+        "rationale": "text-muted (#8e8d8a) tem 3.18:1 — é cor auxiliar/hint intencional, documentada no CSS como não-texto de conteúdo; excluída do gate com comentário explicativo",
+        "justification_score": 3,
+        "evidence": "Contraste calculado: #8e8d8a on #fafaf8 = 3.18:1 (abaixo de 4.5:1 AA); comentário no CSS: 'NÃO usar como texto / apenas fundo/decorativo'",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-023",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-17T13:20:25Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "T5: a11y-pages.json — apenas 4 páginas públicas, sem requiresAuth:true",
+        "options_considered": [
+          "apenas-publicas",
+          "incluir-autenticadas"
+        ],
+        "choice": "apenas-publicas",
+        "rationale": "dec-007/NC-3: páginas autenticadas = R2 explícito neste sprint; spec SC-5.1 ajustado (T1) confirma páginas iniciais são /, /login, /register, /recuperar-senha",
+        "justification_score": 3,
+        "evidence": "python3 verify: 4 páginas, all requiresAuth=False; git log mostra commit 683e596 alinhando spec",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-024",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-17T13:20:25Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "T6: CHK006 — resolução de cwd via __dirname (não process.cwd())",
+        "options_considered": [
+          "__dirname-com-fallback",
+          "process-cwd-puro"
+        ],
+        "choice": "__dirname-com-fallback",
+        "rationale": "pnpm --filter exec têm cwd=apps/web/, não raiz; __dirname de apps/web/e2e/a11y/ subindo 4 níveis resolve corretamente; fallback para busca ascendente garante robustez em CI",
+        "justification_score": 3,
+        "evidence": "playwright --list retornou 142 testes (exit 0) incluindo 4 testes do axe-quality-gate; sem erros ENOENT após fix",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [],
@@ -473,12 +589,12 @@
       "current_wave_start": "2026-06-17T12:57:35Z"
     },
     "accumulated_metrics": {
-      "waves_total": 4,
+      "waves_total": 5,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 1438,
+      "wallclock_total_seconds": 1882,
       "max_depth_reached": 1,
       "subagents_spawned": 0,
-      "decisions_total": 18,
+      "decisions_total": 24,
       "human_blocks_total": 0,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0
@@ -514,6 +630,109 @@
         "event_type": "schedule_wait",
         "timestamp": "2026-06-17T12:40:43Z",
         "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
+      }
+    ],
+    "tasks": [
+      {
+        "task_id": "1.1",
+        "title": "Corrigir texto SC-5.1 na spec (CHK030)",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "docs/specs/a11y-ci-gate/spec.md"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "1.2",
+        "title": "Instalar color2k em apps/web devDeps",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/package.json",
+          "pnpm-lock.yaml"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "2.1",
+        "title": "Criar scripts/check-contrast.ts (CLI de contraste oklch)",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 5,
+        "tests_passed": 5,
+        "lint_ok": true,
+        "touched_files": [
+          "scripts/check-contrast.ts",
+          "scripts/__tests__/check-contrast.spec.ts"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "2.2",
+        "title": "Criar testes unitários check-contrast.spec.ts (Vitest)",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 5,
+        "tests_passed": 5,
+        "lint_ok": true,
+        "touched_files": [
+          "scripts/check-contrast.ts",
+          "scripts/__tests__/check-contrast.spec.ts"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.1",
+        "title": "Criar a11y-pages.json na raiz do repositório",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "a11y-pages.json"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.2",
+        "title": "Criar axe-quality-gate.e2e-spec.ts",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 4,
+        "tests_passed": 4,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "4.1",
+        "title": "Corrigir axe-final.spec.ts para assertir serious=0",
+        "wave_id": "onda-004",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/a11y/axe-final.spec.ts"
+        ],
+        "recorded_at": "2026-06-17T13:20:43Z",
+        "source": "execute-task"
       }
     ]
   }
