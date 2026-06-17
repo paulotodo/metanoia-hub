@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, cn } from "@metanoia/ui";
 import { OAuthButton, PasswordInputWithToggle } from "@/components/forms";
+import { scrollToFirstError } from "@/lib/form-utils";
 import { mockGoogleOAuthProfile } from "../../../../../../__mocks__/onboarding";
 import { OAuthDivider } from "./oauth-divider";
 
@@ -73,6 +74,8 @@ export function CreateAccountForm({ token: _token }: CreateAccountFormProps) {
         password: passwordRef,
         churchName: churchRef,
       });
+      // WCAG 2.1 SC 1.3.1: anunciar e mover foco para o campo inválido
+      setTimeout(scrollToFirstError, 0);
       return;
     }
     setErrors({});
@@ -130,7 +133,7 @@ export function CreateAccountForm({ token: _token }: CreateAccountFormProps) {
             value={values.name}
             onChange={(e) => updateValue("name", e.target.value)}
             disabled={usingOAuth || submitting}
-            aria-invalid={Boolean(errors.name)}
+            aria-invalid={errors.name ? (true as unknown as boolean) : undefined}
             aria-describedby={errors.name ? "account-name-error" : undefined}
           />
         </Field>
@@ -152,7 +155,7 @@ export function CreateAccountForm({ token: _token }: CreateAccountFormProps) {
                 value={values.email}
                 onChange={(e) => updateValue("email", e.target.value)}
                 disabled={submitting}
-                aria-invalid={Boolean(errors.email)}
+                aria-invalid={errors.email ? (true as unknown as boolean) : undefined}
                 aria-describedby={
                   errors.email ? "account-email-error" : undefined
                 }
@@ -176,7 +179,7 @@ export function CreateAccountForm({ token: _token }: CreateAccountFormProps) {
                 value={values.password}
                 onChange={(e) => updateValue("password", e.target.value)}
                 disabled={submitting}
-                aria-invalid={Boolean(errors.password)}
+                aria-invalid={errors.password ? (true as unknown as boolean) : undefined}
                 aria-describedby={
                   errors.password ? "account-password-error" : undefined
                 }
@@ -199,7 +202,7 @@ export function CreateAccountForm({ token: _token }: CreateAccountFormProps) {
             value={values.churchName}
             onChange={(e) => updateValue("churchName", e.target.value)}
             disabled={submitting}
-            aria-invalid={Boolean(errors.churchName)}
+            aria-invalid={errors.churchName ? (true as unknown as boolean) : undefined}
             aria-describedby={
               errors.churchName ? "account-church-error" : undefined
             }
@@ -211,9 +214,17 @@ export function CreateAccountForm({ token: _token }: CreateAccountFormProps) {
         <Button
           type="submit"
           disabled={submitting}
+          aria-busy={submitting || undefined}
           className={cn("h-12 w-full max-w-[320px] text-base")}
         >
-          {submitting ? "Criando…" : "Criar conta"}
+          {submitting ? (
+            <>
+              <span aria-hidden="true" className="mr-1.5 inline-block animate-spin">⟳</span>
+              {"Criando…"}
+            </>
+          ) : (
+            "Criar conta"
+          )}
         </Button>
       </div>
     </form>

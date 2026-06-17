@@ -85,7 +85,9 @@ export function Step3Group({ currentProgress, onComplete, readOnly = false }: St
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3" role="radiogroup" aria-label="Opção para o primeiro grupo">
+      {/* Task 1.6 — WCAG 1.3.1: fieldset+legend para radiogroup (melhor que div+role) */}
+      <fieldset className="space-y-3">
+        <legend className="sr-only">Opção para o primeiro grupo</legend>
         <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="radio"
@@ -113,7 +115,7 @@ export function Step3Group({ currentProgress, onComplete, readOnly = false }: St
             <span className="text-sm font-medium text-text-primary">{t.step3.demoOption}</span>
           </label>
         )}
-      </div>
+      </fieldset>
 
       {mode === 'create' && (
         <form onSubmit={(e) => { void handleCreateGroup(e); }} className="space-y-4">
@@ -130,6 +132,8 @@ export function Step3Group({ currentProgress, onComplete, readOnly = false }: St
               required
               disabled={readOnly || isCreating}
               data-testid="step3-group-name"
+              aria-invalid={groupError ? (true as unknown as boolean) : undefined}
+              aria-describedby={groupError ? 'step3-group-error' : undefined}
             />
           </div>
 
@@ -169,7 +173,7 @@ export function Step3Group({ currentProgress, onComplete, readOnly = false }: St
           </div>
 
           {groupError && (
-            <p role="alert" className="text-sm text-error">
+            <p id="step3-group-error" role="alert" className="text-sm text-error">
               {groupError}
             </p>
           )}
@@ -179,6 +183,7 @@ export function Step3Group({ currentProgress, onComplete, readOnly = false }: St
               type="submit"
               className="w-full"
               disabled={!groupName.trim() || isCreating}
+              aria-busy={isCreating || undefined}
               data-testid="step3-create-submit"
             >
               {t.step3.createButton}

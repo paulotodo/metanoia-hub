@@ -166,6 +166,7 @@ export function Step1Profile({
               onChange={(e) => { void handlePhotoChange(e); }}
               className="sr-only"
               disabled={isUploading || isPending}
+              aria-label={messages.form.file.select_profile_photo}
               data-testid="step1-photo-input"
             />
           </label>
@@ -183,6 +184,7 @@ export function Step1Profile({
           type="submit"
           className="w-full"
           disabled={isPending || isUploading}
+          aria-busy={isPending || undefined}
           data-testid="step1-submit"
         >
           {t.actions.next}

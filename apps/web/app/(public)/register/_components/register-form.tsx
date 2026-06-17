@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { RegisterUserSchema } from '@metanoia/types';
 import { Button, Card, Input } from '@metanoia/ui';
+import { scrollToFirstError } from '@/lib/form-utils';
 import messages from '../../../../messages/pt-BR.json';
 
 interface FieldErrors {
@@ -32,6 +33,7 @@ export function RegisterForm() {
     // Client-side: confirm password match
     if (password !== confirmPassword) {
       setErrors({ password: [t.errors.passwordMismatch] });
+      setTimeout(scrollToFirstError, 0);
       return;
     }
 
@@ -50,6 +52,7 @@ export function RegisterForm() {
       }
       if (flat.name) mapped.name = flat.name;
       setErrors(mapped);
+      setTimeout(scrollToFirstError, 0);
       return;
     }
 
@@ -66,7 +69,7 @@ export function RegisterForm() {
         const message = body?.message ?? t.errors.generic;
 
         if (body?.details) {
-          setErrors(body.details);
+          setErrors(body.details as FieldErrors);
         } else {
           setServerError(message);
         }
@@ -83,8 +86,8 @@ export function RegisterForm() {
 
   if (success) {
     return (
-      <Card className="w-full max-w-md p-8 text-center">
-        <p className="text-text-primary" role="status">
+      <Card className="w-full max-w-md p-8">
+        <p className="text-body text-center text-state-success" role="status">
           {t.success}
         </p>
       </Card>
@@ -107,7 +110,8 @@ export function RegisterForm() {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            aria-invalid={!!errors.name}
+            // dec-029: aria-invalid omitido quando não há erro
+            aria-invalid={errors.name ? (true as unknown as boolean) : undefined}
             aria-describedby={errors.name ? 'name-error' : undefined}
           />
           {errors.name && (
@@ -128,7 +132,8 @@ export function RegisterForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            aria-invalid={!!errors.email}
+            // dec-029: aria-invalid omitido quando não há erro
+            aria-invalid={errors.email ? (true as unknown as boolean) : undefined}
             aria-describedby={errors.email ? 'email-error' : undefined}
           />
           {errors.email && (
@@ -154,14 +159,19 @@ export function RegisterForm() {
               maxLength={64}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              aria-invalid={!!errors.password}
-              aria-describedby="password-hint password-error"
+              // dec-029: aria-invalid omitido quando não há erro
+              aria-invalid={errors.password ? (true as unknown as boolean) : undefined}
+              aria-describedby={
+                errors.password ? 'password-hint password-error' : 'password-hint'
+              }
             />
             <button
               type="button"
               className="text-caption absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm"
               onClick={() => setShowPassword((s) => !s)}
-              aria-label={showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword}
+              aria-label={
+                showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword
+              }
               data-testid="register-toggle-password"
             >
               {showPassword ? '🙈' : '👁'}
@@ -178,11 +188,14 @@ export function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="register-confirm-password" className="text-body-sm mb-1 block text-text-secondary">
+          <label
+            htmlFor="register-confirm-password"
+            className="text-body-sm mb-1 block text-text-secondary"
+          >
             {t.confirmPassword}
           </label>
           {/* A11y: confirm password shares same showPassword toggle for consistency.
-              aria-invalid and aria-describedby added (gap from original implementation). */}
+              aria-invalid tracks errors.password (passwordMismatch é sinalizado nele). */}
           <div className="relative">
             <Input
               id="register-confirm-password"
@@ -191,7 +204,7 @@ export function RegisterForm() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              aria-invalid={!!errors.password}
+              aria-invalid={errors.password ? (true as unknown as boolean) : undefined}
               aria-describedby={errors.password ? 'password-error' : undefined}
             />
           </div>
@@ -203,8 +216,22 @@ export function RegisterForm() {
           </p>
         )}
 
-        <Button type="submit" disabled={loading} className="mt-2 w-full">
-          {loading ? '...' : t.submit}
+        <Button
+          type="submit"
+          disabled={loading}
+          aria-busy={loading || undefined}
+          className="mt-2 w-full"
+        >
+          {loading ? (
+            <>
+              <span aria-hidden="true" className="mr-1.5 inline-block animate-spin">
+                ⟳
+              </span>
+              {t.submit}
+            </>
+          ) : (
+            t.submit
+          )}
         </Button>
       </form>
     </Card>

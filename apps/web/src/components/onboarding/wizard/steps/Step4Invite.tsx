@@ -88,6 +88,7 @@ export function Step4Invite({ onComplete, readOnly = false }: Step4InviteProps) 
           onChange={(e) => setLeaderName(e.target.value)}
           placeholder={t.step4.leaderNamePlaceholder}
           disabled={readOnly || isPending}
+          aria-required="false"
           data-testid="step4-leader-name"
         />
       </div>
@@ -103,12 +104,13 @@ export function Step4Invite({ onComplete, readOnly = false }: Step4InviteProps) 
           onChange={(e) => setLeaderEmail(e.target.value)}
           placeholder={t.step4.leaderEmailPlaceholder}
           disabled={readOnly || isPending}
+          aria-required="false"
           data-testid="step4-leader-email"
         />
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-error">
+        <p id="step4-invite-error" role="alert" className="text-sm text-error">
           {error}
         </p>
       )}
@@ -119,9 +121,15 @@ export function Step4Invite({ onComplete, readOnly = false }: Step4InviteProps) 
             type="submit"
             className="w-full"
             disabled={!leaderName.trim() || !leaderEmail.trim() || isPending}
+            aria-busy={isPending || undefined}
             data-testid="step4-invite-submit"
           >
-            {t.step4.inviteButton}
+            {isPending ? (
+              <>
+                <span aria-hidden="true" className="mr-1.5 inline-block animate-spin">⟳</span>
+                {t.step4.inviteButton}
+              </>
+            ) : t.step4.inviteButton}
           </Button>
           <Button
             type="button"
