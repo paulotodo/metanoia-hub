@@ -37,7 +37,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task:FASE5",
+  "next_instruction": "FASE 4: executar tasks 4.1 (TrailItemReorder), 4.2 (integrar no builder group-trails-client.tsx), 4.3 (E2E US4). Continuar execute-task loop.",
   "waves": [
     {
       "id": "onda-001",
