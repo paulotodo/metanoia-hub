@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-a11y-formularios-20260617T092942Z
 
-**Gerado em**: 2026-06-17T09:52:46Z
-**Status no momento**: aguardando_humano
+**Gerado em**: 2026-06-17T10:18:23Z
+**Status no momento**: em_andamento
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,13 +14,13 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | Story 12.5: Formularios Acessiveis (NFR-A3). Labels associados, mensagens de erro acessiveis (aria-describedby/aria-invalid/role=alert), fieldset/legend, instrucoes e validacao anunciadas a leitores de tela, foco em erro no submit. Cobre formularios reais (login, registro, grupos, convite, config/branding, trilhas). Validacao Zod ja existe em packages/types; foco na camada de apresentacao acessivel. |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | aguardando_humano |
+| Status | em_andamento |
 | Motivo termino | (em andamento) |
 | Iniciada em | 2026-06-17T09:29:42Z |
 | Terminada em | ainda em andamento |
-| Ondas executadas | 2 |
+| Ondas executadas | 3 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 12 |
+| Decisoes registradas | 20 |
 | Bloqueios humanos | 1 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -34,17 +34,19 @@
 |------|--------|-----|--------|------------|-----------|---------|
 | onda-001 | 2026-06-17T09:31:25Z | 2026-06-17T09:38:07Z |  | 0 | 402s | concluido |
 | onda-002 | 2026-06-17T09:44:36Z | 2026-06-17T09:52:19Z | clarify | 0 | 463s | bloqueio_humano |
+| onda-003 | 2026-06-17T10:09:42Z | 2026-06-17T10:17:58Z | plan | 0 | 496s | concluido |
 
 ## 3. Decisoes
 
-Total: 12 decisoes registradas.
+Total: 20 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 8 |
+| agente-00c-feature-orchestrator | 15 |
 | feature-00c-clarify-answerer | 4 |
+| feature-00c-resume(PAI) | 1 |
 
 ### 3.2 Lista detalhada
 
@@ -240,6 +242,134 @@ Total: 12 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-013 — clarify — feature-00c-resume(PAI) — 2026-06-17T10:00:12Z
+
+**Contexto**: block-001: incluir BrandingSettingsForm + super/tenants/novo no escopo da 12.5?
+
+**Opcoes consideradas**: incluir-A / diferir-B
+
+**Escolha**: diferir-B
+
+**Justificativa**: Decisao do operador via AskUserQuestion: diferir para story dedicada settings-a11y; manter 12.5 focada em forms publicos/pastorais. Forms ja tem a11y parcial (12.2/12.3) e gate axe 12.6 cobre violacoes basicas.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-014 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T10:00:29Z
+
+**Contexto**: Selecao de modelo para onda 2 (fase clarify)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-015 — clarify — agente-00c-feature-orchestrator — 2026-06-17T10:02:43Z
+
+**Contexto**: Incorporação de dec-013 (Opção B operador): excluir BrandingSettingsForm + super/tenants/novo do escopo da 12.5
+
+**Opcoes consideradas**: incluir-no-escopo / excluir-diferir-settings-a11y
+
+**Escolha**: excluir-diferir-settings-a11y
+
+**Justificativa**: Operador decidiu Opcao B (block-001): forms de admin backoffice grandes adiados para story settings-a11y. 12.5 foca em forms publicos/pastorais.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-016 — plan — agente-00c-feature-orchestrator — 2026-06-17T10:09:53Z
+
+**Contexto**: read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-formularios)
+
+**Opcoes consideradas**: injetar-achados / no-op
+
+**Escolha**: injetar-achados
+
+**Justificativa**: 4 achados recuperados de execucoes passadas de features a11y para fase plan
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-017 — plan — agente-00c-feature-orchestrator — 2026-06-17T10:10:08Z
+
+**Contexto**: Inicio da fase plan apos preflight OK e spec/clarify concluidos
+
+**Opcoes consideradas**: iniciar / abortar
+
+**Escolha**: iniciar
+
+**Justificativa**: Hash verificado OK, 0 bloqueios, budget OK, preflight OK. Spec clarificada com NC1-NC4 resolvidos. Iniciando geracao do plan.md.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-018 — plan — agente-00c-feature-orchestrator — 2026-06-17T10:17:32Z
+
+**Contexto**: Quality gate validate-documentation: skip (skill indisponivel no runtime)
+
+**Opcoes consideradas**: rodar-gate / skip-com-justificativa
+
+**Escolha**: skip-com-justificativa
+
+**Justificativa**: Skill validate-documentation nao disponivel neste ambiente. Revisao manual confirma: plan.md tem sections obrigatorias (Summary, Technical Context, Constitution Check, Project Structure, Fases, Criterios de saida). Sem TBD ou ambiguidades.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-019 — plan — agente-00c-feature-orchestrator — 2026-06-17T10:17:32Z
+
+**Contexto**: Quality gate owasp-security: skip justificado (feature frontend a11y pura, sem endpoint/auth/dados novos)
+
+**Opcoes consideradas**: rodar-gate / skip-com-justificativa
+
+**Escolha**: skip-com-justificativa
+
+**Justificativa**: Feature e acessibilidade ARIA pura: zero novos endpoints, zero alteracao de auth/autorizacao, zero processamento de dados sensiveis novos. Formularios de autenticacao existentes ja tiveram revisao de seguranca. Evidencia: spec.md seccao Dependencias: NAO altera packages/types, contratos de API, logica de negocio.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-020 — plan — agente-00c-feature-orchestrator — 2026-06-17T10:17:48Z
+
+**Contexto**: Fase plan concluida: 4 artefatos gerados (plan.md, research.md, data-model.md, quickstart.md)
+
+**Opcoes consideradas**: concluir-fase / reiterar
+
+**Escolha**: concluir-fase
+
+**Justificativa**: Constitution check PASS. 8 decisoes tecnicas documentadas no research.md. FormField, form-utils, 3 fases de retrofit, 17 formularios mapeados com gaps especificos. Gates: validate-documentation skip (skill indisponivel) + owasp skip (feature frontend puro, dec-019 score 3).
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -247,22 +377,18 @@ Total: 1 bloqueios.
 
 ### 4.1 Pendentes (aguardando resposta)
 
+(Nenhum bloqueio pendente neste momento.)
+
+### 4.2 Respondidos
+
 #### block-001 — disparado em 2026-06-17T09:50:59Z
 
 **Pergunta**: BrandingSettingsForm.tsx existe (17522 bytes em apps/web/app/(authenticated)/app/admin/configuracoes/branding/). A spec deixou sua inclusao em aberto (NC2). Incluir no escopo desta story 12.5 (a11y-formularios)?
 
-**Contexto para resposta**: Constitution Principio VI exige WCAG AA em todas interfaces, mas NAO impoe cronograma (pode ser outra story). Tradeoff: incluir = retrofit de 17KB de form admin complexo na MESMA sprint que ja cobre forms publicos criticos (login, register, recovery, reset-password, create-account) + wizard onboarding (4 steps) + forms de gestao pastoral (radar/cuidado, reunioes/reflexao) + group/invite forms. Opcoes: (A) incluir BrandingSettingsForm como should-have nesta story; (B) excluir e criar story dedicada settings-a11y (cobrindo tambem TenantConfigForm). NOTA: super/tenants/novo/page.tsx (367 linhas, form de super-admin) tem o mesmo perfil — incluir junto se A.
+**Resposta humana**: Opcao B (diferir): EXCLUIR BrandingSettingsForm.tsx e super/tenants/novo/page.tsx do escopo da Story 12.5. Criar story dedicada 'settings-a11y' posteriormente (cobrindo tambem TenantConfigForm). A 12.5 foca nos forms publicos/pastorais criticos ja listados. Decisao do operador. Nota: esses forms ja receberam melhorias parciais de a11y nas Stories 12.2/12.3 e o gate axe-core da 12.6 ainda detectara violacoes basicas.
 
-**Opcoes recomendadas**:
-- A-incluir-nesta-story
-- B-excluir-story-dedicada
+**Respondido em**: 2026-06-17T10:00:12Z
 
-**Status**: aguardando
-
-
-### 4.2 Respondidos
-
-(Nenhum bloqueio respondido nesta execucao.)
 
 ### 4.3 Sem bloqueios
 

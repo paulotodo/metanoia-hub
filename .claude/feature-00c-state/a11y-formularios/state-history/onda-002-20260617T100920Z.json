@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "clarify",
   "next_instruction": "Aguardando resposta humana ao block-001 (Q3: incluir BrandingSettingsForm 17KB no escopo?). Apos resposta via /feature-00c-resume: integrar decisao na spec ## Clarifications, invocar Skill(clarify) p/ atualizar spec.md, depois transitar clarify->plan (rodar feature-00c-preflight.sh check).",
   "waves": [
     {
@@ -78,30 +78,6 @@
           "skill": "feature-00c-clarify-answerer",
           "timestamp": "2026-06-17T09:50:38Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-17T10:09:42Z",
-      "finished_at": "2026-06-17T10:17:58Z",
-      "executed_stages": [
-        "plan"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 496,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-17T10:17:32Z",
-          "decision_id": "dec-018"
-        },
-        {
-          "skill": "owasp-security-skip",
-          "timestamp": "2026-06-17T10:17:32Z",
-          "decision_id": "dec-019"
         }
       ]
     }
@@ -388,96 +364,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T10:09:53Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-formularios)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "4 achados recuperados de execucoes passadas de features a11y para fase plan",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T10:10:08Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da fase plan apos preflight OK e spec/clarify concluidos",
-      "options_considered": [
-        "iniciar",
-        "abortar"
-      ],
-      "choice": "iniciar",
-      "rationale": "Hash verificado OK, 0 bloqueios, budget OK, preflight OK. Spec clarificada com NC1-NC4 resolvidos. Iniciando geracao do plan.md.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T10:17:32Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Quality gate validate-documentation: skip (skill indisponivel no runtime)",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Skill validate-documentation nao disponivel neste ambiente. Revisao manual confirma: plan.md tem sections obrigatorias (Summary, Technical Context, Constitution Check, Project Structure, Fases, Criterios de saida). Sem TBD ou ambiguidades.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T10:17:32Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Quality gate owasp-security: skip justificado (feature frontend a11y pura, sem endpoint/auth/dados novos)",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Feature e acessibilidade ARIA pura: zero novos endpoints, zero alteracao de auth/autorizacao, zero processamento de dados sensiveis novos. Formularios de autenticacao existentes ja tiveram revisao de seguranca. Evidencia: spec.md seccao Dependencias: NAO altera packages/types, contratos de API, logica de negocio.",
-      "justification_score": 3,
-      "evidence": "spec.md §Dependencias: NAO altera validacao Zod em packages/types, contratos de API, logica de negocio; zero novos endpoints ou surfaces OWASP",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T10:17:48Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase plan concluida: 4 artefatos gerados (plan.md, research.md, data-model.md, quickstart.md)",
-      "options_considered": [
-        "concluir-fase",
-        "reiterar"
-      ],
-      "choice": "concluir-fase",
-      "rationale": "Constitution check PASS. 8 decisoes tecnicas documentadas no research.md. FormField, form-utils, 3 fases de retrofit, 17 formularios mapeados com gaps especificos. Gates: validate-documentation skip (skill indisponivel) + owasp skip (feature frontend puro, dec-019 score 3).",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -507,21 +393,18 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T10:09:42Z"
+    "current_wave_start": "2026-06-17T09:44:36Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1361,
+    "wallclock_total_seconds": 865,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 20,
+    "decisions_total": 15,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
-    "toolkit_issues_opened": 0,
-    "cache": {
-      "tokens_cache_misses_disabled": 1
-    }
+    "toolkit_issues_opened": 0
   },
   "external_urls_whitelist": [],
   "circular_movement_history": [],
@@ -544,11 +427,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T09:38:34Z",
       "description": "fase=specify concluida; proxima=clarify; NC1-NC4 registrados"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-17T10:09:20Z",
-      "description": "etapa=plan hits=4"
     }
   ]
 }
