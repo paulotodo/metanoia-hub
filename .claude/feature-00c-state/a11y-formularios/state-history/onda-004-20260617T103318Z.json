@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "fase create-tasks: invocar Skill(create-tasks) para decompor plano em tasks.md executável",
   "waves": [
     {
@@ -121,23 +121,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-17T10:28:14Z",
           "decision_id": "dec-022"
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-17T10:34:43Z",
-      "finished_at": "2026-06-17T10:41:43Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 420,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T10:41:30Z",
-          "decision_id": null
         }
       ]
     }
@@ -570,137 +553,6 @@
       "evidence": "Gate validate-tasks-template.sh documentado como gate pos-create-tasks em orchestrator.md — nao aplicavel a checklists",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T10:33:18Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:35:02Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK016 Conflict: reconciliacao nome de prop SubmitButton",
-      "options_considered": [
-        "labelPending",
-        "pendingLabel"
-      ],
-      "choice": "pendingLabel",
-      "rationale": "plan.md e data-model.md (artefatos mais recentes e mais detalhados) usam pendingLabel; spec SC2.3 usa labelPending mas foi escrita antes do design tecnico. Adotar pendingLabel para consistencia com contratos React concretos.",
-      "justification_score": 2,
-      "evidence": "data-model.md linha 82: pendingLabel: string; plan.md linha 247: pendingLabel: string;",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:35:24Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK007: texto concreto de aria-label para inputs file",
-      "options_considered": [
-        "Foto de perfil",
-        "Selecionar foto de perfil",
-        "Upload de foto"
-      ],
-      "choice": "Selecionar foto de perfil",
-      "rationale": "vocabulario pastoral + descricao da acao. Step1: 'Selecionar foto de perfil'. Step2: 'Selecionar logotipo da comunidade'. Padrão: 'Selecionar <tipo>' em PT-BR.",
-      "justification_score": 2,
-      "evidence": "SC4.4 Step1Profile aria-label no input file de foto; SC4.5 Step2Community aria-label no logo file",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:35:24Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK030: scrollToFirstError ordem de foco com multiplos invalidos",
-      "options_considered": [
-        "DOM order (document.querySelector)",
-        "visual order (getBoundingClientRect)"
-      ],
-      "choice": "DOM order (document.querySelector)",
-      "rationale": "document.querySelector retorna o primeiro no DOM — comportamento correto e consistente com WCAG: leitores de tela tambem seguem DOM order. CSS reordering visual e anti-pattern de a11y. Usar DOM order e a abordagem correta WCAG.",
-      "justification_score": 3,
-      "evidence": "WCAG 1.3.2: Reading and Navigation Order - meaning can be determined from source order. document.querySelector('[aria-invalid=true]') retorna DOM-order por spec.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:35:24Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK034: transicao pending->error no SubmitButton",
-      "options_considered": [
-        "remover aria-busy e disabled quando isPending=false",
-        "manter disabled ate refresh",
-        "focar botao apos erro"
-      ],
-      "choice": "remover aria-busy e disabled quando isPending=false",
-      "rationale": "isPending e prop controlada pelo form pai. Quando backend retorna erro, o pai seta isPending=false -> SubmitButton remove aria-busy e disabled automaticamente via prop. Foco deve retornar ao campo de erro (scrollToFirstError) nao ao botao.",
-      "justification_score": 2,
-      "evidence": "data-model.md: isPending: boolean controla aria-busy e disabled. Transicao e implicita: quando pai seta isPending=false, o componente re-renderiza sem aria-busy.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:35:24Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK035: mecanismo aria-invalid dinamico em login-form sem react-hook-form",
-      "options_considered": [
-        "useState para errors",
-        "useRef + setAttribute",
-        "server action state"
-      ],
-      "choice": "useState para errors",
-      "rationale": "login-form.tsx e form nativo Next.js. Usar useState<{email?: string, password?: string}>({}) para erros de campo. Submit handler valida e seta errors. FormField recebe error={errors.email} e injeta aria-invalid dinamicamente via cloneElement.",
-      "justification_score": 2,
-      "evidence": "plan.md: nao usa useForm de react-hook-form. O retrofit adiciona aria-* direto nos elementos HTML. FormField via cloneElement injeta aria-invalid={!!error} no controle filho.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-030",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:41:20Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "generate-tasks: tasks.md gerado com 23 tasks em 4 fases",
-      "options_considered": [
-        "gerar-tasks-inline",
-        "invocar-skill-create-tasks"
-      ],
-      "choice": "gerar-tasks-inline",
-      "rationale": "Skill(create-tasks) tem bloqueio de Write nativo no ambiente VPS (lição dec-023). Tasks geradas inline via Python + todos os gaps CHK007/010/015/016/024/030/034/035/036 resolvidos com decisões auditadas.",
-      "justification_score": 2,
-      "evidence": "tasks.md: 29338 bytes, 741 linhas, 23 tasks em 4 fases. ls -la confirma existência.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -730,15 +582,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T10:34:43Z"
+    "current_wave_start": "2026-06-17T10:22:58Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2138,
+    "wallclock_total_seconds": 1718,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 30,
+    "decisions_total": 23,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

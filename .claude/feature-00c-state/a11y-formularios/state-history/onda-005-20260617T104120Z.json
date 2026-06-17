@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "fase create-tasks: invocar Skill(create-tasks) para decompor plano em tasks.md executável",
   "waves": [
     {
@@ -127,19 +127,13 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-17T10:34:43Z",
-      "finished_at": "2026-06-17T10:41:43Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 420,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T10:41:30Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -683,24 +677,6 @@
       "evidence": "plan.md: nao usa useForm de react-hook-form. O retrofit adiciona aria-* direto nos elementos HTML. FormField via cloneElement injeta aria-invalid={!!error} no controle filho.",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-030",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T10:41:20Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "generate-tasks: tasks.md gerado com 23 tasks em 4 fases",
-      "options_considered": [
-        "gerar-tasks-inline",
-        "invocar-skill-create-tasks"
-      ],
-      "choice": "gerar-tasks-inline",
-      "rationale": "Skill(create-tasks) tem bloqueio de Write nativo no ambiente VPS (lição dec-023). Tasks geradas inline via Python + todos os gaps CHK007/010/015/016/024/030/034/035/036 resolvidos com decisões auditadas.",
-      "justification_score": 2,
-      "evidence": "tasks.md: 29338 bytes, 741 linhas, 23 tasks em 4 fases. ls -la confirma existência.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -733,12 +709,12 @@
     "current_wave_start": "2026-06-17T10:34:43Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2138,
+    "wallclock_total_seconds": 1718,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 30,
+    "decisions_total": 29,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
