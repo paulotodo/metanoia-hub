@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.2: Navegacao por teclado nos fluxos autenticados (NFR-A1) — dashboard 3 experiencias, CRUD grupos, builder de trilhas (alternativa teclado ao drag-and-drop), catalogo/busca, config tenant/branding, gestao de planos; atender TD-001 (foco pos-redirect pos-login).",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "review-task completo — todas 29 tasks done, testes 100%, gates OK",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T00:25:00Z",
-    "finished_at": "2026-06-17T04:08:28Z",
+    "finished_at": null,
     "tasks_concluidas": [
       "0.1",
       "0.2",
@@ -272,12 +272,12 @@
     {
       "id": "onda-013",
       "started_at": "2026-06-17T03:54:59Z",
-      "finished_at": "2026-06-17T04:08:33Z",
+      "finished_at": "2026-06-17T04:01:10Z",
       "executed_stages": [
         "execute-task:FASE9"
       ],
       "tool_calls": 0,
-      "wallclock_seconds": 814,
+      "wallclock_seconds": 371,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -1247,26 +1247,6 @@
       "evidence": "Tasks: 3 successful, 3 total (build) / 4 successful, 4 total (lint)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-052",
-      "wave_id": "onda-013",
-      "timestamp": "2026-06-17T04:05:18Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 13 (fase review-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:haiku",
-      "rationale": "sugerido=haiku aplicado=haiku origem=mapa | faixa=rasa fase=review-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -1307,12 +1287,12 @@
     "current_wave_start": "2026-06-17T03:54:59Z"
   },
   "accumulated_metrics": {
-    "waves_total": 17,
+    "waves_total": 16,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 11117,
+    "wallclock_total_seconds": 10303,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 52,
+    "decisions_total": 51,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

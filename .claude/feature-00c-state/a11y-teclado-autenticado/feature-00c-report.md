@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-a11y-teclado-autenticado-20260617T002500Z
 
-**Gerado em**: 2026-06-17T04:02:05Z
-**Status no momento**: em_andamento
+**Gerado em**: 2026-06-17T04:08:37Z
+**Status no momento**: concluida
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,13 +14,13 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | Story 12.2: Navegacao por teclado nos fluxos autenticados (NFR-A1) — dashboard 3 experiencias, CRUD grupos, builder de trilhas (alternativa teclado ao drag-and-drop), catalogo/busca, config tenant/branding, gestao de planos; atender TD-001 (foco pos-redirect pos-login). |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | em_andamento |
-| Motivo termino | (em andamento) |
+| Status | concluida |
+| Motivo termino | review-task completo — todas 29 tasks done, testes 100%, gates OK |
 | Iniciada em | 2026-06-17T00:25:00Z |
-| Terminada em | ainda em andamento |
-| Ondas executadas | 16 |
+| Terminada em | 2026-06-17T04:08:28Z |
+| Ondas executadas | 17 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 51 |
+| Decisoes registradas | 52 |
 | Bloqueios humanos | 2 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -44,17 +44,17 @@
 | onda-010 | 2026-06-17T03:07:05Z | 2026-06-17T03:16:26Z |  | 0 | 561s | concluido |
 | onda-011 | 2026-06-17T03:23:45Z | 2026-06-17T03:32:13Z |  | 0 | 508s | concluido |
 | onda-012 | 2026-06-17T03:37:45Z | 2026-06-17T03:47:51Z |  | 0 | 606s | concluido |
-| onda-013 | 2026-06-17T03:54:59Z | 2026-06-17T04:01:10Z | execute-task:FASE9 | 0 | 371s | concluido |
+| onda-013 | 2026-06-17T03:54:59Z | 2026-06-17T04:08:33Z | execute-task:FASE9 | 0 | 814s | concluido |
 
 ## 3. Decisoes
 
-Total: 51 decisoes registradas.
+Total: 52 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 45 |
+| agente-00c-feature-orchestrator | 46 |
 | feature-00c-clarify-answerer | 3 |
 | feature-00c-resume(PAI) | 3 |
 
@@ -876,6 +876,22 @@ Total: 51 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-052 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T04:05:18Z
+
+**Contexto**: Selecao de modelo para onda 13 (fase review-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:haiku
+
+**Justificativa**: sugerido=haiku aplicado=haiku origem=mapa | faixa=rasa fase=review-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -930,7 +946,7 @@ Nenhuma sugestao para skills globais nesta execucao.
 
 ## 6. Licoes Aprendidas
 
-(Sera preenchido no relatorio final.)
+(Relatorio final invocado sem --licoes-aprendidas — operador deve preencher esta secao manualmente OU re-invocar com flag.)
 
 ---
 
