@@ -685,11 +685,11 @@ quando renderizado isoladamente. Se falhar: adicionar fallback `aria-label` inte
 - Submit em progresso → `aria-busy="true"` e `disabled` no botão
 
 **Critério de aceite**:
-- [ ] 5 rotas com zero violações `checkA11y()` (nível AA)
-- [ ] `aria-invalid="true"` verificado após submit vazio
-- [ ] `aria-busy="true"` verificado durante submissão
-- [ ] Foco no primeiro campo inválido verificado
-- [ ] Job "E2E (Playwright)" no CI verde
+- [x] 5 rotas com zero violações `checkA11y()` (nível AA)
+- [x] `aria-invalid="true"` verificado após submit vazio
+- [x] `aria-busy="true"` verificado durante submissão
+- [x] Foco no primeiro campo inválido verificado
+- [x] Job "E2E (Playwright)" no CI verde
 
 **Dependências**: FASE 1 completa (1.1–1.7)
 
@@ -704,9 +704,9 @@ quando renderizado isoladamente. Se falhar: adicionar fallback `aria-label` inte
 das Fases 1 e 2.
 
 **Critério de aceite**:
-- [ ] `find apps/web -name '*.spec.tsx' -path '*__tests__*'` lista spec para cada formulário auditado
-- [ ] Cada spec tem cenários: initial, com error, recovered
-- [ ] `pnpm turbo test --filter=@metanoia/web` verde
+- [x] `find apps/web -name '*.spec.tsx' -path '*__tests__*'` lista spec para cada formulário auditado
+- [x] Cada spec tem cenários: initial, com error, recovered
+- [x] `pnpm turbo test --filter=@metanoia/web` verde
 
 **Dependências**: FASE 1 + FASE 2 completas
 
@@ -731,11 +731,11 @@ grep -rn --include="*.tsx"   -e '"Enviando"' -e '"Salvar"' -e '"Enviar"'   -e '"
 ```
 
 **Critério de aceite**:
-- [ ] `pnpm turbo build` zero erros TypeScript
-- [ ] `pnpm turbo lint --max-warnings 0` passa
-- [ ] `pnpm turbo test` verde (todos os testes existentes + novos)
-- [ ] Grep SC-F retorna saída vazia
-- [ ] `reflection-form-field` testes existentes verdes (SC-H)
-- [ ] `group-form.spec.tsx` existente verde (SC6.4)
+- [x] `pnpm turbo build` zero erros TypeScript
+- [x] `pnpm turbo lint --max-warnings 0` passa
+- [x] `pnpm turbo test` verde (todos os testes existentes + novos)
+- [x] Grep SC-F retorna saída vazia
+- [x] `reflection-form-field` testes existentes verdes (SC-H)
+- [x] `group-form.spec.tsx` existente verde (SC6.4)
 
 **Dependências**: 3.1, 3.2
