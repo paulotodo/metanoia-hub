@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar fase execute-task: executar tasks do backlog na ordem de dependencias (A.1 primeiro, depois A.2/A.3/A.4 em paralelo, depois B.1/C.1, depois demais). Gate local antes de concluir: pnpm --filter @metanoia/api exec prisma generate && pnpm turbo build && pnpm turbo lint --max-warnings 0. Projeto mobile Playwright DEVE usar Chromium (Pixel 5 / hasTouch), NUNCA iPhone 12/WebKit.",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa create-tasks: decompor spec+plan em backlog. ATENCAO incorporar gaps do checklist ux-a11y: CHK033 (projeto playwright mobile DEVE usar emulacao Chromium - Pixel 5/Mobile Chrome ou Desktop Chrome+viewport+hasTouch, NAO iPhone 12/WebKit) e CHK025 (corrigir SC-3.1 para apontar packages/ui/styles/globals.css).",
   "waves": [
     {
       "id": "onda-001",
@@ -103,23 +103,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-17T07:50:11Z",
           "decision_id": "dec-018"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-17T07:55:45Z",
-      "finished_at": "2026-06-17T07:58:59Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 194,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T07:58:39Z",
-          "decision_id": null
         }
       ]
     }
@@ -505,100 +488,6 @@
       "evidence": "spec SC-3.1: 'Regra CSS global ... presente em apps/web/app/globals.css | grep prefers-reduced-motion no arquivo'. plan dec-013 (score 3): 'a regra vai em packages/ui/styles/globals.css (entry point real importado por apps/web/app/layout.tsx), nao em apps/web/app/globals.css'.",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T07:54:16Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T07:55:54Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "inicio da fase create-tasks: decompor Story 12.4 nos 3 eixos",
-      "options_considered": [
-        "iniciar",
-        "abortar"
-      ],
-      "choice": "iniciar",
-      "rationale": "estado em_andamento, 0 bloqueios, 0 ciclos detectados; prosseguir com backlog",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T07:56:11Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK033/dec-019 (CI-RISK): projeto mobile Playwright DEVE usar emulacao Chromium",
-      "options_considered": [
-        "devices[Pixel 5] Mobile Chrome",
-        "devices[iPhone 12] WebKit",
-        "Desktop Chrome+viewport+hasTouch"
-      ],
-      "choice": "devices[Pixel 5] Mobile Chrome",
-      "rationale": "CI Chromium-only: iPhone 12 usa WebKit que nao esta instalado no runner, quebraria job E2E. Pixel 5 = Mobile Chrome (Chromium). Evidencia: playwright.config.ts so tem project Desktop Chrome; browser install = chromium.",
-      "justification_score": 3,
-      "evidence": "playwright.config.ts: projects: [{ name: 'Desktop Chrome', use: { ...devices['Desktop Chrome'] } }]; browserslist CI = chromium only",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T07:56:11Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK025/dec-020 (path): safety net reduced-motion vai em packages/ui/styles/globals.css, NAO apps/web/app/globals.css",
-      "options_considered": [
-        "packages/ui/styles/globals.css",
-        "apps/web/app/globals.css"
-      ],
-      "choice": "packages/ui/styles/globals.css",
-      "rationale": "Entry point real importado por apps/web/app/layout.tsx (auditoria empirica do plan); apps/web/app/globals.css nao e importado pela arvore de componentes. Evidencia: grep 'globals.css' em layout.tsx aponta packages/ui.",
-      "justification_score": 3,
-      "evidence": "plan.md sec C1: Entry point real = packages/ui/styles/globals.css (Imported by apps/web/app/layout.tsx)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T07:58:59Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "tasks.md gerado: 15 tasks / 451 linhas / 62 checkboxes; CHK033+CHK025 materializados em dec-023+dec-024",
-      "options_considered": [
-        "concluir-avancar-execute-task",
-        "re-gerar",
-        "abortar"
-      ],
-      "choice": "concluir-avancar-execute-task",
-      "rationale": "tasks.md verificado: 21756 bytes, nao-vazio, 15 tasks em 5 eixos, checkboxes, matriz de dependencias, secoes Escopo Coberto/Excluido presentes",
-      "justification_score": 3,
-      "evidence": "ls -la: -rw-r--r-- 1 root root 21756; wc -l: 451; grep '### [A-Z]\\.' = 15; grep '- \\[ \\]' = 62",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -613,15 +502,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T07:55:45Z"
+    "current_wave_start": "2026-06-17T07:47:24Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2875,
+    "wallclock_total_seconds": 2681,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 25,
+    "decisions_total": 20,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 1,
     "toolkit_issues_opened": 0
@@ -652,11 +541,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T07:36:12Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T07:59:30Z",
-      "description": "fase=create-tasks concluida; proxima=execute-task"
     }
   ],
   "suggestions": [

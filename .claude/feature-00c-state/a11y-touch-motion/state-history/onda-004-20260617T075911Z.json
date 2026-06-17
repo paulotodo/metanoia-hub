@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Iniciar fase execute-task: executar tasks do backlog na ordem de dependencias (A.1 primeiro, depois A.2/A.3/A.4 em paralelo, depois B.1/C.1, depois demais). Gate local antes de concluir: pnpm --filter @metanoia/api exec prisma generate && pnpm turbo build && pnpm turbo lint --max-warnings 0. Projeto mobile Playwright DEVE usar Chromium (Pixel 5 / hasTouch), NUNCA iPhone 12/WebKit.",
+  "next_instruction": "Iniciar etapa create-tasks: decompor spec+plan em backlog. ATENCAO incorporar gaps do checklist ux-a11y: CHK033 (projeto playwright mobile DEVE usar emulacao Chromium - Pixel 5/Mobile Chrome ou Desktop Chrome+viewport+hasTouch, NAO iPhone 12/WebKit) e CHK025 (corrigir SC-3.1 para apontar packages/ui/styles/globals.css).",
   "waves": [
     {
       "id": "onda-001",
@@ -652,11 +652,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T07:36:12Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T07:59:30Z",
-      "description": "fase=create-tasks concluida; proxima=execute-task"
     }
   ],
   "suggestions": [

@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar fase execute-task: executar tasks do backlog na ordem de dependencias (A.1 primeiro, depois A.2/A.3/A.4 em paralelo, depois B.1/C.1, depois demais). Gate local antes de concluir: pnpm --filter @metanoia/api exec prisma generate && pnpm turbo build && pnpm turbo lint --max-warnings 0. Projeto mobile Playwright DEVE usar Chromium (Pixel 5 / hasTouch), NUNCA iPhone 12/WebKit.",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa create-tasks: decompor spec+plan em backlog. ATENCAO incorporar gaps do checklist ux-a11y: CHK033 (projeto playwright mobile DEVE usar emulacao Chromium - Pixel 5/Mobile Chrome ou Desktop Chrome+viewport+hasTouch, NAO iPhone 12/WebKit) e CHK025 (corrigir SC-3.1 para apontar packages/ui/styles/globals.css).",
   "waves": [
     {
       "id": "onda-001",
@@ -109,11 +109,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T07:55:45Z",
-      "finished_at": "2026-06-17T07:58:59Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 194,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -616,9 +616,9 @@
     "current_wave_start": "2026-06-17T07:55:45Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2875,
+    "wallclock_total_seconds": 2681,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 25,
@@ -652,11 +652,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T07:36:12Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T07:59:30Z",
-      "description": "fase=create-tasks concluida; proxima=execute-task"
     }
   ],
   "suggestions": [
