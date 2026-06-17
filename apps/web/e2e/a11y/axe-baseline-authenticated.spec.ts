@@ -58,12 +58,11 @@ const OUTPUT_DIR = path.join(
 
 /** Authenticated routes to scan (Story 12.2, task 0.1 acceptance criteria). */
 const AUTHENTICATED_PAGES = [
-  { path: '/dashboard', label: 'dashboard' },
-  { path: '/groups', label: 'groups' },
-  { path: '/trails/builder', label: 'trails-builder' },
-  { path: '/catalog', label: 'catalog' },
-  { path: '/settings/tenant', label: 'settings-tenant' },
-  { path: '/plans', label: 'plans' },
+  { path: '/app/admin/igreja/dashboard', label: 'dashboard' },
+  { path: '/app/admin/grupos', label: 'groups' },
+  { path: '/app/consumo/catalogo', label: 'catalog' },
+  { path: '/app/admin/configuracoes/branding', label: 'settings-branding' },
+  { path: '/app/admin/planos', label: 'plans' },
 ];
 
 // ── Suite ────────────────────────────────────────────────────────────────────
