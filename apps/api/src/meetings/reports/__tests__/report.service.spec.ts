@@ -4,6 +4,21 @@ import { generateId } from "@metanoia/types";
 import { requestContext } from "../../../common/context/request-context";
 import { ReportService } from "../report.service";
 
+// Mock withTenantTx so buildLeaderView does not require real Prisma
+vi.mock("../../../prisma/with-tenant-tx", () => ({
+  withTenantTx: vi.fn(
+    (_prisma: unknown, fn: (tx: unknown) => Promise<unknown>) =>
+      fn({
+        user: {
+          findMany: vi.fn().mockResolvedValue([]),
+        },
+        meetingAttendance: {
+          findMany: vi.fn().mockResolvedValue([]),
+        },
+      }),
+  ),
+}));
+
 const TENANT = "01912345-6789-7000-8000-000000000001";
 const MEETING = "01912345-6789-7000-8000-000000000100";
 const USER_1 = "01912345-6789-7000-8000-000000000aa1";
@@ -16,7 +31,8 @@ function buildMocks() {
     upsertReport: vi.fn(),
     findByMeeting: vi.fn(),
   };
-  const service = new ReportService(meetings as never, reports as never);
+  const prisma = {}; // withTenantTx is mocked; no real Prisma needed
+  const service = new ReportService(meetings as never, reports as never, prisma as never);
   return { service, meetings, reports };
 }
 
@@ -101,7 +117,7 @@ describe("ReportService", () => {
       ).rejects.toBeInstanceOf(NotFoundException);
     });
 
-    it("returns full kind for canSeeFull=true", async () => {
+    it("returns full kind for canSeeFull=true (FR63 leader view)", async () => {
       env.reports.findByMeeting.mockResolvedValue({
         id: "report-1",
         meetingId: MEETING,
@@ -124,10 +140,22 @@ describe("ReportService", () => {
         },
         generatedAt: new Date("2026-04-20T20:35:00.000Z"),
       });
+      // findById called by buildLeaderView to derive meetingDurationSeconds
+      env.meetings.findById.mockResolvedValue({
+        startedAt: new Date("2026-04-20T19:30:00.000Z"),
+        endedAt: new Date("2026-04-20T20:30:00.000Z"),
+        durationMinutes: 60,
+      });
       const result = await withCtx(() =>
         env.service.findForUser(MEETING, USER_1, true),
       );
       expect(result.kind).toBe("full");
+      // FR63: data now has metrics + participants instead of raw summary
+      if (result.kind === "full") {
+        expect(result.data).toHaveProperty("metrics");
+        expect(result.data).toHaveProperty("participants");
+        expect(result.data).toHaveProperty("generatedAt");
+      }
     });
 
     it("returns personal kind shaped to requester for canSeeFull=false", async () => {

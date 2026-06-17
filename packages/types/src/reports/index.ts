@@ -117,12 +117,34 @@ export type ExportJobStatus = z.infer<typeof ExportJobStatusSchema>;
 
 // ─── BullMQ job payload ───────────────────────────────────────────────────────
 
-export interface ReportExportJobPayload {
-  jobId: string;
-  tenantId: string;
-  trailId: string;
-  trailName: string;
-  requestedBy: string;
-  /** User IDs to include (pre-filtered by role at enqueue time) */
-  userIds: string[];
-}
+/**
+ * Discriminated union for BullMQ export job payloads.
+ *
+ * - `kind: 'trail'`   — trail CSV export (existing, Story 5.7)
+ * - `kind: 'meeting'` — meeting attendance CSV export (FR63, Story 13-1)
+ *
+ * CHK035: both kinds share the same `cache:reports:export-job:<tenantId>:<jobId>`
+ * Redis key structure — covered by `getJobStatus` / `setJobStatus` in
+ * ReportsService.
+ */
+export type ReportExportJobPayload =
+  | {
+      kind: 'trail';
+      jobId: string;
+      tenantId: string;
+      trailId: string;
+      trailName: string;
+      requestedBy: string;
+      /** User IDs to include (pre-filtered by role at enqueue time) */
+      userIds: string[];
+    }
+  | {
+      kind: 'meeting';
+      jobId: string;
+      tenantId: string;
+      meetingId: string;
+      /** User ID of the leader/admin who requested the export */
+      requesterUserId: string;
+      /** Whether requester has full view (leader/admin) — used for CSV column scope */
+      canSeeFull: boolean;
+    };

@@ -80,12 +80,23 @@ export class ReportsController {
   /**
    * GET /api/v1/reports/jobs/:jobId
    * Poll export job status and retrieve signed URL when completed.
+   *
+   * CHK040: polling cadence — recommended minimum 3 seconds.
+   * Backoff: 3s → 6s → 12s → max 30s. Max attempts: 20.
+   * S1 mitigation: tenant+userId authorization enforced in service layer.
    */
   @Get('jobs/:jobId')
   @Roles(Role.ADMIN_TENANT, Role.LIDER)
   @HttpCode(HttpStatus.OK)
-  async getJobStatus(@Param('jobId') jobId: string) {
+  async getJobStatus(
+    @Param('jobId') jobId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const status = await this.reportsService.getJobStatus(jobId);
+    // CHK040: instruct client to wait at least 3s before next poll
+    if (status.status === 'processing') {
+      res.setHeader('Retry-After', '3');
+    }
     return { data: status };
   }
 }

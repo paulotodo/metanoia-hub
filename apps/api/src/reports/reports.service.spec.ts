@@ -324,6 +324,8 @@ describe('ReportsService', () => {
         signedUrl: 'https://minio/export.csv',
         expiresAt: '2026-06-10T23:00:00Z',
         failureReason: null,
+        // S1: requesterUserId matches userId from mocked RequestContext ('user-admin-01')
+        requesterUserId: 'user-admin-01',
       };
       mockRedis.get.mockResolvedValue(JSON.stringify(stored));
 
@@ -345,6 +347,7 @@ describe('ReportsService', () => {
       mockStorage.getSignedUrl.mockResolvedValue('https://minio/signed.csv');
 
       await service.processExportJob({
+        kind: 'trail',
         jobId: 'job-xyz',
         tenantId: 'tenant-001',
         trailId: 'trail-001',
@@ -369,6 +372,7 @@ describe('ReportsService', () => {
 
       await expect(
         service.processExportJob({
+          kind: 'trail',
           jobId: 'job-fail',
           tenantId: 'tenant-001',
           trailId: 'trail-001',
