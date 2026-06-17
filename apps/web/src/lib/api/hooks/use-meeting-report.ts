@@ -1,33 +1,53 @@
 import { useQuery } from '@tanstack/react-query';
 import type {
   MeetingReportPersonal,
-  MeetingReportSummary,
+  MeetingLeaderReportResponse,
 } from '@metanoia/types';
 import { apiClient } from '../client';
 
-export type MeetingReportEnvelope =
-  | {
-      data: {
-        id: string;
-        meetingId: string;
-        summary: MeetingReportSummary;
-        generatedAt: string;
-      };
-      meta: { view: 'full' };
-    }
-  | { data: MeetingReportPersonal; meta: { view: 'personal' } };
+// ─── Response envelope types ──────────────────────────────────────────────────
 
-/** Pass-through schema for the apiClient (raw JSON parse, no Zod validation
- * on the client). Server-side Zod validation in ReportService is the source
- * of truth; the client trusts the contract. */
+/**
+ * Full FR63 leader view — returned when canSeeFull=true.
+ * Contains metrics aggregate + per-participant list with engagement data.
+ */
+export type MeetingLeaderReportEnvelope = {
+  data: MeetingLeaderReportResponse['data'];
+  meta: { view: 'full' };
+};
+
+/** Personal view — returned for Participantes (canSeeFull=false). */
+export type MeetingPersonalReportEnvelope = {
+  data: MeetingReportPersonal;
+  meta: { view: 'personal' };
+};
+
+export type MeetingReportEnvelope =
+  | MeetingLeaderReportEnvelope
+  | MeetingPersonalReportEnvelope;
+
+/** Pass-through: server Zod validation is source of truth; client trusts the contract. */
 const ReportEnvelopeSchema = {
   parse: (data: unknown): MeetingReportEnvelope => data as MeetingReportEnvelope,
 };
+
+// ─── Query keys ───────────────────────────────────────────────────────────────
 
 export const meetingReportKeys = {
   detail: (meetingId: string) => ['meetings', 'report', meetingId] as const,
 };
 
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Fetches the meeting report for the authenticated user.
+ *
+ * - Leaders/admins (canSeeFull=true on the server): receive FR63 leader view
+ *   with `metrics` + `participants` array + engagement scores.
+ * - Participantes: receive personal view with their own attendance row.
+ *
+ * The `meta.view` field discriminates the response shape.
+ */
 export function useMeetingReport(meetingId: string) {
   return useQuery({
     queryKey: meetingReportKeys.detail(meetingId),
