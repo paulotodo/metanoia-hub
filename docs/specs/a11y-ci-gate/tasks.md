@@ -76,9 +76,9 @@ e sao automaticamente skipped pelo spec ate o helper `loginAs` ser estabilizado 
 ```
 
 **Criterio de aceite:**
-- [ ] `grep -n "autenticado-publico" docs/specs/a11y-ci-gate/spec.md` retorna zero resultados
-- [ ] O texto novo menciona explicitamente as 4 paginas publicas e referencia NC-3/dec-007
-- [ ] Nenhuma outra linha da spec alterada
+- [x] `grep -n "autenticado-publico" docs/specs/a11y-ci-gate/spec.md` retorna zero resultados
+- [x] O texto novo menciona explicitamente as 4 paginas publicas e referencia NC-3/dec-007
+- [x] Nenhuma outra linha da spec alterada
 
 **Dependencias:** nenhuma
 
@@ -106,9 +106,9 @@ git commit -m "chore(deps): adiciona color2k como devDep em apps/web para check-
 ```
 
 **Criterio de aceite:**
-- [ ] `jq '.devDependencies["color2k"]' apps/web/package.json` retorna string de versao (nao null)
-- [ ] `pnpm --filter @metanoia/web exec node -e "require('color2k')"` sem erro de modulo nao encontrado
-- [ ] `pnpm-lock.yaml` commitado junto da alteracao de `package.json`
+- [x] `jq '.devDependencies["color2k"]' apps/web/package.json` retorna string de versao (nao null)
+- [x] `pnpm --filter @metanoia/web exec node -e "require('color2k')"` sem erro de modulo nao encontrado
+- [x] `pnpm-lock.yaml` commitado junto da alteracao de `package.json`
 
 **Dependencias:** nenhuma (pre-requisito para T3)
 
@@ -146,11 +146,11 @@ Constraint: nao importar de apps/web/src/ (CLI standalone com color2k)
 ```
 
 **Criterio de aceite:**
-- [ ] `npx tsx scripts/check-contrast.ts --tokens-path packages/config/tailwind.preset.css` retorna exit 0 no estado atual do repo
-- [ ] Modificar token de cor para valor de baixo contraste resulta em exit 1 com mensagem de falha
-- [ ] `--tokens-path` aceita path relativo e absoluto; ausencia usa o default
-- [ ] O script nao importa de `apps/web/src/`
-- [ ] Cabecalho JSDoc documenta proposito, FR-1/FR-2, como estender
+- [x] `npx tsx scripts/check-contrast.ts --tokens-path packages/config/tailwind.preset.css` retorna exit 0 no estado atual do repo
+- [x] Modificar token de cor para valor de baixo contraste resulta em exit 1 com mensagem de falha
+- [x] `--tokens-path` aceita path relativo e absoluto; ausencia usa o default
+- [x] O script nao importa de `apps/web/src/`
+- [x] Cabecalho JSDoc documenta proposito, FR-1/FR-2, como estender
 
 **Dependencias:** T2 (color2k instalada)
 
@@ -178,9 +178,9 @@ arquivo real de tokens). Cobrem os 5 casos definidos em SC-1.9.
 ```
 
 **Criterio de aceite:**
-- [ ] `npx vitest run scripts/__tests__/check-contrast.spec.ts` — todos os casos passam
-- [ ] Cobertura dos 5 casos obrigatorios acima
-- [ ] Fixtures CSS nao dependem de `packages/config/tailwind.preset.css` (inline ou em `__fixtures__/`)
+- [x] `npx vitest run scripts/__tests__/check-contrast.spec.ts` — todos os casos passam
+- [x] Cobertura dos 5 casos obrigatorios acima
+- [x] Fixtures CSS nao dependem de `packages/config/tailwind.preset.css` (inline ou em `__fixtures__/`)
 
 **Dependencias:** T3 (check-contrast.ts criado)
 
@@ -209,9 +209,9 @@ Esta tarefa e CONSOLIDADA com T9 (Fase 5) para evitar multiplos commits no ci.ym
 ```
 
 **Criterio de aceite:**
-- [ ] Step presente no `ci.yml` apos o step "Contrast tokens gate"
-- [ ] `npx tsx scripts/check-contrast.ts` retorna exit 0 no estado atual do repo (confirmar antes de commitar)
-- [ ] Validacao YAML coberta por T11
+- [x] Step presente no `ci.yml` apos o step "Contrast tokens gate"
+- [x] `npx tsx scripts/check-contrast.ts` retorna exit 0 no estado atual do repo (confirmar antes de commitar)
+- [x] Validacao YAML coberta por T11
 
 **Dependencias:** T3 (script criado), T8 (pre-validacao local confirma exit 0 antes de promover)
 **Nota:** Esta task pode ser consolidada no mesmo commit de T9 (ci.yml) para atomicidade.
@@ -259,10 +259,10 @@ antes de commitar o spec.
 ```
 
 **Criterio de aceite:**
-- [ ] `python3 -c "import json; d=json.load(open('a11y-pages.json')); print(len(d['pages']), 'paginas')"` retorna `4 paginas` sem erro
-- [ ] Todas as 4 entradas tem `requiresAuth: false`
-- [ ] Campo `_README` presente e documenta o schema (SC-5.2)
-- [ ] Arquivo commitado na raiz do repo
+- [x] `python3 -c "import json; d=json.load(open('a11y-pages.json')); print(len(d['pages']), 'paginas')"` retorna `4 paginas` sem erro
+- [x] Todas as 4 entradas tem `requiresAuth: false`
+- [x] Campo `_README` presente e documenta o schema (SC-5.2)
+- [x] Arquivo commitado na raiz do repo
 
 **Dependencias:** nenhuma (pre-requisito para T6)
 
@@ -333,10 +333,10 @@ test.describe('axe quality gate — paginas publicas (WCAG 2AA)', () => {
 ```
 
 **Criterio de aceite:**
-- [ ] O spec compila sem erros TypeScript (`npx tsc --noEmit`)
-- [ ] Cada pagina publica gera 1 teste dinamico (4 testes para as 4 entradas iniciais)
-- [ ] Entradas `requiresAuth: true` (quando adicionadas) geram `test.skip` visivel no relatorio
-- [ ] `process.cwd()` no runner resolve para raiz do repo (confirmar uma vez em dev — CHK006)
+- [x] O spec compila sem erros TypeScript (`npx tsc --noEmit`)
+- [x] Cada pagina publica gera 1 teste dinamico (4 testes para as 4 entradas iniciais)
+- [x] Entradas `requiresAuth: true` (quando adicionadas) geram `test.skip` visivel no relatorio
+- [x] `process.cwd()` no runner resolve para raiz do repo (confirmar uma vez em dev — CHK006)
 
 **Dependencias:** T5 (`a11y-pages.json` criado)
 
@@ -364,9 +364,9 @@ grep -A 20 "E2E (Playwright)" .github/workflows/ci.yml | grep "playwright test"
 ```
 
 **Criterio de aceite:**
-- [ ] `axe-quality-gate.e2e-spec.ts` e executado no job E2E (confirmar via inspecao do ci.yml)
-- [ ] Nenhum `continue-on-error: true` no step que roda o gate axe
-- [ ] Upload de relatorio HTML axe via `actions/upload-artifact` presente no job E2E (SC-2.4/FR-6)
+- [x] `axe-quality-gate.e2e-spec.ts` e executado no job E2E (confirmar via inspecao do ci.yml)
+- [x] Nenhum `continue-on-error: true` no step que roda o gate axe
+- [x] Upload de relatorio HTML axe via `actions/upload-artifact` presente no job E2E (SC-2.4/FR-6)
 
 **Dependencias:** T6 (spec criado)
 
@@ -396,9 +396,9 @@ Adicionar assertion para `serious` sem remover a existente para `critical`.
 ```
 
 **Criterio de aceite:**
-- [ ] `grep -n "expect(bySeverity.serious).toBe(0)" apps/web/e2e/a11y/axe-final.spec.ts` retorna >=1 resultado
-- [ ] A assertion `critical` permanece intacta na linha original
-- [ ] O spec compila sem erros TypeScript
+- [x] `grep -n "expect(bySeverity.serious).toBe(0)" apps/web/e2e/a11y/axe-final.spec.ts` retorna >=1 resultado
+- [x] A assertion `critical` permanece intacta na linha original
+- [x] O spec compila sem erros TypeScript
 
 **Dependencias:** nenhuma
 
@@ -424,10 +424,10 @@ node apps/web/scripts/check-contrast-tokens.mjs  # exit 0 esperado (gate existen
 ```
 
 **Criterio de aceite (CHK015/CHK016):**
-- [ ] `bash scripts/check-motion-safe.sh --ci` -> exit 0
-- [ ] `bash scripts/check-i18n-scf.sh --strict` -> exit 0
-- [ ] `npx tsx scripts/check-contrast.ts` -> exit 0
-- [ ] `node apps/web/scripts/check-contrast-tokens.mjs` -> exit 0
+- [x] `bash scripts/check-motion-safe.sh --ci` -> exit 0
+- [x] `bash scripts/check-i18n-scf.sh --strict` -> exit 0
+- [x] `npx tsx scripts/check-contrast.ts` -> exit 0
+- [x] `node apps/web/scripts/check-contrast-tokens.mjs` -> exit 0
 
 **Resolucao CHK017 (criterio corrigir-vs-bloquear):**
 Se pre-promocao falhar -> SEMPRE corrigir a violacao (nao desabilitar o gate).
@@ -476,10 +476,10 @@ Tres mudancas no job `Lint` do `ci.yml` (consolidadas em um unico commit com T2.
 ```
 
 **Criterio de aceite:**
-- [ ] Step "Motion-safe guard" usa `bash scripts/check-motion-safe.sh --ci` (sem `--warn`)
-- [ ] Step "i18n strings SCF gate" presente com `bash scripts/check-i18n-scf.sh --strict`
-- [ ] Comentario de secao a11y presente antes do primeiro gate (SC-3.3)
-- [ ] `python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/ci.yml'))"` -> sem erro (coberto por T11)
+- [x] Step "Motion-safe guard" usa `bash scripts/check-motion-safe.sh --ci` (sem `--warn`)
+- [x] Step "i18n strings SCF gate" presente com `bash scripts/check-i18n-scf.sh --strict`
+- [x] Comentario de secao a11y presente antes do primeiro gate (SC-3.3)
+- [x] `python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/ci.yml'))"` -> sem erro (coberto por T11)
 
 **Dependencias:** T8 (pre-promocao FR-13 confirmou exit 0); T3 (check-contrast.ts disponivel)
 
@@ -522,11 +522,11 @@ on:
 6. `actions/upload-artifact` com `if: always()` para `apps/web/e2e/a11y/reports/` (FR-6/SC-2.4)
 
 **Criterio de aceite:**
-- [ ] `python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/a11y-checks.yml'))"` -> YAML valido sem erro
-- [ ] Path-filter cobre todos os paths listados em SC-2.1
-- [ ] Nenhum step tem `continue-on-error: true`
-- [ ] Step de upload de relatorio presente com `if: always()` (FR-6/SC-2.4)
-- [ ] Cabecalho do workflow documenta processo de adicao de paginas (SC-5.4)
+- [x] `python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/a11y-checks.yml'))"` -> YAML valido sem erro
+- [x] Path-filter cobre todos os paths listados em SC-2.1
+- [x] Nenhum step tem `continue-on-error: true`
+- [x] Step de upload de relatorio presente com `if: always()` (FR-6/SC-2.4)
+- [x] Cabecalho do workflow documenta processo de adicao de paginas (SC-5.4)
 
 **Dependencias:** T5, T6, T9 (ci.yml finalizado como referencia)
 
@@ -564,9 +564,9 @@ which actionlint && actionlint .github/workflows/ci.yml .github/workflows/a11y-c
 ```
 
 **Criterio de aceite (CHK023 — explicito e verificavel):**
-- [ ] `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"` -> exit 0
-- [ ] `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/a11y-checks.yml'))"` -> exit 0
-- [ ] Se `actionlint` disponivel: zero erros nos dois arquivos
+- [x] `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"` -> exit 0
+- [x] `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/a11y-checks.yml'))"` -> exit 0
+- [x] Se `actionlint` disponivel: zero erros nos dois arquivos
 
 **Dependencias:** T9 (ci.yml com alteracoes), T10 (a11y-checks.yml criado)
 
@@ -602,10 +602,10 @@ violacoes resolvidas, R2 documentados, e aprovacao formal de DoD transversal.
 ```
 
 **Criterio de aceite:**
-- [ ] Arquivo existe em `docs/a11y-audit-epic12.md`
-- [ ] Secoes 1–7 presentes e preenchidas (nao placeholders)
-- [ ] Tabela de gates lista todos os 5 gates do estado final (todos hard)
-- [ ] Secao R2 documenta explicltamente paginas autenticadas como tech debt (NC-3/dec-007)
+- [x] Arquivo existe em `docs/a11y-audit-epic12.md`
+- [x] Secoes 1–7 presentes e preenchidas (nao placeholders)
+- [x] Tabela de gates lista todos os 5 gates do estado final (todos hard)
+- [x] Secao R2 documenta explicltamente paginas autenticadas como tech debt (NC-3/dec-007)
 
 **Dependencias:** T6, T7, T9, T10 (todos os gates implementados e validados)
 
@@ -641,12 +641,12 @@ violacoes resolvidas, R2 documentados, e aprovacao formal de DoD transversal.
 
 ## Definition of Done (DoD) da Story 12.6
 
-- [ ] Todos os gates do job Lint retornam exit 0 no branch `dev` (focus-ring, contrast-tokens, contrast-oklch, motion-safe, i18n-scf)
-- [ ] `axe-quality-gate.e2e-spec.ts` passa nos 4 testes de paginas publicas (exit 0 em CI)
-- [ ] `axe-final.spec.ts` assertiva `critical=0` **e** `serious=0`
-- [ ] Relatorio HTML axe publicado como artifact do ultimo run do CI
-- [ ] `a11y-checks.yml` path-filtered executado via `act` local sem erros
-- [ ] `ci.yml` YAML valido apos alteracoes (`python3 yaml.safe_load`)
-- [ ] `docs/a11y-audit-epic12.md` preenchido e commitado
-- [ ] Todos os NCs resolvidos ou documentados como R2 explicito
-- [ ] PR aprovado com todos os checks CI verdes (sem `--warn` restante nos gates a11y)
+- [x] Todos os gates do job Lint retornam exit 0 no branch `dev` (focus-ring, contrast-tokens, contrast-oklch, motion-safe, i18n-scf)
+- [x] `axe-quality-gate.e2e-spec.ts` passa nos 4 testes de paginas publicas (exit 0 em CI)
+- [x] `axe-final.spec.ts` assertiva `critical=0` **e** `serious=0`
+- [x] Relatorio HTML axe publicado como artifact do ultimo run do CI
+- [x] `a11y-checks.yml` path-filtered executado via `act` local sem erros
+- [x] `ci.yml` YAML valido apos alteracoes (`python3 yaml.safe_load`)
+- [x] `docs/a11y-audit-epic12.md` preenchido e commitado
+- [x] Todos os NCs resolvidos ou documentados como R2 explicito
+- [x] PR aprovado com todos os checks CI verdes (sem `--warn` restante nos gates a11y)

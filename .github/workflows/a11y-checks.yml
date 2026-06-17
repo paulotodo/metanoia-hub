@@ -1,0 +1,174 @@
+# a11y-checks.yml — Workflow dedicado de acessibilidade (path-filtered)
+#
+# Origem: Épico 12 / Story 12.6 (a11y-ci-gate FR-5/FR-6; US-2).
+# Cross-ref: .github/workflows/ci.yml | docs/specs/a11y-ci-gate/
+#
+# Propósito: Verificações rápidas de contraste + axe nas páginas públicas,
+# disparadas apenas quando arquivos de UI mudam. Evita overhead do CI completo
+# em PRs que só tocam lógica de backend.
+#
+# Cromossomo: chromium-only (velocidade; compatibilidade cross-browser coberta
+# pelo job E2E completo no ci.yml).
+
+name: A11y Checks
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'apps/web/**'
+      - 'packages/ui/**'
+      - 'packages/config/**'
+      - 'scripts/check-contrast.ts'
+      - 'apps/web/scripts/check-contrast-tokens.mjs'
+      - 'a11y-pages.json'
+
+concurrency:
+  group: a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10.33.0'
+  E2E_BASE_URL: http://localhost:3000
+  E2E_DEMO_PASSWORD: ${{ secrets.E2E_DEMO_PASSWORD || 'Demo!Pass2026' }}
+  E2E_DEMO_TENANT_ID: 019899a0-7002-7000-8000-000000000001
+  E2E_DEMO_ADMIN_EMAIL: admin@demo.metanoia.app
+
+jobs:
+  a11y-contrast:
+    name: Contrast Gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Contrast tokens gate
+        # Gate existente: pares hex auditados (stories 12.1/12.2/12.3).
+        run: node apps/web/scripts/check-contrast-tokens.mjs
+
+      - name: Contrast gate (oklch / WCAG AA parametrizable)
+        # Resolve oklch relative-color via color2k. (a11y-ci-gate FR-1/FR-2)
+        run: NODE_PATH=apps/web/node_modules npx tsx scripts/check-contrast.ts
+
+  a11y-axe:
+    name: Axe — Páginas Públicas (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      API_PORT: '3001'
+      NODE_ENV: test
+      POSTGRES_USER: metanoia
+      POSTGRES_PASSWORD: metanoia_dev_pass
+      POSTGRES_DB: metanoia_test
+      DATABASE_URL: postgresql://metanoia:metanoia_dev_pass@localhost:5433/metanoia_test
+      DATABASE_APP_URL: postgresql://metanoia_app:metanoia_app_pass@localhost:5433/metanoia_test
+      REDIS_HOST: localhost
+      REDIS_PORT: '6380'
+      REDIS_URL: redis://localhost:6380
+      KEYCLOAK_URL: http://localhost:8081
+      KEYCLOAK_PUBLIC_URL: http://localhost:8081
+      KEYCLOAK_REALM: metanoia
+      KEYCLOAK_CLIENT_ID: metanoia-web
+      KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER || 'admin' }}
+      KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD || 'admin' }}
+      MINIO_ENDPOINT: http://localhost:9002
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: metanoia-storage
+      LIVEKIT_URL: ws://localhost:7881
+      LIVEKIT_API_KEY: devkey
+      LIVEKIT_API_SECRET: secret_dev_only_not_for_production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers (chromium)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright (chromium only)
+        run: pnpm --filter @metanoia/web exec playwright install --with-deps chromium
+
+      - name: Start test services
+        run: docker compose -f docker-compose.test.yml up -d --wait postgres redis keycloak minio livekit
+        timeout-minutes: 5
+
+      - name: Generate Prisma client
+        run: pnpm --filter @metanoia/api exec prisma generate
+
+      - name: Setup database
+        run: pnpm turbo db:setup:ci
+
+      - name: Seed demo data (Postgres)
+        run: pnpm --filter @metanoia/api db:seed:demo
+
+      - name: Seed demo users (Keycloak)
+        run: pnpm --filter @metanoia/api db:seed:demo:keycloak
+
+      - name: Build apps
+        run: pnpm turbo build --filter=@metanoia/api --filter=@metanoia/web
+
+      - name: Start API
+        run: |
+          mkdir -p /tmp/a11y-logs
+          pnpm --filter @metanoia/api start:e2e > /tmp/a11y-logs/api.log 2>&1 &
+        env:
+          NODE_ENV: production
+          PORT: '3001'
+
+      - name: Start Web
+        run: |
+          pnpm --filter @metanoia/web start > /tmp/a11y-logs/web.log 2>&1 &
+        env:
+          PORT: '3000'
+
+      - name: Wait for services
+        run: pnpm dlx wait-on -t 90000 http://localhost:3001/api/health http://localhost:3000
+
+      - name: Run axe quality gate (páginas públicas)
+        # Gate axe parametrizado por a11y-pages.json — serious=0 obrigatório.
+        # (a11y-ci-gate FR-5/FR-6; axe-quality-gate.e2e-spec.ts)
+        run: pnpm --filter @metanoia/web exec playwright test apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts --project=chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7
+
+      - name: Dump logs on failure
+        if: failure()
+        run: |
+          echo '=== API log (tail 100) ==='
+          tail -100 /tmp/a11y-logs/api.log || echo '(no api log)'
+
+      - name: Stop test services
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v
