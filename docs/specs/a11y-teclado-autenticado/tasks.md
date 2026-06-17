@@ -217,13 +217,13 @@ Detalhes por task na coluna "Depende de" abaixo.
   setas. Skip link "Ir para conteúdo principal" como primeiro elemento focável
   da página.
 - **Critério de aceite:**
-  - [ ] Tab posiciona foco na sidebar; Arrow Up/Down navega entre itens
-  - [ ] Home vai ao primeiro item; End vai ao último
-  - [ ] Wrap circular funcionando (CHK009)
-  - [ ] Seletor de experiência ativável por teclado
-  - [ ] Skip link presente e funcional (FR-003: sequência de foco correta)
-  - [ ] jest-axe: sem violações na sidebar isolada
-  - [ ] Gate local passa
+  - [x] Tab posiciona foco na sidebar; Arrow Up/Down navega entre itens
+  - [x] Home vai ao primeiro item; End vai ao último
+  - [x] Wrap circular funcionando (CHK009)
+  - [x] Seletor de experiência ativável por teclado
+  - [x] Skip link presente e funcional (FR-003: sequência de foco correta)
+  - [x] jest-axe: sem violações na sidebar isolada
+  - [x] Gate local passa
 
 ### 2.2 E2E US1 — Dashboard (Chromium) [maj]
 
@@ -237,11 +237,11 @@ Detalhes por task na coluna "Depende de" abaixo.
   CHK048: verificar empiricamente se Radix Tooltip interfere com roving tabindex
   e documentar resultado como comentário no spec.
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US1 (1–4) passam automaticamente
-  - [ ] axe scan da página completa: 0 violations `critical` ou `serious`
-  - [ ] CHK048: comentário no spec documenta resultado da verificação de Tooltip
-  - [ ] Spec roda em `playwright.config.ts` com projeto `chromium`
-  - [ ] Gate local passa (inclui `pnpm turbo build`)
+  - [x] Cenários de aceite US1 (1–4) passam automaticamente
+  - [x] axe scan da página completa: 0 violations `critical` ou `serious`
+  - [x] CHK048: comentário no spec documenta resultado da verificação de Tooltip
+  - [x] Spec roda em `playwright.config.ts` com projeto `chromium`
+  - [x] Gate local passa (inclui `pnpm turbo build`)
 
 ---
 
