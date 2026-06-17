@@ -53,14 +53,14 @@ export function TrailCard({ trail, onClick }: TrailCardProps) {
   return (
     <article
       role="article"
-      className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+      className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-brand-teal/30 focus-within:ring-offset-2"
     >
       {/* Header: name + badge */}
       <div className="flex items-start justify-between gap-2">
         <button
           type="button"
           onClick={onClick}
-          className="flex-1 text-left min-h-[44px] focus:outline-none"
+          className="flex-1 text-left min-h-[44px] focus-visible:outline-none"
           aria-label={`Abrir trilha: ${trail.name}`}
         >
           <h2 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">

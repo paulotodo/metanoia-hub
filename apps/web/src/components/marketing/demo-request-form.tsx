@@ -77,7 +77,7 @@ export function DemoRequestForm() {
         <h2 className="text-xl font-semibold text-text-primary">
           {t.success.heading}
         </h2>
-        <p className="mt-2 text-[var(--color-text-muted)]">{t.success.body}</p>
+        <p className="mt-2 text-secondary">{t.success.body}</p>
       </div>
     );
   }

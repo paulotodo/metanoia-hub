@@ -140,7 +140,7 @@ export function LoginForm() {
           )}
           <Link
             href="/recuperar-senha"
-            className="text-caption mt-1 inline-block text-text-secondary hover:underline"
+            className="text-caption mt-1 inline-block text-brand-primary underline underline-offset-2 hover:text-brand-primary/80"
           >
             {t.forgotPassword}
           </Link>

@@ -83,7 +83,7 @@ export function PlanCard({
       data-testid={`plan-card-${planId}`}
       className={[
         'flex flex-col rounded-lg border p-6 cursor-pointer outline-none',
-        'focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-text-primary)]',
+        'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-text-primary)]',
         highlighted
           ? 'border-[var(--color-text-primary)] bg-surface-base shadow-md'
           : 'border-[var(--color-border-default)] bg-surface-base',
@@ -141,7 +141,7 @@ export function PlanCard({
           className={[
             'w-full rounded-md px-4 py-2 text-sm font-medium',
             'transition-colors outline-none',
-            'focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-text-primary)]',
+            'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-text-primary)]',
             ctaVariant === 'primary'
               ? 'bg-[var(--color-text-primary)] text-white hover:opacity-90'
               : 'border border-[var(--color-border-default)] text-text-primary hover:bg-gray-50',

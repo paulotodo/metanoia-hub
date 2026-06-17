@@ -43,7 +43,7 @@ export function FeatureGrid() {
             <h3 className="text-lg font-semibold text-text-primary">
               {block.title}
             </h3>
-            <p className="mt-3 text-base leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-3 text-base leading-relaxed text-secondary">
               {block.body}
             </p>
           </div>

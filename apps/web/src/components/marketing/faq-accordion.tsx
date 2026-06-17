@@ -31,7 +31,7 @@ export function FaqAccordion() {
                 +
               </span>
             </summary>
-            <p className="mt-3 text-base leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-3 text-base leading-relaxed text-secondary">
               {item.answer}
             </p>
           </details>

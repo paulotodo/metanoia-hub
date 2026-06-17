@@ -115,7 +115,7 @@ export function InviteMembersForm({
               "h-11 flex-1 rounded-lg border border-[var(--border)]",
               "bg-[var(--card)] px-3 text-sm text-[var(--color-text-primary)]",
               "placeholder:text-[var(--color-text-muted)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               "disabled:opacity-60",
             ].join(" ")}
           />
@@ -127,7 +127,7 @@ export function InviteMembersForm({
               "h-11 rounded-lg bg-[var(--color-brand-teal)] px-4",
               "text-sm font-semibold text-white",
               "hover:bg-[var(--color-brand-teal)]/90",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               "disabled:opacity-60",
             ].join(" ")}
           >
@@ -175,7 +175,7 @@ export function InviteMembersForm({
               "border border-dashed border-[var(--color-brand-teal)] px-4",
               "text-sm font-medium text-[var(--color-brand-teal)]",
               "hover:bg-[var(--color-brand-teal)]/5",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               pending ? "pointer-events-none opacity-60" : "",
             ].join(" ")}
           >

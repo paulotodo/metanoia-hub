@@ -7,6 +7,8 @@
 :root {
   /* === Brand Colors === */
   --color-brand-teal: #2b7a78;
+  /* brand-teal-light #3aafa9: contraste 2.55:1 sobre surface — NÃO usar como texto;
+     apenas fundo/decorativo. */
   --color-brand-teal-light: #3aafa9;
   --color-brand-teal-dark: #17252a;
   --color-brand-terracotta: #c1666b;
@@ -14,7 +16,12 @@
 
   /* === Pastoral / Care Colors === */
   --color-care-urgent: #c1666b;
+  /* care-attention #d4a24c: contraste 2.22:1 sobre surface — NÃO usar como texto.
+     Uso permitido: FUNDO de badge com texto interno text-primary (#17252a = 6.80:1 PASS).
+     Cor nunca é único indicador (ícone+texto obrigatório, WCAG 1.4.1). */
   --color-care-attention: #d4a24c;
+  /* care-ok #7ba38a: contraste 2.70:1 sobre surface — NÃO usar como texto.
+     Uso permitido: FUNDO de badge com texto interno text-primary (#17252a = 5.58:1 PASS). */
   --color-care-ok: #7ba38a;
   --color-care-neutral: #8e8d8a;
 
@@ -97,7 +104,11 @@
   --color-brand-terracotta-light: #e0ada8;
 
   --color-care-urgent: #d4918a;
+  /* dark: care-attention #e0bd7a — contraste sobre dark-surface passa (dec-007). Mesmo assim:
+     NÃO usar como texto; uso apenas como FUNDO de badge com texto text-primary (#e8e6e3 = PASS). */
   --color-care-attention: #e0bd7a;
+  /* dark: care-ok #96bda4 — contraste sobre dark-surface passa (dec-007). Mesmo assim:
+     NÃO usar como texto; uso apenas como FUNDO de badge com texto text-primary (#e8e6e3 = PASS). */
   --color-care-ok: #96bda4;
   --color-care-neutral: #a8a6a3;
 

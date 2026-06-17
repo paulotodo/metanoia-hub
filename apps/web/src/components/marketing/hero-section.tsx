@@ -10,7 +10,7 @@ export function HeroSection() {
       <h1 className="text-4xl font-semibold tracking-tight text-text-primary md:text-6xl">
         {t.headline}
       </h1>
-      <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--color-text-muted)] md:text-xl">
+      <p className="mx-auto mt-6 max-w-2xl text-lg text-secondary md:text-xl">
         {t.subheadline}
       </p>
       <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">

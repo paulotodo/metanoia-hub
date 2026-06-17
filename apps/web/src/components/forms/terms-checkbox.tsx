@@ -48,7 +48,7 @@ export function TermsCheckbox({
         required={required}
         onChange={(event) => onCheckedChange(event.target.checked)}
         className={cn(
-          "mt-0.5 size-4 shrink-0 rounded border border-[var(--color-border-strong)] text-[var(--color-brand-teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]",
+          "mt-0.5 size-4 shrink-0 rounded border border-[var(--color-border-strong)] text-[var(--color-brand-teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
         )}
       />
       <span>{label}</span>

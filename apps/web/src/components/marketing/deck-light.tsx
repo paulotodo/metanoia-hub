@@ -22,13 +22,13 @@ export function DeckLight() {
           className="rounded-lg border border-[var(--color-border-default)] bg-surface-base p-6"
           data-testid={`deck-slide-${slide.key}`}
         >
-          <span className="text-xs font-medium uppercase tracking-wide text-[var(--color-text-muted)]">
+          <span className="text-xs font-medium uppercase tracking-wide text-secondary">
             {`${String(index + 1).padStart(2, '0')} / ${SLIDES.length}`}
           </span>
           <h3 className="mt-2 text-xl font-semibold text-text-primary">
             {slide.heading}
           </h3>
-          <p className="mt-3 text-base leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mt-3 text-base leading-relaxed text-secondary">
             {slide.body}
           </p>
         </li>

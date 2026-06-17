@@ -97,6 +97,12 @@ jobs:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
+      - name: Focus-ring variant guard
+        run: bash scripts/check-focus-ring-variants.sh --ci
+
+      - name: Contrast tokens gate
+        run: node apps/web/scripts/check-contrast-tokens.mjs
+
   test:
     name: Test
     needs: setup

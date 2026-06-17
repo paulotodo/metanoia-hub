@@ -54,7 +54,7 @@ export const ReflectionFormField = forwardRef<
         maxLength={MAX}
         aria-invalid={invalid ? true : undefined}
         aria-describedby={[counterId, errorId].filter(Boolean).join(" ") || undefined}
-        className="w-full rounded-lg border border-surface-muted bg-surface px-3 py-2 text-base text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus aria-[invalid=true]:border-state-danger"
+        className="w-full rounded-lg border border-surface-muted bg-surface px-3 py-2 text-base text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 aria-[invalid=true]:border-state-danger"
         value={value}
         {...rest}
       />

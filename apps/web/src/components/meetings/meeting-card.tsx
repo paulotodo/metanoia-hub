@@ -77,7 +77,7 @@ export function MeetingCard({ meeting, onJoin, isJoining = false }: MeetingCardP
           data-testid="meeting-card-join"
           onClick={() => onJoin(meeting.id)}
           disabled={isJoining}
-          className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-care-ok px-3 py-2 text-sm font-medium text-white shadow hover:bg-care-ok/90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-care-ok px-3 py-2 text-sm font-medium text-text-primary shadow hover:bg-care-ok/90 disabled:cursor-not-allowed disabled:opacity-60"
           aria-label="Entrar na reunião"
         >
           {isJoining ? "Entrando..." : "Entrar agora"}

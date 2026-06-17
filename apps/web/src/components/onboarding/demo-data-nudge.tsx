@@ -69,7 +69,7 @@ export function DemoDataNudge() {
             type="button"
             onClick={handleKeep}
             disabled={isDismissing || isDeleting}
-            className="h-11 rounded-lg border border-surface-muted px-4 text-sm font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:opacity-60"
+            className="h-11 rounded-lg border border-surface-muted px-4 text-sm font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:opacity-60"
           >
             {t.nudgeKeep}
           </button>
@@ -77,7 +77,7 @@ export function DemoDataNudge() {
             type="button"
             onClick={handleRemove}
             disabled={isDeleting || isDismissing}
-            className="h-11 rounded-lg bg-care-alert px-4 text-sm font-semibold text-text-inverse hover:bg-care-alert/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:opacity-60"
+            className="h-11 rounded-lg bg-care-alert px-4 text-sm font-semibold text-text-inverse hover:bg-care-alert/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:opacity-60"
           >
             {t.nudgeClean}
           </button>

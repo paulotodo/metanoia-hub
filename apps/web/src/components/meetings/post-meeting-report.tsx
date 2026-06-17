@@ -122,13 +122,13 @@ export function PostMeetingReport({ meetingId }: PostMeetingReportProps) {
         </div>
         <div className="rounded-md border border-border-subtle p-3 text-sm">
           <dt className="text-text-muted">{t.metrics.present}</dt>
-          <dd className="text-base font-medium text-care-ok">
+          <dd className="text-base font-medium text-text-secondary">
             {summary.totalPresent}
           </dd>
         </div>
         <div className="rounded-md border border-border-subtle p-3 text-sm">
           <dt className="text-text-muted">{t.metrics.partial}</dt>
-          <dd className="text-base font-medium text-care-attention">
+          <dd className="text-base font-medium text-text-secondary">
             {summary.totalPartial}
           </dd>
         </div>

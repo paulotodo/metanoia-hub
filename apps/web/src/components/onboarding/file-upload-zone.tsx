@@ -202,7 +202,7 @@ export function FileUploadZone({
   const isError = displayState === 'error-size' || displayState === 'error-type';
 
   const zoneClasses = [
-    'relative flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-interactive-focus',
+    'relative flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-brand-teal/30',
     isError
       ? 'border-care-alert bg-care-alert/5'
       : dragover
@@ -270,7 +270,7 @@ export function FileUploadZone({
       <button
         type="button"
         onClick={() => downloadTemplate()}
-        className="mt-1 text-xs font-medium text-interactive-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus rounded"
+        className="mt-1 text-xs font-medium text-interactive-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 rounded"
         data-testid="download-template-btn"
       >
         {t.template.downloadLabel}
@@ -374,7 +374,7 @@ function IdleContent({
       {/* Clickable label — activates the file picker */}
       <label
         htmlFor={inputId}
-        className="cursor-pointer rounded px-3 py-1.5 text-sm font-semibold text-interactive-primary hover:bg-interactive-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+        className="cursor-pointer rounded px-3 py-1.5 text-sm font-semibold text-interactive-primary hover:bg-interactive-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
         data-testid="upload-label"
       >
         {messages.import.dropzone.idle}

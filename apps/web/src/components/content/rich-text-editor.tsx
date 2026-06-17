@@ -73,7 +73,7 @@ export function RichTextEditor({
 
   return (
     <div
-      className={`rounded-lg border focus-within:ring-2 focus-within:ring-ring ${className ?? ''}`}
+      className={`rounded-lg border focus-within:ring-2 focus-within:ring-brand-teal/30 ${className ?? ''}`}
       data-testid="rich-text-editor"
     >
       {/* Toolbar */}

@@ -73,7 +73,7 @@ function CategorySection({
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between px-4 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex w-full items-center justify-between px-4 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
       >
         <span className="flex items-center gap-2">
           <span
@@ -158,7 +158,7 @@ export function ImportResultSummary({ summary }: ImportResultSummaryProps) {
           <a
             href={summary.reportUrl}
             download
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
             aria-label="Baixar relatório completo da importação"
           >
             {t.result?.download ?? 'Baixar relatório'}
