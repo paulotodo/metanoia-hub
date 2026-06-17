@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",

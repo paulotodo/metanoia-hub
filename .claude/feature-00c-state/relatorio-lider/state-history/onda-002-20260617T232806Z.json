@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -50,11 +50,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T23:25:25Z",
-      "finished_at": "2026-06-17T23:29:46Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 261,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -66,11 +66,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-17T23:27:30Z",
           "decision_id": "dec-007"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-17T23:29:46Z",
-          "decision_id": null
         }
       ]
     }
@@ -286,24 +281,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T23:28:06Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "clarify-Q5: logging estruturado no getLeaderSummary para monitorar SLA SC-03",
-      "options_considered": [
-        "sem-logging-adicional",
-        "logar-duration-ms-groupCount-participantCount"
-      ],
-      "choice": "logar-duration-ms-groupCount-participantCount",
-      "rationale": "SC-03 define SLA < 1s. Logging estruturado (duration_ms, groupCount) e boa pratica de apoio ao SLA e rastreabilidade. CLAUDE.md nao proibe; padroes NestJS recomendam.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -321,12 +298,12 @@
     "current_wave_start": "2026-06-17T23:25:25Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 441,
+    "wallclock_total_seconds": 180,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 12,
+    "decisions_total": 11,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

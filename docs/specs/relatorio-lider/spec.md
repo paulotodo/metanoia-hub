@@ -34,7 +34,27 @@ A spec 13-2a menciona `apps/api/src/modules/reports/` — este caminho **não ex
 
 ## Clarifications
 
-<!-- Seção reservada para a etapa clarify -->
+### Session 2026-06-17
+
+**Q1 (dec-008, score 3): Grupo sem reuniões no período → avgAttendancePercent**
+Quando um grupo não teve reuniões no período selecionado, retornar `avgAttendancePercent: null` (campo explicitamente nulo).
+Justificativa: FR-06 especifica "campos ausentes retornam `null` explícito" (nunca `undefined`). `null` distingue "sem dado no período" de "0% de presença em reuniões realizadas".
+
+**Q2 (dec-009, score 2): Peso de overallAttendancePercent**
+Ponderar `overallAttendancePercent` pelo `activeParticipantsCount` de cada grupo (grupos maiores têm mais peso na média geral).
+Justificativa: Representa proporcionalmente o impacto pastoral de cada grupo. Alinhado com DEC-INF-04 (deduplicação por `userId` no `totalParticipants`).
+
+**Q3 (dec-010, score 3): Filtro de semáforo client-side — granularidade**
+O filtro de semáforo client-side opera sobre **cards de grupo inteiros**: selecionar "vermelho/amarelo" mostra apenas grupos com `atRiskCount > 0`; selecionar "verde" mostra grupos com `atRiskCount = 0`. O payload permanece como especificado em FR-06 (sem campos `greenCount`/`yellowCount`/`redCount`).
+Justificativa: DEC-INF-03 confirma que o payload de todos os grupos é pequeno (< 10 entradas tipicamente); não há necessidade de breakdown adicional. Preserva contrato FR-06 sem alterações.
+
+**Q4 (dec-011, score 2): Formato de resposta quando groupId fornecido**
+Quando `groupId` é fornecido como query param, o formato de resposta permanece idêntico ao FR-06: `data.groups[]` (array com 1 item) + `summary` calculado apenas para esse grupo.
+Justificativa: Consistência de contrato — mesmo schema para todos os casos. Facilita consumo pelo frontend (mesmo parser) e preserva compatibilidade futura.
+
+**Q5 (dec-012, score 2): Logging estruturado para SLA**
+`getLeaderSummary()` deve registrar log estruturado ao final da execução com: `{ duration_ms, groupCount, totalParticipants }` para rastreabilidade do SLA de SC-03 (< 1s).
+Justificativa: Boa prática NestJS; não cria dependência nova; suporta diagnóstico proativo de degradação de performance em produção.
 
 ---
 
