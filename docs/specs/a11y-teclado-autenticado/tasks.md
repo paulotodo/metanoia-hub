@@ -421,13 +421,13 @@ Detalhes por task na coluna "Depende de" abaixo.
   por Tab (FR-018). `useAsyncAnnouncer` anuncia contagem de resultados após busca
   assíncrona (CL-005, CHK004 transversal).
 - **Critério de aceite:**
-  - [ ] Campo de busca é o primeiro `tabIndex` positivo da seção
-  - [ ] Filtros abrem/fecham/navegam via teclado
-  - [ ] Cards têm `role="link"` ou `<a>` + são focáveis
-  - [ ] Paginação alcançável via Tab com rótulos descritivos
-  - [ ] Anúncio de resultados via `useAsyncAnnouncer`
-  - [ ] jest-axe: sem violações nos componentes
-  - [ ] Gate local passa
+  - [x] Campo de busca é o primeiro `tabIndex` positivo da seção
+  - [x] Filtros abrem/fecham/navegam via teclado
+  - [x] Cards têm `role="link"` ou `<a>` + são focáveis
+  - [x] Paginação alcançável via Tab com rótulos descritivos
+  - [x] Anúncio de resultados via `useAsyncAnnouncer`
+  - [x] jest-axe: sem violações nos componentes
+  - [x] Gate local passa
 
 ### 6.2 E2E US5 — Catálogo e Busca (Chromium) [maj]
 
@@ -436,9 +436,9 @@ Detalhes por task na coluna "Depende de" abaixo.
 - **Arquivos-alvo:**
   - `apps/web/e2e/keyboard/catalogo-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US5 (1–4) passam
+  - [x] Cenários de aceite US5 (1–4) passam
   - [x] axe scan: 0 violations `critical`
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ---
 
