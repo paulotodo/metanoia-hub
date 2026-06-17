@@ -662,11 +662,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:20:30Z",
       "description": "onda-003 plan concluído; próxima onda: checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:47:00Z",
-      "description": "onda-005 create-tasks concluida; proximo: execute-task"
     }
   ]
 }

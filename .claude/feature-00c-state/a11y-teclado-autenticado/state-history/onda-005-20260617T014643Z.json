@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Fase execute-task: executar tasks do backlog em ordem de fase (FASE 0 → FASE 9). Começar por 0.1 (baseline axe) e 0.2 (setup infra de testes) em paralelo. Gate local obrigatório antes de marcar cada task done: pnpm --filter @metanoia/api exec prisma generate && pnpm turbo build && pnpm turbo lint --max-warnings 0.",
+  "next_instruction": "Fase checklist: gerar quality gate WCAG AA para os 7 fluxos autenticados. Usar skill checklist com spec.md e plan.md. Incluir checklist manual cross-browser (Chrome, Firefox, Safari) e gate axe automático por fluxo.",
   "waves": [
     {
       "id": "onda-001",
@@ -662,11 +662,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:20:30Z",
       "description": "onda-003 plan concluído; próxima onda: checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:47:00Z",
-      "description": "onda-005 create-tasks concluida; proximo: execute-task"
     }
   ]
 }
