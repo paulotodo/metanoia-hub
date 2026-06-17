@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Continuar execute-task: A.5 (folhas apps/web — radar pills, plan-card, marketing-nav), B.2 (hover-only → active:), C.2 (motion-safe: nos pontos quentes), T.1 (E2E reduced-motion), T.2 (E2E touch-targets playwright mobile Chromium), T.4 (scan estatico), T.5 (checklist manual), P.1 (PR). Gate local obrigatorio antes de cada done. Branch: feat/12-4-a11y-touch-motion. NUNCA trocar branch.",
+  "next_instruction": "Iniciar fase execute-task: executar tasks do backlog na ordem de dependencias (A.1 primeiro, depois A.2/A.3/A.4 em paralelo, depois B.1/C.1, depois demais). Gate local antes de concluir: pnpm --filter @metanoia/api exec prisma generate && pnpm turbo build && pnpm turbo lint --max-warnings 0. Projeto mobile Playwright DEVE usar Chromium (Pixel 5 / hasTouch), NUNCA iPhone 12/WebKit.",
   "waves": [
     {
       "id": "onda-001",
