@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "fase create-tasks: invocar Skill(create-tasks) para decompor plano em tasks.md executável",
+  "current_stage": "checklist",
+  "next_instruction": "Aguardando resposta humana ao block-001 (Q3: incluir BrandingSettingsForm 17KB no escopo?). Apos resposta via /feature-00c-resume: integrar decisao na spec ## Clarifications, invocar Skill(clarify) p/ atualizar spec.md, depois transitar clarify->plan (rodar feature-00c-preflight.sh check).",
   "waves": [
     {
       "id": "onda-001",
@@ -102,25 +102,6 @@
           "skill": "owasp-security-skip",
           "timestamp": "2026-06-17T10:17:32Z",
           "decision_id": "dec-019"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-17T10:22:58Z",
-      "finished_at": "2026-06-17T10:28:55Z",
-      "executed_stages": [
-        "checklist"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 357,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-17T10:28:14Z",
-          "decision_id": "dec-022"
         }
       ]
     }
@@ -517,42 +498,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T10:28:03Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase checklist concluída via Skill(checklist) — domínio ux+a11y",
-      "options_considered": [
-        "invocar-skill-checklist",
-        "skip-checklist"
-      ],
-      "choice": "invocar-skill-checklist",
-      "rationale": "Spec+plan completos para 17 formulários WCAG 2.1 AA; 40 itens gerados, 31 auto-resolvidos, 9 gaps identificados (1 conflict em prop name)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T10:28:40Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Quality gate validate-tasks-template: skip nesta fase",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Gate de template-fidelity aplica-se a tasks.md (gerado em create-tasks). checklists/ux.md nao segue template de tasks.",
-      "justification_score": 3,
-      "evidence": "Gate validate-tasks-template.sh documentado como gate pos-create-tasks em orchestrator.md — nao aplicavel a checklists",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -582,15 +527,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T10:22:58Z"
+    "current_wave_start": "2026-06-17T10:09:42Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1718,
+    "wallclock_total_seconds": 1361,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 23,
+    "decisions_total": 21,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -624,11 +569,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T10:09:20Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T10:28:14Z",
-      "description": "onda-004 checklist concluida; proxima fase create-tasks"
     }
   ]
 }

@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "fase create-tasks: invocar Skill(create-tasks) para decompor plano em tasks.md executável",
+  "current_stage": "checklist",
+  "next_instruction": "Aguardando resposta humana ao block-001 (Q3: incluir BrandingSettingsForm 17KB no escopo?). Apos resposta via /feature-00c-resume: integrar decisao na spec ## Clarifications, invocar Skill(clarify) p/ atualizar spec.md, depois transitar clarify->plan (rodar feature-00c-preflight.sh check).",
   "waves": [
     {
       "id": "onda-001",
@@ -108,13 +108,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T10:22:58Z",
-      "finished_at": "2026-06-17T10:28:55Z",
-      "executed_stages": [
-        "checklist"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 357,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -340,7 +338,7 @@
       "timestamp": "2026-06-17T09:50:59Z",
       "stage": "clarify",
       "agent": "feature-00c-clarify-answerer",
-      "context": "Q3 escopo BrandingSettingsForm (17KB form admin): inclusao em aberto na spec NC2 — pause humano",
+      "context": "Q3 escopo BrandingSettingsForm (17KB form admin): inclusao em aberto na spec NC2 \u2014 pause humano",
       "options_considered": [
         "incluir-should-have-12.5",
         "excluir-story-dedicada-settings-a11y"
@@ -396,7 +394,7 @@
       "timestamp": "2026-06-17T10:02:43Z",
       "stage": "clarify",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Incorporação de dec-013 (Opção B operador): excluir BrandingSettingsForm + super/tenants/novo do escopo da 12.5",
+      "context": "Incorpora\u00e7\u00e3o de dec-013 (Op\u00e7\u00e3o B operador): excluir BrandingSettingsForm + super/tenants/novo do escopo da 12.5",
       "options_considered": [
         "incluir-no-escopo",
         "excluir-diferir-settings-a11y"
@@ -476,7 +474,7 @@
       "choice": "skip-com-justificativa",
       "rationale": "Feature e acessibilidade ARIA pura: zero novos endpoints, zero alteracao de auth/autorizacao, zero processamento de dados sensiveis novos. Formularios de autenticacao existentes ja tiveram revisao de seguranca. Evidencia: spec.md seccao Dependencias: NAO altera packages/types, contratos de API, logica de negocio.",
       "justification_score": 3,
-      "evidence": "spec.md §Dependencias: NAO altera validacao Zod em packages/types, contratos de API, logica de negocio; zero novos endpoints ou surfaces OWASP",
+      "evidence": "spec.md \u00a7Dependencias: NAO altera validacao Zod em packages/types, contratos de API, logica de negocio; zero novos endpoints ou surfaces OWASP",
       "references": [],
       "originating_artifact": null
     },
@@ -524,33 +522,15 @@
       "timestamp": "2026-06-17T10:28:03Z",
       "stage": "checklist",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase checklist concluída via Skill(checklist) — domínio ux+a11y",
+      "context": "Fase checklist conclu\u00edda via Skill(checklist) \u2014 dom\u00ednio ux+a11y",
       "options_considered": [
         "invocar-skill-checklist",
         "skip-checklist"
       ],
       "choice": "invocar-skill-checklist",
-      "rationale": "Spec+plan completos para 17 formulários WCAG 2.1 AA; 40 itens gerados, 31 auto-resolvidos, 9 gaps identificados (1 conflict em prop name)",
+      "rationale": "Spec+plan completos para 17 formul\u00e1rios WCAG 2.1 AA; 40 itens gerados, 31 auto-resolvidos, 9 gaps identificados (1 conflict em prop name)",
       "justification_score": 2,
       "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T10:28:40Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Quality gate validate-tasks-template: skip nesta fase",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Gate de template-fidelity aplica-se a tasks.md (gerado em create-tasks). checklists/ux.md nao segue template de tasks.",
-      "justification_score": 3,
-      "evidence": "Gate validate-tasks-template.sh documentado como gate pos-create-tasks em orchestrator.md — nao aplicavel a checklists",
       "references": [],
       "originating_artifact": null
     }
@@ -560,7 +540,7 @@
       "id": "block-001",
       "decision_id": "dec-012",
       "question": "BrandingSettingsForm.tsx existe (17522 bytes em apps/web/app/(authenticated)/app/admin/configuracoes/branding/). A spec deixou sua inclusao em aberto (NC2). Incluir no escopo desta story 12.5 (a11y-formularios)?",
-      "context_for_answer": "Constitution Principio VI exige WCAG AA em todas interfaces, mas NAO impoe cronograma (pode ser outra story). Tradeoff: incluir = retrofit de 17KB de form admin complexo na MESMA sprint que ja cobre forms publicos criticos (login, register, recovery, reset-password, create-account) + wizard onboarding (4 steps) + forms de gestao pastoral (radar/cuidado, reunioes/reflexao) + group/invite forms. Opcoes: (A) incluir BrandingSettingsForm como should-have nesta story; (B) excluir e criar story dedicada settings-a11y (cobrindo tambem TenantConfigForm). NOTA: super/tenants/novo/page.tsx (367 linhas, form de super-admin) tem o mesmo perfil — incluir junto se A.",
+      "context_for_answer": "Constitution Principio VI exige WCAG AA em todas interfaces, mas NAO impoe cronograma (pode ser outra story). Tradeoff: incluir = retrofit de 17KB de form admin complexo na MESMA sprint que ja cobre forms publicos criticos (login, register, recovery, reset-password, create-account) + wizard onboarding (4 steps) + forms de gestao pastoral (radar/cuidado, reunioes/reflexao) + group/invite forms. Opcoes: (A) incluir BrandingSettingsForm como should-have nesta story; (B) excluir e criar story dedicada settings-a11y (cobrindo tambem TenantConfigForm). NOTA: super/tenants/novo/page.tsx (367 linhas, form de super-admin) tem o mesmo perfil \u2014 incluir junto se A.",
       "recommended_options": [
         "A-incluir-nesta-story",
         "B-excluir-story-dedicada"
@@ -585,12 +565,12 @@
     "current_wave_start": "2026-06-17T10:22:58Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1718,
+    "wallclock_total_seconds": 1361,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 23,
+    "decisions_total": 22,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
