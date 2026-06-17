@@ -41,7 +41,7 @@ export function TokenErrorState({
       <h2 className="text-2xl font-semibold text-[var(--color-text-primary)]">
         {heading}
       </h2>
-      <p className="text-base text-[var(--color-text-muted)]">{body}</p>
+      <p className="text-base text-[var(--color-text-secondary)]">{body}</p>
       {action.href ? (
         <Button asChild className="mt-2">
           <a href={action.href}>{action.label}</a>
