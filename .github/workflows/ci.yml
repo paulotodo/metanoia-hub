@@ -97,14 +97,30 @@ jobs:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
+      # ─ Gates de Acessibilidade (a11y) ──────────────────────────────────────────
+      # Modo: hard (exit 1 em violação). Origem: Épico 12 (stories 12.3/12.4/12.5/12.6).
+      # Cross-ref: .github/workflows/a11y-checks.yml | docs/specs/a11y-ci-gate/
       - name: Focus-ring variant guard
         run: bash scripts/check-focus-ring-variants.sh --ci
 
       - name: Contrast tokens gate
         run: node apps/web/scripts/check-contrast-tokens.mjs
 
-      - name: Motion-safe guard (warn)
-        run: bash scripts/check-motion-safe.sh --ci --warn
+      - name: Contrast gate (oklch / WCAG AA parametrizable)
+        # Complementar ao step acima; resolve oklch relative-color via color2k. (FR-1)
+        # color2k é devDep em apps/web; NODE_PATH garante resolução do script raiz.
+        # (a11y-ci-gate FR-1 / US-1 SC-1.7)
+        run: NODE_PATH=apps/web/node_modules npx tsx scripts/check-contrast.ts
+
+      - name: Motion-safe guard
+        # Promovido de warn->hard: violações prefers-reduced-motion corrigidas em 12.4.
+        # (a11y-ci-gate FR-7 / US-3 SC-3.1)
+        run: bash scripts/check-motion-safe.sh --ci
+
+      - name: i18n strings SCF gate
+        # Gate hard: strings hardcoded em formulários (stories 12.5 corrigidas).
+        # (a11y-ci-gate FR-8 / US-3 SC-3.2)
+        run: bash scripts/check-i18n-scf.sh --strict
 
   test:
     name: Test

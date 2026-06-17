@@ -1,0 +1,490 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-ci-gate",
+  "execution": {
+    "id": "feat-a11y-ci-gate-20260617T121624Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 12.6: Teste Automatizado de Contraste (axe-core) — Quality Gate permanente. Consolida e formaliza no CI os gates de a11y (contraste axe-core, focus-ring, motion-safe, i18n SC-F, E2E axe) que rodam permanentemente e bloqueiam regressoes. Ultima story do epico 12 (12-2..12-5 ja corrigiram violacoes). Adicionar @axe-core/playwright + color2k onde faltar. CI Chromium-only.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-17T12:16:24Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "create-tasks",
+  "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-17T12:17:59Z",
+      "finished_at": "2026-06-17T12:23:11Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 312,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T12:22:47Z",
+          "decision_id": "state-decisions: register: violacao Principio I — contexto < 20 chars"
+        },
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T12:22:56Z",
+          "decision_id": "dec-003"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-17T12:28:04Z",
+      "finished_at": "2026-06-17T12:40:44Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 760,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": "checklist",
+      "skills_invoked": [
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-17T12:29:25Z",
+          "decision_id": "dec-008"
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-17T12:40:12Z",
+          "decision_id": null
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-17T12:40:13Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-17T12:48:09Z",
+      "finished_at": "2026-06-17T12:51:20Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 191,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-17T12:50:48Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-17T12:57:35Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-17T12:16:39Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T12:22:37Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-ci-gate)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story teste automatizado contraste axe core quality",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T12:22:56Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: geracao da spec.md para feature a11y-ci-gate (Story 12.6 Epic 12)",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec gerada docs/specs/a11y-ci-gate/spec.md: 5 US, 14 FR, 3 NC. Consolidacao e formalizacao do quality gate permanente de a11y baseado em artefatos existentes das stories 12.1-12.5.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T12:26:23Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:28:47Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "NC-1: check-contrast.ts (novo) substitui ou coexiste com check-contrast-tokens.mjs (12.3)?",
+      "options_considered": [
+        "substituir",
+        "coexistir",
+        "reusar-estender-mjs"
+      ],
+      "choice": "coexistir",
+      "rationale": "check-contrast-tokens.mjs existe em apps/web/scripts/ e ja funciona no CI como hard gate (exit 1). A spec enuncia explicitamente em Restricoes: 'check-contrast-tokens.mjs permanece inalterado; check-contrast.ts novo eh adicionado ao a11y-checks.yml (camada complementar)'. check-contrast.ts novo usa color2k para oklch relative-color e WCAG AA parametrizavel — funcionalidade distinta que o .mjs nao cobre. Anti-pattern duplicacao evitado: cada script tem responsabilidade unica. .mjs = Lint job (tokens CSS); .ts = a11y-checks.yml (contraste WCAG AA via color2k).",
+      "justification_score": 3,
+      "evidence": "Spec Restricoes: 'check-contrast-tokens.mjs (job Lint) permanece inalterado; check-contrast.ts novo eh adicionado ao a11y-checks.yml (camada complementar)'. Arquivo constatado em: apps/web/scripts/check-contrast-tokens.mjs (distinto de scripts/check-contrast.ts).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:28:59Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "NC-2: axe-final.spec.ts / E2E axe ja e bloqueante (hard gate) ou permissivo?",
+      "options_considered": [
+        "ja-hard-completo",
+        "parcialmente-hard-precisa-ajuste",
+        "permissivo-reescrever"
+      ],
+      "choice": "parcialmente-hard-precisa-ajuste",
+      "rationale": "Inspecao linha 114 de axe-final.spec.ts: 'expect(bySeverity.critical).toBe(0)' — asserta apenas critical=0. Nao ha assertion para serious violations. FR-9 exige gate hard completo para violacoes critical/serious. Task de execute-task deve adicionar expect(bySeverity.serious).toBe(0) ou converter para expect(violations).toHaveLength(0) em axe-quality-gate.e2e-spec.ts (novo, hard-gate oficial). axe-final.spec.ts pode ser mantido como documentacao/delta mas o gate permanente e axe-quality-gate.e2e-spec.ts (novo, FR-5).",
+      "justification_score": 3,
+      "evidence": "axe-final.spec.ts linha 114: 'expect(bySeverity.critical).toBe(0)' — sem assertiva para serious. Linha 117: 'expect(results).toBeDefined()' (trivial). DoD nota: 'dod_pass: regressions.filter((r) => r.impact === critical).length === 0' — apenas critical coberto.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:29:14Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "NC-3: gate axe cobre paginas autenticadas neste sprint ou apenas publicas?",
+      "options_considered": [
+        "apenas-publicas-r2-autenticadas",
+        "incluir-autenticadas-agora",
+        "suportar-json-mas-nao-processar"
+      ],
+      "choice": "apenas-publicas-r2-autenticadas",
+      "rationale": "Paginas autenticadas requerem loginAs helper + Keycloak stack + seed — setup fragil no CI (evidenciado por PR #156 e pela regressao do KEYCLOAK_PUBLIC_URL que silenciou o CI). gate automatizado deve ser deterministico e robusto. Paginas publicas (/, /login, /register, /recuperar-senha) nao requerem auth e sao estaveis. SC-5.1 menciona 'pelo menos uma pagina de fluxo autenticado-publico' — o campo requiresAuth:false em a11y-pages.json resolve: dashboard/grupos podem ser listados mas marcados requiresAuth:true e skipped pelo spec neste sprint. Autenticadas = R2 explicito.",
+      "justification_score": 3,
+      "evidence": "axe-baseline-authenticated.spec.ts: usa 'loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD)' + 'networkidle' — fragil. Memory: 'Epic 12 CI Keycloak regression — dev CI was silently red for all PRs (ccfccfd missing KEYCLOAK_PUBLIC_URL)'. SC-5.2 do spec suporta campo requiresAuth booleano — skip condicional no spec resolve sem bloquear R2.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:29:25Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio-execucao-clarify",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "3 NC resolvidos autonomamente com score 3 via inspecao empirica dos artefatos (check-contrast-tokens.mjs, axe-final.spec.ts, axe-baseline-authenticated.spec.ts). Nenhum NC exige decisao humana de produto — todos sao decisoes tecnicas defensaveis.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:30:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "transicao clarify→plan: todos NC resolvidos autonomamente",
+      "options_considered": [
+        "avancar-para-plan",
+        "pausar-humano"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "3 NC resolvidos com score 3 via inspecao empirica. Nenhum NC exige decisao humana de produto. Spec atualizada com secao Clarifications (status: clarified). Sem bloqueios pendentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:34:17Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:36:16Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-ci-gate)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados: story teste automatizado contraste axe core quality; corrobora @axe-core/playwright ja instalado e padrao de scan de paginas publicas",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:40:12Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "plan.md gerado para a11y-ci-gate materializando dec-005/006/007 (5 eixos + relatorio auditoria)",
+      "options_considered": [
+        "gerar-plan",
+        "abortar"
+      ],
+      "choice": "gerar-plan",
+      "rationale": "5 eixos (gate axe parametrizado + check-contrast.ts color2k + axe-final serious=0 + promocao motion/i18n + relatorio epic12); todos 14 FRs cobertos; arquivos/linhas reais verificados empiricamente",
+      "justification_score": 3,
+      "evidence": "axe-final.spec.ts:114 expect(bySeverity.critical).toBe(0) confirmado; ci.yml:106-107 motion-safe --warn; ci.yml:103-104 contrast-tokens.mjs hard; @axe-core/playwright ^4.11.3 presente; color2k ABSENT; check-i18n-scf.sh:12 suporta --strict exit1; check-motion-safe.sh:177 exit 1 sem --warn",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T12:40:12Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip do gate owasp-security: feature e pure-frontend + config CI (testes a11y, scripts CLI de contraste, edicao de workflow YAML), sem endpoint/dados/auth/superficie de ataque",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Nenhum endpoint, persistencia, autenticacao ou entrada de usuario na arquitetura do plano; superficie OWASP/ASVS ausente. Risco baixo confirmado no briefing da onda.",
+      "justification_score": 3,
+      "evidence": "plan.md secao 8 Artefatos: novos = a11y-pages.json, axe-quality-gate.e2e-spec.ts, check-contrast.ts, vitest spec, a11y-checks.yml, audit-report.md; editados = axe-final.spec.ts, ci.yml, package.json — nenhum toca runtime de servidor/dados/auth",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T12:50:48Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Checklist a11y gerado (33 items, 100% rastreabilidade): 26 auto-satisfeitos, 4 gaps/ambiguities/conflicts, 1 humano. RISCO CRITICO PR#156 (pre-promocao FR-13) COBERTO pelos requisitos (CHK015/CHK016/T12).",
+      "options_considered": [
+        "avancar-para-create-tasks",
+        "bloquear-por-gaps",
+        "clarify-novamente"
+      ],
+      "choice": "avancar-para-create-tasks",
+      "rationale": "Gaps abertos sao leves e enderecaveis em create-tasks/clarify (CHK023 YAML-valido como criterio explicito; CHK030 conflito textual SC-5.1 vs NC-3 ja resolvido semanticamente por dec-007; CHK006/CHK017 ambiguidades residuais de implementacao). Nenhum gap impede avanco; FR-13 cobre o risco critico de CI vermelho.",
+      "justification_score": null,
+      "evidence": "grep spec linha 121: SC-5.1 ainda pede pagina autenticada; NC-3/dec-007 declara SC-5.1 ajustado p/ so publicas — conflito textual. plan §5.3 cita 'PR #156 — CI silenciosamente vermelho' + T12 cobre pre-promocao dos 3 scripts.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T12:51:07Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK030: conflito textual SC-5.1 (pede 'pelo menos uma pagina de fluxo autenticado-publico') vs NC-3/dec-007 ('SC-5.1 ajustado p/ so publicas').",
+      "options_considered": [
+        "enderecar-em-create-tasks",
+        "reabrir-clarify-agora",
+        "ignorar"
+      ],
+      "choice": "enderecar-em-create-tasks",
+      "rationale": "Conflito ja resolvido SEMANTICAMENTE por dec-007 (score 3): gate cobre so paginas publicas; a11y-pages.json so contem requiresAuth:false. Restou apenas a letra de SC-5.1 desatualizada. Sem risco de implementacao; tarefa de correcao textual basta.",
+      "justification_score": null,
+      "evidence": "spec linha 121 (SC-5.1) e linha 126 (NC-3/dec-007 'SC-5.1 ajustado: paginas iniciais sao /login, /, /register, /recuperar-senha (todas publicas)') coexistem no spec.md.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T12:51:07Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK023: validade do YAML dos workflows nao e criterio de aceite explicito (so coberto indiretamente via execucao 'act' no DoD).",
+      "options_considered": [
+        "adicionar-tarefa-validacao-yaml",
+        "bloquear",
+        "ignorar"
+      ],
+      "choice": "adicionar-tarefa-validacao-yaml",
+      "rationale": "Risco real (YAML invalido quebra o workflow silenciosamente). Endereçavel em create-tasks como tarefa de validacao (parse/lint YAML do a11y-checks.yml e ci.yml) alem do act local. Nao impede avanco da fase.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T12:56:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-17T12:57:35Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 4,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1438,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 17,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "teste",
+    "automatizado",
+    "contraste",
+    "axe",
+    "core",
+    "quality"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T12:22:24Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T12:23:24Z",
+      "description": "onda-001 encerrada; proxima=clarify"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T12:36:01Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T12:40:43Z",
+      "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
+    }
+  ]
+}
