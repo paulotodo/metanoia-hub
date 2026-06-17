@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
   "waves": [
     {
@@ -98,11 +98,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T12:57:35Z",
-      "finished_at": "2026-06-17T13:04:59Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 444,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -469,9 +469,9 @@
     "current_wave_start": "2026-06-17T12:57:35Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1882,
+    "wallclock_total_seconds": 1438,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 18,

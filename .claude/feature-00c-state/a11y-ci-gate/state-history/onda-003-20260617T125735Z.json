@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
   "waves": [
     {
@@ -92,23 +92,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-17T12:50:48Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-17T12:57:35Z",
-      "finished_at": "2026-06-17T13:04:59Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 444,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T13:04:38Z",
-          "decision_id": "dec-018"
         }
       ]
     }
@@ -433,25 +416,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T13:04:29Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Geracao de tasks.md: 12 tasks em 5 eixos (A/B/C/D/E) + gaps CHK030/CHK023 resolvidos",
-      "options_considered": [
-        "gerar-12-tasks",
-        "gerar-menos-tasks",
-        "bloquear"
-      ],
-      "choice": "gerar-12-tasks",
-      "rationale": "5 eixos do plan + 2 gaps do checklist (CHK030 correcao textual + CHK023 YAML validation) + pre-promocao FR-13 como task critica T8 separada de T9 (sequencia obrigatoria para evitar CI vermelho — licao PR #156)",
-      "justification_score": 3,
-      "evidence": "tasks.md: 652 linhas, 28187 bytes, 12 tasks (7 crit + 3 imp + 2 aux); checklist CHK015/CHK016 confirmam pre-promocao FR-13 como OBRIGATORIA; dec-016 (score 2) registra CHK023 como gap real",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -466,15 +430,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T12:57:35Z"
+    "current_wave_start": "2026-06-17T12:48:09Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1882,
+    "wallclock_total_seconds": 1438,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 18,
+    "decisions_total": 17,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
