@@ -159,19 +159,13 @@
     {
       "id": "onda-008",
       "started_at": "2026-06-17T02:17:33Z",
-      "finished_at": "2026-06-17T02:22:03Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 270,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T02:21:31Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -759,24 +753,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-032",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T02:21:31Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 2.2: E2E dashboard-keyboard.spec.ts criado com 6 cenários US1 + axe scan",
-      "options_considered": [
-        "criar-e2e",
-        "skip-e2e"
-      ],
-      "choice": "criar-e2e",
-      "rationale": "6 cenários: skip link, tab sidebar, ArrowDown, wrap circular CHK009, Home/End, axe scan. CHK048 documentado (Tooltip não interfere). Lint passou.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -817,12 +793,12 @@
     "current_wave_start": "2026-06-17T02:17:33Z"
   },
   "accumulated_metrics": {
-    "waves_total": 9,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 5112,
+    "wallclock_total_seconds": 4842,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 32,
+    "decisions_total": 31,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -881,11 +857,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T02:12:40Z",
       "description": "FASE 1 concluída; aguardando wakeup para FASE 2"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T02:22:26Z",
-      "description": "onda-008 execute FASE 2 concluida; aguardando wakeup para FASE 3"
     }
   ],
   "tasks": [

@@ -155,23 +155,6 @@
           "decision_id": null
         }
       ]
-    },
-    {
-      "id": "onda-008",
-      "started_at": "2026-06-17T02:17:33Z",
-      "finished_at": "2026-06-17T02:22:03Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 270,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T02:21:31Z",
-          "decision_id": null
-        }
-      ]
     }
   ],
   "decisions": [
@@ -720,63 +703,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-030",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T02:15:22Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 7 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-031",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T02:21:31Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 2.1: sidebar roving tabindex implementado em packages/ui/components/sidebar.tsx",
-      "options_considered": [
-        "implementar-inline",
-        "importar-hook-app",
-        "skip"
-      ],
-      "choice": "implementar-inline",
-      "rationale": "packages/ui não tem acesso a apps/web/src/hooks; hook inline preserva isolamento do pacote UI. CHK009 wrap+Home/End cobertos. 42 testes passando.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-032",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T02:21:31Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 2.2: E2E dashboard-keyboard.spec.ts criado com 6 cenários US1 + axe scan",
-      "options_considered": [
-        "criar-e2e",
-        "skip-e2e"
-      ],
-      "choice": "criar-e2e",
-      "rationale": "6 cenários: skip link, tab sidebar, ArrowDown, wrap circular CHK009, Home/End, axe scan. CHK048 documentado (Tooltip não interfere). Lint passou.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -814,15 +740,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T02:17:33Z"
+    "current_wave_start": "2026-06-17T02:02:37Z"
   },
   "accumulated_metrics": {
-    "waves_total": 9,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 5112,
+    "wallclock_total_seconds": 4842,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 32,
+    "decisions_total": 29,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -881,11 +807,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T02:12:40Z",
       "description": "FASE 1 concluída; aguardando wakeup para FASE 2"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T02:22:26Z",
-      "description": "onda-008 execute FASE 2 concluida; aguardando wakeup para FASE 3"
     }
   ],
   "tasks": [
