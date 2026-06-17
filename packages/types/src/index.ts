@@ -638,6 +638,18 @@ export {
   type ReportComputeInput,
 } from './meeting-report';
 export {
+  EngagementLevelSchema,
+  type EngagementLevel,
+  MeetingReportParticipantFR63Schema,
+  type MeetingReportParticipantFR63,
+  MeetingReportMetricsSchema,
+  type MeetingReportMetrics,
+  MeetingLeaderReportResponseSchema,
+  type MeetingLeaderReportResponse,
+  classifyEngagementLevel,
+  computeParticipantEngagement,
+} from './meeting-report-fr63';
+export {
   FocusHeartbeatSchema,
   type FocusHeartbeat,
   MeetingTelemetrySchema,

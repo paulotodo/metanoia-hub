@@ -1549,5 +1549,51 @@
       "loading": "carregando",
       "errorCount": "{{count}} erro(s) no formulário"
     }
+  },
+  "meetingLeaderReport": {
+    "title": "Relatório de reunião",
+    "subtitle": "Veja a presença, engajamento e dados pastorais desta reunião.",
+    "loading": "Carregando relatório...",
+    "error": "Não foi possível carregar o relatório.",
+    "metrics": {
+      "heading": "Métricas gerais",
+      "totalParticipants": "Total de participantes",
+      "attendanceRate": "Taxa de presença",
+      "present": "Presença integral",
+      "partial": "Presença parcial",
+      "absent": "Ausentes",
+      "avgEngagement": "Engajamento médio"
+    },
+    "participants": {
+      "heading": "Participantes",
+      "name": "Participante",
+      "email": "E-mail",
+      "status": "Presença",
+      "duration": "Duração",
+      "engagement": "Engajamento",
+      "pastoral": "Acompanhamento pastoral",
+      "absentBadge": "Ausente",
+      "pastoralCta": "Entrar em contato"
+    },
+    "presence": {
+      "integral": "Integral",
+      "parcial": "Parcial",
+      "ausente": "Ausente"
+    },
+    "engagement": {
+      "low": "Baixo",
+      "medium": "Médio",
+      "high": "Alto"
+    },
+    "export": {
+      "button": "Exportar CSV",
+      "processing": "Exportação em processamento...",
+      "download": "Baixar CSV",
+      "error": "Não foi possível iniciar a exportação. Tente novamente.",
+      "timeout": "O tempo limite de exportação foi atingido. Tente novamente.",
+      "statusChecking": "Verificando status da exportação..."
+    },
+    "minutes": "{minutes} min",
+    "noData": "—"
   }
 }

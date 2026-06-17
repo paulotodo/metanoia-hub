@@ -18,8 +18,18 @@ import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { TrailReportQuerySchema, type TrailReportQuery } from '@metanoia/types';
 import { ReportsService } from './reports.service';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 
+@ApiTags('Reports — Export Jobs')
+@ApiBearerAuth()
 @Controller('api/v1/reports')
 @UseGuards(KeycloakAuthGuard, RolesGuard, TenantGuard)
 export class ReportsController {
@@ -80,12 +90,33 @@ export class ReportsController {
   /**
    * GET /api/v1/reports/jobs/:jobId
    * Poll export job status and retrieve signed URL when completed.
+   *
+   * CHK040: polling cadence — recommended minimum 3 seconds.
+   * Backoff: 3s → 6s → 12s → max 30s. Max attempts: 20.
+   * S1 mitigation: tenant+userId authorization enforced in service layer.
    */
   @Get('jobs/:jobId')
   @Roles(Role.ADMIN_TENANT, Role.LIDER)
   @HttpCode(HttpStatus.OK)
-  async getJobStatus(@Param('jobId') jobId: string) {
+  @ApiOperation({
+    summary: 'Poll export job status',
+    description:
+      'Returns export job status (processing | completed | failed). ' +
+      'On status=processing, Retry-After: 3 header is set (CHK040). ' +
+      'S1 mitigation: tenant+userId authorization enforced in service layer.',
+  })
+  @ApiOkResponse({ description: 'Export job status with optional signedUrl when completed' })
+  @ApiForbiddenResponse({ description: 'Unauthorized or cross-tenant access attempt' })
+  @ApiNotFoundResponse({ description: 'Job not found or access denied (intentionally ambiguous — CHK035)' })
+  async getJobStatus(
+    @Param('jobId') jobId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const status = await this.reportsService.getJobStatus(jobId);
+    // CHK040: instruct client to wait at least 3s before next poll
+    if (status.status === 'processing') {
+      res.setHeader('Retry-After', '3');
+    }
     return { data: status };
   }
 }

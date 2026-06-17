@@ -11,5 +11,6 @@ import { StorageModule } from '../storage/storage.module';
   imports: [BullMqModule, PrismaModule, RedisModule, StorageModule],
   controllers: [ReportsController],
   providers: [ReportsService, ReportsProcessor],
+  exports: [ReportsService],
 })
 export class ReportsModule {}
