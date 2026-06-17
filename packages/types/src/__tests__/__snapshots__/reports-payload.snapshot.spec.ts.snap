@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ReportExportJobPayload — discriminated union > kind:'meeting' fixture matches expected shape 1`] = `
+{
+  "canSeeFull": true,
+  "jobId": "019756c0-0001-7000-8000-000000000002",
+  "kind": "meeting",
+  "meetingId": "019756c0-0006-7000-8000-000000000eee",
+  "requesterUserId": "019756c0-0004-7000-8000-000000000ccc",
+  "tenantId": "019756c0-0002-7000-8000-000000000aaa",
+}
+`;
+
+exports[`ReportExportJobPayload — discriminated union > kind:'trail' fixture matches expected shape 1`] = `
+{
+  "jobId": "019756c0-0001-7000-8000-000000000001",
+  "kind": "trail",
+  "requestedBy": "019756c0-0004-7000-8000-000000000ccc",
+  "tenantId": "019756c0-0002-7000-8000-000000000aaa",
+  "trailId": "019756c0-0003-7000-8000-000000000bbb",
+  "trailName": "Discipulado Básico",
+  "userIds": [
+    "019756c0-0005-7000-8000-000000000ddd",
+  ],
+}
+`;

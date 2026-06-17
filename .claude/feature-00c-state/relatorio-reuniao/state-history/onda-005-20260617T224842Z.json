@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
+  "current_stage": "execute-task",
   "next_instruction": "current_stage=execute-task: executar tasks na ordem FASE1->FASE2->FASE3->FASE4->FASE5. tasks.md em docs/specs/relatorio-reuniao/tasks.md (21 tasks, 4 criticas). Prioridade: 3.1 (S1 mitigacao Redis) e 3.2 (polling endurecido) sao CRITICAS e devem ser feitas antes de qualquer frontend. Sequencia: 1.1->1.2->2.1->2.2->2.3->3.1->3.2->3.3->3.4->3.5->3.6->4.1->4.2->4.3->4.4->4.5(opt)->5.1->5.2->5.3->5.4->5.5.",
   "waves": [
     {
@@ -116,10 +116,10 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-17T22:13:52Z",
-      "finished_at": "2026-06-17T22:48:57Z",
+      "finished_at": "2026-06-17T22:18:49Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2105,
+      "wallclock_seconds": 297,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -618,24 +618,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T22:48:42Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 1-5 execute-task concluída: 37/52 checkboxes. Tasks restantes são E2E, truncation (NICE-TO-HAVE), screen-reader testing e tech debt docs.",
-      "options_considered": [
-        "avançar-para-review-task",
-        "continuar-execute-task"
-      ],
-      "choice": "avançar-para-review-task",
-      "rationale": "FASEs 1-4 implementadas com testes passando (560+ testes). Tasks restantes são E2E e NICE-TO-HAVE fora do escopo do MVP.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -669,12 +651,12 @@
     "current_wave_start": "2026-06-17T22:13:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3725,
+    "wallclock_total_seconds": 1620,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 26,
+    "decisions_total": 25,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -720,11 +702,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T22:19:17Z",
       "description": "onda-005 create-tasks concluida; proxima=execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T22:49:13Z",
-      "description": "onda-005 execute-task concluída → review-task"
     }
   ],
   "tasks": [

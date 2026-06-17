@@ -1,0 +1,58 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MeetingLeaderReportResponseSchema snapshot > accepts valid leader report response and matches snapshot 1`] = `
+{
+  "data": {
+    "generatedAt": "2026-04-20T20:35:00.000Z",
+    "meetingId": "019756c0-0002-7000-8000-000000000002",
+    "metrics": {
+      "absentCount": 0,
+      "attendanceRate": 1,
+      "avgEngagementLevel": "medium",
+      "avgEngagementScore": 0.65,
+      "partialCount": 1,
+      "presentCount": 1,
+      "totalParticipants": 2,
+    },
+    "participants": [
+      {
+        "durationSeconds": 3600,
+        "email": "ana@example.com",
+        "engagementLevel": "high",
+        "engagementScore": 0.85,
+        "joinedAt": "2026-04-20T19:30:00.000Z",
+        "leftAt": "2026-04-20T20:30:00.000Z",
+        "name": "Ana",
+        "status": "integral",
+        "userId": "019756c0-0002-7000-8000-000000000bbb",
+      },
+    ],
+  },
+}
+`;
+
+exports[`MeetingReportMetricsSchema snapshot > accepts valid metrics and matches snapshot 1`] = `
+{
+  "absentCount": 1,
+  "attendanceRate": 0.9,
+  "avgEngagementLevel": "medium",
+  "avgEngagementScore": 0.72,
+  "partialCount": 2,
+  "presentCount": 7,
+  "totalParticipants": 10,
+}
+`;
+
+exports[`MeetingReportParticipantFR63Schema snapshot > accepts a valid participant row 1`] = `
+{
+  "durationSeconds": 3600,
+  "email": "ana@example.com",
+  "engagementLevel": "high",
+  "engagementScore": 0.85,
+  "joinedAt": "2026-04-20T19:30:00.000Z",
+  "leftAt": "2026-04-20T20:30:00.000Z",
+  "name": "Ana Ferreira",
+  "status": "integral",
+  "userId": "019756c0-0002-7000-8000-000000000bbb",
+}
+`;
