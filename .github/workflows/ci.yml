@@ -103,6 +103,9 @@ jobs:
       - name: Contrast tokens gate
         run: node apps/web/scripts/check-contrast-tokens.mjs
 
+      - name: Motion-safe guard (warn)
+        run: bash scripts/check-motion-safe.sh --ci --warn
+
   test:
     name: Test
     needs: setup
