@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks: decompor spec+plan em backlog. ATENCAO incorporar gaps do checklist ux-a11y: CHK033 (projeto playwright mobile DEVE usar emulacao Chromium - Pixel 5/Mobile Chrome ou Desktop Chrome+viewport+hasTouch, NAO iPhone 12/WebKit) e CHK025 (corrigir SC-3.1 para apontar packages/ui/styles/globals.css).",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — quality gate de requisitos (dominios ux + a11y) sobre spec.md + plan.md antes de create-tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -86,23 +86,6 @@
           "skill": "plan",
           "timestamp": "2026-06-17T07:39:17Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-17T07:47:24Z",
-      "finished_at": "2026-06-17T07:50:34Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 190,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-17T07:50:11Z",
-          "decision_id": "dec-018"
         }
       ]
     }
@@ -431,63 +414,6 @@
       "evidence": "Scan do plan: nenhum arquivo .ts de backend/api/route handler; mudancas em packages/ui/components/*.tsx (CSS), playwright/e2e specs. grep framer-motion/eval/dangerouslySetInnerHTML no escopo = 0.",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T07:50:11Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Geracao e auto-resolucao do checklist ux+a11y (Story 12.4): quality gate de requisitos sobre spec.md + plan.md antes de create-tasks",
-      "options_considered": [
-        "gerar-checklist-ux-a11y",
-        "pular-checklist",
-        "usar-checklist-generico"
-      ],
-      "choice": "gerar-checklist-ux-a11y",
-      "rationale": "Spec+plan completos (3 US, 14 FR, 11 SC, 2 NC resolvidas, dec-008 hibrido). Dominio ux+a11y e o correto para validar qualidade WCAG 2.5.5/2.5.8/2.3.3.",
-      "justification_score": 3,
-      "evidence": "37 CHKs gerados, 100% rastreabilidade, 28 [x] auto-resolvidos. 5 gaps acionaveis: CHK010/CHK016/CHK035 [Ambiguity], CHK025+CHK033 [Conflict]. Verificado via jq/grep contra spec FR-1.1='44x44 CSS px em viewport mobile' e plan T2 dec-015='devices[iPhone 12]'.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T07:50:11Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate checklist (CHK033 CI-RISK [Conflict]): plan T2/dec-015 propoe playwright project com devices[iPhone 12] (engine WebKit); CI e Chromium-only sem WebKit instalado -> projeto mobile quebra o CI. Mitigacao do plan §7 esta incorreta (atribui o risco a 'device ausente', nao ao engine WebKit).",
-      "options_considered": [
-        "aceitar-risco-com-justificativa",
-        "corrigir-agora-na-spec-plan",
-        "escalar-para-humano"
-      ],
-      "choice": "corrigir-agora-na-spec-plan",
-      "rationale": "Precedente dec-012 (Story 12.1): CI Chromium-only, nao adicionar Firefox/WebKit. O projeto mobile DEVE usar emulacao Chromium (devices[Pixel 5]/Mobile Chrome OU Desktop Chrome+viewport mobile+hasTouch:true). Sera corrigido em create-tasks/clarify; registrado como gap acionavel CHK033.",
-      "justification_score": 3,
-      "evidence": "plan T2: 'project { name: mobile-a11y, use: { ...devices[iPhone 12] } }'. plan §7 risco: 'iPhone 12 device ausente no runner CI | devices e built-in'. Memory dec-012 a11y-teclado-publico: 'Chromium apenas; NAO adicionar Firefox/WebKit ao playwright.config.ts'.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T07:50:11Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate checklist (CHK025 [Conflict]): SC-3.1 verifica safety net via grep em apps/web/app/globals.css, mas plan dec-013 fixou a regra em packages/ui/styles/globals.css (entry real importado por layout.tsx). Criterio de aceite apontaria arquivo errado.",
-      "options_considered": [
-        "aceitar-risco-com-justificativa",
-        "corrigir-agora-na-spec-plan",
-        "escalar-para-humano"
-      ],
-      "choice": "corrigir-agora-na-spec-plan",
-      "rationale": "SC-3.1 deve apontar packages/ui/styles/globals.css para nao validar arquivo errado (gate verde falso). Gap acionavel para clarify; registrado CHK025.",
-      "justification_score": 3,
-      "evidence": "spec SC-3.1: 'Regra CSS global ... presente em apps/web/app/globals.css | grep prefers-reduced-motion no arquivo'. plan dec-013 (score 3): 'a regra vai em packages/ui/styles/globals.css (entry point real importado por apps/web/app/layout.tsx), nao em apps/web/app/globals.css'.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -502,15 +428,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T07:47:24Z"
+    "current_wave_start": "2026-06-17T07:23:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2681,
+    "wallclock_total_seconds": 2491,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 20,
+    "decisions_total": 17,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 1,
     "toolkit_issues_opened": 0
