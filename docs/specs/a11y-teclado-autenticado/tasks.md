@@ -458,14 +458,14 @@ Detalhes por task na coluna "Depende de" abaixo.
   `<input type="file">` focável e ativável (FR-021). `useAsyncAnnouncer` anuncia
   "Configurações salvas com sucesso." (CL-005, CHK004 transversal).
 - **Critério de aceite:**
-  - [ ] Tab percorre todos os campos na ordem visual
-  - [ ] Campo hex funcional: aceita `#RRGGBB`, atualiza seletor visual
-  - [ ] Upload logo: focável, ativável com Enter/Space
-  - [ ] Anúncio PT-BR ao salvar via `useAsyncAnnouncer`
-  - [ ] jest-axe: sem violações no formulário
-  - [ ] CHK024: target de `< 16ms` de latência no foco documentado como guideline
+  - [x] Tab percorre todos os campos na ordem visual
+  - [x] Campo hex funcional: aceita `#RRGGBB`, atualiza seletor visual
+  - [x] Upload logo: focável, ativável com Enter/Space
+  - [x] Anúncio PT-BR ao salvar via `useAsyncAnnouncer`
+  - [x] jest-axe: sem violações no formulário
+  - [x] CHK024: target de `< 16ms` de latência no foco documentado como guideline
         (não como SC automático) em comentário no arquivo
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ### 7.2 E2E US6 — Configurações Tenant (Chromium) [maj]
 
@@ -474,9 +474,9 @@ Detalhes por task na coluna "Depende de" abaixo.
 - **Arquivos-alvo:**
   - `apps/web/e2e/keyboard/configuracoes-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US6 (1–4) passam
+  - [x] Cenários de aceite US6 (1–4) passam
   - [x] axe scan: 0 violations `critical`
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ---
 

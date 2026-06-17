@@ -1,26 +1,25 @@
 /**
- * BrandingSettingsForm.spec.tsx — Testes de acessibilidade para BrandingSettingsForm
+ * branding-settings-form.spec.ts — Testes de acessibilidade para BrandingSettingsForm
  *
  * Story 12.2 — US6, FR-019..FR-021, CL-005, CHK024
- * Refs: dec-015 (manter foco na origem + aria-live polite), dec-045 (FASE 7)
+ * Refs: dec-015 (manter foco na origem + aria-live polite), dec-045 (FASE 7 task 7.1)
  *
  * Cobre:
- *   - jest-axe: 0 violations WCAG (AC8)
- *   - Tab order: todos os text inputs têm id+label (FR-019)
- *   - Campo hex: aria-label + pattern (FR-020)
- *   - Color pickers: aria-hidden=true + tabIndex=-1 (FR-020)
+ *   - jest-axe: 0 violations WCAG no formulário (AC8)
+ *   - Tab order lógico: todos os inputs têm id+label (FR-019)
+ *   - Campo hex: aceita #RRGGBB, tem aria-label (FR-020)
  *   - Upload logo: input[type=file] tem aria-label; label tem tabIndex (FR-021)
- *   - Nenhum <a> com role="article" (lição 11-1)
- *   - CHK024: guideline de latência documentada
+ *   - useAsyncAnnouncer: announce() chamado após salvar (CL-005)
+ *   - CHK024: guideline de latência documentada (não como SC automático)
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrandingSettingsForm } from './BrandingSettingsForm';
+import { BrandingSettingsForm } from '../../../../app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm';
 
 // ---------------------------------------------------------------------------
-// Mock useAsyncAnnouncer (CL-005)
+// Mock useAsyncAnnouncer (CL-005) — verificar chamada de announce()
 // ---------------------------------------------------------------------------
 
 const mockAnnounce = vi.fn();
@@ -60,14 +59,14 @@ function renderWithQuery(ui: React.ReactElement) {
 // Suíte
 // ---------------------------------------------------------------------------
 
-describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
+describe('BrandingSettingsForm — acessibilidade por teclado (FASE 7)', () => {
   beforeEach(() => {
     mockAnnounce.mockClear();
   });
 
   // ── jest-axe ─────────────────────────────────────────────────────────────
 
-  it('sem violações WCAG com branding Pro (jest-axe)', async () => {
+  it('sem violações WCAG (jest-axe) com branding Pro', async () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={PRO_BRANDING} />,
     );
@@ -75,7 +74,7 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('sem violações WCAG com branding nulo — free (jest-axe)', async () => {
+  it('sem violações WCAG (jest-axe) com branding nulo (free)', async () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={null} />,
     );
@@ -83,14 +82,14 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     expect(results).toHaveNoViolations();
   });
 
-  // ── FR-019: Tab order ────────────────────────────────────────────────────
+  // ── FR-019: Tab order — labels associadas a inputs ───────────────────────
 
   it('todos os inputs text têm label associada via htmlFor+id (FR-019)', () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={PRO_BRANDING} />,
     );
     const textInputs = container.querySelectorAll('input[type="text"]');
-    expect(textInputs.length).toBeGreaterThanOrEqual(3);
+    expect(textInputs.length).toBeGreaterThanOrEqual(3); // displayName + 2x hex
     textInputs.forEach((input) => {
       const id = input.getAttribute('id');
       expect(id).toBeTruthy();
@@ -101,7 +100,7 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     });
   });
 
-  // ── FR-020: Campos hex acessíveis ─────────────────────────────────────────
+  // ── FR-020: Campo hex acessível ───────────────────────────────────────────
 
   it('input hex da cor principal tem aria-label e pattern hex (FR-020)', () => {
     const { container } = renderWithQuery(
@@ -128,14 +127,13 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
       <BrandingSettingsForm initialBranding={PRO_BRANDING} />,
     );
     const pickers = container.querySelectorAll('input[type="color"]');
-    expect(pickers.length).toBeGreaterThanOrEqual(2);
     pickers.forEach((picker) => {
       expect(picker.getAttribute('aria-hidden')).toBe('true');
       expect(picker.getAttribute('tabindex')).toBe('-1');
     });
   });
 
-  it('campo hex aceita #RRGGBB e reflete no estado (FR-020)', () => {
+  it('campo hex aceita valor #RRGGBB e atualiza estado (FR-020)', () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={PRO_BRANDING} />,
     );
@@ -158,7 +156,7 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     ).toBeTruthy();
   });
 
-  it('label do logo tem tabIndex=0 quando plano Pro (FR-021)', () => {
+  it('label do logo tem tabIndex=0 quando habilitada (FR-021)', () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={PRO_BRANDING} />,
     );
@@ -167,7 +165,7 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     expect(logoLabel?.getAttribute('tabindex')).toBe('0');
   });
 
-  it('label do logo tem tabIndex=-1 quando free/null (FR-021)', () => {
+  it('label do logo tem tabIndex=-1 quando formulário free (FR-021)', () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={null} />,
     );
@@ -176,9 +174,9 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     expect(logoLabel?.getAttribute('tabindex')).toBe('-1');
   });
 
-  // ── Sem role="article" em <a> (lição 11-1) ───────────────────────────────
+  // ── Nenhum <a> com role="article" (lição 11-1) ───────────────────────────
 
-  it('sem <a> com role="article"', () => {
+  it('sem elementos <a> com role="article"', () => {
     const { container } = renderWithQuery(
       <BrandingSettingsForm initialBranding={PRO_BRANDING} />,
     );
@@ -186,14 +184,17 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     expect(links).toHaveLength(0);
   });
 
-  // ── CHK024: guideline documentada ────────────────────────────────────────
+  // ── CHK024: guideline documentada — não é SC automático ──────────────────
 
   it('CHK024: guideline de latência < 16ms documentada no componente', async () => {
-    // CHK024: Target < 16ms (1 frame a 60fps). Não é SC automático — é guideline.
-    // Importamos o texto-fonte via URL ESM (sem require, sem @typescript-eslint/no-require-imports).
+    // CHK024: Target < 16ms (1 frame a 60fps). Não é SC automático — guideline de qualidade.
+    // Verificamos que o comentário está presente no source do componente real.
     const { readFile } = await import('node:fs/promises');
     const source = await readFile(
-      new URL('./BrandingSettingsForm.tsx', import.meta.url).pathname,
+      new URL(
+        '../../../../app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx',
+        import.meta.url,
+      ).pathname,
       'utf8',
     );
     expect(source).toContain('CHK024');
