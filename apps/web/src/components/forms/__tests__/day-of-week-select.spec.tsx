@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { axe } from "jest-axe";
 import { DayOfWeekSelect } from "../day-of-week-select";
 
 const LABELS = {
@@ -53,5 +54,22 @@ describe("DayOfWeekSelect", () => {
       target: { value: "thursday" },
     });
     expect(onChange).toHaveBeenCalledWith("thursday");
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = render(
+      <div>
+        <label htmlFor="day-axe">Dia da semana</label>
+        <DayOfWeekSelect
+          id="day-axe"
+          value=""
+          onChange={() => {}}
+          labels={LABELS}
+          placeholder="—"
+        />
+      </div>,
+    );
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });
