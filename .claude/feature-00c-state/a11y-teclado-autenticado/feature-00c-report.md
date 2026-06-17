@@ -1,6 +1,6 @@
 # Relatorio do Agente-00C — feat-a11y-teclado-autenticado-20260617T002500Z
 
-**Gerado em**: 2026-06-17T03:01:12Z
+**Gerado em**: 2026-06-17T04:02:05Z
 **Status no momento**: em_andamento
 **Versao do schema**: 1.0.0
 
@@ -18,9 +18,9 @@
 | Motivo termino | (em andamento) |
 | Iniciada em | 2026-06-17T00:25:00Z |
 | Terminada em | ainda em andamento |
-| Ondas executadas | 12 |
+| Ondas executadas | 16 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 40 |
+| Decisoes registradas | 51 |
 | Bloqueios humanos | 2 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -41,16 +41,20 @@
 | onda-007 | 2026-06-17T02:02:37Z | 2026-06-17T02:12:50Z |  | 0 | 613s | concluido |
 | onda-008 | 2026-06-17T02:17:33Z | 2026-06-17T02:45:59Z |  | 0 | 1706s | concluido |
 | onda-009 | 2026-06-17T02:52:26Z | 2026-06-17T03:00:36Z |  | 0 | 490s | concluido |
+| onda-010 | 2026-06-17T03:07:05Z | 2026-06-17T03:16:26Z |  | 0 | 561s | concluido |
+| onda-011 | 2026-06-17T03:23:45Z | 2026-06-17T03:32:13Z |  | 0 | 508s | concluido |
+| onda-012 | 2026-06-17T03:37:45Z | 2026-06-17T03:47:51Z |  | 0 | 606s | concluido |
+| onda-013 | 2026-06-17T03:54:59Z | 2026-06-17T04:01:10Z | execute-task:FASE9 | 0 | 371s | concluido |
 
 ## 3. Decisoes
 
-Total: 40 decisoes registradas.
+Total: 51 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 34 |
+| agente-00c-feature-orchestrator | 45 |
 | feature-00c-clarify-answerer | 3 |
 | feature-00c-resume(PAI) | 3 |
 
@@ -691,6 +695,182 @@ Total: 40 decisoes registradas.
 **Justificativa**: e2e/keyboard/grupos-keyboard.spec.ts criado com 5 cenários offline-first (mocks de API) cobrindo US3 FR-008..011,FR-025
 
 **Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-041 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T03:04:13Z
+
+**Contexto**: Selecao de modelo para onda 9 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-042 — execute-task — agente-00c-feature-orchestrator — 2026-06-17T03:15:01Z
+
+**Contexto**: Task 6.1: CatalogSearch com campo busca (FR-015), filtros dropdown (FR-016), cards <a> (FR-017), paginação (FR-018), useAsyncAnnouncer dec-015
+
+**Opcoes consideradas**: criar-componentes-novos / reusar-trails-search
+
+**Escolha**: criar-componentes-novos
+
+**Justificativa**: trails-search.tsx é componente global de busca; catálogo precisa de filtros, paginação e cards próprios (US5 especifica catalog-search.tsx). Arquitetura segregada evita acoplamento.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-043 — execute-task — agente-00c-feature-orchestrator — 2026-06-17T03:15:12Z
+
+**Contexto**: Task 6.2: E2E catalogo-keyboard.spec.ts com 5 cenários US5 + axe scan
+
+**Opcoes consideradas**: criar-e2e / pular-e2e
+
+**Escolha**: criar-e2e
+
+**Justificativa**: e2e/keyboard/catalogo-keyboard.spec.ts criado com 5 cenários offline-first (route mocks) cobrindo US5 AC1-AC4 + axe scan
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-044 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T03:21:13Z
+
+**Contexto**: Selecao de modelo para onda 10 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-045 — execute-task — agente-00c-feature-orchestrator — 2026-06-17T03:24:11Z
+
+**Contexto**: FASE 7: BrandingSettingsForm — useAsyncAnnouncer + label keyboard + CHK024
+
+**Opcoes consideradas**: modificar-arquivo-existente / criar-novo-componente
+
+**Escolha**: modificar-arquivo-existente
+
+**Justificativa**: BrandingSettingsForm.tsx existe em app/(authenticated)/. Plan.md line 108 confirma MODIFY. Adicionar: (1) useAsyncAnnouncer no handleSave substituindo aria-live inline; (2) label do logo ativavel Enter/Space via tabIndex+onKeyDown; (3) validacao pattern hex; (4) CHK024 guideline comment. Spec unit em src/__tests__ (novo dir). E2E configuracoes-keyboard.spec.ts.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-046 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T03:35:14Z
+
+**Contexto**: Selecao de modelo para onda 11 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-047 — execute-task — agente-00c-feature-orchestrator — 2026-06-17T03:47:38Z
+
+**Contexto**: FASE 8 task 8.1 — PlanCard + UpgradeDialog + PlansPage concluídos
+
+**Opcoes consideradas**: implementar / pular
+
+**Escolha**: implementar
+
+**Justificativa**: Cards focáveis (tabIndex=0, role=article, aria-expanded), CTAs como button nativo, Radix Dialog com focus trap. 20/20 vitest OK, lint/build OK.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-048 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T03:52:14Z
+
+**Contexto**: Selecao de modelo para onda 12 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-049 — execute-task:FASE9 — agente-00c-feature-orchestrator — 2026-06-17T03:59:14Z
+
+**Contexto**: Execucao FASE 9 — Relatorio Final e Gate Cross-Browser Manual
+
+**Opcoes consideradas**: executar-fase9 / abortar
+
+**Escolha**: executar-fase9
+
+**Justificativa**: FASE 9 e a ultima fase do pipeline. Tasks 9.1 (relatorio final) e 9.2 (checklist cross-browser) sao pre-requisito DoD do Epico 12.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-050 — execute-task:FASE9 — agente-00c-feature-orchestrator — 2026-06-17T03:59:47Z
+
+**Contexto**: Reconciliacao checkboxes tasks.md — tasks 0.1, 0.2, 4.1, 4.2, 4.3 e FASE 9 marcadas
+
+**Opcoes consideradas**: marcar-done / deixar-pendente
+
+**Escolha**: marcar-done
+
+**Justificativa**: Tasks 0.1/0.2/4.1/4.2/4.3 foram implementadas em ondas anteriores (state.json confirma pass); seus checkboxes permaneceram [ ] por omissao do orquestrador. FASE 9 concluida nesta onda.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-051 — execute-task:FASE9 — agente-00c-feature-orchestrator — 2026-06-17T03:59:47Z
+
+**Contexto**: Gate local obrigatorio passou: prisma generate + turbo build + turbo lint
+
+**Opcoes consideradas**: aceitar-gates-verdes / abortar
+
+**Escolha**: aceitar-gates-verdes
+
+**Justificativa**: prisma generate: OK; turbo build: 3 tasks cached/successful; turbo lint --max-warnings 0: 4 tasks cached/successful. Nenhum erro.
+
+**Score**: 3
 
 **Referencias**: (nenhuma)
 

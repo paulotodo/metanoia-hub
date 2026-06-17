@@ -45,8 +45,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "review-task",
+  "current_stage": "execute-task",
+  "next_instruction": "execute-task:FASE8",
   "waves": [
     {
       "id": "onda-001",
@@ -266,25 +266,6 @@
           "skill": "execute-task",
           "timestamp": "2026-06-17T03:47:38Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-013",
-      "started_at": "2026-06-17T03:54:59Z",
-      "finished_at": "2026-06-17T04:01:10Z",
-      "executed_stages": [
-        "execute-task:FASE9"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 371,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task:FASE9",
-          "timestamp": "2026-06-17T03:59:54Z",
-          "decision_id": "dec-049"
         }
       ]
     }
@@ -1173,80 +1154,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-048",
-      "wave_id": "onda-012",
-      "timestamp": "2026-06-17T03:52:14Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 12 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-049",
-      "wave_id": "onda-013",
-      "timestamp": "2026-06-17T03:59:14Z",
-      "stage": "execute-task:FASE9",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execucao FASE 9 — Relatorio Final e Gate Cross-Browser Manual",
-      "options_considered": [
-        "executar-fase9",
-        "abortar"
-      ],
-      "choice": "executar-fase9",
-      "rationale": "FASE 9 e a ultima fase do pipeline. Tasks 9.1 (relatorio final) e 9.2 (checklist cross-browser) sao pre-requisito DoD do Epico 12.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-050",
-      "wave_id": "onda-013",
-      "timestamp": "2026-06-17T03:59:47Z",
-      "stage": "execute-task:FASE9",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Reconciliacao checkboxes tasks.md — tasks 0.1, 0.2, 4.1, 4.2, 4.3 e FASE 9 marcadas",
-      "options_considered": [
-        "marcar-done",
-        "deixar-pendente"
-      ],
-      "choice": "marcar-done",
-      "rationale": "Tasks 0.1/0.2/4.1/4.2/4.3 foram implementadas em ondas anteriores (state.json confirma pass); seus checkboxes permaneceram [ ] por omissao do orquestrador. FASE 9 concluida nesta onda.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-051",
-      "wave_id": "onda-013",
-      "timestamp": "2026-06-17T03:59:47Z",
-      "stage": "execute-task:FASE9",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate local obrigatorio passou: prisma generate + turbo build + turbo lint",
-      "options_considered": [
-        "aceitar-gates-verdes",
-        "abortar"
-      ],
-      "choice": "aceitar-gates-verdes",
-      "rationale": "prisma generate: OK; turbo build: 3 tasks cached/successful; turbo lint --max-warnings 0: 4 tasks cached/successful. Nenhum erro.",
-      "justification_score": 3,
-      "evidence": "Tasks: 3 successful, 3 total (build) / 4 successful, 4 total (lint)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -1284,15 +1191,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T03:54:59Z"
+    "current_wave_start": "2026-06-17T03:37:45Z"
   },
   "accumulated_metrics": {
-    "waves_total": 16,
+    "waves_total": 15,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 10303,
+    "wallclock_total_seconds": 9932,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 51,
+    "decisions_total": 47,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1366,11 +1273,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T03:31:54Z",
       "description": "FASE 7 concluida: tasks 7.1+7.2 pass; aguardando wakeup para FASE 8"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T04:01:32Z",
-      "description": "onda-013 concluida, avancando para review-task"
     }
   ],
   "tasks": [
@@ -1761,65 +1663,6 @@
         "apps/web/e2e/keyboard/planos-keyboard.spec.ts"
       ],
       "recorded_at": "2026-06-17T03:47:38Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "2.1",
-      "title": "Sidebar com roving tabindex (US1)",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 173,
-      "tests_passed": 173,
-      "lint_ok": true,
-      "touched_files": [
-        "packages/ui/components/sidebar.tsx",
-        "packages/ui/__tests__/sidebar.spec.tsx"
-      ],
-      "recorded_at": "2026-06-17T03:55:11Z",
-      "source": "reconcile-fase9"
-    },
-    {
-      "task_id": "2.2",
-      "title": "E2E US1 — Dashboard (Chromium)",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/keyboard/dashboard-keyboard.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T03:55:12Z",
-      "source": "reconcile-fase9"
-    },
-    {
-      "task_id": "9.1",
-      "title": "Relatorio Final Axe (comparacao com baseline)",
-      "wave_id": "onda-013",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "docs/specs/a11y-teclado-autenticado/a11y-report-final.md",
-        "apps/web/e2e/a11y/reports/baseline",
-        "apps/web/e2e/a11y/reports/final"
-      ],
-      "recorded_at": "2026-06-17T03:59:30Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "9.2",
-      "title": "Gate Cross-Browser Manual (FR-027)",
-      "wave_id": "onda-013",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "docs/specs/a11y-teclado-autenticado/cross-browser-checklist.md"
-      ],
-      "recorded_at": "2026-06-17T03:59:30Z",
       "source": "execute-task"
     }
   ]

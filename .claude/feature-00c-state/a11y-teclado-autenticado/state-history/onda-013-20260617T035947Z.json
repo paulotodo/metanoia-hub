@@ -45,8 +45,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "review-task",
+  "current_stage": "execute-task",
+  "next_instruction": "execute-task:FASE8",
   "waves": [
     {
       "id": "onda-001",
@@ -272,21 +272,13 @@
     {
       "id": "onda-013",
       "started_at": "2026-06-17T03:54:59Z",
-      "finished_at": "2026-06-17T04:01:10Z",
-      "executed_stages": [
-        "execute-task:FASE9"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 371,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task:FASE9",
-          "timestamp": "2026-06-17T03:59:54Z",
-          "decision_id": "dec-049"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -1229,24 +1221,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-051",
-      "wave_id": "onda-013",
-      "timestamp": "2026-06-17T03:59:47Z",
-      "stage": "execute-task:FASE9",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate local obrigatorio passou: prisma generate + turbo build + turbo lint",
-      "options_considered": [
-        "aceitar-gates-verdes",
-        "abortar"
-      ],
-      "choice": "aceitar-gates-verdes",
-      "rationale": "prisma generate: OK; turbo build: 3 tasks cached/successful; turbo lint --max-warnings 0: 4 tasks cached/successful. Nenhum erro.",
-      "justification_score": 3,
-      "evidence": "Tasks: 3 successful, 3 total (build) / 4 successful, 4 total (lint)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -1287,12 +1261,12 @@
     "current_wave_start": "2026-06-17T03:54:59Z"
   },
   "accumulated_metrics": {
-    "waves_total": 16,
+    "waves_total": 15,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 10303,
+    "wallclock_total_seconds": 9932,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 51,
+    "decisions_total": 50,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1366,11 +1340,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T03:31:54Z",
       "description": "FASE 7 concluida: tasks 7.1+7.2 pass; aguardando wakeup para FASE 8"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T04:01:32Z",
-      "description": "onda-013 concluida, avancando para review-task"
     }
   ],
   "tasks": [
