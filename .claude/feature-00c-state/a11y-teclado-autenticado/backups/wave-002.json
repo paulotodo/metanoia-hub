@@ -1,7 +1,7 @@
 {
   "wave_number": 2,
-  "captured_at": "2026-06-17T00:44:10Z",
-  "state_sha256_self": "fef6132d76236607660c8230cb794d3b4b55b0f2b930449b61b7fcec9c7670a4",
+  "captured_at": "2026-06-17T01:07:00Z",
+  "state_sha256_self": "47cc20a0736214c09940dde7e71b47b919337711bfe410b6141ca6af04061b54",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "a11y-teclado-autenticado",
@@ -10,7 +10,7 @@
       "target_project_path": "/var/lib/metanoia-hub",
       "target_project_description": "Story 12.2: Navegacao por teclado nos fluxos autenticados (NFR-A1) — dashboard 3 experiencias, CRUD grupos, builder de trilhas (alternativa teclado ao drag-and-drop), catalogo/busca, config tenant/branding, gestao de planos; atender TD-001 (foco pos-redirect pos-login).",
       "suggested_stack": null,
-      "status": "aguardando_humano",
+      "status": "em_andamento",
       "termination_reason": null,
       "started_at": "2026-06-17T00:25:00Z",
       "finished_at": null
@@ -49,11 +49,13 @@
       {
         "id": "onda-002",
         "started_at": "2026-06-17T00:36:56Z",
-        "finished_at": null,
-        "executed_stages": [],
+        "finished_at": "2026-06-17T00:44:10Z",
+        "executed_stages": [
+          "clarify"
+        ],
         "tool_calls": 0,
-        "wallclock_seconds": 0,
-        "termination_reason": null,
+        "wallclock_seconds": 434,
+        "termination_reason": "bloqueio_humano",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
           {
@@ -65,6 +67,11 @@
             "skill": "model-selector",
             "timestamp": "2026-06-17T00:39:27Z",
             "decision_id": "dec-009"
+          },
+          {
+            "skill": "clarify",
+            "timestamp": "2026-06-17T01:06:52Z",
+            "decision_id": "dec-017"
           }
         ]
       }
@@ -313,6 +320,80 @@
         "evidence": null,
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-014",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T01:00:35Z",
+        "stage": "clarify",
+        "agent": "feature-00c-resume(PAI)",
+        "context": "block-001 US4/FR-012: visibilidade dos botoes Mover cima/baixo no builder de trilhas",
+        "options_considered": [
+          "sempre-visiveis",
+          "focus-within"
+        ],
+        "choice": "sempre-visiveis",
+        "rationale": "Decisao do operador via AskUserQuestion: maxima descobribilidade p/ teclado e mouse, alinhada ao foco do epico em a11y; botoes em cada item com aria-label descritivo.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-015",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T01:00:35Z",
+        "stage": "clarify",
+        "agent": "feature-00c-resume(PAI)",
+        "context": "block-002 US1/US5: destino do foco apos load assincrono na area autenticada",
+        "options_considered": [
+          "manter-campo-aria-live",
+          "mover-para-resultados"
+        ],
+        "choice": "manter-campo-aria-live",
+        "rationale": "Decisao do operador via AskUserQuestion: manter foco na origem + anunciar via role=status aria-live=polite; padrao WAI-ARIA APG, uniforme p/ todos os loads assincronos (busca US5, salvar config US6); evita roubo de foco.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-016",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T01:00:45Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 2 (fase clarify)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-017",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T01:02:20Z",
+        "stage": "clarify",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Aplicar secao Clarifications inline: respostas consolidadas de dec-010..dec-015 (2 respostas humanas + 3 autonomas) ja registradas",
+        "options_considered": [
+          "aplicar-inline-todas-5-resolucoes",
+          "spawn-clarify-skill-adicional"
+        ],
+        "choice": "aplicar-inline-todas-5-resolucoes",
+        "rationale": "Todas as 5 decisoes de clarify estao registradas (dec-010 hook foco pos-login, dec-011 shadcn Dialog Radix, dec-012 roving tabindex, dec-014 botoes sempre-visiveis, dec-015 manter-campo-aria-live). Nao ha ambiguidades remanescentes — aplicar diretamente na spec.",
+        "justification_score": 3,
+        "evidence": "dec-014 choice=sempre-visiveis; dec-015 choice=manter-campo-aria-live; dec-010 choice=hook-layout-raiz; dec-011 choice=shadcn-dialog-radix; dec-012 choice=roving-tabindex — todos em .decisions[] com score>=2",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [
@@ -322,9 +403,9 @@
         "question": "US4/FR-012: os botoes 'Mover para cima/baixo' no builder de trilhas devem ser SEMPRE VISIVEIS em cada item, ou visiveis apenas quando o item esta focado (:focus-within)?",
         "context_for_answer": "A spec define que os botoes devem estar 'disponiveis e focaveis' (US4 Scenario 1, FR-012) mas NAO especifica visibilidade. Trade-off de UX real: sempre visiveis (mais previsivel para teclado, ocupa espaco) vs :focus-within (UI mais limpa, mas pode surpreender usuario de teclado que nao ve os botoes antes de focar). Nenhuma fonte (briefing/constitution/spec) define o comportamento visual. Escopo de produto/UX sem default fiel a spec — answerer atribuiu score 0 (pausa).",
         "recommended_options": null,
-        "status": "aguardando",
-        "human_answer": null,
-        "answered_at": null,
+        "status": "respondido",
+        "human_answer": "Botoes 'Mover para cima/baixo' SEMPRE VISIVEIS em cada item do builder de trilhas (nao apenas :focus-within). Decisao do operador: maxima descobribilidade para teclado/mouse, alinhada ao foco do epico em a11y. Implementar com aria-label descritivo (ex.: 'Mover [titulo] para cima').",
+        "answered_at": "2026-06-17T01:00:10Z",
         "triggered_at": "2026-06-17T00:42:39Z"
       },
       {
@@ -333,9 +414,9 @@
         "question": "US1/US5: apos uma busca assincrona retornar resultados (TanStack Query em Client Component), PARA ONDE o foco deve ir? (a) permanecer no campo de busca + regiao role=status/aria-live anunciando a contagem, ou (b) mover para o primeiro card/heading de resultados?",
         "context_for_answer": "A spec define o edge case 'foco nao deve ser redefinido para o topo da pagina' em conteudo dinamico, mas NAO define o elemento de destino pos-busca. Trade-off de UX: (a) manter no campo permite refinar a busca sem reposicionar; (b) mover para resultados da anuncio mais claro a leitores de tela. Ambas compativeis com WCAG AA. Decisao deve ser UNIFORME para todos os carregamentos assincronos da area autenticada (busca US5, salvar config US6). Escopo de produto/UX sem default fiel a spec — answerer atribuiu score 0 (pausa).",
         "recommended_options": null,
-        "status": "aguardando",
-        "human_answer": null,
-        "answered_at": null,
+        "status": "respondido",
+        "human_answer": "Apos load assincrono (busca US5, salvar config US6, qualquer fetch da area autenticada): MANTER o foco no elemento de origem (campo de busca/botao) e anunciar resultado/contagem via regiao role=status aria-live=polite. NAO mover foco para os resultados (evita roubo de foco; permite refino continuo). Padrao WAI-ARIA APG, uniforme para todos os loads assincronos. Decisao do operador.",
+        "answered_at": "2026-06-17T01:00:10Z",
         "triggered_at": "2026-06-17T00:42:53Z"
       }
     ],
@@ -353,12 +434,12 @@
       "current_wave_start": "2026-06-17T00:36:56Z"
     },
     "accumulated_metrics": {
-      "waves_total": 1,
+      "waves_total": 2,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 287,
+      "wallclock_total_seconds": 721,
       "max_depth_reached": 2,
       "subagents_spawned": 2,
-      "decisions_total": 13,
+      "decisions_total": 17,
       "human_blocks_total": 2,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0,

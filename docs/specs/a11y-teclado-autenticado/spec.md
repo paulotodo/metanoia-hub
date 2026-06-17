@@ -332,3 +332,147 @@ de upgrade usando apenas teclado.
   trap funcional: Tab não deixa o foco escapar do diálogo; Escape fecha e restaura
   o foco ao elemento de origem.
 
+---
+
+## Clarifications
+
+> Seção gerada após resolução de bloqueios humanos (dec-014, dec-015) e decisões
+> autônomas (dec-010, dec-011, dec-012) na fase clarify. Todas as ambiguidades
+> da spec original foram endereçadas antes da fase plan.
+
+### CL-001 — Foco Pós-Login: Hook no Layout Raiz Autenticado (TD-001 / US2)
+
+**Decisão (dec-010):** O gerenciamento de foco pós-redirect de autenticação DEVE
+ser implementado via hook centralizado no layout raiz da área autenticada
+(`apps/web/app/(authenticated)/layout.tsx`), não disperso em cada página individual.
+
+**Impacto nas FRs:**
+
+- **FR-006** (refinado): O hook `useFocusOnRouteChange()` escuta `usePathname()`
+  do Next.js e, após cada navegação de autenticação, move o foco programaticamente
+  para o primeiro elemento interativo significativo da página de destino. O hook
+  vive no layout raiz autenticado para garantir cobertura uniforme de todas as rotas.
+- **FR-007** (refinado): A lógica do hook cobre rotas diretas (`/dashboard`) e
+  rotas profundas (`/groups/123`) igualmente — não requer configuração por rota.
+
+**Rationale:** Centralizar no layout raiz evita que novos desenvolvedores esqueçam
+de adicionar o gerenciamento em cada nova página. Um único `useEffect` no layout
+raiz autenticado garante consistência via padrão Next.js App Router.
+
+---
+
+### CL-002 — Diálogos: shadcn/ui Dialog (Radix UI) para Focus Trap (US3, US6, US7)
+
+**Decisão (dec-011):** Todos os diálogos de confirmação e modais da área autenticada
+DEVEM usar o componente `Dialog` de `packages/ui` (que importa `@radix-ui/react-dialog`).
+Não implementar focus trap manualmente.
+
+**Impacto nas FRs:**
+
+- **FR-009** (refinado): O focus trap em diálogos de grupos é provido nativamente
+  pelo Radix UI Dialog — Tab e Shift+Tab ficam confinados ao diálogo; Escape chama
+  `onOpenChange(false)` e restaura o foco ao `trigger`. Zero código adicional para
+  focus trap.
+- **US6 / US7 (diálogos de configuração e planos):** Mesma premissa — usar
+  `packages/ui/components/dialog.tsx` com as props `open` e `onOpenChange`.
+
+**Rationale:** Evidência empírica: `packages/ui/components/dialog.tsx` já importa
+`@radix-ui/react-dialog`, e `end-confirm-dialog.tsx` o usa em produção na Story 12.1.
+Reutilizar infraestrutura existente; não reinventar a roda.
+
+---
+
+### CL-003 — Sidebar: Roving Tabindex para Navegação com Arrow Keys (US1)
+
+**Decisão (dec-012):** O menu lateral (sidebar) DEVE implementar o padrão
+`roving tabindex` para navegação com Arrow Up/Down, conforme o padrão WAI-ARIA APG
+para `Listbox` e menus de navegação.
+
+**Impacto nas FRs:**
+
+- **FR-003** (refinado): A sidebar mantém `tabindex="0"` apenas no item atualmente
+  ativo; demais itens têm `tabindex="-1"`. Ao pressionar Arrow Up/Down, o foco é
+  movido pelo JavaScript para o item anterior/seguinte, que recebe `tabindex="0"`
+  e o item anterior passa para `tabindex="-1"`. Tab sai do grupo inteiro para o
+  próximo landmark.
+- **FR-005** (sem alteração): O seletor de experiência usa a mesma abordagem de
+  roving tabindex quando apresentado como lista de opções.
+
+**Rationale:** US1 Acceptance Scenario 2 descreve exatamente o comportamento
+"Arrow Up/Down move foco entre itens sem sair do grupo", que é a definição canônica
+de roving tabindex. O padrão está documentado no WAI-ARIA APG (Listbox Pattern).
+
+---
+
+### CL-004 — Builder de Trilhas: Botões de Reordenação Sempre Visíveis (US4 / FR-012)
+
+**Decisão (dec-014, operador):** Os botões "Mover para cima" e "Mover para baixo"
+em cada item do builder de trilhas DEVEM ser **sempre visíveis** (não apenas em
+`:focus-within` ou hover). Cada botão DEVE ter `aria-label` descritivo incluindo o
+título do item.
+
+**Impacto nas FRs:**
+
+- **FR-012** (refinado): Cada item reordenável renderiza dois botões explícitos,
+  sempre visíveis:
+  ```
+  <button aria-label={`Mover "${titulo}" para cima`}>↑</button>
+  <button aria-label={`Mover "${titulo}" para baixo`}>↓</button>
+  ```
+  O botão "Mover para cima" do primeiro item e "Mover para baixo" do último item
+  ficam `disabled` e com `aria-disabled="true"`.
+- **FR-013** (sem alteração): Após ativação, o foco permanece no botão do item
+  movido — o item se moveu na lista, mas o botão correspondente (no novo índice)
+  mantém o foco via `useEffect(() => ref.current?.focus(), [order])`.
+
+**Rationale:** Máxima descobribilidade: botões sempre visíveis são encontrados por
+usuários de teclado sem necessidade de hover/focus prévio para revelá-los. O
+`aria-label` descritivo anuncia o contexto correto ao leitor de tela, evitando
+"↑ botão" sem contexto.
+
+---
+
+### CL-005 — Foco Assíncrono: Manter Origem + aria-live (US1, US5, US6)
+
+**Decisão (dec-015, operador):** Após qualquer operação assíncrona na área
+autenticada (busca, salvar configuração, reordenação), o foco DEVE **permanecer no
+elemento de origem** (campo de busca, botão de salvar, botão de mover). O resultado
+da operação DEVE ser anunciado via região `role="status" aria-live="polite"`.
+O foco NÃO deve ser movido automaticamente para os resultados. Padrão uniforme para
+todos os loads assíncronos.
+
+**Impacto nas FRs:**
+
+- **FR-017** (refinado): Cards de resultado do catálogo são focáveis via Tab
+  manualmente, mas o foco não é movido para eles automaticamente após a busca. Um
+  `<div role="status" aria-live="polite">` anuncia "N resultados encontrados para
+  [termo]" — o usuário decide quando Tab para os resultados.
+- **US5 (busca)**: Campo de busca retém foco após submit. Região `aria-live` anuncia
+  contagem de resultados.
+- **US6 (salvar config)**: Botão "Salvar" retém foco após a operação bem-sucedida.
+  Região `aria-live` anuncia "Configurações salvas com sucesso."
+- **FR-013 (builder)**: Após reordenação, foco retorna ao botão do item movido
+  (foco de origem), não para o topo da lista.
+
+**Implementação uniforme:** Criar um hook `useAsyncAnnouncer()` (ou usar o
+`aria-live` region já presente na Story 12.1 se disponível) que aceita uma mensagem
+e a injeta na região `role="status"` global do layout autenticado. Todos os
+componentes assíncronos usam esse hook — sem duplicação de regiões `aria-live`.
+
+**Rationale:** Padrão WAI-ARIA APG explícito: mover o foco para resultados de busca
+desoriente o usuário sobre sua posição na página. O padrão correto é manter o foco
+e anunciar o resultado. Decisão do operador confirma esse padrão como requisito de
+produto.
+
+---
+
+### Resumo das Decisões de Clarify
+
+| ID | Assunto | Decisão | FRs Afetadas |
+|----|---------|---------|--------------|
+| dec-010 | Foco pós-login | Hook `useFocusOnRouteChange()` no layout raiz autenticado | FR-006, FR-007 |
+| dec-011 | Focus trap em diálogos | shadcn/ui Dialog (Radix UI) — sem implementação manual | FR-009, US6, US7 |
+| dec-012 | Sidebar Arrow keys | Roving tabindex (WAI-ARIA APG Listbox Pattern) | FR-003, FR-005 |
+| dec-014 | Builder botões Up/Down | Sempre visíveis + `aria-label` com título do item | FR-012, FR-013 |
+| dec-015 | Foco após async | Manter na origem + anunciar via `aria-live="polite"` | FR-013, FR-017, US5, US6 |
+

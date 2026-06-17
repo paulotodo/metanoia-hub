@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar fase plan: gerar plan.md, research.md e data-model.md (se aplicavel). Feature e puramente frontend/a11y — sem novos endpoints ou migrações de dados. Prioridade: definir arquitetura de componentes, hooks (useFocusOnRouteChange, useAsyncAnnouncer, useRovingTabindex) e sequenciamento de tasks.",
+  "current_stage": "clarify",
+  "next_instruction": "Aguardando respostas humanas para block-001 (visibilidade botoes Up/Down builder) e block-002 (destino do foco pos-busca SPA). Apos respostas via /feature-00c-resume: aplicar respostas como Decisoes, invocar Skill(clarify) para atualizar secao ## Clarifications na spec, e prosseguir para plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -45,13 +45,13 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T00:36:56Z",
-      "finished_at": "2026-06-17T01:07:46Z",
+      "finished_at": "2026-06-17T00:44:10Z",
       "executed_stages": [
         "clarify"
       ],
       "tool_calls": 0,
-      "wallclock_seconds": 1850,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 434,
+      "termination_reason": "bloqueio_humano",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -63,11 +63,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-17T00:39:27Z",
           "decision_id": "dec-009"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-17T01:06:52Z",
-          "decision_id": "dec-017"
         }
       ]
     }
@@ -352,44 +347,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T01:00:45Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 2 (fase clarify)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T01:02:20Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Aplicar secao Clarifications inline: respostas consolidadas de dec-010..dec-015 (2 respostas humanas + 3 autonomas) ja registradas",
-      "options_considered": [
-        "aplicar-inline-todas-5-resolucoes",
-        "spawn-clarify-skill-adicional"
-      ],
-      "choice": "aplicar-inline-todas-5-resolucoes",
-      "rationale": "Todas as 5 decisoes de clarify estao registradas (dec-010 hook foco pos-login, dec-011 shadcn Dialog Radix, dec-012 roving tabindex, dec-014 botoes sempre-visiveis, dec-015 manter-campo-aria-live). Nao ha ambiguidades remanescentes — aplicar diretamente na spec.",
-      "justification_score": 3,
-      "evidence": "dec-014 choice=sempre-visiveis; dec-015 choice=manter-campo-aria-live; dec-010 choice=hook-layout-raiz; dec-011 choice=shadcn-dialog-radix; dec-012 choice=roving-tabindex — todos em .decisions[] com score>=2",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -430,12 +387,12 @@
     "current_wave_start": "2026-06-17T00:36:56Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2571,
+    "wallclock_total_seconds": 721,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 17,
+    "decisions_total": 15,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -464,11 +421,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T00:32:49Z",
       "description": "onda-001 specify concluida; aguardando wakeup para clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:07:40Z",
-      "description": "clarify concluido com 5 resolucoes (dec-010..dec-015); onda-002 encerrada; aguardando wakeup para plan"
     }
   ]
 }
