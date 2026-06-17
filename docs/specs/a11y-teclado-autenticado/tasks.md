@@ -496,12 +496,12 @@ Detalhes por task na coluna "Depende de" abaixo.
   (FR-023). Fluxo de upgrade (incluindo diálogo e etapas de confirmação) navegável
   por teclado (FR-024). Usar Radix Dialog para focus trap no diálogo de upgrade.
 - **Critério de aceite:**
-  - [ ] Tab navega entre cards individualmente
-  - [ ] Enter em card expande detalhes
-  - [ ] CTAs alcançáveis e ativáveis via teclado
-  - [ ] Diálogo de upgrade: focus trap ativo, Escape cancela e retorna foco
-  - [ ] jest-axe: sem violações na página de planos
-  - [ ] Gate local passa
+  - [x] Tab navega entre cards individualmente
+  - [x] Enter em card expande detalhes
+  - [x] CTAs alcançáveis e ativáveis via teclado
+  - [x] Diálogo de upgrade: focus trap ativo, Escape cancela e retorna foco
+  - [x] jest-axe: sem violações na página de planos
+  - [x] Gate local passa
 
 ### 8.2 E2E US7 — Gestão de Planos (Chromium) [maj]
 
@@ -510,9 +510,9 @@ Detalhes por task na coluna "Depende de" abaixo.
 - **Arquivos-alvo:**
   - `apps/web/e2e/keyboard/planos-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US7 (1–4) passam
+  - [x] Cenários de aceite US7 (1–4) passam
   - [x] axe scan: 0 violations `critical`
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ---
 
