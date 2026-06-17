@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Fase checklist: gerar quality gate WCAG AA para os 7 fluxos autenticados. Usar skill checklist com spec.md e plan.md. Incluir checklist manual cross-browser (Chrome, Firefox, Safari) e gate axe automático por fluxo.",
   "waves": [
     {
@@ -91,19 +91,13 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T01:24:27Z",
-      "finished_at": "2026-06-17T01:30:30Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 363,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-17T01:30:11Z",
-          "decision_id": "dec-021"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -480,25 +474,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T01:30:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execução do quality gate de requisitos a11y para Story 12.2 — 48 itens CHK001..CHK048",
-      "options_considered": [
-        "gerar-checklist",
-        "abortar",
-        "pular-fase"
-      ],
-      "choice": "gerar-checklist",
-      "rationale": "Spec+plan completos com 27 FRs, 7 US, 5 clarifications CL-001..005. Domínio a11y/WCAG AA. Checklist gerado com 36 itens verdes, 8 gaps identificados (3 altos), 4 itens humano.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -539,12 +514,12 @@
     "current_wave_start": "2026-06-17T01:24:27Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3365,
+    "wallclock_total_seconds": 3002,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 21,
+    "decisions_total": 20,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

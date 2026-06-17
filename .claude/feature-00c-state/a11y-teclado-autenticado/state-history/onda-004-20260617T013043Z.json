@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Fase checklist: gerar quality gate WCAG AA para os 7 fluxos autenticados. Usar skill checklist com spec.md e plan.md. Incluir checklist manual cross-browser (Chrome, Firefox, Safari) e gate axe automático por fluxo.",
   "waves": [
     {
