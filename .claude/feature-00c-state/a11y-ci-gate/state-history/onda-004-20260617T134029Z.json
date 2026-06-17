@@ -9,7 +9,7 @@
     "status": "concluida",
     "termination_reason": "review-task-approved-all-gates-pass",
     "started_at": "2026-06-17T12:16:24Z",
-    "finished_at": "2026-06-17T13:40:29Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
