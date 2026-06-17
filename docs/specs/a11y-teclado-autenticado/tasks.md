@@ -261,13 +261,13 @@ Detalhes por task na coluna "Depende de" abaixo.
   controle do builder).
   FR-007: testar com rota direta E rota profunda.
 - **Critério de aceite:**
-  - [ ] Após autenticação, foco move para elemento `[data-autofocus]` ou h1
+  - [x] Após autenticação, foco move para elemento `[data-autofocus]` ou h1
         (nunca para `<body>` ou topo do documento)
-  - [ ] Funciona para `/dashboard` e `/groups/123` (rota profunda)
-  - [ ] `data-autofocus` adicionado nas 3 rotas principais documentadas
-  - [ ] CHK007: critério "primeiro elemento interativo significativo" satisfeito
+  - [x] Funciona para `/dashboard` e `/groups/123` (rota profunda)
+  - [x] `data-autofocus` adicionado nas 3 rotas principais documentadas
+  - [x] CHK007: critério "primeiro elemento interativo significativo" satisfeito
         conforme sequência de Decision 2 do plan
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ### 3.2 E2E US2 — Foco Pós-Login (Chromium) [crit]
 
@@ -278,10 +278,10 @@ Detalhes por task na coluna "Depende de" abaixo.
 - **Descrição:** Spec Playwright simulando redirect de autenticação e verificando
   posição do foco. Cobrir rota direta e rota profunda (FR-007).
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US2 (1–3) passam
-  - [ ] Foco não está em `document.body` após redirect
-  - [ ] axe scan: 0 violations `critical`
-  - [ ] Gate local passa
+  - [x] Cenários de aceite US2 (1–3) passam
+  - [x] Foco não está em `document.body` após redirect
+  - [x] axe scan: 0 violations `critical`
+  - [x] Gate local passa
 
 ---
 
@@ -330,7 +330,7 @@ Detalhes por task na coluna "Depende de" abaixo.
   - `apps/web/e2e/keyboard/trail-builder-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
   - [ ] Cenários de aceite US4 (1–4) passam
-  - [ ] axe scan: 0 violations `critical`
+  - [x] axe scan: 0 violations `critical`
   - [ ] Gate local passa
 
 ---
@@ -397,7 +397,7 @@ Detalhes por task na coluna "Depende de" abaixo.
   - `apps/web/e2e/keyboard/grupos-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
   - [ ] Cenários de aceite US3 (1–5) passam
-  - [ ] axe scan: 0 violations `critical`
+  - [x] axe scan: 0 violations `critical`
   - [ ] Gate local passa
 
 ---
@@ -437,7 +437,7 @@ Detalhes por task na coluna "Depende de" abaixo.
   - `apps/web/e2e/keyboard/catalogo-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
   - [ ] Cenários de aceite US5 (1–4) passam
-  - [ ] axe scan: 0 violations `critical`
+  - [x] axe scan: 0 violations `critical`
   - [ ] Gate local passa
 
 ---
@@ -475,7 +475,7 @@ Detalhes por task na coluna "Depende de" abaixo.
   - `apps/web/e2e/keyboard/configuracoes-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
   - [ ] Cenários de aceite US6 (1–4) passam
-  - [ ] axe scan: 0 violations `critical`
+  - [x] axe scan: 0 violations `critical`
   - [ ] Gate local passa
 
 ---
@@ -511,7 +511,7 @@ Detalhes por task na coluna "Depende de" abaixo.
   - `apps/web/e2e/keyboard/planos-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
   - [ ] Cenários de aceite US7 (1–4) passam
-  - [ ] axe scan: 0 violations `critical`
+  - [x] axe scan: 0 violations `critical`
   - [ ] Gate local passa
 
 ---
