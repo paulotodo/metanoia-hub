@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Executar FASE 2 (EIXO-B) tasks 2.1/2.2 e FASE 3 (EIXO-C) tasks 3.1-3.4. FASE 0/1 concluidas.",
+  "next_instruction": "Executar tasks do backlog de execute-task: percorrer tasks.md fase por fase, registrando outcome em .tasks[] via record-task",
   "waves": [
     {
       "id": "onda-001",

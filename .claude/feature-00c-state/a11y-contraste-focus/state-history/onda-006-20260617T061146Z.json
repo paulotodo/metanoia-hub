@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Executar FASE 2 (EIXO-B) tasks 2.1/2.2 e FASE 3 (EIXO-C) tasks 3.1-3.4. FASE 0/1 concluidas.",
+  "next_instruction": "Executar tasks do backlog de execute-task: percorrer tasks.md fase por fase, registrando outcome em .tasks[] via record-task",
   "waves": [
     {
       "id": "onda-001",
@@ -133,21 +133,13 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T06:06:42Z",
-      "finished_at": "2026-06-17T06:12:14Z",
-      "executed_stages": [
-        "execute-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 332,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T06:12:14Z",
-          "decision_id": "dec-022"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -584,25 +576,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-17T06:11:46Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 1.3: text-care-ok/text-care-attention em texto de métricas numéricas → text-text-secondary",
-      "options_considered": [
-        "text-text-secondary",
-        "text-text-primary",
-        "manter-care-colors"
-      ],
-      "choice": "text-text-secondary",
-      "rationale": "Métricas numéricas (totalPresent, totalPartial) com text-care-ok/text-care-attention: contraste 2.70:1 e 2.22:1 — FAIL WCAG AA. Substituído por text-text-secondary (#5c5a57 = 5.96:1 PASS). Cabeçalho de coluna (dt) já identifica o grupo; cor reforça mas não é único indicador.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -620,12 +593,12 @@
     "current_wave_start": "2026-06-17T06:06:42Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1736,
+    "wallclock_total_seconds": 1404,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 24,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -666,84 +639,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T05:57:16Z",
       "description": "etapa=create-tasks hits=4"
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "0.1",
-      "title": "Executar dry-run do codemod focus-ring e catalogar casos manuais",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/eslint.config.mjs",
-        "apps/web/scripts/codemod-focus-ring.mjs",
-        "apps/web/src/components/meetings/meeting-card.tsx",
-        "apps/web/src/components/meetings/post-meeting-report.tsx",
-        "packages/config/tailwind.preset.css",
-        "packages/ui/styles/tokens.css"
-      ],
-      "recorded_at": "2026-06-17T06:11:55Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.1",
-      "title": "Adicionar comentários de restrição de uso nos arquivos de tokens",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/eslint.config.mjs",
-        "apps/web/scripts/codemod-focus-ring.mjs",
-        "apps/web/src/components/meetings/meeting-card.tsx",
-        "apps/web/src/components/meetings/post-meeting-report.tsx",
-        "packages/config/tailwind.preset.css",
-        "packages/ui/styles/tokens.css"
-      ],
-      "recorded_at": "2026-06-17T06:12:04Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.2",
-      "title": "Corrigir meeting-card.tsx: text-white → text-primary em badge care-ok",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/eslint.config.mjs",
-        "apps/web/scripts/codemod-focus-ring.mjs",
-        "apps/web/src/components/meetings/meeting-card.tsx",
-        "apps/web/src/components/meetings/post-meeting-report.tsx",
-        "packages/config/tailwind.preset.css",
-        "packages/ui/styles/tokens.css"
-      ],
-      "recorded_at": "2026-06-17T06:12:04Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.3",
-      "title": "Corrigir post-meeting-report.tsx: text-care-ok/text-care-attention como texto",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/eslint.config.mjs",
-        "apps/web/scripts/codemod-focus-ring.mjs",
-        "apps/web/src/components/meetings/meeting-card.tsx",
-        "apps/web/src/components/meetings/post-meeting-report.tsx",
-        "packages/config/tailwind.preset.css",
-        "packages/ui/styles/tokens.css"
-      ],
-      "recorded_at": "2026-06-17T06:12:04Z",
-      "source": "execute-task"
     }
   ]
 }
