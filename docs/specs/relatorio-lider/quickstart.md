@@ -11,7 +11,9 @@ obrigatório (payload REAL, não mock — guarda contra drift snake↔camelCase)
    `avgAttendancePercent` (0..100), `avgTrailProgressPercent`, `atRiskCount`,
    `activeParticipantsCount`; `summary.totalGroups=3`;
    `summary.totalParticipants` = dedup por userId; `overallAttendancePercent`
-   ponderado por `activeParticipantsCount`; `meta.period='30d'`.
+   ponderado por `activeParticipantsCount`; `meta.period='30d'`;
+   `meta.startDate` e `meta.endDate` são ISO 8601 válidas calculadas pelo servidor
+   (correspondentes aos 30d anteriores ao instante da request).
 
 ## P2 — Grupo sem reuniões no período (dec-008)
 1. G2 sem nenhuma reunião na janela.
@@ -77,3 +79,12 @@ obrigatório (payload REAL, não mock — guarda contra drift snake↔camelCase)
 ## P12 — Snapshot de schema (Princípio IV)
 1. `packages/types/src/__tests__/leader-summary.snapshot.spec.ts`.
 2. **Expected**: snapshot estável dos schemas; mudança de shape quebra o teste.
+
+## P13 — Performance: universo típico (PERF-01 / SC-03)
+1. Seed: tenant A; líder L com 5 grupos; cada grupo com 20 membros ativos,
+   5 reuniões no período e `ParticipantRadarStatus` variado.
+2. Em integration test, capturar `Date.now()` antes e após `GET .../leader-summary?period=30d`.
+3. **Expected**: response < 1000ms (1s); `data.groups` com 5 itens corretos.
+4. **Nota:** este cenário valida SC-03 de forma executável (não apenas doc). Falha
+   indica N+1 ou query ineficiente — revisar `groupBy/count/aggregate` por grupo
+   (Decision 3 em research.md).

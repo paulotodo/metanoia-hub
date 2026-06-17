@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
@@ -101,11 +101,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T23:48:02Z",
-      "finished_at": "2026-06-17T23:50:55Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 173,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -476,25 +476,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T23:50:14Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "checklist quality gate: 5 warnings corrigidos, 3 infos tratados, 10 OKs confirmados",
-      "options_considered": [
-        "aplicar-correcoes",
-        "registrar-bloqueio",
-        "prosseguir-sem-corrigir"
-      ],
-      "choice": "aplicar-correcoes",
-      "rationale": "5 gaps de warning identificados e corrigidos: SEC-01 (AC-SEC-01/02 adicionados a FR-05), SEC-04 (authz horizontal obrigatória em FR-05), A11Y-04 (axe-core em SC-06), PERF-01 (P13 em quickstart), API-04 (formula ponderada em FR-03). 3 infos documentados: A11Y-05 (tabela FORA do escopo clarificada em FR-08), PERF-03 (nota admin_tenant em DEC-INF-02), API-06 (meta.startDate em P1). Nenhum bloqueio humano necessário.",
-      "justification_score": 3,
-      "evidence": "grep confirmado: 'AC-SEC-01' em spec.md FR-05; 'ponderada por activeParticipantsCount' em FR-03; 'axe-core reporta 0 violacoes' em SC-06; 'P13' em quickstart.md",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -512,12 +493,12 @@
     "current_wave_start": "2026-06-17T23:48:02Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1047,
+    "wallclock_total_seconds": 874,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 20,
+    "decisions_total": 19,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

@@ -129,7 +129,7 @@ O payload de resposta inclui objeto `summary` com:
 |-------|---------|
 | `totalGroups` | contagem de grupos no universo |
 | `totalParticipants` | soma de `activeParticipantsCount` de todos os grupos (deduplica por userId se um membro estiver em múltiplos grupos) |
-| `overallAttendancePercent` | média ponderada de `avgAttendancePercent` pelos grupos |
+| `overallAttendancePercent` | média ponderada de `avgAttendancePercent` **ponderada por `activeParticipantsCount`** de cada grupo (grupos maiores têm mais peso); grupos com `avgAttendancePercent=null` (sem reuniões no período) são **excluídos da ponderação**; retornar `null` se todos os grupos sem reuniões (dec-009) |
 | `overallTrailCompletionPercent` | % de membros com `TrailProgress.completedAt IS NOT NULL` / total membros ativos com trilha |
 
 ### FR-04: Filtro de período
@@ -149,6 +149,11 @@ O filtro de período aplica-se ao cálculo de presença (reuniões `scheduledFor
 - `AsyncLocalStorage` / `getRequestContext()` para derivar `tenantId` — **nunca** passado como parâmetro de função
 - Um líder nunca acessa grupos ou dados de outro tenant
 - Teste RLS obrigatório em `apps/api/test/rls/`
+- **Authz horizontal obrigatória (lição BOLA — Story 13.1):** o universo de grupos é derivado de `ctx.userId` + role (não de input do cliente). `groupId` passado pelo cliente é **filtro sobre o universo já restrito**, nunca seletor que amplia acesso. `groupId` de outro líder (mesmo tenant) resulta em `groups:[]` — não em 403 (não vaza existência). Confiar só em `@Roles()` sem bind ao requester repete o vetor BOLA da Story 13.1. (vide Decision 5 em research.md)
+
+**Acceptance Criteria de Segurança (testáveis):**
+- **AC-SEC-01:** Dado `groupId` de outro líder (mesmo tenant) → resposta 200 com `groups:[]`; NÃO 403; NÃO vaza existência nem dados do grupo alheio. (P6)
+- **AC-SEC-02:** Dado request autenticado como líder do tenant A → RLS bloqueia dados do tenant B; `groups` contém apenas grupos do tenant A. (P8 — OBRIGATÓRIO)
 
 ### FR-06: Contrato de resposta da API
 
@@ -201,7 +206,7 @@ Criar `packages/types/src/reports/leader-summary.ts` com:
 
 - Badges de semáforo (verde/amarelo/vermelho): contraste WCAG AA; representação por **ícone + texto** (nunca só cor)
 - Cards de grupo: `aria-label` descritivo (`"Grupo Alpha: 12 participantes, 72% presença"`)
-- Tabela de participantes em risco (se exibida): header `<th scope="col">`, caption
+- Tabela detalhada de participantes em risco: **FORA do escopo 13.2a** (esta story entrega apenas cards de grupo). Se implementada em story futura, respeitar `<th scope="col">` + `<caption>`.
 - Filtros de período: usar `FormField` (Epic 12, Story 12.5) com `label` associado
 - Token `text-secondary` (nunca `text-muted` — tech debt R2 do Epic 12)
 - Página `/app/gestao/reports` é área autenticada (fora do gate axe automatizado — tech debt R2), mas deve nascer acessível per design
@@ -307,7 +312,7 @@ Nenhuma linha de dados de outro tenant aparece no relatório, validado por teste
 A resposta segue exatamente o schema `LeaderSummaryResponseSchema` (Zod), confirmado por snapshot test. _(FR-06, FR-07)_
 
 ### SC-06: Acessibilidade WCAG AA
-Badges de semáforo passam em checagem de contraste AA e possuem representação não-dependente de cor; cards possuem `aria-label`. _(P5, FR-08)_
+Badges de semáforo passam em checagem de contraste AA e possuem representação não-dependente de cor (ícone + texto); cards possuem `aria-label` descritivo; filtros de período usam `FormField` com `label` associado; token `text-secondary` usado (não `text-muted`); **axe-core reporta 0 violações** na página `/app/gestao/relatorios/lider` (gate a11y permanente Epic 12). _(P5, P11, FR-08)_
 
 ### SC-07: Filtro de período correto
 Para `period=custom`, apenas reuniões dentro do range startDate–endDate são computadas. _(P2)_
@@ -349,6 +354,7 @@ Admin Tenant recebe todos os grupos do tenant, não apenas grupos onde é líder
 ### DEC-INF-02: Agregação on-demand
 **Decisão:** Calcular on-demand por query Prisma eficiente; não usar materialized view.
 **Justificativa:** Story 13.2b é o milestone de materialização. Esta story entrega valor imediato. Para volumes esperados de MVP (líderes com < 10 grupos), a latência on-demand é aceitável (< 1s conforme SC-03).
+**Nota de escalabilidade:** Para `admin_tenant` com >50 grupos, a agregação on-demand pode ultrapassar SC-03. Nesses casos, a Story 13.2b (materialized view) é pré-requisito de escalabilidade. **No MVP não há cap** de grupos — universo típico <10 para líder, <50 para admin_tenant. Monitorar via log `{duration_ms}` (dec-012).
 
 ### DEC-INF-03: Filtros client-side vs. server-side
 **Decisão:** Filtros de grupo específico e status de semáforo são **client-side**. Filtro de período é **server-side** (altera query params da API).
