@@ -46,7 +46,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task:FASE8",
+  "next_instruction": "execute-task:FASE7",
   "waves": [
     {
       "id": "onda-001",

@@ -46,7 +46,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task:FASE8",
+  "next_instruction": "execute-task:FASE7",
   "waves": [
     {
       "id": "onda-001",
@@ -232,23 +232,6 @@
           "skill": "execute-task",
           "timestamp": "2026-06-17T03:15:44Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-011",
-      "started_at": "2026-06-17T03:23:45Z",
-      "finished_at": "2026-06-17T03:32:13Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 508,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T03:31:54Z",
-          "decision_id": "dec-045"
         }
       ]
     }
@@ -1061,44 +1044,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-044",
-      "wave_id": "onda-010",
-      "timestamp": "2026-06-17T03:21:13Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 10 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-045",
-      "wave_id": "onda-011",
-      "timestamp": "2026-06-17T03:24:11Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 7: BrandingSettingsForm — useAsyncAnnouncer + label keyboard + CHK024",
-      "options_considered": [
-        "modificar-arquivo-existente",
-        "criar-novo-componente"
-      ],
-      "choice": "modificar-arquivo-existente",
-      "rationale": "BrandingSettingsForm.tsx existe em app/(authenticated)/. Plan.md line 108 confirma MODIFY. Adicionar: (1) useAsyncAnnouncer no handleSave substituindo aria-live inline; (2) label do logo ativavel Enter/Space via tabIndex+onKeyDown; (3) validacao pattern hex; (4) CHK024 guideline comment. Spec unit em src/__tests__ (novo dir). E2E configuracoes-keyboard.spec.ts.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -1136,15 +1081,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T03:23:45Z"
+    "current_wave_start": "2026-06-17T03:07:05Z"
   },
   "accumulated_metrics": {
-    "waves_total": 14,
+    "waves_total": 13,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 9326,
+    "wallclock_total_seconds": 8818,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 45,
+    "decisions_total": 43,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1213,11 +1158,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T03:17:06Z",
       "description": "FASE 6 concluida, aguardando wakeup para FASE 7 (Configuracoes Tenant)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T03:31:54Z",
-      "description": "FASE 7 concluida: tasks 7.1+7.2 pass; aguardando wakeup para FASE 8"
     }
   ],
   "tasks": [
@@ -1541,42 +1481,6 @@
         "apps/web/e2e/keyboard/catalogo-keyboard.spec.ts"
       ],
       "recorded_at": "2026-06-17T03:15:25Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.1",
-      "title": "Formulários de configuração + input hex + upload logo [crit]",
-      "wave_id": "onda-011",
-      "outcome": "pass",
-      "tests_run": 11,
-      "tests_passed": 11,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx",
-        "apps/web/e2e/keyboard/configuracoes-keyboard.spec.ts",
-        "apps/web/src/__tests__/components/settings/branding-settings-form.spec.tsx",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T03:31:44Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.2",
-      "title": "E2E US6 — Configurações Tenant (Chromium) [maj]",
-      "wave_id": "onda-011",
-      "outcome": "pass",
-      "tests_run": 6,
-      "tests_passed": 6,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx",
-        "apps/web/e2e/keyboard/configuracoes-keyboard.spec.ts",
-        "apps/web/src/__tests__/components/settings/branding-settings-form.spec.tsx",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T03:31:44Z",
       "source": "execute-task"
     }
   ]

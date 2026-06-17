@@ -46,7 +46,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task:FASE8",
+  "next_instruction": "execute-task:FASE7",
   "waves": [
     {
       "id": "onda-001",
@@ -238,11 +238,11 @@
     {
       "id": "onda-011",
       "started_at": "2026-06-17T03:23:45Z",
-      "finished_at": "2026-06-17T03:32:13Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 508,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -1139,9 +1139,9 @@
     "current_wave_start": "2026-06-17T03:23:45Z"
   },
   "accumulated_metrics": {
-    "waves_total": 14,
+    "waves_total": 13,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 9326,
+    "wallclock_total_seconds": 8818,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 45,

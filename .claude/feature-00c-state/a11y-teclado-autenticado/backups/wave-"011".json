@@ -4,7 +4,7 @@
   "execution": {
     "id": "feat-a11y-teclado-autenticado-20260617T002500Z",
     "target_project_path": "/var/lib/metanoia-hub",
-    "target_project_description": "Story 12.2: Navegacao por teclado nos fluxos autenticados (NFR-A1) — dashboard 3 experiencias, CRUD grupos, builder de trilhas (alternativa teclado ao drag-and-drop), catalogo/busca, config tenant/branding, gestao de planos; atender TD-001 (foco pos-redirect pos-login).",
+    "target_project_description": "Story 12.2: Navegacao por teclado nos fluxos autenticados (NFR-A1) \u2014 dashboard 3 experiencias, CRUD grupos, builder de trilhas (alternativa teclado ao drag-and-drop), catalogo/busca, config tenant/branding, gestao de planos; atender TD-001 (foco pos-redirect pos-login).",
     "suggested_stack": null,
     "status": "em_andamento",
     "termination_reason": null,
@@ -46,7 +46,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task:FASE8",
+  "next_instruction": "execute-task:FASE7",
   "waves": [
     {
       "id": "onda-001",
@@ -238,11 +238,11 @@
     {
       "id": "onda-011",
       "started_at": "2026-06-17T03:23:45Z",
-      "finished_at": "2026-06-17T03:32:13Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 508,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -298,7 +298,7 @@
       "timestamp": "2026-06-17T00:28:13Z",
       "stage": "specify",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio de execucao specify — feature a11y-teclado-autenticado",
+      "context": "Inicio de execucao specify \u2014 feature a11y-teclado-autenticado",
       "options_considered": [
         "iniciar",
         "abortar"
@@ -372,7 +372,7 @@
       "timestamp": "2026-06-17T00:37:05Z",
       "stage": "clarify",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da fase clarify — onda-002 iniciada apos specify concluido com exito (7 US, 27 FR, 7 SC)",
+      "context": "Inicio da fase clarify \u2014 onda-002 iniciada apos specify concluido com exito (7 US, 27 FR, 7 SC)",
       "options_considered": [
         "iniciar",
         "abortar"
@@ -486,7 +486,7 @@
       "timestamp": "2026-06-17T00:43:11Z",
       "stage": "clarify",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Encerramento da onda-002 (clarify): 3 perguntas decididas autonomamente (Q1 score2, Q2 score3, Q3 score2), 2 perguntas pausadas (Q4/Q5 score0) gerando block-001 e block-002. Spec NAO sera atualizada via Skill(clarify) ate resolucao dos bloqueios — clarifications incompletas.",
+      "context": "Encerramento da onda-002 (clarify): 3 perguntas decididas autonomamente (Q1 score2, Q2 score3, Q3 score2), 2 perguntas pausadas (Q4/Q5 score0) gerando block-001 e block-002. Spec NAO sera atualizada via Skill(clarify) ate resolucao dos bloqueios \u2014 clarifications incompletas.",
       "options_considered": [
         "aplicar-parcial-e-prosseguir",
         "pausar-aguardando-humano"
@@ -566,9 +566,9 @@
         "spawn-clarify-skill-adicional"
       ],
       "choice": "aplicar-inline-todas-5-resolucoes",
-      "rationale": "Todas as 5 decisoes de clarify estao registradas (dec-010 hook foco pos-login, dec-011 shadcn Dialog Radix, dec-012 roving tabindex, dec-014 botoes sempre-visiveis, dec-015 manter-campo-aria-live). Nao ha ambiguidades remanescentes — aplicar diretamente na spec.",
+      "rationale": "Todas as 5 decisoes de clarify estao registradas (dec-010 hook foco pos-login, dec-011 shadcn Dialog Radix, dec-012 roving tabindex, dec-014 botoes sempre-visiveis, dec-015 manter-campo-aria-live). Nao ha ambiguidades remanescentes \u2014 aplicar diretamente na spec.",
       "justification_score": 3,
-      "evidence": "dec-014 choice=sempre-visiveis; dec-015 choice=manter-campo-aria-live; dec-010 choice=hook-layout-raiz; dec-011 choice=shadcn-dialog-radix; dec-012 choice=roving-tabindex — todos em .decisions[] com score>=2",
+      "evidence": "dec-014 choice=sempre-visiveis; dec-015 choice=manter-campo-aria-live; dec-010 choice=hook-layout-raiz; dec-011 choice=shadcn-dialog-radix; dec-012 choice=roving-tabindex \u2014 todos em .decisions[] com score>=2",
       "references": [],
       "originating_artifact": null
     },
@@ -578,7 +578,7 @@
       "timestamp": "2026-06-17T01:19:35Z",
       "stage": "plan",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase plan concluída: plan.md gerado com arquitetura de 3 hooks novos, 2 componentes novos e modificação no Sidebar",
+      "context": "Fase plan conclu\u00edda: plan.md gerado com arquitetura de 3 hooks novos, 2 componentes novos e modifica\u00e7\u00e3o no Sidebar",
       "options_considered": [
         "gerar-plan",
         "abortar"
@@ -596,15 +596,15 @@
       "timestamp": "2026-06-17T01:19:55Z",
       "stage": "plan",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate owasp-security: feature a11y-teclado-autenticado é puramente FE, sem novos endpoints, sem auth, sem dados sensíveis processados",
+      "context": "Skip do gate owasp-security: feature a11y-teclado-autenticado \u00e9 puramente FE, sem novos endpoints, sem auth, sem dados sens\u00edveis processados",
       "options_considered": [
         "rodar-gate",
         "skip-com-justificativa"
       ],
       "choice": "skip-com-justificativa",
-      "rationale": "Feature é 100% front-end: apenas hooks React, Client Components e atributos ARIA. Zero novos endpoints REST, zero mutations de banco, zero schemas Zod novos. Superfície OWASP é inexistente neste contexto. Score 3 justificado por evidência empírica: grep em plan.md confirma 'zero novos endpoints'.",
+      "rationale": "Feature \u00e9 100% front-end: apenas hooks React, Client Components e atributos ARIA. Zero novos endpoints REST, zero mutations de banco, zero schemas Zod novos. Superf\u00edcie OWASP \u00e9 inexistente neste contexto. Score 3 justificado por evid\u00eancia emp\u00edrica: grep em plan.md confirma 'zero novos endpoints'.",
       "justification_score": 3,
-      "evidence": "Feature é puramente front-end: zero novos endpoints de API, zero migrações de banco, zero novos schemas Zod.",
+      "evidence": "Feature \u00e9 puramente front-end: zero novos endpoints de API, zero migra\u00e7\u00f5es de banco, zero novos schemas Zod.",
       "references": [],
       "originating_artifact": null
     },
@@ -634,14 +634,14 @@
       "timestamp": "2026-06-17T01:30:04Z",
       "stage": "checklist",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Execução do quality gate de requisitos a11y para Story 12.2 — 48 itens CHK001..CHK048",
+      "context": "Execu\u00e7\u00e3o do quality gate de requisitos a11y para Story 12.2 \u2014 48 itens CHK001..CHK048",
       "options_considered": [
         "gerar-checklist",
         "abortar",
         "pular-fase"
       ],
       "choice": "gerar-checklist",
-      "rationale": "Spec+plan completos com 27 FRs, 7 US, 5 clarifications CL-001..005. Domínio a11y/WCAG AA. Checklist gerado com 36 itens verdes, 8 gaps identificados (3 altos), 4 itens humano.",
+      "rationale": "Spec+plan completos com 27 FRs, 7 US, 5 clarifications CL-001..005. Dom\u00ednio a11y/WCAG AA. Checklist gerado com 36 itens verdes, 8 gaps identificados (3 altos), 4 itens humano.",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -680,7 +680,7 @@
         "ignorar"
       ],
       "choice": "verificar-e-neutralizar",
-      "rationale": "Tentativa de auto-modificacao de config detectada e BLOQUEADA pelo guard/classificador (comportamento esperado por memoria operacional). Verificado empiricamente: git diff de .claude/settings.json retornou VAZIO e nenhuma chave bgIsolation existe — settings INTACTO, nenhum dano. Causa-raiz: skill create-tasks usa Write nativo (bloqueado nesta sessao) e nao caiu para Bash. Acao corretiva: re-executar create-tasks escrevendo tasks.md via Bash heredoc.",
+      "rationale": "Tentativa de auto-modificacao de config detectada e BLOQUEADA pelo guard/classificador (comportamento esperado por memoria operacional). Verificado empiricamente: git diff de .claude/settings.json retornou VAZIO e nenhuma chave bgIsolation existe \u2014 settings INTACTO, nenhum dano. Causa-raiz: skill create-tasks usa Write nativo (bloqueado nesta sessao) e nao caiu para Bash. Acao corretiva: re-executar create-tasks escrevendo tasks.md via Bash heredoc.",
       "justification_score": 2,
       "evidence": "Modifying .claude/settings.json (disabling worktree bgIsolation) is Self-Modification; git diff -- .claude/settings.json => (vazio)",
       "references": [],
@@ -748,7 +748,7 @@
       "timestamp": "2026-06-17T01:56:40Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 0 concluída: tasks 0.1 e 0.2 passaram gates (build+lint ok)",
+      "context": "FASE 0 conclu\u00edda: tasks 0.1 e 0.2 passaram gates (build+lint ok)",
       "options_considered": [
         "avancar-FASE1",
         "repetir",
@@ -787,7 +787,7 @@
       "timestamp": "2026-06-17T02:12:40Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 1 concluída: 5 tasks de hooks/componentes transversais a11y",
+      "context": "FASE 1 conclu\u00edda: 5 tasks de hooks/componentes transversais a11y",
       "options_considered": [
         "concluir-fase",
         "parcial",
@@ -833,7 +833,7 @@
         "skip"
       ],
       "choice": "implementar-inline",
-      "rationale": "packages/ui não tem acesso a apps/web/src/hooks; hook inline preserva isolamento do pacote UI. CHK009 wrap+Home/End cobertos. 42 testes passando.",
+      "rationale": "packages/ui n\u00e3o tem acesso a apps/web/src/hooks; hook inline preserva isolamento do pacote UI. CHK009 wrap+Home/End cobertos. 42 testes passando.",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -845,13 +845,13 @@
       "timestamp": "2026-06-17T02:21:31Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 2.2: E2E dashboard-keyboard.spec.ts criado com 6 cenários US1 + axe scan",
+      "context": "Task 2.2: E2E dashboard-keyboard.spec.ts criado com 6 cen\u00e1rios US1 + axe scan",
       "options_considered": [
         "criar-e2e",
         "skip-e2e"
       ],
       "choice": "criar-e2e",
-      "rationale": "6 cenários: skip link, tab sidebar, ArrowDown, wrap circular CHK009, Home/End, axe scan. CHK048 documentado (Tooltip não interfere). Lint passou.",
+      "rationale": "6 cen\u00e1rios: skip link, tab sidebar, ArrowDown, wrap circular CHK009, Home/End, axe scan. CHK048 documentado (Tooltip n\u00e3o interfere). Lint passou.",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -883,16 +883,16 @@
       "timestamp": "2026-06-17T02:32:36Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 3.1 concluída: FocusManager integrado + data-autofocus adicionado",
+      "context": "Task 3.1 conclu\u00edda: FocusManager integrado + data-autofocus adicionado",
       "options_considered": [
         "integrar-no-layout",
         "integrar-no-shell",
         "skip"
       ],
       "choice": "integrar-no-shell",
-      "rationale": "FocusManager já estava no NavigationShell (task 1.5). data-autofocus adicionado nos h1 de dashboard-client.tsx, grupos/page.tsx e group-trails-client.tsx. Gates: prisma generate OK, build OK, lint OK.",
+      "rationale": "FocusManager j\u00e1 estava no NavigationShell (task 1.5). data-autofocus adicionado nos h1 de dashboard-client.tsx, grupos/page.tsx e group-trails-client.tsx. Gates: prisma generate OK, build OK, lint OK.",
       "justification_score": 3,
-      "evidence": "4 files changed, 181 insertions(+), 2 deletions(-) — commit b8cbd2a",
+      "evidence": "4 files changed, 181 insertions(+), 2 deletions(-) \u2014 commit b8cbd2a",
       "references": [],
       "originating_artifact": null
     },
@@ -902,15 +902,15 @@
       "timestamp": "2026-06-17T02:32:46Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 3.2 concluída: spec E2E post-login-focus.spec.ts criado",
+      "context": "Task 3.2 conclu\u00edda: spec E2E post-login-focus.spec.ts criado",
       "options_considered": [
         "criar-spec",
         "skip-spec"
       ],
       "choice": "criar-spec",
-      "rationale": "post-login-focus.spec.ts cobre US2 AC1-AC3, FR-006, FR-007, FR-025 (axe 0 critical), CHK007 fallback chain, CHK036 nota rotas dinâmicas. Gates passaram.",
+      "rationale": "post-login-focus.spec.ts cobre US2 AC1-AC3, FR-006, FR-007, FR-025 (axe 0 critical), CHK007 fallback chain, CHK036 nota rotas din\u00e2micas. Gates passaram.",
       "justification_score": 3,
-      "evidence": "create mode 100644 apps/web/e2e/keyboard/post-login-focus.spec.ts — commit b8cbd2a",
+      "evidence": "create mode 100644 apps/web/e2e/keyboard/post-login-focus.spec.ts \u2014 commit b8cbd2a",
       "references": [],
       "originating_artifact": null
     },
@@ -920,14 +920,14 @@
       "timestamp": "2026-06-17T02:45:48Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 4 concluída: TrailItemReorder + GroupTrailsClient + E2E trail-builder",
+      "context": "FASE 4 conclu\u00edda: TrailItemReorder + GroupTrailsClient + E2E trail-builder",
       "options_considered": [
         "concluir-fase4",
         "pausar",
         "abortar"
       ],
       "choice": "concluir-fase4",
-      "rationale": "16/16 testes unitários passando; turbo build OK; turbo lint 0 warnings; commit 390caa0 na branch feat/12-2-a11y-teclado-autenticado; dec-014 aplicada (botões sempre visíveis)",
+      "rationale": "16/16 testes unit\u00e1rios passando; turbo build OK; turbo lint 0 warnings; commit 390caa0 na branch feat/12-2-a11y-teclado-autenticado; dec-014 aplicada (bot\u00f5es sempre vis\u00edveis)",
       "justification_score": 3,
       "evidence": "turbo lint: Tasks: 4 successful | turbo build: Tasks: 3 successful | vitest: 16 passed (16)",
       "references": [],
@@ -939,13 +939,13 @@
       "timestamp": "2026-06-17T02:59:20Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.1: GroupForm com tab order correto (Nome→Dia→Horário→Obs→Submit)",
+      "context": "Task 5.1: GroupForm com tab order correto (Nome\u2192Dia\u2192Hor\u00e1rio\u2192Obs\u2192Submit)",
       "options_considered": [
         "implementar-form-novo",
         "modificar-form-existente"
       ],
       "choice": "implementar-form-novo",
-      "rationale": "group-form.tsx não existia; criado com tab order lógico, useAsyncAnnouncer, foco via ref no onSuccess",
+      "rationale": "group-form.tsx n\u00e3o existia; criado com tab order l\u00f3gico, useAsyncAnnouncer, foco via ref no onSuccess",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -963,7 +963,7 @@
         "radix-dialog-nativo"
       ],
       "choice": "radix-dialog-nativo",
-      "rationale": "dec-011 proíbe focus trap manual; shadcn/ui Dialog usa Radix FocusScope loop=true + restoreFocus nativo",
+      "rationale": "dec-011 pro\u00edbe focus trap manual; shadcn/ui Dialog usa Radix FocusScope loop=true + restoreFocus nativo",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -975,14 +975,14 @@
       "timestamp": "2026-06-17T02:59:20Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.3: InviteMembersForm com upload CSV acessível via label+input pattern",
+      "context": "Task 5.3: InviteMembersForm com upload CSV acess\u00edvel via label+input pattern",
       "options_considered": [
         "label-input-pattern",
         "button-click-input",
         "custom-input"
       ],
       "choice": "label-input-pattern",
-      "rationale": "Padrão label+input file com span role=button focável: Tab alcança, Enter/Space ativam via handleUploadKeyDown, aria-label descritivo",
+      "rationale": "Padr\u00e3o label+input file com span role=button foc\u00e1vel: Tab alcan\u00e7a, Enter/Space ativam via handleUploadKeyDown, aria-label descritivo",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -994,13 +994,13 @@
       "timestamp": "2026-06-17T02:59:20Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.4: E2E grupos-keyboard.spec.ts com 5 cenários US3 + axe scan",
+      "context": "Task 5.4: E2E grupos-keyboard.spec.ts com 5 cen\u00e1rios US3 + axe scan",
       "options_considered": [
         "criar-e2e",
         "pular-e2e"
       ],
       "choice": "criar-e2e",
-      "rationale": "e2e/keyboard/grupos-keyboard.spec.ts criado com 5 cenários offline-first (mocks de API) cobrindo US3 FR-008..011,FR-025",
+      "rationale": "e2e/keyboard/grupos-keyboard.spec.ts criado com 5 cen\u00e1rios offline-first (mocks de API) cobrindo US3 FR-008..011,FR-025",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -1032,13 +1032,13 @@
       "timestamp": "2026-06-17T03:15:01Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 6.1: CatalogSearch com campo busca (FR-015), filtros dropdown (FR-016), cards <a> (FR-017), paginação (FR-018), useAsyncAnnouncer dec-015",
+      "context": "Task 6.1: CatalogSearch com campo busca (FR-015), filtros dropdown (FR-016), cards <a> (FR-017), pagina\u00e7\u00e3o (FR-018), useAsyncAnnouncer dec-015",
       "options_considered": [
         "criar-componentes-novos",
         "reusar-trails-search"
       ],
       "choice": "criar-componentes-novos",
-      "rationale": "trails-search.tsx é componente global de busca; catálogo precisa de filtros, paginação e cards próprios (US5 especifica catalog-search.tsx). Arquitetura segregada evita acoplamento.",
+      "rationale": "trails-search.tsx \u00e9 componente global de busca; cat\u00e1logo precisa de filtros, pagina\u00e7\u00e3o e cards pr\u00f3prios (US5 especifica catalog-search.tsx). Arquitetura segregada evita acoplamento.",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -1050,13 +1050,13 @@
       "timestamp": "2026-06-17T03:15:12Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 6.2: E2E catalogo-keyboard.spec.ts com 5 cenários US5 + axe scan",
+      "context": "Task 6.2: E2E catalogo-keyboard.spec.ts com 5 cen\u00e1rios US5 + axe scan",
       "options_considered": [
         "criar-e2e",
         "pular-e2e"
       ],
       "choice": "criar-e2e",
-      "rationale": "e2e/keyboard/catalogo-keyboard.spec.ts criado com 5 cenários offline-first (route mocks) cobrindo US5 AC1-AC4 + axe scan",
+      "rationale": "e2e/keyboard/catalogo-keyboard.spec.ts criado com 5 cen\u00e1rios offline-first (route mocks) cobrindo US5 AC1-AC4 + axe scan",
       "justification_score": 2,
       "evidence": null,
       "references": [],
@@ -1088,7 +1088,7 @@
       "timestamp": "2026-06-17T03:24:11Z",
       "stage": "execute-task",
       "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 7: BrandingSettingsForm — useAsyncAnnouncer + label keyboard + CHK024",
+      "context": "FASE 7: BrandingSettingsForm \u2014 useAsyncAnnouncer + label keyboard + CHK024",
       "options_considered": [
         "modificar-arquivo-existente",
         "criar-novo-componente"
@@ -1106,7 +1106,7 @@
       "id": "block-001",
       "decision_id": "dec-009",
       "question": "US4/FR-012: os botoes 'Mover para cima/baixo' no builder de trilhas devem ser SEMPRE VISIVEIS em cada item, ou visiveis apenas quando o item esta focado (:focus-within)?",
-      "context_for_answer": "A spec define que os botoes devem estar 'disponiveis e focaveis' (US4 Scenario 1, FR-012) mas NAO especifica visibilidade. Trade-off de UX real: sempre visiveis (mais previsivel para teclado, ocupa espaco) vs :focus-within (UI mais limpa, mas pode surpreender usuario de teclado que nao ve os botoes antes de focar). Nenhuma fonte (briefing/constitution/spec) define o comportamento visual. Escopo de produto/UX sem default fiel a spec — answerer atribuiu score 0 (pausa).",
+      "context_for_answer": "A spec define que os botoes devem estar 'disponiveis e focaveis' (US4 Scenario 1, FR-012) mas NAO especifica visibilidade. Trade-off de UX real: sempre visiveis (mais previsivel para teclado, ocupa espaco) vs :focus-within (UI mais limpa, mas pode surpreender usuario de teclado que nao ve os botoes antes de focar). Nenhuma fonte (briefing/constitution/spec) define o comportamento visual. Escopo de produto/UX sem default fiel a spec \u2014 answerer atribuiu score 0 (pausa).",
       "recommended_options": null,
       "status": "respondido",
       "human_answer": "Botoes 'Mover para cima/baixo' SEMPRE VISIVEIS em cada item do builder de trilhas (nao apenas :focus-within). Decisao do operador: maxima descobribilidade para teclado/mouse, alinhada ao foco do epico em a11y. Implementar com aria-label descritivo (ex.: 'Mover [titulo] para cima').",
@@ -1117,7 +1117,7 @@
       "id": "block-002",
       "decision_id": "dec-009",
       "question": "US1/US5: apos uma busca assincrona retornar resultados (TanStack Query em Client Component), PARA ONDE o foco deve ir? (a) permanecer no campo de busca + regiao role=status/aria-live anunciando a contagem, ou (b) mover para o primeiro card/heading de resultados?",
-      "context_for_answer": "A spec define o edge case 'foco nao deve ser redefinido para o topo da pagina' em conteudo dinamico, mas NAO define o elemento de destino pos-busca. Trade-off de UX: (a) manter no campo permite refinar a busca sem reposicionar; (b) mover para resultados da anuncio mais claro a leitores de tela. Ambas compativeis com WCAG AA. Decisao deve ser UNIFORME para todos os carregamentos assincronos da area autenticada (busca US5, salvar config US6). Escopo de produto/UX sem default fiel a spec — answerer atribuiu score 0 (pausa).",
+      "context_for_answer": "A spec define o edge case 'foco nao deve ser redefinido para o topo da pagina' em conteudo dinamico, mas NAO define o elemento de destino pos-busca. Trade-off de UX: (a) manter no campo permite refinar a busca sem reposicionar; (b) mover para resultados da anuncio mais claro a leitores de tela. Ambas compativeis com WCAG AA. Decisao deve ser UNIFORME para todos os carregamentos assincronos da area autenticada (busca US5, salvar config US6). Escopo de produto/UX sem default fiel a spec \u2014 answerer atribuiu score 0 (pausa).",
       "recommended_options": null,
       "status": "respondido",
       "human_answer": "Apos load assincrono (busca US5, salvar config US6, qualquer fetch da area autenticada): MANTER o foco no elemento de origem (campo de busca/botao) e anunciar resultado/contagem via regiao role=status aria-live=polite. NAO mover foco para os resultados (evita roubo de foco; permite refino continuo). Padrao WAI-ARIA APG, uniforme para todos os loads assincronos. Decisao do operador.",
@@ -1139,9 +1139,9 @@
     "current_wave_start": "2026-06-17T03:23:45Z"
   },
   "accumulated_metrics": {
-    "waves_total": 14,
+    "waves_total": 13,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 9326,
+    "wallclock_total_seconds": 8818,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 45,
@@ -1149,20 +1149,12 @@
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
     "cache": {
-      "tokens_cache_misses_disabled": 2
+      "tokens_cache_misses_disabled": "***REDACTED***"
     }
   },
   "external_urls_whitelist": [],
   "circular_movement_history": [],
-  "initial_key_aspects": [
-    "story",
-    "navegacao",
-    "teclado",
-    "fluxos",
-    "autenticados",
-    "nfr",
-    "dashboard"
-  ],
+  "initial_key_aspects": "***REDACTED***",
   "events": [
     {
       "event_type": "recall_consulted",
@@ -1187,7 +1179,7 @@
     {
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:20:30Z",
-      "description": "onda-003 plan concluído; próxima onda: checklist"
+      "description": "onda-003 plan conclu\u00eddo; pr\u00f3xima onda: checklist"
     },
     {
       "event_type": "schedule_wait",
@@ -1202,7 +1194,7 @@
     {
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T02:12:40Z",
-      "description": "FASE 1 concluída; aguardando wakeup para FASE 2"
+      "description": "FASE 1 conclu\u00edda; aguardando wakeup para FASE 2"
     },
     {
       "event_type": "schedule_wait",
@@ -1223,7 +1215,7 @@
   "tasks": [
     {
       "task_id": "0.1",
-      "title": "Relatório de Baseline Axe Automático",
+      "title": "Relat\u00f3rio de Baseline Axe Autom\u00e1tico",
       "wave_id": "onda-006",
       "outcome": "pass",
       "tests_run": 0,
@@ -1252,7 +1244,7 @@
     },
     {
       "task_id": "1.1",
-      "title": "useFocusOnRouteChange hook + testes unitários",
+      "title": "useFocusOnRouteChange hook + testes unit\u00e1rios",
       "wave_id": "onda-007",
       "outcome": "pass",
       "tests_run": 692,
@@ -1298,7 +1290,7 @@
     },
     {
       "task_id": "1.3",
-      "title": "useRovingTabindex hook + testes unitários",
+      "title": "useRovingTabindex hook + testes unit\u00e1rios",
       "wave_id": "onda-007",
       "outcome": "pass",
       "tests_run": 692,
@@ -1385,7 +1377,7 @@
     },
     {
       "task_id": "3.2",
-      "title": "E2E US2 — Foco Pós-Login (Chromium)",
+      "title": "E2E US2 \u2014 Foco P\u00f3s-Login (Chromium)",
       "wave_id": "onda-008",
       "outcome": "pass",
       "tests_run": 4,
@@ -1437,7 +1429,7 @@
     },
     {
       "task_id": "4.3",
-      "title": "E2E US4 — Builder de Trilhas (Chromium)",
+      "title": "E2E US4 \u2014 Builder de Trilhas (Chromium)",
       "wave_id": "onda-008",
       "outcome": "pass",
       "tests_run": 0,
@@ -1454,7 +1446,7 @@
     },
     {
       "task_id": "5.1",
-      "title": "Tab order e foco nos formulários de grupo",
+      "title": "Tab order e foco nos formul\u00e1rios de grupo",
       "wave_id": "onda-009",
       "outcome": "pass",
       "tests_run": 6,
@@ -1469,7 +1461,7 @@
     },
     {
       "task_id": "5.2",
-      "title": "Focus trap em diálogos de confirmação (Radix Dialog)",
+      "title": "Focus trap em di\u00e1logos de confirma\u00e7\u00e3o (Radix Dialog)",
       "wave_id": "onda-009",
       "outcome": "pass",
       "tests_run": 7,
@@ -1484,7 +1476,7 @@
     },
     {
       "task_id": "5.3",
-      "title": "Upload CSV focável (botão de convite)",
+      "title": "Upload CSV foc\u00e1vel (bot\u00e3o de convite)",
       "wave_id": "onda-009",
       "outcome": "pass",
       "tests_run": 0,
@@ -1498,7 +1490,7 @@
     },
     {
       "task_id": "5.4",
-      "title": "E2E US3 — CRUD Grupos (Chromium)",
+      "title": "E2E US3 \u2014 CRUD Grupos (Chromium)",
       "wave_id": "onda-009",
       "outcome": "pass",
       "tests_run": 0,
@@ -1512,7 +1504,7 @@
     },
     {
       "task_id": "6.1",
-      "title": "Campo de busca, filtros e cards focáveis",
+      "title": "Campo de busca, filtros e cards foc\u00e1veis",
       "wave_id": "onda-010",
       "outcome": "pass",
       "tests_run": 0,
@@ -1531,7 +1523,7 @@
     },
     {
       "task_id": "6.2",
-      "title": "E2E US5 — Catálogo e Busca (Chromium)",
+      "title": "E2E US5 \u2014 Cat\u00e1logo e Busca (Chromium)",
       "wave_id": "onda-010",
       "outcome": "pass",
       "tests_run": 0,
@@ -1545,7 +1537,7 @@
     },
     {
       "task_id": "7.1",
-      "title": "Formulários de configuração + input hex + upload logo [crit]",
+      "title": "Formul\u00e1rios de configura\u00e7\u00e3o + input hex + upload logo [crit]",
       "wave_id": "onda-011",
       "outcome": "pass",
       "tests_run": 11,
@@ -1563,7 +1555,7 @@
     },
     {
       "task_id": "7.2",
-      "title": "E2E US6 — Configurações Tenant (Chromium) [maj]",
+      "title": "E2E US6 \u2014 Configura\u00e7\u00f5es Tenant (Chromium) [maj]",
       "wave_id": "onda-011",
       "outcome": "pass",
       "tests_run": 6,
