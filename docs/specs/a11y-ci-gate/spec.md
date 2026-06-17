@@ -118,7 +118,7 @@ A **12.6** é a última story do épico. Com as violações corrigidas, o gate p
 **Para** que novos fluxos sejam automaticamente auditados sem alterar código de teste.
 
 **Critérios de aceite (SC-5):**
-- SC-5.1: `a11y-pages.json` contém as páginas iniciais: `/login`, `/` (home-marketing), e pelo menos uma página de fluxo autenticado-público (dashboard ou grupos).
+- SC-5.1: `a11y-pages.json` contém as páginas iniciais públicas: `/` (home-marketing), `/login`, `/register`, `/recuperar-senha` — todas com `requiresAuth: false`. Páginas autenticadas são R2 explícito (dec-007/NC-3): skipped no gate axe deste sprint, não incluídas nas entradas iniciais.
 - SC-5.2: O arquivo inclui schema documentado por comentário (campo `path`, `label`, `requiresAuth` booleano) e instrução de adição de novas páginas.
 - SC-5.3: `apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts` itera dinamicamente sobre o array; adicionar entrada ao JSON não requer edição no spec file.
 - SC-5.4: O cabeçalho do `a11y-checks.yml` documenta o processo de adição de páginas.
