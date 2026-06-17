@@ -350,11 +350,11 @@ Detalhes por task na coluna "Depende de" abaixo.
   Grupo" ou primeiro item da lista. Usar `useAsyncAnnouncer` para anunciar
   resultado da ação se aplicável.
 - **Critério de aceite:**
-  - [ ] Tab navega todos os campos em ordem visual (top-to-bottom)
-  - [ ] Após criar grupo: foco retorna ao grupo recém-criado na lista
-  - [ ] Após excluir grupo: foco retorna ao próximo item ou ao botão "Novo Grupo"
-  - [ ] jest-axe: sem violações nos formulários
-  - [ ] Gate local passa
+  - [x] Tab navega todos os campos em ordem visual (top-to-bottom)
+  - [x] Após criar grupo: foco retorna ao grupo recém-criado na lista
+  - [x] Após excluir grupo: foco retorna ao próximo item ou ao botão "Novo Grupo"
+  - [x] jest-axe: sem violações nos formulários
+  - [x] Gate local passa
 
 ### 5.2 Focus trap em diálogos de confirmação (Radix Dialog) [crit]
 
@@ -368,11 +368,11 @@ Detalhes por task na coluna "Depende de" abaixo.
   Tab mantém foco dentro do diálogo. Escape cancela e retorna foco ao elemento
   que abriu o diálogo (FR-009).
 - **Critério de aceite:**
-  - [ ] Tab não escapa do diálogo aberto
-  - [ ] Escape fecha o diálogo e retorna foco ao botão de origem
-  - [ ] Primeiro elemento focável no diálogo é o botão "Cancelar" (mais seguro)
-  - [ ] jest-axe: sem violações no diálogo
-  - [ ] Gate local passa
+  - [x] Tab não escapa do diálogo aberto
+  - [x] Escape fecha o diálogo e retorna foco ao botão de origem
+  - [x] Primeiro elemento focável no diálogo é o botão "Cancelar" (mais seguro)
+  - [x] jest-axe: sem violações no diálogo
+  - [x] Gate local passa
 
 ### 5.3 Upload CSV focável (botão de convite) [maj]
 
@@ -384,10 +384,10 @@ Detalhes por task na coluna "Depende de" abaixo.
   ativável via Enter e Space. Usar padrão `<label>` + `<input type="file">` com
   label visível, ou `<button>` que programa o clique no input oculto.
 - **Critério de aceite:**
-  - [ ] Upload alcançável via Tab
-  - [ ] Ativável com Enter e Space
-  - [ ] `aria-label` ou texto visível descritivo presente
-  - [ ] Gate local passa
+  - [x] Upload alcançável via Tab
+  - [x] Ativável com Enter e Space
+  - [x] `aria-label` ou texto visível descritivo presente
+  - [x] Gate local passa
 
 ### 5.4 E2E US3 — CRUD Grupos (Chromium) [maj]
 
@@ -396,9 +396,9 @@ Detalhes por task na coluna "Depende de" abaixo.
 - **Arquivos-alvo:**
   - `apps/web/e2e/keyboard/grupos-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US3 (1–5) passam
+  - [x] Cenários de aceite US3 (1–5) passam
   - [x] axe scan: 0 violations `critical`
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ---
 
