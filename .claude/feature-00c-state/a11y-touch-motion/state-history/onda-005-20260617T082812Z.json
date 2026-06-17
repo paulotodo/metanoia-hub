@@ -756,11 +756,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T07:59:30Z",
       "description": "fase=create-tasks concluida; proxima=execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T08:28:11Z",
-      "description": "onda execute-task A.5/B.2/C.2/T.1/T.2 concluida; aguardando proximo wakeup"
     }
   ],
   "suggestions": [
