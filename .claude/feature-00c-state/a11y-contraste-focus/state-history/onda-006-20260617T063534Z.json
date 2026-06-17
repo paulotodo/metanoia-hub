@@ -153,23 +153,6 @@
           "decision_id": null
         }
       ]
-    },
-    {
-      "id": "onda-007",
-      "started_at": "2026-06-17T06:35:34Z",
-      "finished_at": "2026-06-17T06:44:18Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 524,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T06:41:28Z",
-          "decision_id": "dec-027"
-        }
-      ]
     }
   ],
   "decisions": [
@@ -663,63 +646,6 @@
       "evidence": "pnpm turbo build: 3 successful; pnpm turbo lint: 4 successful 0 warnings; check-focus-ring-variants.sh: exit 0",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T06:41:04Z",
-      "stage": "execute-task-3.3",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "content/trail-card.tsx: focus:outline-none no botão filho de article com focus-within — converter para focus-visible:outline-none",
-      "options_considered": [
-        "converter-focus-visible",
-        "manter-focus",
-        "remover-classe"
-      ],
-      "choice": "converter-focus-visible",
-      "rationale": "button filho recebe ring via focus-within no article; focus:outline-none suprime outline em clique de mouse também. focus-visible:outline-none é semânticamente correto: suprime apenas no modo teclado",
-      "justification_score": 3,
-      "evidence": "content/trail-card.tsx:63: className=flex-1 text-left min-h-[44px] focus:outline-none — botão dentro de article com focus-within:ring-2",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T06:41:04Z",
-      "stage": "execute-task-3.4",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Migrar focus:ring-2 para focus-visible:ring-2 em plan-card.tsx, upgrade-dialog.tsx, trails-search.tsx. Manter :focus em catalog-search (container) e skip-nav (skip-link)",
-      "options_considered": [
-        "migrar-todos",
-        "migrar-seletivos",
-        "manter-todos"
-      ],
-      "choice": "migrar-seletivos",
-      "rationale": "skip-nav DEVE usar :focus para aparecer em todos os modos. catalog-search container (ul) não é interativo. rich-text-editor é contenteditable gerenciado por Tiptap. Os 4 casos nos componentes de plans/search são :focus em botões — devem usar focus-visible para não mostrar ring em clique de mouse",
-      "justification_score": 3,
-      "evidence": "grep -rn focus: apps/web/src/components: plan-card.tsx:86, plan-card.tsx:144, upgrade-dialog.tsx:101, upgrade-dialog.tsx:113, trails-search.tsx:68 — todos em elementos interativos",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T06:41:05Z",
-      "stage": "execute-task-4.1",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "check-contrast-tokens.mjs: gate HARD par care-urgent ajustado para brand-teal (task 2.2 usou brand-primary, não care-urgent como texto)",
-      "options_considered": [
-        "gate-hard-care-urgent",
-        "gate-hard-brand-teal",
-        "gate-warn-apenas"
-      ],
-      "choice": "gate-hard-brand-teal",
-      "rationale": "care-urgent não é cor de texto (spec diz badge-bg only). A correção da task 2.2 substituiu o link por text-brand-primary=brand-teal. O gate HARD deve testar o que foi de fato corrigido",
-      "justification_score": 3,
-      "evidence": "node apps/web/scripts/check-contrast-tokens.mjs saiu 0 falhas HARD após ajuste. brand-teal #2b7a78 / #fafaf8 = 4.83:1 PASS",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -734,15 +660,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T06:35:34Z"
+    "current_wave_start": "2026-06-17T06:06:42Z"
   },
   "accumulated_metrics": {
-    "waves_total": 8,
+    "waves_total": 7,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3490,
+    "wallclock_total_seconds": 2966,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 29,
+    "decisions_total": 26,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -1080,79 +1006,6 @@
         "scripts/check-focus-ring-variants.sh"
       ],
       "recorded_at": "2026-06-17T06:26:42Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.3",
-      "title": "Revisar e tratar casos manuais do focus-ring",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/content/trail-card.tsx"
-      ],
-      "recorded_at": "2026-06-17T06:41:28Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.4",
-      "title": "Verificar focus-visible vs :focus em componentes",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/plans/plan-card.tsx",
-        "apps/web/src/components/plans/upgrade-dialog.tsx",
-        "apps/web/src/components/search/trails-search.tsx"
-      ],
-      "recorded_at": "2026-06-17T06:41:28Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.1",
-      "title": "Criar script CI check-contrast-tokens.mjs",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 1,
-      "tests_passed": 1,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/scripts/check-contrast-tokens.mjs",
-        ".github/workflows/ci.yml"
-      ],
-      "recorded_at": "2026-06-17T06:41:28Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.2",
-      "title": "Testes jest-axe em componentes interativos",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/__tests__/a11y/interactive-components-axe.spec.tsx"
-      ],
-      "recorded_at": "2026-06-17T06:41:28Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.3",
-      "title": "Spec E2E axe para rotas públicas (/  e /login)",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/a11y/contrast-focus.e2e-spec.ts"
-      ],
-      "recorded_at": "2026-06-17T06:41:28Z",
       "source": "execute-task"
     }
   ]
