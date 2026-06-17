@@ -47,13 +47,12 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T07:23:52Z",
-      "finished_at": "2026-06-17T07:40:03Z",
+      "finished_at": "2026-06-17T07:39:17Z",
       "executed_stages": [
-        "clarify",
-        "plan"
+        "clarify"
       ],
       "tool_calls": 0,
-      "wallclock_seconds": 971,
+      "wallclock_seconds": 925,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -431,14 +430,14 @@
     "current_wave_start": "2026-06-17T07:23:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2491,
+    "wallclock_total_seconds": 1520,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 17,
     "human_blocks_total": 0,
-    "global_skill_suggestions_total": 1,
+    "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
   },
   "external_urls_whitelist": [],
@@ -467,20 +466,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T07:36:12Z",
       "description": "etapa=plan hits=4"
-    }
-  ],
-  "suggestions": [
-    {
-      "id": "sug-001",
-      "affected_skill": "agente-00c-runtime",
-      "diagnosis": "agente-00c-feature-orchestrator.md documenta 'state-ondas.sh start --fase <fase>' mas o runtime instalado rejeita --fase com 'flag desconhecida: --fase' (exit ainda 0, mascarando a falha). Em resume mid-pipeline isso impede abrir uma nova onda para a fase corrente: o trabalho de plan caiu na onda de clarify (onda-002 ficou com executed_stages=[clarify,plan]).",
-      "severity": "aviso",
-      "proposal": "Alinhar o flag: ou o runtime passa a aceitar --fase (alias do flag real), ou a doc do orquestrador usa o flag correto de state-ondas.sh start. Adicionalmente, 'start' deveria retornar exit!=0 em flag desconhecida em vez de exit 0.",
-      "references": [
-        ".claude/feature-00c-state/a11y-touch-motion/state.json"
-      ],
-      "issue_opened": null,
-      "created_at": "2026-06-17T07:40:53Z"
     }
   ]
 }

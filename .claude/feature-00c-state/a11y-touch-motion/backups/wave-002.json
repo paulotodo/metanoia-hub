@@ -1,7 +1,7 @@
 {
   "wave_number": 2,
-  "captured_at": "2026-06-17T07:29:11Z",
-  "state_sha256_self": "48f6047f6c5d094c40713447ead89262e085ea2ea7b1c9e5ec6692a5155b299e",
+  "captured_at": "2026-06-17T07:40:35Z",
+  "state_sha256_self": "d9b16a8a2f12893c3efcf4049dc9e5a19c952d7f923878d3fcbb7c805f2fe846",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "a11y-touch-motion",
@@ -26,8 +26,8 @@
         "version": "1.0.0"
       }
     },
-    "current_stage": "plan",
-    "next_instruction": "Iniciar etapa clarify — invocar clarify-asker/answerer para resolver NEEDS_CLARIFICATION da spec.",
+    "current_stage": "checklist",
+    "next_instruction": "Iniciar etapa checklist — quality gate de requisitos (dominios ux + a11y) sobre spec.md + plan.md antes de create-tasks.",
     "waves": [
       {
         "id": "onda-001",
@@ -51,11 +51,14 @@
       {
         "id": "onda-002",
         "started_at": "2026-06-17T07:23:52Z",
-        "finished_at": null,
-        "executed_stages": [],
+        "finished_at": "2026-06-17T07:40:03Z",
+        "executed_stages": [
+          "clarify",
+          "plan"
+        ],
         "tool_calls": 0,
-        "wallclock_seconds": 0,
-        "termination_reason": null,
+        "wallclock_seconds": 971,
+        "termination_reason": "concluido",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
           {
@@ -72,6 +75,21 @@
             "skill": "clarify",
             "timestamp": "2026-06-17T07:28:18Z",
             "decision_id": "dec-007"
+          },
+          {
+            "skill": "validate-documentation",
+            "timestamp": "2026-06-17T07:38:53Z",
+            "decision_id": null
+          },
+          {
+            "skill": "owasp-security",
+            "timestamp": "2026-06-17T07:38:53Z",
+            "decision_id": null
+          },
+          {
+            "skill": "plan",
+            "timestamp": "2026-06-17T07:39:17Z",
+            "decision_id": null
           }
         ]
       }
@@ -232,6 +250,174 @@
         "evidence": "spec FR-1.1: '44x44 CSS px em viewport mobile (< 768px)'. spec FR-1.4: '24x24 CSS px com espacamento compensatorio (WCAG 2.5.8 AA)'. Referencia autoritativa: 12-4-touch-targets spec.",
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-009",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:33:15Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 2 (fase plan)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:opus",
+        "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-010",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:36:12Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-touch-motion)",
+        "options_considered": [
+          "injetar-achados",
+          "no-op"
+        ],
+        "choice": "injetar-achados",
+        "rationale": "termos derivados da feature: story touch targets reduced motion mobile feedback",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-011",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:36:46Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Estrategia touch-target: classe utilitaria compartilhada vs tokens @theme",
+        "options_considered": [
+          "classe-utilitaria-css-globals",
+          "novos-tokens-@theme",
+          "apenas-utilitarios-inline-min-h-44"
+        ],
+        "choice": "classe-utilitaria-css-globals",
+        "rationale": "Preset so define color/font/radius/font-size; grep '--spacing|--size|44|24' no preset retornou 0 hits de sizing. Tailwind v4 @theme nao tem token de tap target. Classe .touch-target (min-h 44 + pseudo-elemento area) centraliza FR-1.2 e e auditavel por grep.",
+        "justification_score": 3,
+        "evidence": "grep -nE -- '--spacing|--size|44|24' tailwind.preset.css => apenas linhas de --color-care-attention (cor), nenhum token de sizing/spacing.",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-012",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:36:46Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Ponto de maior alavancagem para FR-1/FR-2/FR-3: primitivo Button",
+        "options_considered": [
+          "corrigir-button-primitivo-primeiro",
+          "corrigir-componentes-folha-um-a-um"
+        ],
+        "choice": "corrigir-button-primitivo-primeiro",
+        "rationale": "button.tsx tem size:icon h-10 w-10 (40px<44 FR-1), transition-colors SEM motion-safe (FR-3.2) e hover=6/active=0 (FR-2). Corrigir o primitivo propaga conformidade a todo consumidor shadcn.",
+        "justification_score": 3,
+        "evidence": "grep 'icon: \"h-10 w-10\"' button.tsx; grep -c hover/active => hover=6 active=0; transition-colors sem prefixo motion-safe na linha cva base.",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-013",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:36:46Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Local da regra global FR-3.3 safety net (apps/web/globals vs packages/ui/globals)",
+        "options_considered": [
+          "packages-ui-styles-globals.css",
+          "apps-web-app-globals.css"
+        ],
+        "choice": "packages-ui-styles-globals.css",
+        "rationale": "FR-3.3 cita apps/web/app/globals.css 'ou equivalente'. O entry point CSS real importado por apps/web/app/layout.tsx e packages/ui/styles/globals.css (cabecalho do arquivo confirma 'Imported by apps/web/app/layout.tsx'). Os hits de prefers-reduced-motion sao em .next (build), nao no fonte.",
+        "justification_score": 3,
+        "evidence": "cabecalho globals.css: 'Imported by apps/web/app/layout.tsx'; grep prefers-reduced-motion no fonte = 0 (so .next/static build artifacts). @keyframes onboarding-shake presente sem guarda.",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-014",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:36:46Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "FR-3.4/FR-4.1 citam Toast (Sonner) mas nenhuma lib de toast esta instalada",
+        "options_considered": [
+          "instalar-sonner-fora-de-escopo",
+          "escopar-e2e-para-dialog+skeleton-existentes",
+          "bloqueio-humano"
+        ],
+        "choice": "escopar-e2e-para-dialog+skeleton-existentes",
+        "rationale": "Nenhuma dep de toast (grep sonner/Toaster/useToast = 0 fora de node_modules; deps UI so tem @radix-ui/react-dialog+slot). Adicionar Sonner seria scope creep. E2E reduced-motion cobre Dialog (animate-in/fade/zoom/slide reais) + Skeleton (animate-pulse real). Toast registrado como N/A documentado.",
+        "justification_score": 3,
+        "evidence": "grep -rIl sonner|Toaster|useToast fora node_modules = vazio; package.json UI deps = @radix-ui/react-dialog, @radix-ui/react-slot. dialog.tsx contem animate-in/animate-out/fade/zoom/slide reais.",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-015",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:36:46Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "touch-targets E2E exige viewport mobile; playwright.config so tem Desktop Chrome",
+        "options_considered": [
+          "adicionar-projeto-mobile-pixel5/iphone12",
+          "usar-page.setViewportSize-inline"
+        ],
+        "choice": "adicionar-projeto-mobile-pixel5/iphone12",
+        "rationale": "playwright.config.ts projects = apenas Desktop Chrome. FR-4.2 exige iPhone 12 ou equiv. Projeto mobile dedicado (devices['iPhone 12']) torna a medicao reprodutivel em CI e separa do baseline desktop.",
+        "justification_score": 3,
+        "evidence": "grep projects/devices playwright.config => 'Desktop Chrome' unico projeto; @axe-core/playwright ^4.11.3 e jest-axe ^10 ja instalados.",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-016",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:38:53Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Gate doc-quality (validate-documentation) sobre plan.md",
+        "options_considered": [
+          "aprovar",
+          "corrigir-agora",
+          "escalar-para-humano"
+        ],
+        "choice": "aprovar",
+        "rationale": "plan.md estruturado: 0 TBD/TODO, 9 secoes H2, FRs rastreados, paths reais citados (packages/ui + apps/web). Sem ambiguidades obvias.",
+        "justification_score": 3,
+        "evidence": "grep -ciE 'TBD|TODO|FIXME' plan.md = 0; grep -c '^## ' = 9 secoes; paths reais presentes.",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-017",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T07:38:53Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Gate owasp-security sobre arquitetura proposta (touch/motion/feedback)",
+        "options_considered": [
+          "aprovar-risco-baixo",
+          "corrigir-agora",
+          "escalar-para-humano"
+        ],
+        "choice": "aprovar-risco-baixo",
+        "rationale": "Superficie 100% front-end: CSS sizing/motion, classes Tailwind, specs de teste. Zero endpoint/dados/auth/entrada de usuario processada. !important global e CSS estatico (sem XSS/vazamento). Sem finding critical/high.",
+        "justification_score": 3,
+        "evidence": "Scan do plan: nenhum arquivo .ts de backend/api/route handler; mudancas em packages/ui/components/*.tsx (CSS), playwright/e2e specs. grep framer-motion/eval/dangerouslySetInnerHTML no escopo = 0.",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [],
@@ -249,12 +435,12 @@
       "current_wave_start": "2026-06-17T07:23:52Z"
     },
     "accumulated_metrics": {
-      "waves_total": 1,
+      "waves_total": 4,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 276,
+      "wallclock_total_seconds": 2491,
       "max_depth_reached": 2,
       "subagents_spawned": 2,
-      "decisions_total": 8,
+      "decisions_total": 17,
       "human_blocks_total": 0,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0
@@ -280,6 +466,11 @@
         "event_type": "schedule_wait",
         "timestamp": "2026-06-17T07:19:24Z",
         "description": "onda specify concluida, aguardando wakeup para fase clarify"
+      },
+      {
+        "event_type": "recall_consulted",
+        "timestamp": "2026-06-17T07:36:12Z",
+        "description": "etapa=plan hits=4"
       }
     ]
   }

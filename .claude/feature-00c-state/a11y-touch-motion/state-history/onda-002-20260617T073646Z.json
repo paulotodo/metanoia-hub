@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — quality gate de requisitos (dominios ux + a11y) sobre spec.md + plan.md antes de create-tasks.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker/answerer para resolver NEEDS_CLARIFICATION da spec.",
   "waves": [
     {
       "id": "onda-001",
@@ -47,13 +47,12 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T07:23:52Z",
-      "finished_at": "2026-06-17T07:40:03Z",
+      "finished_at": "2026-06-17T07:29:11Z",
       "executed_stages": [
-        "clarify",
-        "plan"
+        "clarify"
       ],
       "tool_calls": 0,
-      "wallclock_seconds": 971,
+      "wallclock_seconds": 319,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -71,21 +70,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-17T07:28:18Z",
           "decision_id": "dec-007"
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-17T07:38:53Z",
-          "decision_id": null
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-17T07:38:53Z",
-          "decision_id": null
-        },
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-17T07:39:17Z",
-          "decision_id": null
         }
       ]
     }
@@ -358,62 +342,6 @@
       "evidence": "grep -rIl sonner|Toaster|useToast fora node_modules = vazio; package.json UI deps = @radix-ui/react-dialog, @radix-ui/react-slot. dialog.tsx contem animate-in/animate-out/fade/zoom/slide reais.",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T07:36:46Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "touch-targets E2E exige viewport mobile; playwright.config so tem Desktop Chrome",
-      "options_considered": [
-        "adicionar-projeto-mobile-pixel5/iphone12",
-        "usar-page.setViewportSize-inline"
-      ],
-      "choice": "adicionar-projeto-mobile-pixel5/iphone12",
-      "rationale": "playwright.config.ts projects = apenas Desktop Chrome. FR-4.2 exige iPhone 12 ou equiv. Projeto mobile dedicado (devices['iPhone 12']) torna a medicao reprodutivel em CI e separa do baseline desktop.",
-      "justification_score": 3,
-      "evidence": "grep projects/devices playwright.config => 'Desktop Chrome' unico projeto; @axe-core/playwright ^4.11.3 e jest-axe ^10 ja instalados.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T07:38:53Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality (validate-documentation) sobre plan.md",
-      "options_considered": [
-        "aprovar",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aprovar",
-      "rationale": "plan.md estruturado: 0 TBD/TODO, 9 secoes H2, FRs rastreados, paths reais citados (packages/ui + apps/web). Sem ambiguidades obvias.",
-      "justification_score": 3,
-      "evidence": "grep -ciE 'TBD|TODO|FIXME' plan.md = 0; grep -c '^## ' = 9 secoes; paths reais presentes.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T07:38:53Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security sobre arquitetura proposta (touch/motion/feedback)",
-      "options_considered": [
-        "aprovar-risco-baixo",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aprovar-risco-baixo",
-      "rationale": "Superficie 100% front-end: CSS sizing/motion, classes Tailwind, specs de teste. Zero endpoint/dados/auth/entrada de usuario processada. !important global e CSS estatico (sem XSS/vazamento). Sem finding critical/high.",
-      "justification_score": 3,
-      "evidence": "Scan do plan: nenhum arquivo .ts de backend/api/route handler; mudancas em packages/ui/components/*.tsx (CSS), playwright/e2e specs. grep framer-motion/eval/dangerouslySetInnerHTML no escopo = 0.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -431,14 +359,14 @@
     "current_wave_start": "2026-06-17T07:23:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2491,
+    "wallclock_total_seconds": 595,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 17,
+    "decisions_total": 14,
     "human_blocks_total": 0,
-    "global_skill_suggestions_total": 1,
+    "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
   },
   "external_urls_whitelist": [],
@@ -467,20 +395,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T07:36:12Z",
       "description": "etapa=plan hits=4"
-    }
-  ],
-  "suggestions": [
-    {
-      "id": "sug-001",
-      "affected_skill": "agente-00c-runtime",
-      "diagnosis": "agente-00c-feature-orchestrator.md documenta 'state-ondas.sh start --fase <fase>' mas o runtime instalado rejeita --fase com 'flag desconhecida: --fase' (exit ainda 0, mascarando a falha). Em resume mid-pipeline isso impede abrir uma nova onda para a fase corrente: o trabalho de plan caiu na onda de clarify (onda-002 ficou com executed_stages=[clarify,plan]).",
-      "severity": "aviso",
-      "proposal": "Alinhar o flag: ou o runtime passa a aceitar --fase (alias do flag real), ou a doc do orquestrador usa o flag correto de state-ondas.sh start. Adicionalmente, 'start' deveria retornar exit!=0 em flag desconhecida em vez de exit 0.",
-      "references": [
-        ".claude/feature-00c-state/a11y-touch-motion/state.json"
-      ],
-      "issue_opened": null,
-      "created_at": "2026-06-17T07:40:53Z"
     }
   ]
 }
