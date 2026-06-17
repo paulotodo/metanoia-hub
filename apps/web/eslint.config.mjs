@@ -8,6 +8,7 @@ export default [
       '**/.turbo/**',
       '**/dist/**',
       '**/node_modules/**',
+      'scripts/**',
     ],
   },
 ];
