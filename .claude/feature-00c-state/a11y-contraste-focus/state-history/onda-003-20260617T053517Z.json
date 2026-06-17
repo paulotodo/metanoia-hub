@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Executar fase checklist: validar qualidade dos requisitos da spec/plan (dominio ux/a11y) via skill checklist",
+  "current_stage": "plan",
+  "next_instruction": "Executar fase clarify: spawn clarify-asker com spec.md gerada",
   "waves": [
     {
       "id": "onda-001",
@@ -76,21 +76,13 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-17T05:35:01Z",
-      "finished_at": "2026-06-17T05:37:43Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 162,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-17T05:37:31Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -283,60 +275,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T05:35:35Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-contraste-focus)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "Achados relevantes: CHK068 (config-ui-tenant) define contraste WCAG AA como warning-nao-bloqueia em branding derivado; informa decisao do script de CI de tokens (gate hard vs warn). a11y-teclado-autenticado confirma padrao E2E isolado.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T05:37:31Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "plan.md gerado para Story 12.3 materializando dec-006/007/008",
-      "options_considered": [
-        "gerar-plan",
-        "abortar"
-      ],
-      "choice": "gerar-plan",
-      "rationale": "plan.md cobre 4 eixos (care-* tokens, axe-debt /+/login, focus-ring codemod, CI script) com arquivos reais identificados via grep; testes T1-T6 definidos",
-      "justification_score": 3,
-      "evidence": "plan.md 188 linhas, 12 secoes (## + Eixo); arquivos reais: marketing/* usa text-[var(--color-text-muted)] 3.18:1; login-form.tsx:145; globals.css:43 --ring; delete-group-dialog.tsx:106 ring-red-500 preservar",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T05:37:31Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate owasp-security: feature e pure-frontend (tokens CSS, classes tailwind, testes a11y), sem endpoint/dados/auth/superficie de ataque",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Mudanca restrita a tailwind.preset.css/tokens.css/globals.css + classes className + specs de teste. Sem mudanca de schema, endpoint, contrato Zod, RLS ou auth. Superficie OWASP nula.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -354,12 +292,12 @@
     "current_wave_start": "2026-06-17T05:35:01Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 663,
+    "wallclock_total_seconds": 501,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 13,
+    "decisions_total": 10,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -385,11 +323,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T05:19:43Z",
       "description": "onda-001 specify concluida; aguardando wakeup para clarify"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-17T05:35:17Z",
-      "description": "etapa=plan hits=4"
     }
   ]
 }
