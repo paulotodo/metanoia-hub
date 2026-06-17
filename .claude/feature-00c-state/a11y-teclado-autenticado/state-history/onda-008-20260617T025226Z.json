@@ -191,23 +191,6 @@
           "decision_id": "dec-034"
         }
       ]
-    },
-    {
-      "id": "onda-009",
-      "started_at": "2026-06-17T02:52:26Z",
-      "finished_at": "2026-06-17T03:00:36Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 490,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T02:59:31Z",
-          "decision_id": "dec-037"
-        }
-      ]
     }
   ],
   "decisions": [
@@ -889,79 +872,6 @@
       "evidence": "turbo lint: Tasks: 4 successful | turbo build: Tasks: 3 successful | vitest: 16 passed (16)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-037",
-      "wave_id": "onda-009",
-      "timestamp": "2026-06-17T02:59:20Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.1: GroupForm com tab order correto (Nome→Dia→Horário→Obs→Submit)",
-      "options_considered": [
-        "implementar-form-novo",
-        "modificar-form-existente"
-      ],
-      "choice": "implementar-form-novo",
-      "rationale": "group-form.tsx não existia; criado com tab order lógico, useAsyncAnnouncer, foco via ref no onSuccess",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-038",
-      "wave_id": "onda-009",
-      "timestamp": "2026-06-17T02:59:20Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.2: DeleteGroupDialog usando Radix Dialog focus trap nativo (dec-011)",
-      "options_considered": [
-        "focus-trap-manual",
-        "radix-dialog-nativo"
-      ],
-      "choice": "radix-dialog-nativo",
-      "rationale": "dec-011 proíbe focus trap manual; shadcn/ui Dialog usa Radix FocusScope loop=true + restoreFocus nativo",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-039",
-      "wave_id": "onda-009",
-      "timestamp": "2026-06-17T02:59:20Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.3: InviteMembersForm com upload CSV acessível via label+input pattern",
-      "options_considered": [
-        "label-input-pattern",
-        "button-click-input",
-        "custom-input"
-      ],
-      "choice": "label-input-pattern",
-      "rationale": "Padrão label+input file com span role=button focável: Tab alcança, Enter/Space ativam via handleUploadKeyDown, aria-label descritivo",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-040",
-      "wave_id": "onda-009",
-      "timestamp": "2026-06-17T02:59:20Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 5.4: E2E grupos-keyboard.spec.ts com 5 cenários US3 + axe scan",
-      "options_considered": [
-        "criar-e2e",
-        "pular-e2e"
-      ],
-      "choice": "criar-e2e",
-      "rationale": "e2e/keyboard/grupos-keyboard.spec.ts criado com 5 cenários offline-first (mocks de API) cobrindo US3 FR-008..011,FR-025",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -999,15 +909,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T02:52:26Z"
+    "current_wave_start": "2026-06-17T02:17:33Z"
   },
   "accumulated_metrics": {
-    "waves_total": 12,
+    "waves_total": 11,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 8257,
+    "wallclock_total_seconds": 7767,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 40,
+    "decisions_total": 36,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1303,64 +1213,6 @@
         "apps/web/src/components/trails/trail-item-reorder.tsx"
       ],
       "recorded_at": "2026-06-17T02:45:36Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.1",
-      "title": "Tab order e foco nos formulários de grupo",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 6,
-      "tests_passed": 6,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/groups/group-form.tsx",
-        "apps/web/src/__tests__/components/groups/group-form.spec.tsx"
-      ],
-      "recorded_at": "2026-06-17T02:59:32Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.2",
-      "title": "Focus trap em diálogos de confirmação (Radix Dialog)",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 7,
-      "tests_passed": 7,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/groups/delete-group-dialog.tsx",
-        "apps/web/src/components/groups/__tests__/delete-group-dialog.spec.tsx"
-      ],
-      "recorded_at": "2026-06-17T02:59:50Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.3",
-      "title": "Upload CSV focável (botão de convite)",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/groups/invite-members-form.tsx"
-      ],
-      "recorded_at": "2026-06-17T02:59:50Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.4",
-      "title": "E2E US3 — CRUD Grupos (Chromium)",
-      "wave_id": "onda-009",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/keyboard/grupos-keyboard.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T02:59:50Z",
       "source": "execute-task"
     }
   ]
