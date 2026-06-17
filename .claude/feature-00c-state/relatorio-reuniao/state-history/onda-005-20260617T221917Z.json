@@ -677,11 +677,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T22:14:19Z",
       "description": "etapa=create-tasks hits=0 (fase nao dispara read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T22:19:17Z",
-      "description": "onda-005 create-tasks concluida; proxima=execute-task"
     }
   ]
 }

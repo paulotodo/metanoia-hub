@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "current_stage=execute-task: executar tasks na ordem FASE1->FASE2->FASE3->FASE4->FASE5. tasks.md em docs/specs/relatorio-reuniao/tasks.md (21 tasks, 4 criticas). Prioridade: 3.1 (S1 mitigacao Redis) e 3.2 (polling endurecido) sao CRITICAS e devem ser feitas antes de qualquer frontend. Sequencia: 1.1->1.2->2.1->2.2->2.3->3.1->3.2->3.3->3.4->3.5->3.6->4.1->4.2->4.3->4.4->4.5(opt)->5.1->5.2->5.3->5.4->5.5.",
+  "current_stage": "create-tasks",
+  "next_instruction": "current_stage=create-tasks: decompor FR63 em backlog (fases types/Zod -> backend report -> backend export+mitigacao S1 -> frontend a11y -> testes RLS/e2e). Consumir gaps do checklist (plan.md secao Saida do Checklist): CHK035/040/041/024 viram tasks; CHK018/021 clarify; CHK008/042 {humano}. Garantir cobertura testavel da mitigacao S1 (bind tenantId+requesterUserId, chave Redis prefixada, teste liderA!=liderB).",
   "waves": [
     {
       "id": "onda-001",
@@ -110,33 +110,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-17T22:07:37Z",
           "decision_id": "dec-019"
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-17T22:13:52Z",
-      "finished_at": "2026-06-17T22:18:49Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 297,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T22:18:37Z",
-          "decision_id": "dec-022"
-        },
-        {
-          "skill": "validate-tasks-template",
-          "timestamp": "2026-06-17T22:18:37Z",
-          "decision_id": "dec-023"
-        },
-        {
-          "skill": "validate-docs-rendered",
-          "timestamp": "2026-06-17T22:18:37Z",
-          "decision_id": "dec-024"
         }
       ]
     }
@@ -522,82 +495,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T22:12:11Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T22:14:19Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Decomposição FR63 em backlog de tasks",
-      "options_considered": [
-        "gerar-tasks",
-        "abortar"
-      ],
-      "choice": "gerar-tasks",
-      "rationale": "Spec+plan+checklists completos; gaps CHK035/040/041/024 mapeados para tasks; mitigacao S1 obrigatoria; CHK008/CHK042 resolvidos por default",
-      "justification_score": 3,
-      "evidence": "plan.md secao Saida do Checklist lista 7 gaps; dec-017 promovida a FR-07.1+SC-08; onda-004 concluida",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T22:18:37Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: validate-tasks-template deterministico",
-      "options_considered": [
-        "pass",
-        "finding-critical",
-        "skip-com-justificativa"
-      ],
-      "choice": "pass",
-      "rationale": "tasks.md conformante: FASE prefixes=5 checkboxes=52 criticidade=27 Legenda+Resumo+Matriz+Escopo presentes",
-      "justification_score": 3,
-      "evidence": "grep -c FASE tasks.md=5; grep -c '\\- \\[ \\]' tasks.md=52; gate docs-render PASS code-block-com-linguagem=1",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T22:18:37Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate docs-render: validate-docs-rendered deterministico",
-      "options_considered": [
-        "pass",
-        "finding-warning",
-        "skip-com-justificativa"
-      ],
-      "choice": "pass",
-      "rationale": "tasks.md: 0 links internos quebrados, 0 Mermaid invalido, 0 headers duplicados, encoding UTF-8 OK, code blocks com linguagem apos correcao",
-      "justification_score": 3,
-      "evidence": "gate-render script: links=0, mermaid=0, dup_headers=0, utf8=PASS, code-block-sem-lang=0 (corrigido para text)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -628,15 +525,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T22:13:52Z"
+    "current_wave_start": "2026-06-17T22:03:50Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1620,
+    "wallclock_total_seconds": 1323,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 24,
+    "decisions_total": 20,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -672,16 +569,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T21:56:12Z",
       "description": "onda-003 plan encerrada com bloqueio humano S1 (owasp HIGH); aguardando resposta do operador"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-17T22:14:19Z",
-      "description": "etapa=create-tasks hits=0 (fase nao dispara read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T22:19:17Z",
-      "description": "onda-005 create-tasks concluida; proxima=execute-task"
     }
   ]
 }

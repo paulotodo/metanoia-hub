@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-relatorio-reuniao-20260617T212323Z
 
-**Gerado em**: 2026-06-17T21:56:44Z
-**Status no momento**: aguardando_humano
+**Gerado em**: 2026-06-17T22:19:22Z
+**Status no momento**: em_andamento
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,13 +14,13 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | Story 13.1 — Relatório por Reunião (FR63): endpoint GET /api/v1/meetings/:id/report com métricas de presença e engagement score (participantDuration/meetingDuration, classificação alto/médio/baixo), export CSV assíncrono via BullMQ queue:reports (202 + polling), e página UI acessível /app/gestao/meetings/:id/report. Analytics como supporting subdomain (service direto Prisma), reusar apps/api/src/reports existente, multi-tenant RLS/AsyncLocalStorage, Zod em packages/types, gate a11y permanente. |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | aguardando_humano |
+| Status | em_andamento |
 | Motivo termino | (em andamento) |
 | Iniciada em | 2026-06-17T21:23:23Z |
 | Terminada em | ainda em andamento |
-| Ondas executadas | 3 |
+| Ondas executadas | 5 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 16 |
+| Decisoes registradas | 24 |
 | Bloqueios humanos | 1 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -35,16 +35,19 @@
 | onda-001 | 2026-06-17T21:25:31Z | 2026-06-17T21:27:55Z |  | 0 | 144s | etapa_concluida_avancando |
 | onda-002 | 2026-06-17T21:35:22Z | 2026-06-17T21:42:34Z |  | 0 | 432s | etapa_concluida_avancando |
 | onda-003 | 2026-06-17T21:48:26Z | 2026-06-17T21:56:32Z |  | 0 | 486s | bloqueio_humano |
+| onda-004 | 2026-06-17T22:03:50Z | 2026-06-17T22:08:11Z |  | 0 | 261s | etapa_concluida_avancando |
+| onda-005 | 2026-06-17T22:13:52Z | 2026-06-17T22:18:49Z |  | 0 | 297s | concluido |
 
 ## 3. Decisoes
 
-Total: 16 decisoes registradas.
+Total: 24 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 16 |
+| agente-00c-feature-orchestrator | 23 |
+| feature-00c-pai | 1 |
 
 ### 3.2 Lista detalhada
 
@@ -304,6 +307,134 @@ Total: 16 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-017 — plan — feature-00c-pai — 2026-06-17T22:00:58Z
+
+**Contexto**: Resolucao do block-001 (gate owasp-security finding HIGH S1, A01/API1 BOLA)
+
+**Opcoes consideradas**: sim-mitigar-no-escopo / endpoint-dedicado / escopo-separado
+
+**Escolha**: sim-mitigar-no-escopo
+
+**Justificativa**: Vuln BOLA cross-tenant com PII deve ser corrigida no escopo (regra multi-tenant absoluta CLAUDE.md: queries leaking data between tenants = anti-padrao proibido); escopo-separado deixaria vuln no merge; endpoint-dedicado deixaria gap de trilhas aberto. Mitigar na raiz (metodo compartilhado getJobStatus) com bind tenant+requester e chave Redis prefixada por tenant.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-018 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T22:00:58Z
+
+**Contexto**: Selecao de modelo para onda 3 (fase plan)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:opus
+
+**Justificativa**: sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-019 — checklist — agente-00c-feature-orchestrator — 2026-06-17T22:07:37Z
+
+**Contexto**: Gate checklist (qualidade de requisitos) FR63: a mitigacao S1 (dec-017) estava apenas como risco documentado, nao como requisito testavel. Refinei spec/contrato para expressar FR-07.1 (bind tenantId+requesterUserId, chave Redis prefixada por tenant, 404 nao-vazante) + SC-08 (teste de autorizacao liderA nao acessa jobId de liderB nem cross-tenant) + criterio S4 anti CSV-injection.
+
+**Opcoes consideradas**: promover-mitigacao-a-requisito-testavel / manter-como-risco / escalar-humano
+
+**Escolha**: promover-mitigacao-a-requisito-testavel
+
+**Justificativa**: dec-017 mandata cobertura no escopo; checklist exige requisito testavel, nao prosa de risco.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-020 — checklist — agente-00c-feature-orchestrator — 2026-06-17T22:07:37Z
+
+**Contexto**: Checklist revelou 6 itens abertos roteados para create-tasks/clarify: CHK018/CHK021 (a11y ambiguity contraste-escopo e tabela-equivalente da tendencia), CHK024 (a11y gap estado disabled do CTA), CHK035 (api gap: prefixo de tenant na chave compartilhada meeting/trilha pode quebrar polling de trilhas), CHK040/CHK041 (perf gap: cadencia de polling e carga acima do alvo). 2 itens {humano}: CHK008 (apetite ADMIN_TENANT), CHK042 (limite de participantes).
+
+**Opcoes consideradas**: rotear-gaps-para-create-tasks / bloquear-humano-agora
+
+**Escolha**: rotear-gaps-para-create-tasks
+
+**Justificativa**: Gaps sao de requisito (nao impeditivos de seguranca); melhor destino e virar task de definicao no create-tasks. Itens {humano} nao-bloqueantes para avancar a fase.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-021 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T22:12:11Z
+
+**Contexto**: Selecao de modelo para onda 4 (fase create-tasks)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-022 — create-tasks — agente-00c-feature-orchestrator — 2026-06-17T22:14:19Z
+
+**Contexto**: Decomposição FR63 em backlog de tasks
+
+**Opcoes consideradas**: gerar-tasks / abortar
+
+**Escolha**: gerar-tasks
+
+**Justificativa**: Spec+plan+checklists completos; gaps CHK035/040/041/024 mapeados para tasks; mitigacao S1 obrigatoria; CHK008/CHK042 resolvidos por default
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-023 — create-tasks — agente-00c-feature-orchestrator — 2026-06-17T22:18:37Z
+
+**Contexto**: Gate template-fidelity: validate-tasks-template deterministico
+
+**Opcoes consideradas**: pass / finding-critical / skip-com-justificativa
+
+**Escolha**: pass
+
+**Justificativa**: tasks.md conformante: FASE prefixes=5 checkboxes=52 criticidade=27 Legenda+Resumo+Matriz+Escopo presentes
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-024 — create-tasks — agente-00c-feature-orchestrator — 2026-06-17T22:18:37Z
+
+**Contexto**: Gate docs-render: validate-docs-rendered deterministico
+
+**Opcoes consideradas**: pass / finding-warning / skip-com-justificativa
+
+**Escolha**: pass
+
+**Justificativa**: tasks.md: 0 links internos quebrados, 0 Mermaid invalido, 0 headers duplicados, encoding UTF-8 OK, code blocks com linguagem apos correcao
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -311,23 +442,18 @@ Total: 1 bloqueios.
 
 ### 4.1 Pendentes (aguardando resposta)
 
+(Nenhum bloqueio pendente neste momento.)
+
+### 4.2 Respondidos
+
 #### block-001 — disparado em 2026-06-17T21:55:56Z
 
 **Pergunta**: Gate owasp-security: finding HIGH (A01/API1 BOLA) no polling de export reutilizado. O endpoint existente ReportsService.getJobStatus(jobId) le cache:reports:export-job:<jobId> SEM bind de tenant/requester — qualquer lider pode obter a signedUrl (CSV com PII) de qualquer jobId, inclusive cross-grupo/cross-tenant. O plano FR63 ja mandata a mitigacao (bind tenantId+requesterUserId no status + validacao no polling + chave Redis prefixada por tenant) como acceptance criterion. CONFIRMA seguir com essa mitigacao no create-tasks/execute-task, ou prefere outra abordagem (ex: endpoint de polling dedicado a meeting, ou nao reusar o endpoint de trilhas)?
 
-**Contexto para resposta**: Ver docs/specs/relatorio-reuniao/plan.md secao 'Gate de Seguranca (owasp-security)' (S1) e 'Riscos & Mitigacoes'. Esta e uma vuln pre-existente do modulo reports/ (trilhas) que o FR63 herdaria; corrigi-la no escopo FR63 tambem fecha o gap para trilhas. Opcoes recomendadas: 'sim-mitigar-no-escopo' (corrige no FR63) | 'endpoint-dedicado' (polling meeting separado, nao toca trilhas) | 'escopo-separado' (abrir story de seguranca a parte).
+**Resposta humana**: sim-mitigar-no-escopo: corrigir a vuln BOLA S1 nesta story FR63 (bind tenantId+requesterUserId no getJobStatus + validacao no polling + chave Redis prefixada por tenant cache:reports:export-job:<tenantId>:<jobId>). Fiel a regra multi-tenant absoluta do CLAUDE.md (queries leaking data between tenants = anti-padrao proibido). Corrige na raiz fechando tambem o gap de trilhas. Adicionar teste de autorizacao (lider A nao acessa jobId de lider B / cross-tenant) como acceptance criterion verificavel.
 
-**Opcoes recomendadas**:
-- sim-mitigar-no-escopo
-- endpoint-dedicado
-- escopo-separado
+**Respondido em**: 2026-06-17T22:00:41Z
 
-**Status**: aguardando
-
-
-### 4.2 Respondidos
-
-(Nenhum bloqueio respondido nesta execucao.)
 
 ### 4.3 Sem bloqueios
 
