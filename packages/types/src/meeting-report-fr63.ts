@@ -5,9 +5,9 @@ import { PresenceTypeSchema } from './presence';
 
 /**
  * Engagement level classification for FR-03:
- *   low    < 0.4
- *   medium ≥ 0.4 and ≤ 0.75
- *   high   > 0.75
+ *   low    < 0.50
+ *   medium ≥ 0.50 and < 0.75
+ *   high   ≥ 0.75
  */
 export const EngagementLevelSchema = z.enum(['low', 'medium', 'high']);
 export type EngagementLevel = z.infer<typeof EngagementLevelSchema>;
@@ -26,7 +26,7 @@ export const MeetingReportParticipantFR63Schema = z.object({
   joinedAt: z.string().datetime({ offset: true }).nullable(),
   leftAt: z.string().datetime({ offset: true }).nullable(),
   durationSeconds: z.number().int().nonnegative(),
-  /** Weighted engagement score per FR-03: 0.7*presenceFrac + 0.3*cameraFrac */
+  /** Duration-ratio engagement score per FR-03: durationSeconds / meetingDurationSeconds (clamped 0..1) */
   engagementScore: z.number().min(0).max(1).nullable(),
   engagementLevel: EngagementLevelSchema.nullable(),
 });
@@ -69,33 +69,33 @@ export type MeetingLeaderReportResponse = z.infer<
 
 /**
  * Classifies a per-participant engagement score into EngagementLevel.
- * Thresholds per FR-03: low < 0.4, medium [0.4, 0.75], high > 0.75.
+ * Thresholds per FR-03 (spec FR63 + dec-006): high ≥ 0.75, medium ≥ 0.50, low < 0.50.
  */
 export function classifyEngagementLevel(score: number): EngagementLevel {
-  if (score > 0.75) return 'high';
-  if (score >= 0.4) return 'medium';
+  if (score >= 0.75) return 'high';
+  if (score >= 0.5) return 'medium';
   return 'low';
 }
 
 /**
- * Computes the per-participant FR-03 engagement score:
- *   score = 0.7 * presenceFrac + 0.3 * cameraFrac
+ * Computes the per-participant FR-03 engagement score for the FR63 leader view.
+ *   score = durationSeconds / meetingDurationSeconds  (clamped 0..1)
  *
- * presenceFrac = durationSeconds / meetingDurationSeconds (clamped 0..1)
- * cameraFrac   = cameraSeconds / max(durationSeconds, 1) (clamped 0..1)
+ * This is a simple duration-ratio per spec FR63 + dec-006. The cameraSeconds
+ * parameter is accepted for API compatibility but is NOT used in this calculation.
+ * (The Story 5.6 avgEngagementScore composite blend is computed separately in
+ * computeReportSummary and is unaffected by this function.)
  *
- * Returns null when meetingDurationSeconds = 0.
+ * Returns null when meetingDurationSeconds <= 0.
  */
 export function computeParticipantEngagement(
   durationSeconds: number,
-  cameraSeconds: number,
+  _cameraSeconds: number,
   meetingDurationSeconds: number,
 ): { score: number; level: EngagementLevel } | null {
   if (meetingDurationSeconds <= 0) return null;
   const clamp = (v: number) =>
     Number.isNaN(v) ? 0 : Math.min(1, Math.max(0, v));
-  const presenceFrac = clamp(durationSeconds / meetingDurationSeconds);
-  const cameraFrac = clamp(cameraSeconds / Math.max(durationSeconds, 1));
-  const score = Math.round((0.7 * presenceFrac + 0.3 * cameraFrac) * 1000) / 1000;
+  const score = Math.round(clamp(durationSeconds / meetingDurationSeconds) * 1000) / 1000;
   return { score, level: classifyEngagementLevel(score) };
 }

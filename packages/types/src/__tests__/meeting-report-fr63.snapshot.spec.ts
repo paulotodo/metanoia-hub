@@ -169,60 +169,75 @@ describe("MeetingLeaderReportResponseSchema snapshot", () => {
 });
 
 describe("classifyEngagementLevel (FR-03 thresholds)", () => {
-  it("classifies < 0.4 as low", () => {
+  it("classifies < 0.50 as low", () => {
     expect(classifyEngagementLevel(0)).toBe("low");
-    expect(classifyEngagementLevel(0.39)).toBe("low");
+    expect(classifyEngagementLevel(0.49)).toBe("low");
   });
 
-  it("classifies 0.4..0.75 as medium", () => {
-    expect(classifyEngagementLevel(0.4)).toBe("medium");
-    expect(classifyEngagementLevel(0.75)).toBe("medium");
+  it("classifies 0.50..0.74 as medium", () => {
+    expect(classifyEngagementLevel(0.5)).toBe("medium");
+    expect(classifyEngagementLevel(0.74)).toBe("medium");
   });
 
-  it("classifies > 0.75 as high", () => {
-    expect(classifyEngagementLevel(0.76)).toBe("high");
+  it("classifies >= 0.75 as high", () => {
+    expect(classifyEngagementLevel(0.75)).toBe("high");
     expect(classifyEngagementLevel(1.0)).toBe("high");
   });
 });
 
-describe("computeParticipantEngagement (FR-03 formula)", () => {
+describe("computeParticipantEngagement (FR-03 formula — duration ratio, spec FR63 + dec-006)", () => {
   it("returns null for zero meetingDurationSeconds", () => {
     expect(computeParticipantEngagement(3600, 1800, 0)).toBeNull();
   });
 
-  it("computes score=1 for full presence + full camera", () => {
+  it("score=1 for full duration (camera param ignored)", () => {
     const result = computeParticipantEngagement(3600, 3600, 3600);
     expect(result).not.toBeNull();
-    // presenceFrac=1, cameraFrac=1 → 0.7*1 + 0.3*1 = 1.0
+    // ratio: 3600/3600 = 1.0 → high (>= 0.75)
     expect(result?.score).toBeCloseTo(1.0, 2);
     expect(result?.level).toBe("high");
   });
 
-  it("computes score=0.7 for full presence + zero camera → medium", () => {
+  it("score=1 for full presence regardless of camera (cameraSeconds irrelevant)", () => {
     const result = computeParticipantEngagement(3600, 0, 3600);
     expect(result).not.toBeNull();
-    // presenceFrac=1, cameraFrac=0 → 0.7*1 + 0.3*0 = 0.7
-    // FR-03 thresholds: low < 0.4, medium [0.4..0.75], high > 0.75
-    // 0.7 is in medium range
-    expect(result?.score).toBeCloseTo(0.7, 2);
+    // ratio: 3600/3600 = 1.0 → high (>= 0.75)
+    expect(result?.score).toBeCloseTo(1.0, 2);
+    expect(result?.level).toBe("high");
+  });
+
+  it("score=0.5 for half duration → medium", () => {
+    const result = computeParticipantEngagement(1800, 0, 3600);
+    expect(result).not.toBeNull();
+    // ratio: 1800/3600 = 0.5 → medium (>= 0.50 and < 0.75)
+    expect(result?.score).toBeCloseTo(0.5, 2);
     expect(result?.level).toBe("medium");
   });
 
-  it("classifies 0.7 as medium (boundary: > 0.75 = high, else medium if >= 0.4)", () => {
-    const result = computeParticipantEngagement(3600, 0, 3600);
-    // 0.7*1 + 0.3*0 = 0.7 → medium (0.4 ≤ 0.7 ≤ 0.75)
-    expect(result?.level).toBe("medium");
-  });
-
-  it("computes score=0 for zero presence (ausente)", () => {
+  it("score=0 for zero presence (ausente)", () => {
     const result = computeParticipantEngagement(0, 0, 3600);
     expect(result?.score).toBeCloseTo(0, 2);
     expect(result?.level).toBe("low");
   });
 
-  it("clamps presenceFrac at 1 if durationSeconds > meetingDuration", () => {
-    // Edge: participant connected longer than meeting duration
-    const result = computeParticipantEngagement(7200, 7200, 3600);
+  it("clamps score at 1 if durationSeconds > meetingDuration", () => {
+    // Edge: participant connected longer than meeting duration (data anomaly)
+    const result = computeParticipantEngagement(7200, 0, 3600);
     expect(result?.score).toBeCloseTo(1.0, 2);
+    expect(result?.level).toBe("high");
+  });
+
+  it("boundary: score=0.75 classifies as high (>= 0.75)", () => {
+    // 2700s / 3600s = 0.75 → high
+    const result = computeParticipantEngagement(2700, 0, 3600);
+    expect(result?.score).toBeCloseTo(0.75, 2);
+    expect(result?.level).toBe("high");
+  });
+
+  it("boundary: score=0.49 classifies as low (< 0.50)", () => {
+    // 1764s / 3600s ≈ 0.49 → low
+    const result = computeParticipantEngagement(1764, 0, 3600);
+    expect(result?.score).toBeLessThan(0.5);
+    expect(result?.level).toBe("low");
   });
 });

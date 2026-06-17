@@ -165,61 +165,68 @@ describe("ReportService — findForUser (Story 5.6 backward compat)", () => {
   });
 });
 
-describe("computeParticipantEngagement (FR-03) — unit tests", () => {
+describe("computeParticipantEngagement (FR-03) — unit tests (duration-ratio, spec FR63 + dec-006)", () => {
   it("null for meetingDurationSeconds=0", async () => {
     const { computeParticipantEngagement } = await import("@metanoia/types");
     expect(computeParticipantEngagement(3600, 1800, 0)).toBeNull();
   });
 
-  it("score=1 for integral presence + full camera", async () => {
+  it("score=1 for integral presence (cameraSeconds irrelevant)", async () => {
     const { computeParticipantEngagement } = await import("@metanoia/types");
     const r = computeParticipantEngagement(3600, 3600, 3600);
-    // 0.7*1 + 0.3*1 = 1.0
+    // ratio: 3600/3600 = 1.0 → high (>= 0.75)
     expect(r?.score).toBeCloseTo(1.0, 2);
     expect(r?.level).toBe("high");
   });
 
-  it("score=0.7 for full presence + zero camera (medium level)", async () => {
+  it("score=1 for full presence regardless of camera", async () => {
     const { computeParticipantEngagement } = await import("@metanoia/types");
     const r = computeParticipantEngagement(3600, 0, 3600);
-    // 0.7*1 + 0.3*0 = 0.7 → medium (0.4 ≤ 0.7 ≤ 0.75)
-    expect(r?.score).toBeCloseTo(0.7, 2);
-    expect(r?.level).toBe("medium");
+    // ratio: 3600/3600 = 1.0 → high (camera not factored)
+    expect(r?.score).toBeCloseTo(1.0, 2);
+    expect(r?.level).toBe("high");
   });
 
-  it("score=0 for absent (zero presence + zero camera)", async () => {
+  it("score=0 for absent (zero presence)", async () => {
     const { computeParticipantEngagement } = await import("@metanoia/types");
     const r = computeParticipantEngagement(0, 0, 3600);
     expect(r?.score).toBeCloseTo(0, 2);
     expect(r?.level).toBe("low");
   });
 
-  it("high level when score > 0.75 (full presence + high camera)", async () => {
+  it("score=0.75 → high (boundary, >= 0.75)", async () => {
     const { computeParticipantEngagement } = await import("@metanoia/types");
-    // 3240s presence / 3600s meeting = 0.9 presenceFrac; 3240s camera = full cameraFrac
-    const r = computeParticipantEngagement(3240, 3240, 3600);
-    // 0.7*0.9 + 0.3*1 = 0.63 + 0.3 = 0.93 → high
-    expect(r?.score).toBeGreaterThan(0.75);
+    // 2700s / 3600s = 0.75 → high
+    const r = computeParticipantEngagement(2700, 0, 3600);
+    expect(r?.score).toBeCloseTo(0.75, 2);
     expect(r?.level).toBe("high");
+  });
+
+  it("score=0.5 → medium (boundary, >= 0.50)", async () => {
+    const { computeParticipantEngagement } = await import("@metanoia/types");
+    // 1800s / 3600s = 0.5 → medium
+    const r = computeParticipantEngagement(1800, 0, 3600);
+    expect(r?.score).toBeCloseTo(0.5, 2);
+    expect(r?.level).toBe("medium");
   });
 });
 
-describe("classifyEngagementLevel (FR-03 thresholds)", () => {
-  it("low < 0.4", async () => {
+describe("classifyEngagementLevel (FR-03 thresholds — spec FR63 + dec-006)", () => {
+  it("low < 0.50", async () => {
     const { classifyEngagementLevel } = await import("@metanoia/types");
     expect(classifyEngagementLevel(0)).toBe("low");
-    expect(classifyEngagementLevel(0.399)).toBe("low");
+    expect(classifyEngagementLevel(0.499)).toBe("low");
   });
 
-  it("medium [0.4, 0.75]", async () => {
+  it("medium [0.50, 0.74]", async () => {
     const { classifyEngagementLevel } = await import("@metanoia/types");
-    expect(classifyEngagementLevel(0.4)).toBe("medium");
-    expect(classifyEngagementLevel(0.75)).toBe("medium");
+    expect(classifyEngagementLevel(0.5)).toBe("medium");
+    expect(classifyEngagementLevel(0.74)).toBe("medium");
   });
 
-  it("high > 0.75", async () => {
+  it("high >= 0.75", async () => {
     const { classifyEngagementLevel } = await import("@metanoia/types");
-    expect(classifyEngagementLevel(0.76)).toBe("high");
+    expect(classifyEngagementLevel(0.75)).toBe("high");
     expect(classifyEngagementLevel(1.0)).toBe("high");
   });
 });
