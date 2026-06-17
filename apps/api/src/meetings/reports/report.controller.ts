@@ -22,6 +22,15 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { withTenantTx } from '../../prisma/with-tenant-tx';
 import { ReportService } from './report.service';
 import { ReportsService } from '../../reports/reports.service';
+import {
+  ApiAcceptedResponse,
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 /**
  * Story 5.6 + FR63 (Story 13-1) — `GET /api/v1/meetings/:id/report`.
@@ -34,6 +43,8 @@ import { ReportsService } from '../../reports/reports.service';
  * POST /api/v1/meetings/:id/report/export — enqueue async CSV export (FR-06).
  * Requires canSeeFull=true (LIDER/ADMIN_TENANT).
  */
+@ApiTags('Meetings — Reports (FR63)')
+@ApiBearerAuth()
 @Controller('api/v1/meetings')
 @UseGuards(KeycloakAuthGuard, RolesGuard)
 // TODO: migrate 'pastor'/'admin' to canonical Role enum when defined (Epic 11)
@@ -55,6 +66,14 @@ export class ReportController {
    */
   @Get(':id/report')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get meeting attendance report',
+    description:
+      'Leader/admin → FR63 full view (metrics + participant list + engagement scores). ' +
+      'Participante → personal view (own attendance row only).',
+  })
+  @ApiOkResponse({ description: 'Meeting report (full FR63 or personal view)' })
+  @ApiForbiddenResponse({ description: 'Missing user identity' })
   async getReport(
     @Param('id', ParseUUIDPipe) meetingId: string,
     @Req() req: Request & { user?: AuthenticatedUser },
@@ -86,6 +105,15 @@ export class ReportController {
   @Post(':id/report/export')
   @Roles(Role.LIDER, 'pastor', 'admin', Role.ADMIN_TENANT)
   @HttpCode(HttpStatus.ACCEPTED)
+  @ApiOperation({
+    summary: 'Enqueue async CSV export for meeting report',
+    description:
+      'Enqueues an async CSV export job for the meeting attendance report (FR-06). ' +
+      'Poll status via GET /api/v1/reports/jobs/:jobId (CHK040: min 3s interval, Retry-After header).',
+  })
+  @ApiAcceptedResponse({ description: 'Export job enqueued — contains jobId for polling' })
+  @ApiForbiddenResponse({ description: 'Requires LIDER or ADMIN_TENANT role (canSeeFull=true)' })
+  @ApiNotFoundResponse({ description: 'Meeting not found' })
   async exportReport(
     @Param('id', ParseUUIDPipe) meetingId: string,
     @Req() req: Request & { user?: AuthenticatedUser },

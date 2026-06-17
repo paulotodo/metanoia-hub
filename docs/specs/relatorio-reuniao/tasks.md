@@ -99,28 +99,28 @@ FASE 5 (Testes)
 
 ### 1.1 Zod schemas para relatório FR63 [alta]
 
-- [ ] Criar `packages/types/src/meeting-report.ts` com:
+- [x] Criar `packages/types/src/meeting-report.ts` com:
   - `EngagementLevelSchema` — enum `z.enum(['low','medium','high'])`
   - `MeetingReportParticipantSchema` — campos: `userId`, `name`, `email`, `status` (Presente/Parcial/Ausente), `joinedAt` (ISO 8601 | null), `leftAt` (ISO 8601 | null), `durationSeconds` (int ≥ 0), `engagementScore` (0..1 | null), `engagementLevel` (EngagementLevel | null)
   - `MeetingReportMetricsSchema` — campos: `totalParticipants`, `presentCount`, `partialCount`, `absentCount`, `attendanceRate` (0..1), `avgEngagementScore` (0..1 | null), `avgEngagementLevel` (EngagementLevel | null)
   - `MeetingLeaderReportResponseSchema` — envelope: `{ data: { meetingId, metrics: MeetingReportMetrics, participants: MeetingReportParticipant[], generatedAt } }`
   - Exportar todos os tipos inferidos via `export type`
-- [ ] Adicionar re-exportação em `packages/types/src/index.ts`
-- [ ] Verificar que não há conflito com `MeetingReportSummary` existente (Story 5.6)
+- [x] Adicionar re-exportação em `packages/types/src/index.ts`
+- [x] Verificar que não há conflito com `MeetingReportSummary` existente (Story 5.6)
 
 ### 1.2 Estender ReportExportJobPayload + snapshot tests [alta]
 
-- [ ] Em `packages/types/src/reports/index.ts`, transformar `ReportExportJobPayload` em união discriminada:
+- [x] Em `packages/types/src/reports/index.ts`, transformar `ReportExportJobPayload` em união discriminada:
   ```ts
   export type ReportExportJobPayload =
     | { kind: 'trail'; jobId: string; tenantId: string; trailId: string; trailName: string; requestedBy: string; userIds: string[] }
     | { kind: 'meeting'; jobId: string; tenantId: string; meetingId: string; requesterUserId: string; canSeeFull: boolean }
   ```
-- [ ] Atualizar todos os usos de `ReportExportJobPayload` no código existente para discriminar por `kind`:
+- [x] Atualizar todos os usos de `ReportExportJobPayload` no código existente para discriminar por `kind`:
   - `reports.processor.ts` — branch `export-trail-csv` deve fazer `(payload as Extract<..., {kind:'trail'}>)`
   - `reports.service.ts::processExportJob` — tipar como `Extract<ReportExportJobPayload, {kind:'trail'}>`
-- [ ] Criar `packages/types/src/__tests__/meeting-report.snapshot.spec.ts` com snapshot tests para todos os schemas novos (Vitest `expect(schema.parse(fixture)).toMatchSnapshot()`)
-- [ ] Criar `packages/types/src/__tests__/reports-payload.snapshot.spec.ts` — snapshot da união discriminada, fixture para `kind:'trail'` e `kind:'meeting'`
+- [x] Criar `packages/types/src/__tests__/meeting-report.snapshot.spec.ts` com snapshot tests para todos os schemas novos (Vitest `expect(schema.parse(fixture)).toMatchSnapshot()`)
+- [x] Criar `packages/types/src/__tests__/reports-payload.snapshot.spec.ts` — snapshot da união discriminada, fixture para `kind:'trail'` e `kind:'meeting'`
 
 ---
 
@@ -128,27 +128,27 @@ FASE 5 (Testes)
 
 ### 2.1 ReportService: mapear visão líder FR63 [alta]
 
-- [ ] Em `apps/api/src/meetings/reports/report.service.ts`, estender `findForUser` para o caminho `canSeeFull=true`:
+- [x] Em `apps/api/src/meetings/reports/report.service.ts`, estender `findForUser` para o caminho `canSeeFull=true`:
   - Retornar `MeetingLeaderReportResponse` conforme contrato FR63:
     - `metrics`: calcular `totalParticipants`, `presentCount`, `partialCount`, `absentCount`, `attendanceRate`, `avgEngagementScore`, `avgEngagementLevel` a partir de `summary.attendees`
     - `participants`: mapear cada attendee para `MeetingReportParticipant` FR63, incluindo `name` e `email` (join com tabela de usuários — ver Decision 6 em research.md; buscar via `UserRepository` ou query direta com `withTenantTx`)
     - `generatedAt`: do `MeetingReport.generatedAt`
   - Manter backward compat para `kind:'personal'` (não alterar)
-- [ ] Calcular `engagementScore` por participante segundo FR-03:
+- [x] Calcular `engagementScore` por participante segundo FR-03:
   - `presenceFrac = durationSeconds / meetingDurationSeconds` (clamped 0..1)
   - `cameraFrac = cameraOnSeconds / durationSeconds` (0 se duration=0)
   - `score = 0.7 * presenceFrac + 0.3 * cameraFrac`
   - Classificar em `EngagementLevel`: low (<0.4), medium (0.4..0.75), high (>0.75)
-- [ ] Fonte de `meetingDurationSeconds`: campo `duration_seconds` da tabela `meetings` (via `MeetingsRepository`)
-- [ ] Garantir ADMIN_TENANT vê todos os participantes do tenant (CHK008, dec-010): `canSeeFull=true` sem bind por grupo — já garantido pelo `adminShortcut` em `report.controller.ts`, apenas confirmar que o service não filtra por groupId quando `canSeeFull=true`
+- [x] Fonte de `meetingDurationSeconds`: campo `duration_seconds` da tabela `meetings` (via `MeetingsRepository`)
+- [x] Garantir ADMIN_TENANT vê todos os participantes do tenant (CHK008, dec-010): `canSeeFull=true` sem bind por grupo — já garantido pelo `adminShortcut` em `report.controller.ts`, apenas confirmar que o service não filtra por groupId quando `canSeeFull=true`
 
 ### 2.2 ReportController: endpoint GET atualizado [alta]
 
-- [ ] Em `apps/api/src/meetings/reports/report.controller.ts`, adaptar resposta do `getReport` para retornar `MeetingLeaderReportResponse` quando `kind:'full'`:
+- [x] Em `apps/api/src/meetings/reports/report.controller.ts`, adaptar resposta do `getReport` para retornar `MeetingLeaderReportResponse` quando `kind:'full'`:
   - Response body: `{ data: MeetingLeaderReportResponse, meta: { view: 'full' | 'personal', generatedAt } }`
   - Manter `kind:'personal'` sem alteração
-- [ ] Adicionar `@ApiResponse` / Swagger annotations com tipo correto (OpenAPI)
-- [ ] Adicionar endpoint `POST /api/v1/meetings/:id/report/export` neste controller (ou criar `report-export.controller.ts` no mesmo módulo):
+- [x] Adicionar `@ApiResponse` / Swagger annotations com tipo correto (OpenAPI)
+- [x] Adicionar endpoint `POST /api/v1/meetings/:id/report/export` neste controller (ou criar `report-export.controller.ts` no mesmo módulo):
   - `@Roles(Role.LIDER, Role.ADMIN_TENANT)` — Participante recebe 403
   - Calcular `canSeeFull` (mesmo helper); se `canSeeFull=false` → 403
   - Enfileirar job `export-meeting-csv` na fila `queue:reports` com payload `{kind:'meeting', jobId, tenantId, meetingId, requesterUserId, canSeeFull}`
@@ -158,7 +158,7 @@ FASE 5 (Testes)
 
 ### 2.3 Unit tests do ReportService FR63 [alta]
 
-- [ ] Em `apps/api/src/meetings/reports/__tests__/report.service.spec.ts`, adicionar testes:
+- [x] Em `apps/api/src/meetings/reports/__tests__/report.service.spec.ts`, adicionar testes:
   - `findForUser` com `canSeeFull=true` retorna `MeetingLeaderReportResponse` com campos corretos
   - Cálculo de `engagementScore` — 3 fixtures: presença total+câmera alta, presença parcial+câmera zero, ausente
   - `avgEngagementLevel` calculado corretamente para cada combinação
@@ -172,7 +172,7 @@ FASE 5 (Testes)
 
 **CRÍTICO — SC-08 + FR-07.1 + CHK035: cobre AMBOS `kind:meeting` e `kind:track`**
 
-- [ ] Em `apps/api/src/reports/reports.service.ts`:
+- [x] Em `apps/api/src/reports/reports.service.ts`:
   - Alterar `EXPORT_JOB_KEY_PREFIX` de `'cache:reports:export-job'` para manter o nome; alterar a construção da chave:
     - Chave nova: `cache:reports:export-job:<tenantId>:<jobId>`
     - Chave antiga (retrocompat): `cache:reports:export-job:<jobId>`
@@ -187,24 +187,24 @@ FASE 5 (Testes)
     6. ADMIN_TENANT do mesmo tenant → pode ler qualquer job do tenant (sem bind por requester)
     ```
   - Expor `setJobStatus` como método público (necessário para o `ReportController` chamar ao enfileirar job meeting) — manter privado internamente se possível via método auxiliar público `enqueueJobStatus(jobId, tenantId, requesterUserId)`
-- [ ] Atualizar `processExportJob` (trilhas) para chamar `setJobStatus` com `tenantId` do payload (já presente em `ReportExportJobPayload.kind:'trail'`)
+- [x] Atualizar `processExportJob` (trilhas) para chamar `setJobStatus` com `tenantId` do payload (já presente em `ReportExportJobPayload.kind:'trail'`)
 - [ ] **NÃO remover** suporte à chave antiga em produção sem migration script (registrar como tech debt se necessário); para MVP/teste, a chave nova é a canônica
 
 ### 3.2 ReportsController: endpoint polling endurecido [crit]
 
 **CRÍTICO — S1: bind tenantId + requesterUserId + papel ADMIN_TENANT**
 
-- [ ] Em `apps/api/src/reports/reports.controller.ts`, no handler `GET /reports/jobs/:jobId`:
+- [x] Em `apps/api/src/reports/reports.controller.ts`, no handler `GET /reports/jobs/:jobId`:
   - Remover (ou complementar) a leitura ingênua sem tenant; delegar ao `getJobStatus` endurecido (task 3.1)
   - O controller NÃO deve passar `tenantId`/`userId` como parâmetro ao service — o service deriva do `RequestContext`
   - Adicionar `@Roles(Role.LIDER, Role.ADMIN_TENANT)` se não presente
   - Response permanece `200 { data: ExportJobStatusInner }` (contrato existente intacto)
   - Adicionar header `Retry-After: 3` na resposta com status `processing` (CHK040 — cadência mínima de polling)
-- [ ] Adicionar `@ApiResponse(404)` no Swagger com descrição "Job não encontrado ou sem permissão de acesso"
+- [x] Adicionar `@ApiResponse(404)` no Swagger com descrição "Job não encontrado ou sem permissão de acesso"
 
 ### 3.3 BullMQ worker: branch export-meeting-csv [alta]
 
-- [ ] Em `apps/api/src/reports/reports.processor.ts`, adicionar branch no worker:
+- [x] Em `apps/api/src/reports/reports.processor.ts`, adicionar branch no worker:
   ```ts
   if (job.name === 'export-meeting-csv') {
     await this.reportsService.processMeetingExportJob(
@@ -212,7 +212,7 @@ FASE 5 (Testes)
     );
   }
   ```
-- [ ] Em `reports.service.ts`, implementar `processMeetingExportJob(payload)`:
+- [x] Em `reports.service.ts`, implementar `processMeetingExportJob(payload)`:
   - Derivar participantes via `withTenantTx` sobre `meetingAttendance` + join `users` (nome+email)
   - Calcular `engagementScore` por participante (mesma lógica de task 2.1)
   - Mapear para CSV rows: `Nome, Email, Status, Hora de entrada, Hora de saída, Duração (min), Score de engajamento`
@@ -224,14 +224,14 @@ FASE 5 (Testes)
 
 ### 3.4 Endpoint POST export (enfileirar job) [alta]
 
-- [ ] Implementar `POST /api/v1/meetings/:id/report/export` (via task 2.2 se no mesmo controller, ou novo `ReportExportController`):
+- [x] Implementar `POST /api/v1/meetings/:id/report/export` (via task 2.2 se no mesmo controller, ou novo `ReportExportController`):
   - Autorização: `@Roles(Role.LIDER, Role.ADMIN_TENANT)`; `canSeeFull` calculado; se `false` → 403
   - Gerar `jobId = generateId()` (UUID v7)
   - Enfileirar `queue.add('export-meeting-csv', payload, { attempts:3, backoff:{type:'exponential',delay:2000} })`
   - Chamar `setJobStatus(jobId, tenantId, 'processing', null, null)` — via método público do `ReportsService`
   - Retornar `202 { data: { jobId, message: 'Export em processamento' } }`
-- [ ] Adicionar ao `ReportModule` (ou `ReportsModule`) a injeção de `ReportsService` se não presente
-- [ ] Swagger: `@ApiAcceptedResponse`, `@ApiForbiddenResponse`, `@ApiNotFoundResponse`
+- [x] Adicionar ao `ReportModule` (ou `ReportsModule`) a injeção de `ReportsService` se não presente
+- [x] Swagger: `@ApiAcceptedResponse`, `@ApiForbiddenResponse`, `@ApiNotFoundResponse`
 
 ### 3.5 Documentar cadência de polling (CHK040) [media]
 
@@ -240,7 +240,7 @@ FASE 5 (Testes)
   - Backoff exponencial sugerido ao cliente: 3s → 6s → 12s → máx 30s
   - Máximo de tentativas sugerido: **20** (cobrindo até 10min de processamento)
   - Acima de 20 tentativas sem resultado, cliente deve considerar o job falho e exibir mensagem ao usuário
-- [ ] Adicionar header `Retry-After` na resposta `200` com `status:'processing'` (task 3.2)
+- [x] Adicionar header `Retry-After` na resposta `200` com `status:'processing'` (task 3.2)
 - [ ] Documentar no `quickstart.md` o fluxo de polling recomendado para o cliente
 
 ### 3.6 Documentar limite de carga e comportamento acima do alvo (CHK041) [media]
@@ -258,7 +258,7 @@ FASE 5 (Testes)
 
 ### 4.1 Componente MeetingReportPage — estrutura e métricas [alta]
 
-- [ ] Criar página Server Component `apps/web/src/app/(authenticated)/meetings/[id]/report/page.tsx`:
+- [x] Criar página Server Component `apps/web/src/app/(authenticated)/meetings/[id]/report/page.tsx`:
   - Fetch via `GET /api/v1/meetings/:id/report` com `Authorization` do token Keycloak SSR
   - Renderizar seção de **métricas agregadas**: total de participantes, taxa de presença, score médio de engajamento
   - Renderizar tabela de participantes com colunas: Nome, Status, Duração, Score de Engajamento
@@ -268,30 +268,30 @@ FASE 5 (Testes)
 
 ### 4.2 Tabela de participantes com a11y completa [media]
 
-- [ ] Implementar `<table>` HTML semântico com `<caption>`, `<thead>`, `<tbody>`:
+- [x] Implementar `<table>` HTML semântico com `<caption>`, `<thead>`, `<tbody>`:
   - `scope="col"` em cada `<th>`
   - Cada badge de status: `<span aria-label="Presente">✓ Presente</span>` (texto visível)
   - Score de engajamento: `<span aria-label="Score de engajamento: 0.82">0.82</span>` ou célula descritiva
   - Linha de ausente: `aria-label` descritivo na célula de ação
 - [ ] Reusar `FormField` de Story 12.5 para inputs de filtro (se houver campo de busca/filtro na página)
-- [ ] Garantir navegação por teclado na tabela (sem interceptação de teclas)
+- [x] Garantir navegação por teclado na tabela (sem interceptação de teclas)
 - [ ] Verificar contraste de todos pares texto/fundo (CHK018): usar Storybook ou axe-core local antes de PR
 
 ### 4.3 Fluxo de export CSV no cliente [alta]
 
-- [ ] Criar `ExportReportButton` (Client Component) com:
+- [x] Criar `ExportReportButton` (Client Component) com:
   - Botão "Exportar CSV" — dispara `POST .../report/export` → recebe `jobId`
   - Estado de polling: exibe progress indicator acessível (`role="status"`, `aria-live="polite"`)
   - Polling a cada **3s** (conformar com CHK040); backoff: se `Retry-After` presente no header, respeitar
   - Máximo 20 tentativas; após timeout → mensagem de erro
   - Ao completar (`status:'completed'`): exibir link para download (`signedUrl`) com texto "Baixar CSV" + atributo `download`
   - Ao falhar: mensagem de erro em PT-BR com `role="alert"`
-- [ ] Usar TanStack Query (Client Component) para gerenciar polling com `refetchInterval`
-- [ ] Guardar `jobId` em estado local (não em Zustand — escopo de componente)
+- [x] Usar TanStack Query (Client Component) para gerenciar polling com `refetchInterval`
+- [x] Guardar `jobId` em estado local (não em Zustand — escopo de componente)
 
 ### 4.4 A11y CTA pastoral (CHK024) [media]
 
-- [ ] Seção de ausentes com CTA "Entrar em contato":
+- [x] Seção de ausentes com CTA "Entrar em contato":
   - Se nenhum ausente: ocultar CTA completamente (`hidden` ou não renderizar) — não usar `disabled` para elemento desnecessário
   - Se há ausentes mas usuário não tem permissão: usar `aria-disabled="true"` + `tabIndex={-1}` no botão para remover do tab order + `aria-describedby` apontando para `<span id="cta-hint">Você não tem permissão para esta ação</span>` (anúncio para leitor de tela); NÃO apenas mudar opacidade/cor
   - Se há ausentes e usuário tem permissão: botão normal com `aria-label="Iniciar contato pastoral com N ausentes"`
@@ -319,25 +319,25 @@ FASE 5 (Testes)
   - Snapshot de `MeetingLeaderReportResponseSchema.parse(fixture)` com fixture completa
   - Snapshot de `ReportExportJobPayload` variante `kind:'meeting'`
   - Snapshot de `ReportExportJobPayload` variante `kind:'trail'` (regressão — garantir que trilha não quebrou)
-- [ ] Rodar `pnpm --filter @metanoia/types test` para confirmar snapshots gerados
+- [x] Rodar `pnpm --filter @metanoia/types test` para confirmar snapshots gerados
 
 ### 5.2 Testes de autorização cross-tenant — SC-08 [crit]
 
 **CRÍTICO — SC-08 + FR-07.1: teste determinístico de isolamento**
 
-- [ ] Em `apps/api/src/reports/reports.service.spec.ts` ou arquivo dedicado `reports.auth.spec.ts`:
+- [x] Em `apps/api/src/reports/reports.service.spec.ts` ou arquivo dedicado `reports.auth.spec.ts`:
   - **Cenário A — cross-tenant**: líder A (tenantT1) cria job → líder A de tenantT2 tenta ler → espera `NotFoundException` (404 semântico)
   - **Cenário B — intra-tenant cross-requester**: líder A (tenantT1) cria job → líder B (mesmo tenantT1, grupo diferente) tenta ler → espera `NotFoundException`
   - **Cenário C — ADMIN_TENANT mesmo tenant**: ADMIN_TENANT do tenantT1 lê job de líder A do tenantT1 → espera `200` com dados corretos
   - **Cenário D — proprietário**: líder A lê seu próprio job → espera `200`
   - Usar mocks de `RedisService` e `getRequestContext` para simular contextos diferentes por teste
-- [ ] Garantir que a chave Redis prefixada por tenant é usada em todos os cenários (assert `redis.get` chamado com `cache:reports:export-job:<tenantId>:<jobId>`)
+- [x] Garantir que a chave Redis prefixada por tenant é usada em todos os cenários (assert `redis.get` chamado com `cache:reports:export-job:<tenantId>:<jobId>`)
 
 ### 5.3 Regressão polling de trilhas (CHK035) [crit]
 
 **CRÍTICO — CHK035: garantir que a mudança de chave Redis não quebra export de trilhas**
 
-- [ ] Em `apps/api/src/reports/reports.service.spec.ts`:
+- [x] Em `apps/api/src/reports/reports.service.spec.ts`:
   - Cenário: enfileirar `export-trail-csv` → `processExportJob` grava status com chave `cache:reports:export-job:<tenantId>:<jobId>` (nova chave com tenant)
   - `getJobStatus` pelo proprietário do job de trilha → espera `200` com dados corretos
   - Verificar que a chave gravada contém o `tenantId` correto (assert no mock Redis)
@@ -345,7 +345,7 @@ FASE 5 (Testes)
   - Testar que `job.name === 'export-trail-csv'` despacha para `processExportJob`
   - Testar que `job.name === 'export-meeting-csv'` despacha para `processMeetingExportJob`
   - Testar que job name desconhecido não dispara nenhum dos dois (no-op seguro)
-- [ ] Confirmar que nenhum teste existente de trilhas quebrou após a mudança da assinatura de `setJobStatus`
+- [x] Confirmar que nenhum teste existente de trilhas quebrou após a mudança da assinatura de `setJobStatus`
 
 ### 5.4 Testes de UI acessível (axe-core + E2E) [media]
 
