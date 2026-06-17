@@ -47,6 +47,10 @@ function FilterDropdown({ label, options, value, onChange }: FilterDropdownProps
   }
 
   function handleButtonKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+    if (e.key === 'Escape') {
+      if (open) { e.preventDefault(); closeMenu(); }
+      return;
+    }
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
       openMenu();
@@ -318,7 +322,7 @@ export function CatalogSearch() {
       </div>
 
       {/* Resultados */}
-      <div id={resultsId} aria-label={t.title}>
+      <div id={resultsId}>
         {hasQuery && isLoading && (
           <p className="text-sm text-muted-foreground" aria-live="polite">
             {t.loadingResults}

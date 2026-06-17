@@ -190,11 +190,12 @@ describe('BrandingSettingsForm — acessibilidade por teclado (FASE 7)', () => {
     // CHK024: Target < 16ms (1 frame a 60fps). Não é SC automático — guideline de qualidade.
     // Verificamos que o comentário está presente no source do componente real.
     const { readFile } = await import('node:fs/promises');
+    const { resolve } = await import('node:path');
     const source = await readFile(
-      new URL(
-        '../../../../app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx',
-        import.meta.url,
-      ).pathname,
+      resolve(
+        process.cwd(),
+        'app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx',
+      ),
       'utf8',
     );
     expect(source).toContain('CHK024');

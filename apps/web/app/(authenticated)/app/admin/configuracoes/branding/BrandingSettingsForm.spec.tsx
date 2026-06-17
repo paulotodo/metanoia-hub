@@ -192,8 +192,12 @@ describe('BrandingSettingsForm — acessibilidade (FASE 7, US6)', () => {
     // CHK024: Target < 16ms (1 frame a 60fps). Não é SC automático — é guideline.
     // Importamos o texto-fonte via URL ESM (sem require, sem @typescript-eslint/no-require-imports).
     const { readFile } = await import('node:fs/promises');
+    const { resolve } = await import('node:path');
     const source = await readFile(
-      new URL('./BrandingSettingsForm.tsx', import.meta.url).pathname,
+      resolve(
+        process.cwd(),
+        'app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx',
+      ),
       'utf8',
     );
     expect(source).toContain('CHK024');
