@@ -37,7 +37,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "FASE 4: executar tasks 4.1 (TrailItemReorder), 4.2 (integrar no builder group-trails-client.tsx), 4.3 (E2E US4). Continuar execute-task loop.",
+  "next_instruction": "FASE 1: executar tasks 1.1 (hook useFocusOnRouteChange + testes unitários) e 1.2 (componente FocusManager). Continuar execute-task loop.",
   "waves": [
     {
       "id": "onda-001",

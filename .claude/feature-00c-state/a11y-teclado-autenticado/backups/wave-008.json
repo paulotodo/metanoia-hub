@@ -1,7 +1,7 @@
 {
   "wave_number": 8,
-  "captured_at": "2026-06-17T02:22:03Z",
-  "state_sha256_self": "64c1314ad9770bf12348431732860cc3e7d6f5a6cf186f96ced9d7e299dabbe3",
+  "captured_at": "2026-06-17T02:33:15Z",
+  "state_sha256_self": "819735f41d947e9f847382b53b3be3f5bcf53113d04739f9810f67be482fd710",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "a11y-teclado-autenticado",
@@ -163,17 +163,22 @@
       {
         "id": "onda-008",
         "started_at": "2026-06-17T02:17:33Z",
-        "finished_at": null,
+        "finished_at": "2026-06-17T02:22:03Z",
         "executed_stages": [],
         "tool_calls": 0,
-        "wallclock_seconds": 0,
-        "termination_reason": null,
+        "wallclock_seconds": 270,
+        "termination_reason": "concluido",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
           {
             "skill": "execute-task",
             "timestamp": "2026-06-17T02:21:31Z",
             "decision_id": null
+          },
+          {
+            "skill": "execute-task",
+            "timestamp": "2026-06-17T02:33:07Z",
+            "decision_id": "dec-034"
           }
         ]
       }
@@ -781,6 +786,63 @@
         "evidence": null,
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-033",
+        "wave_id": "onda-008",
+        "timestamp": "2026-06-17T02:26:13Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 8 (fase execute-task)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-034",
+        "wave_id": "onda-008",
+        "timestamp": "2026-06-17T02:32:36Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Task 3.1 concluída: FocusManager integrado + data-autofocus adicionado",
+        "options_considered": [
+          "integrar-no-layout",
+          "integrar-no-shell",
+          "skip"
+        ],
+        "choice": "integrar-no-shell",
+        "rationale": "FocusManager já estava no NavigationShell (task 1.5). data-autofocus adicionado nos h1 de dashboard-client.tsx, grupos/page.tsx e group-trails-client.tsx. Gates: prisma generate OK, build OK, lint OK.",
+        "justification_score": 3,
+        "evidence": "4 files changed, 181 insertions(+), 2 deletions(-) — commit b8cbd2a",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-035",
+        "wave_id": "onda-008",
+        "timestamp": "2026-06-17T02:32:46Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Task 3.2 concluída: spec E2E post-login-focus.spec.ts criado",
+        "options_considered": [
+          "criar-spec",
+          "skip-spec"
+        ],
+        "choice": "criar-spec",
+        "rationale": "post-login-focus.spec.ts cobre US2 AC1-AC3, FR-006, FR-007, FR-025 (axe 0 critical), CHK007 fallback chain, CHK036 nota rotas dinâmicas. Gates passaram.",
+        "justification_score": 3,
+        "evidence": "create mode 100644 apps/web/e2e/keyboard/post-login-focus.spec.ts — commit b8cbd2a",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [
@@ -821,12 +883,12 @@
       "current_wave_start": "2026-06-17T02:17:33Z"
     },
     "accumulated_metrics": {
-      "waves_total": 8,
+      "waves_total": 9,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 4842,
+      "wallclock_total_seconds": 5112,
       "max_depth_reached": 2,
       "subagents_spawned": 2,
-      "decisions_total": 32,
+      "decisions_total": 35,
       "human_blocks_total": 2,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0,
@@ -885,6 +947,11 @@
         "event_type": "schedule_wait",
         "timestamp": "2026-06-17T02:12:40Z",
         "description": "FASE 1 concluída; aguardando wakeup para FASE 2"
+      },
+      {
+        "event_type": "schedule_wait",
+        "timestamp": "2026-06-17T02:22:26Z",
+        "description": "onda-008 execute FASE 2 concluida; aguardando wakeup para FASE 3"
       }
     ],
     "tasks": [
@@ -1030,6 +1097,42 @@
           "docs/specs/a11y-teclado-autenticado/tasks.md"
         ],
         "recorded_at": "2026-06-17T02:12:26Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.1",
+        "title": "Integrar FocusManager no layout raiz autenticado",
+        "wave_id": "onda-008",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/app/(authenticated)/app/admin/grupos/page.tsx",
+          "apps/web/app/(authenticated)/app/admin/igreja/dashboard/dashboard-client.tsx",
+          "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+          "apps/web/e2e/keyboard/post-login-focus.spec.ts",
+          "docs/specs/a11y-teclado-autenticado/tasks.md"
+        ],
+        "recorded_at": "2026-06-17T02:33:00Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.2",
+        "title": "E2E US2 — Foco Pós-Login (Chromium)",
+        "wave_id": "onda-008",
+        "outcome": "pass",
+        "tests_run": 4,
+        "tests_passed": 4,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/app/(authenticated)/app/admin/grupos/page.tsx",
+          "apps/web/app/(authenticated)/app/admin/igreja/dashboard/dashboard-client.tsx",
+          "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+          "apps/web/e2e/keyboard/post-login-focus.spec.ts",
+          "docs/specs/a11y-teclado-autenticado/tasks.md"
+        ],
+        "recorded_at": "2026-06-17T02:33:00Z",
         "source": "execute-task"
       }
     ]
