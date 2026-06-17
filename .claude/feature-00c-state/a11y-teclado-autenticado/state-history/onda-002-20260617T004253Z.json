@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Aguardando respostas humanas para block-001 (visibilidade botoes Up/Down builder) e block-002 (destino do foco pos-busca SPA). Apos respostas via /feature-00c-resume: aplicar respostas como Decisoes, invocar Skill(clarify) para atualizar secao ## Clarifications na spec, e prosseguir para plan.",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker e clarify-answerer sobre a spec gerada.",
   "waves": [
     {
       "id": "onda-001",
@@ -45,13 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T00:36:56Z",
-      "finished_at": "2026-06-17T00:44:10Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 434,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -293,24 +291,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T00:43:11Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Encerramento da onda-002 (clarify): 3 perguntas decididas autonomamente (Q1 score2, Q2 score3, Q3 score2), 2 perguntas pausadas (Q4/Q5 score0) gerando block-001 e block-002. Spec NAO sera atualizada via Skill(clarify) ate resolucao dos bloqueios — clarifications incompletas.",
-      "options_considered": [
-        "aplicar-parcial-e-prosseguir",
-        "pausar-aguardando-humano"
-      ],
-      "choice": "pausar-aguardando-humano",
-      "rationale": "2 bloqueios pendentes (Q4/Q5 escopo de produto/UX). Principio II Pause-or-Decide: score 0 nao decide sem violar finalidade. Aplicar clarifications parciais arriscaria spec inconsistente. Aguardar respostas humanas antes de Skill(clarify) e plan.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -324,17 +304,6 @@
       "human_answer": null,
       "answered_at": null,
       "triggered_at": "2026-06-17T00:42:39Z"
-    },
-    {
-      "id": "block-002",
-      "decision_id": "dec-009",
-      "question": "US1/US5: apos uma busca assincrona retornar resultados (TanStack Query em Client Component), PARA ONDE o foco deve ir? (a) permanecer no campo de busca + regiao role=status/aria-live anunciando a contagem, ou (b) mover para o primeiro card/heading de resultados?",
-      "context_for_answer": "A spec define o edge case 'foco nao deve ser redefinido para o topo da pagina' em conteudo dinamico, mas NAO define o elemento de destino pos-busca. Trade-off de UX: (a) manter no campo permite refinar a busca sem reposicionar; (b) mover para resultados da anuncio mais claro a leitores de tela. Ambas compativeis com WCAG AA. Decisao deve ser UNIFORME para todos os carregamentos assincronos da area autenticada (busca US5, salvar config US6). Escopo de produto/UX sem default fiel a spec — answerer atribuiu score 0 (pausa).",
-      "recommended_options": null,
-      "status": "aguardando",
-      "human_answer": null,
-      "answered_at": null,
-      "triggered_at": "2026-06-17T00:42:53Z"
     }
   ],
   "budgets": {
@@ -351,13 +320,13 @@
     "current_wave_start": "2026-06-17T00:36:56Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 721,
+    "wallclock_total_seconds": 287,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 13,
-    "human_blocks_total": 2,
+    "decisions_total": 12,
+    "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
     "cache": {
