@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Executar tasks do backlog de execute-task: percorrer tasks.md fase por fase, registrando outcome em .tasks[] via record-task",
+  "current_stage": "create-tasks",
+  "next_instruction": "Executar fase checklist: validar qualidade dos requisitos da spec/plan (dominio ux/a11y) via skill checklist",
   "waves": [
     {
       "id": "onda-001",
@@ -114,21 +114,13 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-17T05:56:59Z",
-      "finished_at": "2026-06-17T06:02:14Z",
-      "executed_stages": [
-        "create-tasks"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 315,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T06:02:13Z",
-          "decision_id": "dec-017"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -434,81 +426,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T05:57:16Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da fase create-tasks: gerar tasks.md para Story 12.3 (4 eixos)",
-      "options_considered": [
-        "gerar-tasks",
-        "abortar"
-      ],
-      "choice": "gerar-tasks",
-      "rationale": "spec/plan/checklist concluidos; 4 eixos tecnicos mapeados (A:tokens, B:axe-debt, C:focus-ring, D:CI); gaps CHK014/CHK009/CHK011/CHK025 a resolver nas tasks",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T05:57:38Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK014 [Conflict]: FR-03 dizia ajustar hex de text-muted; dec-006 (Opcao B) decidiu nao mexer no hex, trocar classes para text-primary em badges",
-      "options_considered": [
-        "ajustar-hex-text-muted",
-        "trocar-classes-para-text-primary",
-        "manter-ambos"
-      ],
-      "choice": "trocar-classes-para-text-primary",
-      "rationale": "dec-006 Opcao B e a decisao autoritativa do clarify: care-* mantem hex; texto interno de badges SEMPRE text-primary. FR-03 (ajustar text-muted para >=4.5:1) refere-se ao uso de text-muted como texto de LEITURA na home (componentes marketing/*), nao como fundo de badge. Tasks devem: (A) trocar classes className de badges (text-white->text-primary em meeting-card, text-care-ok/text-care-attention->text-secondary em post-meeting-report); (B) corrigir texto-leitura da home substituindo text-muted por text-secondary. Hex --color-text-muted inalterado.",
-      "justification_score": 3,
-      "evidence": "plan.md R1: text-primary #17252a sobre care-attention #d4a24c = 6.80:1 PASS; sobre care-ok #7ba38a = 5.58:1 PASS; meeting-card.tsx:80 bg-care-ok text-white 2:1 FAIL identificado no plan",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T05:57:38Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK025 [Gap]: ring-primary 14x sem estrategia de migracao; analise: trail-card.tsx:56 usa focus-within:ring-primary como unica ocorrencia em apps/web/src/",
-      "options_considered": [
-        "substituir-por-brand-teal",
-        "preservar-semantica",
-        "analisar-por-ocorrencia"
-      ],
-      "choice": "analisar-por-ocorrencia",
-      "rationale": "grep revela apenas 1 ocorrencia em apps/web/src/ (trail-card.tsx:56: focus-within:ring-primary). Outras 13 ocorrencias devem estar em packages/ui/. Estrategia: trail-card.tsx e focus-within (card inteiro), nao focus-visible de elemento interativo -- e adequado substituir por focus-within:ring-brand-teal/30 (consistencia). Packages/ui usa ring-primary como alias do shadcn para --ring, que ja aponta para brand-teal -- confirmar via grep antes de substituir.",
-      "justification_score": 2,
-      "evidence": "grep -rn ring-primary /var/lib/metanoia-hub/apps/web/src/ retornou 1 resultado: trail-card.tsx:56 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T05:58:22Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK025 [Gap]: ring-primary 14x - analise completa: 13 em app/(authenticated)/, 1 em components/content/trail-card.tsx",
-      "options_considered": [
-        "substituir-todos-por-brand-teal",
-        "preservar-todos",
-        "migrar-automaticamente"
-      ],
-      "choice": "migrar-automaticamente",
-      "rationale": "Todas as 14 ocorrencias sao focus-visible:ring-primary em componentes autenticados (grupos, lideres, vista, outreach-intent-form) ou focus-within:ring-primary (trail-card). ring-primary no shadcn aponta para --ring = var(--color-interactive-focus-ring) = brand-teal - semanticamente equivalente mas inconsistente. Codemod C2 ja cobre ring-ring e ring-interactive-focus; ring-primary deve ser incluido no mesmo codemod (acrescentar ao script). trail-card.tsx:56 e focus-within (card) - tambem migrar para ring-brand-teal/30. NENHUM caso e semantico preservado: todos sao focus-ring de navegacao padrao.",
-      "justification_score": 3,
-      "evidence": "grep projeto inteiro: 14 ocorrencias de ring-primary; 13 em app/(authenticated)/ (outreach-intent-form 5x, grupo-client 1x, back-link 1x, drill-error 1x, vista-empty 1x, vista-error 1x, vista-filter-bar 1x, group-card 1x); 1 em content/trail-card.tsx:56; 0 em packages/ui/ (ring-primary nao aparece nos componentes shadcn)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -526,12 +443,12 @@
     "current_wave_start": "2026-06-17T05:56:59Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1404,
+    "wallclock_total_seconds": 1089,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 20,
+    "decisions_total": 16,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

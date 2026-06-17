@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Executar tasks do backlog de execute-task: percorrer tasks.md fase por fase, registrando outcome em .tasks[] via record-task",
+  "current_stage": "create-tasks",
+  "next_instruction": "Executar fase checklist: validar qualidade dos requisitos da spec/plan (dominio ux/a11y) via skill checklist",
   "waves": [
     {
       "id": "onda-001",
@@ -114,21 +114,13 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-17T05:56:59Z",
-      "finished_at": "2026-06-17T06:02:14Z",
-      "executed_stages": [
-        "create-tasks"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 315,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T06:02:13Z",
-          "decision_id": "dec-017"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -490,25 +482,6 @@
       "evidence": "grep -rn ring-primary /var/lib/metanoia-hub/apps/web/src/ retornou 1 resultado: trail-card.tsx:56 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T05:58:22Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK025 [Gap]: ring-primary 14x - analise completa: 13 em app/(authenticated)/, 1 em components/content/trail-card.tsx",
-      "options_considered": [
-        "substituir-todos-por-brand-teal",
-        "preservar-todos",
-        "migrar-automaticamente"
-      ],
-      "choice": "migrar-automaticamente",
-      "rationale": "Todas as 14 ocorrencias sao focus-visible:ring-primary em componentes autenticados (grupos, lideres, vista, outreach-intent-form) ou focus-within:ring-primary (trail-card). ring-primary no shadcn aponta para --ring = var(--color-interactive-focus-ring) = brand-teal - semanticamente equivalente mas inconsistente. Codemod C2 ja cobre ring-ring e ring-interactive-focus; ring-primary deve ser incluido no mesmo codemod (acrescentar ao script). trail-card.tsx:56 e focus-within (card) - tambem migrar para ring-brand-teal/30. NENHUM caso e semantico preservado: todos sao focus-ring de navegacao padrao.",
-      "justification_score": 3,
-      "evidence": "grep projeto inteiro: 14 ocorrencias de ring-primary; 13 em app/(authenticated)/ (outreach-intent-form 5x, grupo-client 1x, back-link 1x, drill-error 1x, vista-empty 1x, vista-error 1x, vista-filter-bar 1x, group-card 1x); 1 em content/trail-card.tsx:56; 0 em packages/ui/ (ring-primary nao aparece nos componentes shadcn)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -526,12 +499,12 @@
     "current_wave_start": "2026-06-17T05:56:59Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1404,
+    "wallclock_total_seconds": 1089,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 20,
+    "decisions_total": 19,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
