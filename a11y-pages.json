@@ -1,0 +1,16 @@
+{
+  "_README": [
+    "Lista de páginas auditadas pelo gate axe (axe-quality-gate.e2e-spec.ts).",
+    "Campos por entrada: path (string, rota relativa), label (string, nome do teste),",
+    "requiresAuth (boolean). NESTE SPRINT entradas requiresAuth=true são SKIPPED",
+    "(tech debt R2 — exigem loginAs + Keycloak; ver dec-007/NC-3 na spec).",
+    "Para adicionar página pública: acrescente {path,label,requiresAuth:false}.",
+    "Nenhuma edição no spec file é necessária (iteração dinâmica — FR-11/SC-5.3)."
+  ],
+  "pages": [
+    { "path": "/",                "label": "home-marketing",  "requiresAuth": false },
+    { "path": "/login",           "label": "login",           "requiresAuth": false },
+    { "path": "/register",        "label": "register",        "requiresAuth": false },
+    { "path": "/recuperar-senha", "label": "recuperar-senha", "requiresAuth": false }
+  ]
+}
