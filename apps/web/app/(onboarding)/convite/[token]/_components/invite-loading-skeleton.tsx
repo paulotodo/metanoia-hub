@@ -9,9 +9,9 @@ export function InviteLoadingSkeleton() {
       aria-label="Abrindo convite"
       className="flex w-full flex-col items-center gap-6"
     >
-      <div className="size-[72px] animate-pulse rounded-full bg-[var(--color-surface-muted)]" />
-      <div className="h-6 w-3/4 animate-pulse rounded bg-[var(--color-surface-muted)]" />
-      <div className="h-12 w-full animate-pulse rounded bg-[var(--color-surface-muted)]" />
+      <div className="size-[72px] motion-safe:animate-pulse rounded-full bg-[var(--color-surface-muted)]" />
+      <div className="h-6 w-3/4 motion-safe:animate-pulse rounded bg-[var(--color-surface-muted)]" />
+      <div className="h-12 w-full motion-safe:animate-pulse rounded bg-[var(--color-surface-muted)]" />
     </div>
   );
 }

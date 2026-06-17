@@ -41,7 +41,7 @@ function NudgeCard({ nudge }: NudgeCardProps) {
     <li>
       <Link
         href={`/app/gestao/radar/${nudge.participantId}/cuidado`}
-        className="flex items-center gap-3 rounded-lg border border-border-default bg-surface-elevated px-4 py-3 transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+        className="flex items-center gap-3 rounded-lg border border-border-default bg-surface-elevated px-4 py-3 motion-safe:transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
         aria-label={`${label} — ${PASTORAL_NUDGE_CTA_LABEL}`}
       >
         <span

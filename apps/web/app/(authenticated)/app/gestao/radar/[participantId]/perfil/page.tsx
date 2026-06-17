@@ -82,7 +82,7 @@ export default function ParticipantProfilePage({
       {/* Back navigation */}
       <Link
         href={`/app/gestao/radar/${participantId}`}
-        className="inline-flex items-center gap-1.5 text-sm text-text-secondary transition-colors hover:text-text-primary"
+        className="inline-flex items-center gap-1.5 text-sm text-text-secondary motion-safe:motion-safe:transition-colors hover:text-text-primary active:opacity-70"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         Detalhe do sinal
@@ -161,7 +161,7 @@ export default function ParticipantProfilePage({
       {/* CTA */}
       <Link
         href={`/app/gestao/radar/${participantId}/cuidado`}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-2.5 text-sm font-medium text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus sm:w-auto"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-2.5 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus sm:w-auto"
       >
         <Heart className="size-4" aria-hidden="true" />
         Registrar cuidado

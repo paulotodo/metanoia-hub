@@ -82,7 +82,7 @@ export function ModuleAccordionItem({
         </div>
         {/* Chevron icon */}
         <svg
-          className={`shrink-0 w-4 h-4 text-muted-foreground transition-transform duration-200 ease-out ${isExpanded ? 'rotate-180' : ''}`}
+          className={`shrink-0 w-4 h-4 text-muted-foreground motion-safe:transition-transform duration-200 ease-out ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -98,7 +98,7 @@ export function ModuleAccordionItem({
         id={regionId}
         role="region"
         aria-label={`Aulas do módulo ${module.name}`}
-        className={`transition-all duration-200 ease-out overflow-hidden ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
+        className={`motion-safe:transition-all duration-200 ease-out overflow-hidden ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
       >
         {isExpanded && (
           <div className="divide-y divide-border">

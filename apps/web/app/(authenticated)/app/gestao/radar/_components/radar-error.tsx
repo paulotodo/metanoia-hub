@@ -24,7 +24,7 @@ export function RadarError({
         <button
           type="button"
           onClick={onRetry}
-          className="rounded-md bg-brand-teal px-4 py-2 text-sm font-medium text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+          className="rounded-md bg-brand-teal px-4 py-2 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
         >
           Tentar de novo
         </button>

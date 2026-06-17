@@ -82,7 +82,7 @@ export function SemaforoPill({
       className={cn(
         // Respect prefers-reduced-motion: conditional transition
         "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold",
-        "transition-all duration-150 motion-reduce:transition-none",
+        "motion-safe:transition-all duration-150 motion-reduce:transition-none",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus",
         effectiveState === "default" && [
           "border",

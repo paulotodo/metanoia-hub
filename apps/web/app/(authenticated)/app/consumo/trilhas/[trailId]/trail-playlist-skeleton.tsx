@@ -2,7 +2,7 @@
  * TrailPlaylistSkeleton — loading placeholder for TrailPlaylist.
  *
  * Uses fixed dimensions matching the real component to prevent CLS (FR-007, FR-008).
- * animate-pulse wrapped in motion-safe: so it respects prefers-reduced-motion.
+ * motion-safe:animate-pulse wrapped in motion-safe: so it respects prefers-reduced-motion.
  */
 
 // Not a Client Component — no interactivity; pure static markup.

@@ -155,7 +155,7 @@ export function GroupTrailsClient({ groupId }: Props) {
             {Array.from({ length: 2 }).map((_, i) => (
               <div
                 key={i}
-                className="h-14 animate-pulse rounded-lg border border-border bg-surface"
+                className="h-14 motion-safe:animate-pulse rounded-lg border border-border bg-surface"
               />
             ))}
           </div>

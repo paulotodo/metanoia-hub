@@ -24,11 +24,11 @@ export function GrupoPillFilter({
         aria-checked={selectedGroupId === null}
         onClick={() => onSelect(null)}
         className={cn(
-          "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+          "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium motion-safe:transition-colors",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus",
           selectedGroupId === null
-            ? "bg-brand-teal text-text-inverse"
-            : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-sunken",
+            ? "bg-brand-teal text-text-inverse active:opacity-80 active:scale-[0.98]"
+            : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-sunken active:opacity-80 active:scale-[0.98]",
         )}
       >
         Todos
@@ -41,7 +41,7 @@ export function GrupoPillFilter({
           aria-checked={selectedGroupId === group.id}
           onClick={() => onSelect(group.id)}
           className={cn(
-            "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+            "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium motion-safe:transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus",
             selectedGroupId === group.id
               ? "bg-brand-teal text-text-inverse"

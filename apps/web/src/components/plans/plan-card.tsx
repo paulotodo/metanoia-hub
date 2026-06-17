@@ -118,7 +118,7 @@ export function PlanCard({
         role="region"
         aria-label={`Recursos do plano ${name}`}
         className={[
-          'overflow-hidden transition-all duration-200',
+          'overflow-hidden motion-safe:transition-all duration-200',
           expanded ? 'mt-4 max-h-96 opacity-100' : 'max-h-0 opacity-0',
         ].join(' ')}
       >
@@ -140,11 +140,11 @@ export function PlanCard({
           aria-label={`${cta} — Plano ${name}`}
           className={[
             'w-full rounded-md px-4 py-2 text-sm font-medium',
-            'transition-colors outline-none',
+            'motion-safe:transition-colors outline-none',
             'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-text-primary)]',
             ctaVariant === 'primary'
-              ? 'bg-[var(--color-text-primary)] text-white hover:opacity-90'
-              : 'border border-[var(--color-border-default)] text-text-primary hover:bg-gray-50',
+              ? 'bg-[var(--color-text-primary)] text-white hover:opacity-90 active:opacity-80'
+              : 'border border-[var(--color-border-default)] text-text-primary hover:bg-gray-50 active:bg-gray-100',
           ].join(' ')}
           onClick={(e) => {
             e.stopPropagation(); // Não disparar expand do card

@@ -56,9 +56,9 @@ export default function ParticipantGroupDetailPage() {
           aria-hidden="true"
           className="flex flex-col gap-4"
         >
-          <div className="mx-auto h-16 w-16 animate-pulse rounded-full bg-[var(--muted)]" />
-          <div className="h-6 w-2/3 animate-pulse rounded bg-[var(--muted)]" />
-          <div className="h-24 animate-pulse rounded bg-[var(--muted)]" />
+          <div className="mx-auto h-16 w-16 motion-safe:animate-pulse rounded-full bg-[var(--muted)]" />
+          <div className="h-6 w-2/3 motion-safe:animate-pulse rounded bg-[var(--muted)]" />
+          <div className="h-24 motion-safe:animate-pulse rounded bg-[var(--muted)]" />
         </div>
       </main>
     );

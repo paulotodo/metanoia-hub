@@ -56,6 +56,7 @@ export function LiveStatusBar({
       aria-live="polite"
       className="flex items-center gap-3 rounded-lg bg-surface-muted px-4 py-3"
     >
+      {/* motion-essential: dot de reunião ativa — isenção FR-3.4; safety net global cobre reduced-motion */}
       <span
         aria-hidden="true"
         className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-care-alert"

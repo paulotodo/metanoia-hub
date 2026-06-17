@@ -3,7 +3,7 @@
 function Pulse({ className }: { className: string }) {
   return (
     <div
-      className={`animate-pulse rounded-lg bg-surface-sunken ${className}`}
+      className={`motion-safe:animate-pulse rounded-lg bg-surface-sunken ${className}`}
     />
   );
 }

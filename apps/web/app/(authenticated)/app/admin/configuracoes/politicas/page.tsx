@@ -46,10 +46,10 @@ export default function PoliciesPage() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between py-4">
               <div className="space-y-2">
-                <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
-                <div className="h-3 w-72 animate-pulse rounded bg-gray-100" />
+                <div className="h-4 w-48 motion-safe:animate-pulse rounded bg-gray-200" />
+                <div className="h-3 w-72 motion-safe:animate-pulse rounded bg-gray-100" />
               </div>
-              <div className="h-6 w-11 animate-pulse rounded-full bg-gray-200" />
+              <div className="h-6 w-11 motion-safe:animate-pulse rounded-full bg-gray-200" />
             </div>
           ))}
         </div>

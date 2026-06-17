@@ -24,9 +24,9 @@ export function TrailProgressView({ trailId }: TrailProgressViewProps) {
   if (isLoading) {
     return (
       <div className="p-6 space-y-4" aria-busy="true">
-        <div className="h-6 w-48 bg-muted animate-pulse rounded" />
-        <div className="h-4 w-full bg-muted animate-pulse rounded" />
-        <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+        <div className="h-6 w-48 bg-muted motion-safe:animate-pulse rounded" />
+        <div className="h-4 w-full bg-muted motion-safe:animate-pulse rounded" />
+        <div className="h-4 w-3/4 bg-muted motion-safe:animate-pulse rounded" />
       </div>
     );
   }
