@@ -57,7 +57,15 @@ test.describe('a11y-touch-motion — touch targets (mobile Chromium)', () => {
   // -------------------------------------------------------------------------
   test('SC-1.1 — controles interativos públicos: getBoundingClientRect ≥ 44×44px', async ({
     page,
-  }) => {
+  }, testInfo) => {
+    // WCAG 2.5.5 (44px) aplica-se a viewport MOBILE (< md). Em desktop (>= md) o
+    // mínimo é 24px com espaçamento (WCAG 2.5.8 AA / FR-1.4), e os primitivos
+    // usam md:h-10 (40px) por decisão de design. Mede APENAS em viewport mobile.
+    const vp = page.viewportSize();
+    test.skip(
+      !vp || vp.width >= 768,
+      `Viewport desktop (>= 768px) — touch target de 44px não se aplica (WCAG 2.5.8 AA / FR-1.4). Projeto: ${testInfo.project.name}`,
+    );
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(500); // aguardar hidratação
 
@@ -106,7 +114,15 @@ test.describe('a11y-touch-motion — touch targets (mobile Chromium)', () => {
   // -------------------------------------------------------------------------
   // SC-1.1b: verificar também /login (rota pública com inputs)
   // -------------------------------------------------------------------------
-  test('SC-1.1b — /login: controles interativos ≥ 44×44px no mobile', async ({ page }) => {
+  test('SC-1.1b — /login: controles interativos ≥ 44×44px no mobile', async ({
+    page,
+  }, testInfo) => {
+    // Ver SC-1.1: 44px é critério MOBILE; desktop usa 24px+espaçamento (FR-1.4).
+    const vp = page.viewportSize();
+    test.skip(
+      !vp || vp.width >= 768,
+      `Viewport desktop (>= 768px) — touch target de 44px não se aplica (WCAG 2.5.8 AA / FR-1.4). Projeto: ${testInfo.project.name}`,
+    );
     await page.goto('/login', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(500);
 
@@ -286,7 +302,7 @@ test.describe('a11y-touch-motion — touch targets (mobile Chromium)', () => {
     // (ex: o Button primitivo de @metanoia/ui que já tem active: nativa)
     expect.soft(
       delta,
-      `Botão "${await targetBtn.textContent()?.trim()}" deve ter opacity diferente durante :active (before=${opacityBefore}, during=${opacityDuring})`,
+      `Botão "${((await targetBtn.textContent()) ?? '').trim()}" deve ter opacity diferente durante :active (before=${opacityBefore}, during=${opacityDuring})`,
     ).toBeGreaterThanOrEqual(0.05);
   });
 });
