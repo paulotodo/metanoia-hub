@@ -85,7 +85,8 @@ export default function GruposPage() {
     <main className="mx-auto max-w-6xl px-6 py-10">
       <header className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-display mb-1">{t.title}</h1>
+          {/* data-autofocus: CHK007 — FocusManager move o foco aqui após navegação (TD-001/US2) */}
+          <h1 className="text-display mb-1" data-autofocus>{t.title}</h1>
           <p className="text-body text-text-secondary">{t.subtitle}</p>
         </div>
         <Link

@@ -1,0 +1,267 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-teclado-autenticado",
+  "execution": {
+    "id": "feat-a11y-teclado-autenticado-20260617T002500Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 12.2: Navegacao por teclado nos fluxos autenticados (NFR-A1) — dashboard 3 experiencias, CRUD grupos, builder de trilhas (alternativa teclado ao drag-and-drop), catalogo/busca, config tenant/branding, gestao de planos; atender TD-001 (foco pos-redirect pos-login).",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-17T00:25:00Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker e clarify-answerer sobre a spec gerada.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-17T00:27:06Z",
+      "finished_at": "2026-06-17T00:31:53Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 287,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T00:31:23Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-17T00:36:56Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T00:37:43Z",
+          "decision_id": "dec-008"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-17T00:25:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T00:27:36Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-teclado-autenticado)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story navegacao teclado fluxos autenticados nfr dashboard",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T00:28:13Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio de execucao specify — feature a11y-teclado-autenticado",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 12.2: 6 fluxos autenticados (dashboard, grupos, trilhas, catalogo, config, planos) + TD-001 foco pos-redirect. Artefato 12-2 presente. Contexto da 12.1 injetado via read-back K=4.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T00:31:12Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-concluido: spec.md gerada em docs/specs/a11y-teclado-autenticado/spec.md",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Feature Story 12.2 com 7 user stories (dashboard, TD-001 foco pos-redirect, grupos, trilhas, catalogo, config, planos), 27 FRs, 7 SCs mensuraveis, 0 NEEDS_CLARIFICATION. Artefato fonte: 12-2-navegacao-por-teclado-fluxos-autenticados-nfr-a1.md.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T00:31:34Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip do gate validate-documentation: skill nao disponivel no ambiente",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Skill validate-documentation nao registrada no harness; validacao manual interna executada via checklist: 0 NC, 27 FRs, 7 SCs mensuraveis, zero frameworks na spec.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T00:35:25Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T00:37:05Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio da fase clarify — onda-002 iniciada apos specify concluido com exito (7 US, 27 FR, 7 SC)",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "0 bloqueios pendentes, hash OK, gatilhos de aborto limpos. Spec gerada com 0 NEEDS_CLARIFICATION.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T00:37:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker na onda onda-002",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-17T00:36:56Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 1,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 287,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 8,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0,
+    "cache": {
+      "tokens_cache_misses_disabled": 2
+    }
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "navegacao",
+    "teclado",
+    "fluxos",
+    "autenticados",
+    "nfr",
+    "dashboard"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T00:27:22Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T00:32:49Z",
+      "description": "onda-001 specify concluida; aguardando wakeup para clarify"
+    }
+  ]
+}

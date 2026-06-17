@@ -82,9 +82,11 @@ export function GroupTrailsClient({ groupId }: Props) {
 
       {/* Heading */}
       <section aria-labelledby="group-trails-heading">
+        {/* data-autofocus: CHK007 — FocusManager move o foco aqui após navegação (TD-001/US2) */}
         <h1
           id="group-trails-heading"
           className="mb-2 text-2xl font-bold text-foreground"
+          data-autofocus
         >
           {t.title}
         </h1>

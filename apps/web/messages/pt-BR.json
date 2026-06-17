@@ -1488,5 +1488,32 @@
     "skipNav": {
       "label": "Ir para o conteúdo"
     }
+  },
+  "catalog": {
+    "title": "Catálogo de Trilhas",
+    "searchPlaceholder": "Buscar trilhas e aulas...",
+    "filtersLabel": "Filtros",
+    "filterCategory": "Categoria",
+    "filterStatus": "Status",
+    "filterAll": "Todos",
+    "resultsCount": "{count} trilha(s) encontrada(s)",
+    "resultsAnnounce": "{count} trilha(s) encontrada(s) para \"{query}\"",
+    "noResults": "Nenhuma trilha encontrada para esta busca.",
+    "loadingResults": "Buscando trilhas...",
+    "prevPage": "Página anterior",
+    "nextPage": "Próxima página",
+    "pageOf": "Página {current} de {total}",
+    "trailCard": {
+      "activate": "Ver trilha {name}",
+      "status": {
+        "not_started": "Não iniciada",
+        "in_progress": "Em andamento",
+        "completed": "Concluída"
+      }
+    },
+    "filterDropdown": {
+      "open": "Abrir filtro {label}",
+      "close": "Fechar filtro {label}"
+    }
   }
 }

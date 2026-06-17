@@ -51,7 +51,8 @@ export function DashboardClient() {
       {/* Header */}
       <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-display">{t.title}</h1>
+          {/* data-autofocus: CHK007 — FocusManager move o foco aqui após navegação (TD-001/US2) */}
+          <h1 className="text-display" data-autofocus>{t.title}</h1>
           <p className="text-body text-text-secondary">
             {t.subtitle.replace('{groupCount}', String(groupCount))}
           </p>

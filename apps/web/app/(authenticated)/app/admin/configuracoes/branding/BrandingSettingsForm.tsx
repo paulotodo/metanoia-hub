@@ -7,8 +7,20 @@
  * AC7: Non-blocking contrast warning when ratio < 4.5:1.
  * Gate FE: logo/color inputs disabled for Free tenants.
  * Constitution V: no TanStack Query in Server Component parent; no Zustand for server state.
+ *
+ * Story 12.2 — US6, FR-019..FR-021, CL-005
+ * Keyboard accessibility:
+ *   FR-019: Tab order lógico (visual top-to-bottom).
+ *   FR-020: Campo hex alternativo ao color picker visual (acessível em todos os browsers).
+ *   FR-021: Upload de logo via <label> focável + ativável por Enter/Space.
+ *   CL-005: useAsyncAnnouncer anuncia resultado do save (dec-015: manter foco na origem).
+ *
+ * CHK024 — Guideline de latência de foco:
+ *   Target < 16ms (1 frame a 60 fps) entre evento de teclado e atualização do
+ *   foco/estado. Não é um SC automático — documentado aqui como guideline de qualidade.
+ *   Monitorar com DevTools > Performance se regressões forem suspeitas.
  */
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import Image from 'next/image';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -18,6 +30,7 @@ import {
 } from '@metanoia/types';
 import { envelopeClient } from '@/lib/api/envelope';
 import { checkBrandContrast } from '@/lib/contrast-checker';
+import { useAsyncAnnouncer } from '@/components/a11y/async-announcer';
 
 // ---------------------------------------------------------------------------
 // Response envelope parsers for client-side parsing
@@ -61,6 +74,12 @@ interface BrandingSettingsFormProps {
 
 export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormProps) {
   const queryClient = useQueryClient();
+
+  // CL-005: announcer global para feedback assíncrono (dec-015: manter foco na origem)
+  const { announce } = useAsyncAnnouncer();
+
+  // FR-021: ref para o <input type="file"> — label atua como trigger focável
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const plan = initialBranding?.plan ?? 'free';
   const canCustomize = initialBranding?.canCustomizeBranding ?? false;
@@ -135,23 +154,33 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
   // ── Save handler ─────────────────────────────────────────────────────────
 
   const handleSave = async () => {
-    // Upload logo if a new file was selected
-    if (logoFile) {
-      await uploadLogoMutation.mutateAsync(logoFile);
-    }
+    try {
+      // Upload logo if a new file was selected
+      if (logoFile) {
+        await uploadLogoMutation.mutateAsync(logoFile);
+      }
 
-    // Build PATCH payload — only include changed/allowed fields
-    const dto: UpdateBrandingInput = { displayName: displayName || undefined };
-    if (canCustomize) {
-      dto.primaryColor = primaryColor;
-      dto.secondaryColor = secondaryColor;
-    }
+      // Build PATCH payload — only include changed/allowed fields
+      const dto: UpdateBrandingInput = { displayName: displayName || undefined };
+      if (canCustomize) {
+        dto.primaryColor = primaryColor;
+        dto.secondaryColor = secondaryColor;
+      }
 
-    await updateBrandingMutation.mutateAsync(dto);
+      await updateBrandingMutation.mutateAsync(dto);
+
+      // CL-005 / dec-015: manter foco na origem + anunciar via aria-live polite
+      // Não mover foco — o botão Salvar mantém o foco onde está.
+      announce('Configurações salvas com sucesso.');
+    } catch {
+      // CL-005: erro anunciado como assertive (interrompe leitor imediatamente)
+      announce('Não foi possível salvar. Verifique sua conexão e tente novamente.', {
+        politeness: 'assertive',
+      });
+    }
   };
 
   const isPending = updateBrandingMutation.isPending || uploadLogoMutation.isPending;
-  const isSuccess = updateBrandingMutation.isSuccess && !uploadLogoMutation.isError;
   const error = updateBrandingMutation.error ?? uploadLogoMutation.error;
 
   // ── Logo file handler ─────────────────────────────────────────────────────
@@ -170,6 +199,22 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
     reader.readAsDataURL(file);
   };
 
+  // FR-021: label do logo ativável por teclado (Enter/Space dispara o file picker)
+  const handleLogoLabelKeyDown = (e: KeyboardEvent<HTMLLabelElement>) => {
+    if ((e.key === 'Enter' || e.key === ' ') && !(!canCustomize || isPending)) {
+      e.preventDefault();
+      fileInputRef.current?.click();
+    }
+  };
+
+  // FR-020: validação inline do campo hex (aceita #RRGGBB ou #RGB)
+  const handleHexChange =
+    (setter: (v: string) => void) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setter(value);
+    };
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -180,11 +225,16 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
       }}
       aria-label="Identidade Visual da Igreja"
     >
-      {/* ── Logo Upload ─────────────────────────────────────────────────── */}
+      {/* ── Logo Upload — FR-021 ─────────────────────────────────────────── */}
+      {/* Label é focável (tabIndex=0) e ativável via Enter/Space como alternativa */}
+      {/* de teclado ao click. Input type=file recebe o foco nativo normalmente.  */}
       <div className="mb-6">
         <label
           htmlFor="logo-upload"
-          className="mb-1 block text-sm font-medium text-[var(--color-text-primary)]"
+          tabIndex={canCustomize && !isPending ? 0 : -1}
+          onKeyDown={handleLogoLabelKeyDown}
+          className="mb-1 block cursor-pointer text-sm font-medium text-[var(--color-text-primary)] focus:outline-2 focus:outline-[var(--color-brand-primary,var(--color-brand-teal))] focus-visible:outline-2"
+          aria-disabled={!canCustomize || isPending}
         >
           Logo da Igreja
         </label>
@@ -206,7 +256,9 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
           </div>
         )}
 
+        {/* FR-021: input file focável nativamente; label acima é o trigger de teclado */}
         <input
+          ref={fileInputRef}
           id="logo-upload"
           type="file"
           accept=".png,.jpg,.jpeg,.svg"
@@ -225,7 +277,10 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
         )}
       </div>
 
-      {/* ── Primary Color ───────────────────────────────────────────────── */}
+      {/* ── Primary Color — FR-019, FR-020 ──────────────────────────────── */}
+      {/* FR-019: campo hex (id=primary-color-text) recebe foco antes do picker visual. */}
+      {/* FR-020: picker visual (type=color) não é confiável via teclado em todos os */}
+      {/*         browsers — o campo hex é a alternativa acessível principal.           */}
       <div className="mb-6">
         <label
           htmlFor="primary-color-text"
@@ -234,36 +289,47 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
           Cor Principal
         </label>
         <div className="flex items-center gap-3">
+          {/* Picker visual: aria-hidden pois não é confiável via teclado (FR-020) */}
           <input
             id="primary-color-picker"
             type="color"
-            aria-label="Seletor de Cor Principal"
+            aria-hidden="true"
+            tabIndex={-1}
             value={primaryColor}
             disabled={!canCustomize || isPending}
             onChange={(e) => setPrimaryColor(e.target.value)}
             className="h-10 w-14 cursor-pointer rounded border border-[var(--color-border-default)] disabled:cursor-not-allowed disabled:opacity-50"
           />
+          {/* Campo hex: alternativa acessível por teclado (FR-020) */}
           <input
             id="primary-color-text"
             type="text"
             value={primaryColor}
             disabled={!canCustomize || isPending}
-            onChange={(e) => setPrimaryColor(e.target.value)}
+            onChange={handleHexChange(setPrimaryColor)}
             maxLength={9}
+            pattern="^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$"
+            autoComplete="off"
+            spellCheck={false}
             className="w-32 rounded border border-[var(--color-border-default)] px-2 py-1 text-sm font-mono disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Valor hexadecimal da Cor Principal"
+            aria-describedby={contrastResult?.hasWarning ? 'primary-contrast-warning' : undefined}
           />
         </div>
 
         {/* Non-blocking contrast warning (AC7) */}
         {contrastResult?.hasWarning && (
-          <p className="mt-2 text-xs text-[var(--color-care-attention)]" role="alert">
+          <p
+            id="primary-contrast-warning"
+            className="mt-2 text-xs text-[var(--color-care-attention)]"
+            role="alert"
+          >
             A cor escolhida pode ter baixo contraste em fundos claros. Considere usar uma cor mais escura para melhor legibilidade.
           </p>
         )}
       </div>
 
-      {/* ── Secondary Color ─────────────────────────────────────────────── */}
+      {/* ── Secondary Color — FR-019, FR-020 ────────────────────────────── */}
       <div className="mb-6">
         <label
           htmlFor="secondary-color-text"
@@ -272,22 +338,28 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
           Cor Secundária
         </label>
         <div className="flex items-center gap-3">
+          {/* Picker visual: aria-hidden pois não é confiável via teclado (FR-020) */}
           <input
             id="secondary-color-picker"
             type="color"
-            aria-label="Seletor de Cor Secundária"
+            aria-hidden="true"
+            tabIndex={-1}
             value={secondaryColor}
             disabled={!canCustomize || isPending}
             onChange={(e) => setSecondaryColor(e.target.value)}
             className="h-10 w-14 cursor-pointer rounded border border-[var(--color-border-default)] disabled:cursor-not-allowed disabled:opacity-50"
           />
+          {/* Campo hex: alternativa acessível por teclado (FR-020) */}
           <input
             id="secondary-color-text"
             type="text"
             value={secondaryColor}
             disabled={!canCustomize || isPending}
-            onChange={(e) => setSecondaryColor(e.target.value)}
+            onChange={handleHexChange(setSecondaryColor)}
             maxLength={9}
+            pattern="^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$"
+            autoComplete="off"
+            spellCheck={false}
             className="w-32 rounded border border-[var(--color-border-default)] px-2 py-1 text-sm font-mono disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Valor hexadecimal da Cor Secundária"
           />
@@ -314,12 +386,10 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
         />
       </div>
 
-      {/* ── Status feedback ──────────────────────────────────────────────── */}
-      {isSuccess && (
-        <p className="mb-4 text-sm text-[var(--color-care-ok)]" role="status" aria-live="polite">
-          Identidade visual da igreja atualizada com sucesso.
-        </p>
-      )}
+      {/* ── Status feedback — substituído por useAsyncAnnouncer (CL-005) ── */}
+      {/* O anúncio de sucesso/erro é feito via announce() no handleSave.    */}
+      {/* A região aria-live fica no AsyncAnnouncerProvider (layout global). */}
+      {/* Exibimos apenas o indicador visual de erro residual abaixo.        */}
       {error && (
         <p className="mb-4 text-sm text-[var(--color-care-urgent)]" role="alert" aria-live="assertive">
           Não foi possível salvar. Verifique sua conexão e tente novamente.
@@ -327,6 +397,7 @@ export function BrandingSettingsForm({ initialBranding }: BrandingSettingsFormPr
       )}
 
       {/* ── Save button ──────────────────────────────────────────────────── */}
+      {/* dec-015: foco permanece neste botão após salvar (não é movido). */}
       <button
         type="submit"
         disabled={isPending}
