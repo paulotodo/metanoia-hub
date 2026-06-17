@@ -326,44 +326,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T10:00:29Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 2 (fase clarify)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T10:02:43Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Incorporação de dec-013 (Opção B operador): excluir BrandingSettingsForm + super/tenants/novo do escopo da 12.5",
-      "options_considered": [
-        "incluir-no-escopo",
-        "excluir-diferir-settings-a11y"
-      ],
-      "choice": "excluir-diferir-settings-a11y",
-      "rationale": "Operador decidiu Opcao B (block-001): forms de admin backoffice grandes adiados para story settings-a11y. 12.5 foca em forms publicos/pastorais.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -401,7 +363,7 @@
     "wallclock_total_seconds": 865,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 15,
+    "decisions_total": 13,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

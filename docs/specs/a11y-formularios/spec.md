@@ -4,7 +4,7 @@
 **Epic**: 12 — Acessibilidade
 **Versão da spec**: 1.0.0
 **Data**: 2026-06-17
-**Status**: draft — aguardando clarify
+**Status**: clarify concluído — pronto para plan
 **Spec autoritativa de referência**: `_bmad-output/implementation-artifacts/12-5-formularios-acessiveis-nfr-a3.md`
 **Constitution**: `docs/constitution.md`
 **Stories anteriores entregues**: 12.1 (teclado), 12.2 (focus/contrast), 12.3 (touch/motion), 12.4 (ARIA regions/skip-nav/announcer)
@@ -30,8 +30,8 @@ A auditoria do codebase revelou o seguinte ponto de partida:
 | `Step2Community.tsx` (wizard) | OK (htmlFor) | Ausente | Ausente | Ausente | Ausente | Ausente | Ausente |
 | `Step3Group.tsx` (wizard) | OK (htmlFor) | Ausente | Ausente | Ausente | Parcial (role="alert" no erro) | Ausente | Ausente |
 | `Step4Invite.tsx` (wizard) | OK (htmlFor) | Ausente | Ausente | Ausente | Ausente | Ausente | Ausente |
-| Login/Registro (Keycloak) | Fora do app — delegado ao Keycloak IDP; NEEDS_CLARIFICATION NC1 | — | — | — | — | — | — |
-| `BrandingSettingsForm` | Nao implementado ainda (diretório settings/ vazio) | — | — | — | — | — | — |
+| `login-form.tsx` (Next.js nativo) | OK (auditado) | Ausente | Ausente | Ausente | Ausente | Ausente | Ausente |
+| `BrandingSettingsForm` | Fora de escopo (dec-013 Opção B) — adiado para story `settings-a11y` | — | — | — | — | — | — |
 | `password-input-with-toggle.tsx` | A auditar | A auditar | A auditar | A auditar | A auditar | N/A | N/A |
 | `terms-checkbox.tsx` | A auditar | A auditar | A auditar | A auditar | A auditar | N/A | N/A |
 | `day-of-week-select.tsx` | A auditar | A auditar | A auditar | A auditar | A auditar | N/A | N/A |
@@ -112,7 +112,7 @@ A auditoria do codebase revelou o seguinte ponto de partida:
 - SC5.3: `contact-message-form.tsx` e `demo-request-form.tsx`: `aria-describedby` nos campos; `scrollToFirstError()`; label explícito para select `churchSize`.
 - SC5.4: `reflection-form-field.tsx`: aceitar prop `required?`; propagar `aria-required`.
 - SC5.5: `password-input-with-toggle.tsx`, `terms-checkbox.tsx`, `day-of-week-select.tsx`: auditar e corrigir labels, aria-required, aria-invalid.
-- SC5.6: Formulários de trilha e BrandingSettings/TenantConfig: NEEDS_CLARIFICATION NC2.
+- SC5.6: `BrandingSettingsForm` e `super/tenants/novo/page.tsx` — **fora de escopo desta story** (dec-013, Opção B). Adiados para story `settings-a11y`. Formulários de trilhas não encontrados no codebase.
 
 ### US6 — Cobertura de testes
 **Como** time de desenvolvimento,
@@ -172,19 +172,48 @@ A auditoria do codebase revelou o seguinte ponto de partida:
 
 ## Clarifications
 
-> **Resolvido na fase clarify (onda-002, 2026-06-17).** Forms reportados
-> como "não encontrados" na specify eram FALSO NEGATIVO da busca — paths
-> reais verificados via `ls`/`find`/`grep`. Decisões abaixo (dec-008 a
-> dec-012); ver `state.json` para auditoria completa.
+> **Fase clarify concluída (onda-002, 2026-06-17).** Todas as ambiguidades (NC1–NC4)
+> foram resolvidas, incluindo block-001 (dec-013: Opção B, operador). Ver `state.json`
+> para auditoria completa (dec-006 a dec-013).
 
-### Escopo concreto de formulários (paths reais verificados)
+### NC1 — Escopo do formulário de Login — RESOLVIDO (dec-008, score 2)
 
-**Componente base (US1/US2):**
-- Criar `FormField` reutilizável em `apps/web/src/components/forms/index.ts` (NC3 — confirmado pela spec, score 2).
-- `scrollToFirstError()` + `SubmitButton` (aria-busy) + erro inline por campo (aria-describedby + aria-invalid + role="alert") + foco no 1º campo inválido (NC4 — padrão WCAG/WAI, score 2).
+O projeto possui form de login **nativo em Next.js** (não é Keycloak puro):
+`apps/web/app/(public)/login/_components/login-form.tsx` (6595 bytes, confirmado via `ls`).
+**Decisão**: incluído no escopo como must-have. O Keycloak atua como backend de autenticação,
+mas o formulário de captura de email/senha é renderizado pelo app.
 
-**Forms must-have no escopo (autenticação + onboarding):**
-- `apps/web/app/(public)/login/_components/login-form.tsx` (Q1, score 2 — form nativo confirmado, 6595 bytes; corrige NC1)
+### NC2 — BrandingSettingsForm e super/tenants/novo — RESOLVIDO (dec-013, Opção B — operador)
+
+`BrandingSettingsForm.tsx` (17522 bytes) e `super/tenants/novo/page.tsx` (367 linhas)
+existem no codebase, mas foram **excluídos do escopo desta story** por decisão do operador
+(block-001, dec-013). Justificativa: forms grandes de backoffice admin com escopo específico
+merecem story dedicada (`settings-a11y`) para não inflar a 12.5. A 12.5 foca nos
+**formulários públicos e pastorais** listados abaixo.
+
+### NC3 — Estratégia: FormField reutilizável — RESOLVIDO (dec-010, score 2)
+
+**Decisão**: Criar `FormField` reutilizável em `apps/web/src/components/forms/form-field.tsx`
+(exportado por `index.ts`) e refatorar todos os forms do escopo para usá-lo. Garante
+consistência ARIA em vez de implementação manual e divergente por form.
+
+### NC4 — Estratégia de anúncio de erro — RESOLVIDO (dec-011, score 2)
+
+**Decisão**: Erros **inline por campo** via `aria-describedby` + `aria-invalid` + `role="alert"`
+(sem sumário centralizado no topo). `scrollToFirstError()` move foco ao primeiro campo inválido
+no submit. Padrão já parcialmente adotado em `contact-message-form` e `demo-request-form` —
+estendido consistentemente a todos os forms.
+
+---
+
+### Escopo final de formulários (paths reais verificados)
+
+**Componente base (US1/US2) — criar:**
+- `apps/web/src/components/forms/form-field.tsx` — `FormField` reutilizável (NC3)
+- `apps/web/src/lib/form-utils.ts` — `scrollToFirstError()` + `SubmitButton` (NC4)
+
+**Must-have — formulários de autenticação e onboarding:**
+- `apps/web/app/(public)/login/_components/login-form.tsx` (NC1 — form nativo confirmado)
 - `apps/web/app/(public)/register/_components/register-form.tsx`
 - `apps/web/app/(onboarding)/convite/[token]/criar-conta/_components/create-account-form.tsx`
 - `apps/web/src/components/onboarding/wizard/steps/Step1Profile.tsx`
@@ -192,51 +221,23 @@ A auditoria do codebase revelou o seguinte ponto de partida:
 - `apps/web/src/components/onboarding/wizard/steps/Step3Group.tsx`
 - `apps/web/src/components/onboarding/wizard/steps/Step4Invite.tsx`
 
-**Forms should-have no escopo:**
-- `apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx` (Q2, score 2)
-- `apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx` (Q2, score 2)
+**Should-have — formulários pastorais e de gestão:**
+- `apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx` (dec-006, score 2)
+- `apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx` (dec-006, score 2)
 - `apps/web/src/components/groups/group-form.tsx`
 - `apps/web/src/components/groups/invite-members-form.tsx`
 - `apps/web/app/(authenticated)/app/admin/grupos/novo/_components/create-group-form.tsx`
-- `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx` (Q4, score 3 — canônico)
-- `apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx` (Q5, score 3 — Radar Pastoral)
-- `apps/web/app/(authenticated)/app/gestao/reunioes/[meetingId]/reflexao/page.tsx` + `apps/web/src/components/meetings/reflection-form-field.tsx` (Q5, score 3)
+- `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx` (dec-009, score 3 — path canônico App Router)
+- `apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx` (dec-012, score 3 — Radar Pastoral)
+- `apps/web/app/(authenticated)/app/gestao/reunioes/[meetingId]/reflexao/page.tsx` + `apps/web/src/components/meetings/reflection-form-field.tsx` (dec-012, score 3)
 - `apps/web/src/components/marketing/contact-message-form.tsx`
 - `apps/web/src/components/marketing/demo-request-form.tsx`
 
-**Fora de escopo (documentado):**
-- `apps/web/src/components/trails/group-trails-client.tsx` — RESÍDUO. A rota App Router importa `./group-trails-client` (versão `app/`); a versão `src/` tem ZERO imports externos e ZERO `<form` (não é mais um form). Candidato a remoção em limpeza futura (Q4, dec-009).
-- `apps/web/src/components/catalog/catalog-search.tsx` — não possui form com submit (busca/filtro), fora do escopo de formulários.
-
-**EM ABERTO — aguarda decisão humana (block-001, dec-012):**
-- `apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx` (17522 bytes — existe; NC2 resolvido quanto à existência, mas inclusão no escopo desta story é tradeoff de priorização). Mesmo perfil: `apps/web/app/(authenticated)/app/admin/super/tenants/novo/page.tsx` (367 linhas).
-
-
-## NEEDS_CLARIFICATION
-
-### NC1 — Escopo do formulário de Login
-**Contexto**: A busca no codebase não encontrou nenhum componente de formulário de login nativo em `apps/web/src/app/**`. O projeto usa Keycloak como IDP.
-
-**Ambiguidade**: A spec autoritativa (12-5) lista "Login (email + senha)" como must-have #1. Isso pode significar: (a) existe um form de login no app não encontrado pela busca; (b) o "login" é o fluxo do Keycloak, fora do escopo do app.
-
-**Impacto**: Se (a), precisa ser localizado e auditado. Se (b), o must-have #1 não tem código correspondente e Registro assume prioridade máxima.
-
-**Pergunta**: O formulário de login é renderizado pelo app Next.js ou inteiramente delegado ao Keycloak? Se existe form nativo, qual o path?
-
-### NC2 — Formulários ainda não implementados (BrandingSettings, TenantConfig, Trilhas)
-**Contexto**: `apps/web/src/components/settings/` está vazio. Formulários de CRUD de trilhas/módulos/lições não foram encontrados.
-
-**Ambiguidade**: A spec autoritativa os lista em "should-have". Se não estão implementados, não há o que auditar/corrigir neles nesta story.
-
-**Impacto**: Se ausentes, o escopo de should-have reduz. A story entrega FormField + correção dos forms existentes.
-
-**Pergunta**: BrandingSettings, TenantConfigForm e formulários de trilhas/módulos/lições estão implementados? Se sim, qual o path? Se não, confirmamos que esta story não os inclui.
-
-### NC3 — Estratégia: FormField reutilizável vs. retrofit in-loco
-**Decisão proposta** (score 2): Criar `FormField` e refatorar todos os forms existentes para usá-lo (opção A). Alinhado com o artefato explícito da spec autoritativa. Confirmação no clarify.
-
-### NC4 — Estratégia de anúncio: role="alert" por campo vs. sumário no topo
-**Decisão proposta** (score 2): Erros inline por campo com `role="alert"` + `scrollToFirstError()` (opção A). Já parcialmente adotado. Sem sumário centralizado. Confirmação no clarify.
+**Fora de escopo desta story (documentado):**
+- `apps/web/src/components/trails/group-trails-client.tsx` — resíduo; versão App Router (`app/`) é canônica; versão `src/` tem zero imports e zero `<form`. Candidato a remoção futura (dec-009).
+- `apps/web/src/components/catalog/catalog-search.tsx` — filtro/busca sem submit, sem formulário ARIA relevante.
+- `apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx` — adiado para story `settings-a11y` (dec-013, Opção B).
+- `apps/web/app/(authenticated)/app/admin/super/tenants/novo/page.tsx` — adiado para story `settings-a11y` (dec-013, Opção B).
 
 ---
 
