@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Executar fase clarify: spawn clarify-asker com spec.md gerada",
   "waves": [
     {

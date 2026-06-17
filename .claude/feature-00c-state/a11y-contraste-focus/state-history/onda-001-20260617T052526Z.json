@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Executar fase clarify: spawn clarify-asker com spec.md gerada",
   "waves": [
     {
@@ -41,35 +41,6 @@
           "skill": "specify",
           "timestamp": "2026-06-17T05:19:18Z",
           "decision_id": "dec-004"
-        }
-      ]
-    },
-    {
-      "id": "onda-002",
-      "started_at": "2026-06-17T05:25:26Z",
-      "finished_at": "2026-06-17T05:28:59Z",
-      "executed_stages": [
-        "plan"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 213,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify-analysis-inline",
-          "timestamp": "2026-06-17T05:26:46Z",
-          "decision_id": "dec-006"
-        },
-        {
-          "skill": "clarify-analysis-inline",
-          "timestamp": "2026-06-17T05:26:46Z",
-          "decision_id": "dec-007"
-        },
-        {
-          "skill": "clarify-analysis-inline",
-          "timestamp": "2026-06-17T05:26:46Z",
-          "decision_id": "dec-008"
         }
       ]
     }
@@ -168,82 +139,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-006",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T05:26:02Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "NC-1: estrategia de remediacao care-attention/care-ok",
-      "options_considered": [
-        "A-ajustar-hex",
-        "B-policy-texto-escuro",
-        "C-borda-obrigatoria"
-      ],
-      "choice": "B-policy-texto-escuro",
-      "rationale": "text-primary (#17252a) sobre care-attention=#d4a24c e 6.80:1 (PASS 4.5:1); sobre care-ok=#7ba38a e 5.58:1 (PASS). Opcao B resolve sem alterar tokens de identidade visual pastoral. Opcao A exigiria decisao de produto sobre paleta (score 0). Opcao C adiciona complexidade de border sem necessidade.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-007",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T05:26:26Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "NC-2: escopo da auditoria inclui dark mode ou apenas light?",
-      "options_considered": [
-        "light-only",
-        "light-e-dark-incluidos",
-        "dark-como-story-separada"
-      ],
-      "choice": "light-e-dark-incluidos",
-      "rationale": "tokens.css tem bloco .dark definido com care-* redefinidos. Calculos empiricos: dark care-attention 9.72:1 e 8.02:1 (PASS 3:1 grafico e 4.5:1 texto). Dark care-ok 8.38:1 e 6.91:1 (PASS). Escopo inclui dark como verificacao secundaria sem necessidade de remediacao adicional.",
-      "justification_score": 3,
-      "evidence": "packages/ui/styles/tokens.css linha 92: .dark { --color-care-attention: #e0bd7a (9.72:1 vs #1a1a1a PASS); --color-care-ok: #96bda4 (8.38:1 vs #1a1a1a PASS) }. Dark mode ja passa. Auditoria primaria=light; verificacao dark=confirmada pass, incluir no relatorio como scope coberto.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T05:26:38Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "NC-3: migracao focus-ring global automatizada ou revisao manual?",
-      "options_considered": [
-        "global-100pct-automatizada",
-        "semi-automatizada-com-casos-especiais",
-        "revisao-manual-total"
-      ],
-      "choice": "semi-automatizada-com-casos-especiais",
-      "rationale": "Codemod global aceito para ocorrencias sem cor semantica especifica. Casos com cor explicita nao-brand-teal (red-500, etc) exigem revisao manual. Estimativa: ~5-10 casos manuais de ~116 total. Testes axe+visual sao gate de validacao pos-migracao.",
-      "justification_score": 3,
-      "evidence": "delete-group-dialog.tsx linha 106: focus-visible:ring-red-500 (acao destrutiva — semantica intencional, NAO substituir por brand-teal). Demais ~115 ocorrencias usam ring-ring, ring-interactive-focus, ring-brand-teal ou ring-[var(--ring)] — candidatos a codemod automatizado.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T05:28:45Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "conclusao da fase clarify: todos os 3 NC resolvidos autonomamente",
-      "options_considered": [
-        "avancar-para-plan",
-        "pausa-humano",
-        "nova-rodada-clarify"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "NC-1 score 2 (Opcao B evidencia empirica), NC-2 score 3 (evidencia dark mode tokens.css), NC-3 score 3 (evidencia ring-red-500 em delete-group-dialog.tsx:106). Nenhum NC exigiu pausa humana.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -258,15 +153,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T05:25:26Z"
+    "current_wave_start": "2026-06-17T05:14:54Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 501,
+    "wallclock_total_seconds": 288,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 9,
+    "decisions_total": 5,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

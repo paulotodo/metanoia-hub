@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Executar fase clarify: spawn clarify-asker com spec.md gerada",
   "waves": [
     {
@@ -47,13 +47,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T05:25:26Z",
-      "finished_at": "2026-06-17T05:28:59Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 213,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -261,9 +259,9 @@
     "current_wave_start": "2026-06-17T05:25:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 501,
+    "wallclock_total_seconds": 288,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 9,

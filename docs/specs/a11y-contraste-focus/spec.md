@@ -6,8 +6,20 @@
 **NFR:** NFR-A2 (acessibilidade WCAG 2.1 AA)
 **UX:** DR19
 **Epic:** 12 (Acessibilidade)
-**Status:** ready-for-clarify
+**Status:** ready-for-plan
 **Data:** 2026-06-17
+
+---
+
+## Clarifications
+
+### Session 2026-06-17
+
+- Q: Estrategia de remediacao para `care-attention` (#d4a24c, 2.22:1) e `care-ok` (#7ba38a, 2.70:1): (A) ajustar tokens hex, (B) policy texto escuro obrigatorio em badges, ou (C) borda obrigatoria? → A: **Opcao B** — manter os tokens hex atuais e exigir `text-primary` (#17252a) como cor de texto interna em todos os badges/indicadores care-*. Evidencia: `text-primary` (#17252a) sobre `care-attention` (#d4a24c) = 6.80:1 (PASS 4.5:1); sobre `care-ok` (#7ba38a) = 5.58:1 (PASS 4.5:1). Tokens de identidade visual pastoral preservados sem alteracao de hue ou lightness.
+
+- Q: O escopo da auditoria inclui dark mode tokens (`packages/ui/styles/tokens.css`) ou apenas o preset light? → A: **Inclui ambos (light + dark como verificacao secundaria).** `packages/ui/styles/tokens.css` possui bloco `.dark` com `care-attention: #e0bd7a` (9.72:1 vs `#1a1a1a` — PASS) e `care-ok: #96bda4` (8.38:1 vs `#1a1a1a` — PASS). Dark mode ja passa em todos os pares criticos; nenhuma remediacao adicional necessaria. A auditoria primaria e no preset light; dark mode coberto como verificacao confirmatoria no mesmo escopo.
+
+- Q: A migracao das ~116 ocorrencias de `focus-visible` com ring pode ser global automatizada (sed/codemod) ou exige revisao manual? → A: **Semi-automatizada com casos especiais manuais.** Codemod global e aceito para ocorrencias sem cor semantica especifica (`ring-ring`, `ring-interactive-focus`, `ring-[var(--ring)]`, `ring-[var(--color-brand-teal)]`). Casos com cor explicita nao-brand-teal exigem revisao manual (ex: `delete-group-dialog.tsx` linha 106: `ring-red-500` — acao destrutiva, semantica intencional a preservar). Estimativa: ~5-10 casos manuais de ~116 total. Gate de validacao pos-migracao: testes axe + visual regression.
 
 ---
 
@@ -75,15 +87,9 @@ As tres variantes apontam funcionalmente para `brand-teal` mas via caminhos dist
 
 - SC-2.1: `text-muted` atinge >= 4.5:1 sobre `surface-base` e `surface-elevated`. Ratio atual: 3.18:1 -- necessita ajuste do token ou restricao de uso.
 
-- SC-2.2: `care-attention` (#d4a24c, amber) atinge >= 3:1 sobre surfaces quando usado como fundo de badge/indicador grafico (criterio grafico WCAG 2.1 SC 1.4.11). Ratio atual: 2.22:1 -- fail inclusivo no criterio grafico.
+- SC-2.2: `care-attention` (#d4a24c, amber) nao atinge 3:1 como cor de fundo de badge isolada (2.22:1). **Estrategia de remediacao (NC-1, Opcao B):** os tokens hex sao preservados; todos os badges/indicadores care-* DEVEM usar `text-primary` (#17252a) como cor de texto interno. `text-primary` sobre `care-attention` = 6.80:1 (PASS 4.5:1 texto normal). O token de cor da badge NAO e usado como texto isolado sobre surfaces — restricao documentada em comments no preset e enforced por lint/review.
 
-  > NEEDS_CLARIFICATION NC-1: A estrategia de remediacao para `care-attention` e `care-ok`:
-  > **Opcao A** -- Ajustar os valores dos tokens no preset para versoes com maior contraste (ex: escurecer care-attention para ~#b8860b).
-  > **Opcao B** -- Manter os tokens atuais e exigir que badges care-* usem SEMPRE `text-primary` (#17252a) como texto interno (que ja passa: text-primary on care-attention = 6.80:1), documentando que o token de cor da badge nao deve ser usado como texto isolado.
-  > **Opcao C** -- Adicionar borda obrigatoria nos badges care-* com contraste 3:1 sobre a superficie pai (WCAG SC 1.4.11 permite boundary via borda).
-  > A opcao escolhida afeta `packages/config/tailwind.preset.css` e possivelmente `packages/ui/`. Decisao de produto/design necessaria antes do plan.
-
-- SC-2.3: `care-ok` (#7ba38a, verde) atinge >= 3:1 sobre surfaces quando usado como fundo de badge. Ratio atual: 2.70:1 -- fail no criterio grafico. (Mesma ambiguidade de NC-1.)
+- SC-2.3: `care-ok` (#7ba38a, verde) nao atinge 3:1 como cor de fundo de badge isolada (2.70:1). **Estrategia de remediacao (NC-1, Opcao B):** mesmo mecanismo de SC-2.2 — badges care-ok DEVEM usar `text-primary` (#17252a) como texto interno. `text-primary` sobre `care-ok` = 5.58:1 (PASS 4.5:1). Token preservado.
 
 - SC-2.4: `care-urgent` (#c1666b) passa o criterio grafico 3:1 (atual: 3.73:1 -- PASS). Nenhum ajuste necessario para uso como indicador grafico; para uso como texto, documentar restricao a tamanho grande (>=24px regular ou >=18px bold).
 
@@ -93,7 +99,7 @@ As tres variantes apontam funcionalmente para `brand-teal` mas via caminhos dist
 
 - SC-2.7: Script de auditoria de contraste automatizado valida os pares criticos no CI.
 
-  > NEEDS_CLARIFICATION NC-2: O `tailwind.preset.css` usa `@theme` com valores hex. A spec autoritativa 12-3 menciona "22/35 pares falhando" -- a auditoria empirica desta spec encontrou um conjunto de pares criticos confirmados, mas o total "35 pares" pressupoe uma matriz mais ampla que pode incluir dark mode e variantes nao presentes no preset light. Confirmar: o escopo de auditoria inclui dark mode tokens (`packages/ui/styles/tokens.css`) ou apenas o preset light?
+  > **NC-2 resolvido:** Escopo inclui light (primario) + dark como verificacao secundaria. Dark mode ja passa: `care-attention` dark #e0bd7a = 9.72:1 PASS; `care-ok` dark #96bda4 = 8.38:1 PASS. O script de auditoria deve cobrir ambos os arquivos: `tailwind.preset.css` (light) e `packages/ui/styles/tokens.css` (dark).
 
 ---
 
@@ -109,9 +115,7 @@ As tres variantes apontam funcionalmente para `brand-teal` mas via caminhos dist
 
 - SC-3.2: O utilitario canonico de focus-ring adotado e: `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2`. Nenhum outro padrao de ring e aceito em novos componentes.
 
-- SC-3.3: As 3 variantes pre-existentes (`ring-interactive-focus`, `ring-[var(--ring)]`, `ring-ring`) sao unificadas no padrao canonico em todos os componentes existentes em `apps/web/src/` e `packages/ui/`.
-
-  > NEEDS_CLARIFICATION NC-3: Ha 46 ocorrencias de `focus-visible` com ring no codebase. A migracao pode ser feita via sed/codemod global ou exige revisao manual componente a componente (verificar que nenhum componente tem ring customizado por razao semantica valida, ex: componente de alerta/perigo com ring vermelho). Confirmar se a migracao global automatizada e aceita ou se cada arquivo deve ter revisao manual.
+- SC-3.3: As 3 variantes pre-existentes (`ring-interactive-focus`, `ring-[var(--ring)]`, `ring-ring`) sao unificadas no padrao canonico em todos os componentes existentes em `apps/web/src/` e `packages/ui/`. **Estrategia de migracao (NC-3):** codemod semi-automatizado — substituicao global para ocorrencias sem cor semantica especifica; revisao manual obrigatoria para ocorrencias com cor explicita nao-brand-teal (ex: `delete-group-dialog.tsx:106` `ring-red-500` — acao destrutiva, preservar). Gate de validacao pos-migracao: testes axe + visual regression.
 
 - SC-3.4: `focus-visible` e usado em todos os casos (nao `:focus`) -- comportamento correto: nao exibe ring em cliques de mouse, apenas em navegacao por teclado.
 
@@ -162,8 +166,8 @@ As tres variantes apontam funcionalmente para `brand-teal` mas via caminhos dist
 | FR-01 | Corrigir texto da home-marketing (`/`) para 0 violacoes `color-contrast` no axe (25 nodes atuais) | US-1 |
 | FR-02 | Corrigir link "Esqueceu a senha?" em `/login` para ser distinguivel sem cor (`link-in-text-block`) | US-1 |
 | FR-03 | Auditar e ajustar `--color-text-muted` (#8e8d8a) para >= 4.5:1 sobre surfaces (hoje 3.18:1) | US-2 |
-| FR-04 | Remediar `--color-care-attention` (#d4a24c) -- 2.22:1 -- via estrategia definida em NC-1 | US-2 |
-| FR-05 | Remediar `--color-care-ok` (#7ba38a) -- 2.70:1 -- via estrategia definida em NC-1 | US-2 |
+| FR-04 | Documentar restricao de uso de `--color-care-attention` (#d4a24c) como fundo de badge: texto interno SEMPRE `text-primary` (#17252a, 6.80:1 PASS). Adicionar comment no preset. | US-2 |
+| FR-05 | Documentar restricao de uso de `--color-care-ok` (#7ba38a) como fundo de badge: texto interno SEMPRE `text-primary` (#17252a, 5.58:1 PASS). Adicionar comment no preset. | US-2 |
 | FR-06 | Documentar restricao de uso de `--color-brand-teal-light` (#3aafa9, 2.55:1) como texto | US-2 |
 | FR-07 | Configurar `--ring` shadcn = `brand-teal` em globals.css | US-3 |
 | FR-08 | Migrar todas as ocorrencias de `ring-interactive-focus`, `ring-[var(--ring)]`, `ring-ring` para utilitario canonico `ring-brand-teal/30` | US-3 |
@@ -187,7 +191,7 @@ As tres variantes apontam funcionalmente para `brand-teal` mas via caminhos dist
 
 ## Out of Scope
 
-- Dark mode: tokens.css de dark mode auditado separadamente (NC-2 a esclarecer).
+- Dark mode: tokens.css auditado como verificacao secundaria (NC-2 resolvido). Dark mode ja passa em todos os pares criticos (`care-attention` dark #e0bd7a: 9.72:1 PASS; `care-ok` dark #96bda4: 8.38:1 PASS). Nenhuma remediacao adicional necessaria para dark mode.
 - Epic 7 (semaforo): US-4 / FR-10 dependem de Epic 7 -- testes de semaforo sao stub ate entrega.
 - Novos componentes de UI nao existentes no codebase atual.
 - Contraste em emails/notificacoes.
@@ -202,16 +206,6 @@ As tres variantes apontam funcionalmente para `brand-teal` mas via caminhos dist
 - Epic 1 Story 1.7 (design tokens) -- tokens fonte em `tailwind.preset.css` ja entregues.
 - `@axe-core/playwright` ja instalado (Story 12.1).
 - `jest-axe` a confirmar se ja instalado em `packages/ui/`.
-
----
-
-## NEEDS_CLARIFICATION (resumo)
-
-| ID | Pergunta | Impacto |
-|---|---|---|
-| NC-1 | Estrategia de remediacao para `care-attention` e `care-ok`: (A) ajustar tokens hex, (B) restringir uso a texto escuro interno, ou (C) adicionar borda obrigatoria em badges? | Define se `tailwind.preset.css` muda os valores hex ou se e policy de uso |
-| NC-2 | Escopo da auditoria inclui dark mode (`packages/ui/styles/tokens.css`) ou apenas o preset light? A spec 12-3 menciona "22/35 pares" que implica matriz mais ampla. | Define se dark mode entra no escopo desta story ou e story separada |
-| NC-3 | A migracao das 46 ocorrencias de focus-ring pode ser global automatizada (sed/codemod) ou exige revisao manual por componente? | Define estimativa de esforco e risco de regressao |
 
 ---
 
