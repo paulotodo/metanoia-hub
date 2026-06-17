@@ -21,18 +21,9 @@
       "2.1",
       "2.2",
       "3.1",
-      "3.2",
-      "4.1",
-      "4.2",
-      "4.3",
-      "5.1",
-      "5.2",
-      "5.3",
-      "5.4",
-      "6.1",
-      "6.2"
+      "3.2"
     ],
-    "task_corrente": "7.1"
+    "task_corrente": 4.1
   },
   "prerequisites": {
     "briefing": {
@@ -46,7 +37,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task:FASE7",
+  "next_instruction": "execute-task:FASE5",
   "waves": [
     {
       "id": "onda-001",
@@ -215,23 +206,6 @@
           "skill": "execute-task",
           "timestamp": "2026-06-17T02:59:31Z",
           "decision_id": "dec-037"
-        }
-      ]
-    },
-    {
-      "id": "onda-010",
-      "started_at": "2026-06-17T03:07:05Z",
-      "finished_at": "2026-06-17T03:16:26Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 561,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T03:15:44Z",
-          "decision_id": null
         }
       ]
     }
@@ -988,62 +962,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-041",
-      "wave_id": "onda-009",
-      "timestamp": "2026-06-17T03:04:13Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 9 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-042",
-      "wave_id": "onda-010",
-      "timestamp": "2026-06-17T03:15:01Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 6.1: CatalogSearch com campo busca (FR-015), filtros dropdown (FR-016), cards <a> (FR-017), paginação (FR-018), useAsyncAnnouncer dec-015",
-      "options_considered": [
-        "criar-componentes-novos",
-        "reusar-trails-search"
-      ],
-      "choice": "criar-componentes-novos",
-      "rationale": "trails-search.tsx é componente global de busca; catálogo precisa de filtros, paginação e cards próprios (US5 especifica catalog-search.tsx). Arquitetura segregada evita acoplamento.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-043",
-      "wave_id": "onda-010",
-      "timestamp": "2026-06-17T03:15:12Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Task 6.2: E2E catalogo-keyboard.spec.ts com 5 cenários US5 + axe scan",
-      "options_considered": [
-        "criar-e2e",
-        "pular-e2e"
-      ],
-      "choice": "criar-e2e",
-      "rationale": "e2e/keyboard/catalogo-keyboard.spec.ts criado com 5 cenários offline-first (route mocks) cobrindo US5 AC1-AC4 + axe scan",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -1081,15 +999,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T03:07:05Z"
+    "current_wave_start": "2026-06-17T02:52:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 13,
+    "waves_total": 12,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 8818,
+    "wallclock_total_seconds": 8257,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 43,
+    "decisions_total": 40,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1153,11 +1071,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T02:22:26Z",
       "description": "onda-008 execute FASE 2 concluida; aguardando wakeup para FASE 3"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T03:17:06Z",
-      "description": "FASE 6 concluida, aguardando wakeup para FASE 7 (Configuracoes Tenant)"
     }
   ],
   "tasks": [
@@ -1448,39 +1361,6 @@
         "apps/web/e2e/keyboard/grupos-keyboard.spec.ts"
       ],
       "recorded_at": "2026-06-17T02:59:50Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "6.1",
-      "title": "Campo de busca, filtros e cards focáveis",
-      "wave_id": "onda-010",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/src/components/catalog/catalog-search.tsx",
-        "apps/web/src/components/catalog/trail-card.tsx",
-        "apps/web/src/components/catalog/trail-playlist.tsx",
-        "apps/web/app/(authenticated)/app/consumo/catalogo/page.tsx",
-        "apps/web/src/__tests__/components/catalog/catalog-search.spec.tsx",
-        "apps/web/messages/pt-BR.json"
-      ],
-      "recorded_at": "2026-06-17T03:15:25Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "6.2",
-      "title": "E2E US5 — Catálogo e Busca (Chromium)",
-      "wave_id": "onda-010",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/keyboard/catalogo-keyboard.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T03:15:25Z",
       "source": "execute-task"
     }
   ]

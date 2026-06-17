@@ -221,11 +221,11 @@
     {
       "id": "onda-010",
       "started_at": "2026-06-17T03:07:05Z",
-      "finished_at": "2026-06-17T03:16:26Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 561,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -1084,9 +1084,9 @@
     "current_wave_start": "2026-06-17T03:07:05Z"
   },
   "accumulated_metrics": {
-    "waves_total": 13,
+    "waves_total": 12,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 8818,
+    "wallclock_total_seconds": 8257,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 43,
@@ -1153,11 +1153,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T02:22:26Z",
       "description": "onda-008 execute FASE 2 concluida; aguardando wakeup para FASE 3"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T03:17:06Z",
-      "description": "FASE 6 concluida, aguardando wakeup para FASE 7 (Configuracoes Tenant)"
     }
   ],
   "tasks": [

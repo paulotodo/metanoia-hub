@@ -1153,11 +1153,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T02:22:26Z",
       "description": "onda-008 execute FASE 2 concluida; aguardando wakeup para FASE 3"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T03:17:06Z",
-      "description": "FASE 6 concluida, aguardando wakeup para FASE 7 (Configuracoes Tenant)"
     }
   ],
   "tasks": [
