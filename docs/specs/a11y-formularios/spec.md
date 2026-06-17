@@ -170,6 +170,48 @@ A auditoria do codebase revelou o seguinte ponto de partida:
 
 ---
 
+## Clarifications
+
+> **Resolvido na fase clarify (onda-002, 2026-06-17).** Forms reportados
+> como "não encontrados" na specify eram FALSO NEGATIVO da busca — paths
+> reais verificados via `ls`/`find`/`grep`. Decisões abaixo (dec-008 a
+> dec-012); ver `state.json` para auditoria completa.
+
+### Escopo concreto de formulários (paths reais verificados)
+
+**Componente base (US1/US2):**
+- Criar `FormField` reutilizável em `apps/web/src/components/forms/index.ts` (NC3 — confirmado pela spec, score 2).
+- `scrollToFirstError()` + `SubmitButton` (aria-busy) + erro inline por campo (aria-describedby + aria-invalid + role="alert") + foco no 1º campo inválido (NC4 — padrão WCAG/WAI, score 2).
+
+**Forms must-have no escopo (autenticação + onboarding):**
+- `apps/web/app/(public)/login/_components/login-form.tsx` (Q1, score 2 — form nativo confirmado, 6595 bytes; corrige NC1)
+- `apps/web/app/(public)/register/_components/register-form.tsx`
+- `apps/web/app/(onboarding)/convite/[token]/criar-conta/_components/create-account-form.tsx`
+- `apps/web/src/components/onboarding/wizard/steps/Step1Profile.tsx`
+- `apps/web/src/components/onboarding/wizard/steps/Step2Community.tsx`
+- `apps/web/src/components/onboarding/wizard/steps/Step3Group.tsx`
+- `apps/web/src/components/onboarding/wizard/steps/Step4Invite.tsx`
+
+**Forms should-have no escopo:**
+- `apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx` (Q2, score 2)
+- `apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx` (Q2, score 2)
+- `apps/web/src/components/groups/group-form.tsx`
+- `apps/web/src/components/groups/invite-members-form.tsx`
+- `apps/web/app/(authenticated)/app/admin/grupos/novo/_components/create-group-form.tsx`
+- `apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx` (Q4, score 3 — canônico)
+- `apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx` (Q5, score 3 — Radar Pastoral)
+- `apps/web/app/(authenticated)/app/gestao/reunioes/[meetingId]/reflexao/page.tsx` + `apps/web/src/components/meetings/reflection-form-field.tsx` (Q5, score 3)
+- `apps/web/src/components/marketing/contact-message-form.tsx`
+- `apps/web/src/components/marketing/demo-request-form.tsx`
+
+**Fora de escopo (documentado):**
+- `apps/web/src/components/trails/group-trails-client.tsx` — RESÍDUO. A rota App Router importa `./group-trails-client` (versão `app/`); a versão `src/` tem ZERO imports externos e ZERO `<form` (não é mais um form). Candidato a remoção em limpeza futura (Q4, dec-009).
+- `apps/web/src/components/catalog/catalog-search.tsx` — não possui form com submit (busca/filtro), fora do escopo de formulários.
+
+**EM ABERTO — aguarda decisão humana (block-001, dec-012):**
+- `apps/web/app/(authenticated)/app/admin/configuracoes/branding/BrandingSettingsForm.tsx` (17522 bytes — existe; NC2 resolvido quanto à existência, mas inclusão no escopo desta story é tradeoff de priorização). Mesmo perfil: `apps/web/app/(authenticated)/app/admin/super/tenants/novo/page.tsx` (367 linhas).
+
+
 ## NEEDS_CLARIFICATION
 
 ### NC1 — Escopo do formulário de Login

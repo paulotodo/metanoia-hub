@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Aguardando resposta humana ao block-001 (Q3: incluir BrandingSettingsForm 17KB no escopo?). Apos resposta via /feature-00c-resume: integrar decisao na spec ## Clarifications, invocar Skill(clarify) p/ atualizar spec.md, depois transitar clarify->plan (rodar feature-00c-preflight.sh check).",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",

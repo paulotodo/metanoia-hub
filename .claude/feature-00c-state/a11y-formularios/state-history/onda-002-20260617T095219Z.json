@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Aguardando resposta humana ao block-001 (Q3: incluir BrandingSettingsForm 17KB no escopo?). Apos resposta via /feature-00c-resume: integrar decisao na spec ## Clarifications, invocar Skill(clarify) p/ atualizar spec.md, depois transitar clarify->plan (rodar feature-00c-preflight.sh check).",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -50,13 +50,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T09:44:36Z",
-      "finished_at": "2026-06-17T09:52:19Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 463,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -340,9 +338,9 @@
     "current_wave_start": "2026-06-17T09:44:36Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 865,
+    "wallclock_total_seconds": 402,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 12,

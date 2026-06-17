@@ -6,7 +6,7 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.5: Formularios Acessiveis (NFR-A3). Labels associados, mensagens de erro acessiveis (aria-describedby/aria-invalid/role=alert), fieldset/legend, instrucoes e validacao anunciadas a leitores de tela, foco em erro no submit. Cobre formularios reais (login, registro, grupos, convite, config/branding, trilhas). Validacao Zod ja existe em packages/types; foco na camada de apresentacao acessivel.",
     "suggested_stack": null,
-    "status": "aguardando_humano",
+    "status": "em_andamento",
     "termination_reason": null,
     "started_at": "2026-06-17T09:29:42Z",
     "finished_at": null
@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "Aguardando resposta humana ao block-001 (Q3: incluir BrandingSettingsForm 17KB no escopo?). Apos resposta via /feature-00c-resume: integrar decisao na spec ## Clarifications, invocar Skill(clarify) p/ atualizar spec.md, depois transitar clarify->plan (rodar feature-00c-preflight.sh check).",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -50,13 +50,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T09:44:36Z",
-      "finished_at": "2026-06-17T09:52:19Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 463,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -310,22 +308,7 @@
       "originating_artifact": null
     }
   ],
-  "human_blocks": [
-    {
-      "id": "block-001",
-      "decision_id": "dec-012",
-      "question": "BrandingSettingsForm.tsx existe (17522 bytes em apps/web/app/(authenticated)/app/admin/configuracoes/branding/). A spec deixou sua inclusao em aberto (NC2). Incluir no escopo desta story 12.5 (a11y-formularios)?",
-      "context_for_answer": "Constitution Principio VI exige WCAG AA em todas interfaces, mas NAO impoe cronograma (pode ser outra story). Tradeoff: incluir = retrofit de 17KB de form admin complexo na MESMA sprint que ja cobre forms publicos criticos (login, register, recovery, reset-password, create-account) + wizard onboarding (4 steps) + forms de gestao pastoral (radar/cuidado, reunioes/reflexao) + group/invite forms. Opcoes: (A) incluir BrandingSettingsForm como should-have nesta story; (B) excluir e criar story dedicada settings-a11y (cobrindo tambem TenantConfigForm). NOTA: super/tenants/novo/page.tsx (367 linhas, form de super-admin) tem o mesmo perfil — incluir junto se A.",
-      "recommended_options": [
-        "A-incluir-nesta-story",
-        "B-excluir-story-dedicada"
-      ],
-      "status": "aguardando",
-      "human_answer": null,
-      "answered_at": null,
-      "triggered_at": "2026-06-17T09:50:59Z"
-    }
-  ],
+  "human_blocks": [],
   "budgets": {
     "max_recursion": 3,
     "current_subagent_depth": 1,
@@ -340,13 +323,13 @@
     "current_wave_start": "2026-06-17T09:44:36Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 865,
+    "wallclock_total_seconds": 402,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 12,
-    "human_blocks_total": 1,
+    "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
   },
