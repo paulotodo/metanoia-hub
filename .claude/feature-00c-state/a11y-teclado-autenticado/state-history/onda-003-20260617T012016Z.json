@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Fase checklist: gerar quality gate WCAG AA para os 7 fluxos autenticados. Usar skill checklist com spec.md e plan.md. Incluir checklist manual cross-browser (Chrome, Firefox, Safari) e gate axe automático por fluxo.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar fase plan: gerar plan.md, research.md e data-model.md (se aplicavel). Feature e puramente frontend/a11y — sem novos endpoints ou migrações de dados. Prioridade: definir arquitetura de componentes, hooks (useFocusOnRouteChange, useAsyncAnnouncer, useRovingTabindex) e sequenciamento de tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -74,11 +74,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-17T01:13:05Z",
-      "finished_at": "2026-06-17T01:20:16Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 431,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -483,9 +483,9 @@
     "current_wave_start": "2026-06-17T01:13:05Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3002,
+    "wallclock_total_seconds": 2571,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 19,
@@ -527,11 +527,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T01:13:17Z",
       "description": "etapa=plan hits=0"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:20:30Z",
-      "description": "onda-003 plan concluído; próxima onda: checklist"
     }
   ]
 }

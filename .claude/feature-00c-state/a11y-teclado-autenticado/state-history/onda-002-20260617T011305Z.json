@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Fase checklist: gerar quality gate WCAG AA para os 7 fluxos autenticados. Usar skill checklist com spec.md e plan.md. Incluir checklist manual cross-browser (Chrome, Firefox, Safari) e gate axe automático por fluxo.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar fase plan: gerar plan.md, research.md e data-model.md (se aplicavel). Feature e puramente frontend/a11y — sem novos endpoints ou migrações de dados. Prioridade: definir arquitetura de componentes, hooks (useFocusOnRouteChange, useAsyncAnnouncer, useRovingTabindex) e sequenciamento de tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -68,23 +68,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-17T01:06:52Z",
           "decision_id": "dec-017"
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-17T01:13:05Z",
-      "finished_at": "2026-06-17T01:20:16Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 431,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-17T01:19:43Z",
-          "decision_id": "dec-018"
         }
       ]
     }
@@ -407,42 +390,6 @@
       "evidence": "dec-014 choice=sempre-visiveis; dec-015 choice=manter-campo-aria-live; dec-010 choice=hook-layout-raiz; dec-011 choice=shadcn-dialog-radix; dec-012 choice=roving-tabindex — todos em .decisions[] com score>=2",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T01:19:35Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Fase plan concluída: plan.md gerado com arquitetura de 3 hooks novos, 2 componentes novos e modificação no Sidebar",
-      "options_considered": [
-        "gerar-plan",
-        "abortar"
-      ],
-      "choice": "gerar-plan",
-      "rationale": "Feature puramente FE: sem novos endpoints. 5 clarifications materializadas (CL-001..005). Constitution Check: PASS. Sequenciamento em 9 fases identificado.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T01:19:55Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate owasp-security: feature a11y-teclado-autenticado é puramente FE, sem novos endpoints, sem auth, sem dados sensíveis processados",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Feature é 100% front-end: apenas hooks React, Client Components e atributos ARIA. Zero novos endpoints REST, zero mutations de banco, zero schemas Zod novos. Superfície OWASP é inexistente neste contexto. Score 3 justificado por evidência empírica: grep em plan.md confirma 'zero novos endpoints'.",
-      "justification_score": 3,
-      "evidence": "Feature é puramente front-end: zero novos endpoints de API, zero migrações de banco, zero novos schemas Zod.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -480,15 +427,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T01:13:05Z"
+    "current_wave_start": "2026-06-17T00:36:56Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3002,
+    "wallclock_total_seconds": 2571,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 19,
+    "decisions_total": 17,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -522,16 +469,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:07:40Z",
       "description": "clarify concluido com 5 resolucoes (dec-010..dec-015); onda-002 encerrada; aguardando wakeup para plan"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-17T01:13:17Z",
-      "description": "etapa=plan hits=0"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:20:30Z",
-      "description": "onda-003 plan concluído; próxima onda: checklist"
     }
   ]
 }

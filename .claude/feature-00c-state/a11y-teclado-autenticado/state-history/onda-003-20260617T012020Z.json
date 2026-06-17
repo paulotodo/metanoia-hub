@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "checklist",
-  "next_instruction": "Fase checklist: gerar quality gate WCAG AA para os 7 fluxos autenticados. Usar skill checklist com spec.md e plan.md. Incluir checklist manual cross-browser (Chrome, Firefox, Safari) e gate axe automático por fluxo.",
+  "next_instruction": "Iniciar fase plan: gerar plan.md, research.md e data-model.md (se aplicavel). Feature e puramente frontend/a11y — sem novos endpoints ou migrações de dados. Prioridade: definir arquitetura de componentes, hooks (useFocusOnRouteChange, useAsyncAnnouncer, useRovingTabindex) e sequenciamento de tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -527,11 +527,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T01:13:17Z",
       "description": "etapa=plan hits=0"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T01:20:30Z",
-      "description": "onda-003 plan concluído; próxima onda: checklist"
     }
   ]
 }
