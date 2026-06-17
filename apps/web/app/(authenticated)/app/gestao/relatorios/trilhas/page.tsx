@@ -28,7 +28,7 @@ export default function TrailReportsSummaryPage() {
       {isLoading && (
         <div
           data-testid="trail-reports-loading"
-          className="h-40 animate-pulse rounded-lg bg-[var(--color-surface-muted)]"
+          className="h-40 motion-safe:animate-pulse rounded-lg bg-[var(--color-surface-muted)]"
         />
       )}
 

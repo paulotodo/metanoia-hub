@@ -204,7 +204,7 @@ export default function TrailReportDetailPage() {
       </div>
 
       {isLoading && (
-        <div className="h-40 animate-pulse rounded-lg bg-[var(--color-surface-muted)]" />
+        <div className="h-40 motion-safe:animate-pulse rounded-lg bg-[var(--color-surface-muted)]" />
       )}
 
       {error && (

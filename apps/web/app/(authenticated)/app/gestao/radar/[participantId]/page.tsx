@@ -42,7 +42,7 @@ export default function SignalDetailPage({
       {/* Back navigation */}
       <Link
         href="/app/gestao/radar"
-        className="inline-flex items-center gap-1.5 text-sm text-text-secondary transition-colors hover:text-text-primary"
+        className="inline-flex items-center gap-1.5 text-sm text-text-secondary motion-safe:motion-safe:transition-colors hover:text-text-primary active:opacity-70"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         Radar
@@ -111,14 +111,14 @@ export default function SignalDetailPage({
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
           href={`/app/gestao/radar/${participantId}/perfil`}
-          className="inline-flex items-center justify-center gap-2 rounded-md border border-border-default bg-surface-base px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+          className="inline-flex items-center justify-center gap-2 rounded-md border border-border-default bg-surface-base px-4 py-2.5 text-sm font-medium text-text-primary motion-safe:transition-colors hover:bg-surface-sunken active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
         >
           <Eye className="size-4" aria-hidden="true" />
           Ver essa pessoa
         </Link>
         <Link
           href={`/app/gestao/radar/${participantId}/cuidado`}
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-2.5 text-sm font-medium text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-2.5 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
         >
           <Heart className="size-4" aria-hidden="true" />
           Registrar cuidado

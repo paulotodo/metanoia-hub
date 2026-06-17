@@ -75,7 +75,7 @@ export function TrailPlaylist({
                 'block rounded-lg border border-border bg-background p-4',
                 'hover:bg-accent/50',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2',
-                'transition-colors',
+                'motion-safe:transition-colors',
               ].join(' ')}
             >
               <p className="text-sm font-semibold text-foreground">{name}</p>

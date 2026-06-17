@@ -14,7 +14,7 @@ function ParticipantCardExpanded({
   participant: RadarParticipant;
 }) {
   return (
-    <div className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 transition-transform active:scale-[0.98]">
+    <div className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]">
       <Link
         href={`/app/gestao/radar/${participant.participantId}`}
         className="block"
@@ -39,7 +39,7 @@ function ParticipantCardExpanded({
         <Link
           href={`/app/gestao/radar/${participant.participantId}/cuidado`}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-md bg-brand-teal px-3 py-1.5 text-sm font-medium text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+          className="rounded-md bg-brand-teal px-3 py-1.5 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
         >
           Registrar cuidado
         </Link>
@@ -58,7 +58,7 @@ function ParticipantCardMedium({
   return (
     <Link
       href={`/app/gestao/radar/${participant.participantId}`}
-      className="group block rounded-lg border-l-4 border-l-care-attention border border-border-default bg-surface-elevated p-4 transition-transform active:scale-[0.98]"
+      className="group block rounded-lg border-l-4 border-l-care-attention border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]"
     >
       <div className="flex items-center justify-between">
         <div className="min-w-0 flex-1">
@@ -104,12 +104,12 @@ function ParticipantCardCompact({
         type="button"
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
-        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-interactive-focus"
+        className="flex w-full items-center justify-between px-4 py-3 text-left motion-safe:transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-interactive-focus"
       >
         <span className="text-sm text-text-secondary">{inlineText}</span>
         <ChevronDown
           className={cn(
-            "size-4 shrink-0 text-text-muted transition-transform duration-200",
+            "size-4 shrink-0 text-text-muted motion-safe:transition-transform duration-200",
             expanded && "rotate-180",
           )}
           aria-hidden="true"

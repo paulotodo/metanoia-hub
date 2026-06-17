@@ -337,7 +337,7 @@ export default function SuperAuditPage() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-8 animate-pulse rounded bg-[var(--border)]"
+              className="h-8 motion-safe:animate-pulse rounded bg-[var(--border)]"
               aria-hidden="true"
             />
           ))}

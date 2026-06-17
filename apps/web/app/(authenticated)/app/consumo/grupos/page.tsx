@@ -65,8 +65,8 @@ export default function ParticipantGroupsPage() {
           className="flex flex-col gap-3"
           aria-hidden="true"
         >
-          <div className="h-[96px] animate-pulse rounded-lg bg-[var(--muted)]" />
-          <div className="h-[96px] animate-pulse rounded-lg bg-[var(--muted)]" />
+          <div className="h-[96px] motion-safe:animate-pulse rounded-lg bg-[var(--muted)]" />
+          <div className="h-[96px] motion-safe:animate-pulse rounded-lg bg-[var(--muted)]" />
         </div>
       </main>
     );

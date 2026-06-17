@@ -35,7 +35,7 @@ export function ReturnBanner({ lastSeenAt }: ReturnBannerProps) {
         type="button"
         onClick={() => setDismissed(true)}
         aria-label="Dispensar aviso de retorno"
-        className="shrink-0 rounded-md p-1 text-text-muted transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+        className="shrink-0 rounded-md p-1 text-text-muted motion-safe:transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
       >
         <X className="size-4" />
       </button>

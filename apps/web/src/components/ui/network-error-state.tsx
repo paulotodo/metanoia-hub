@@ -38,9 +38,9 @@ function DefaultSkeleton() {
       data-testid="network-error-skeleton"
       className="flex flex-col gap-3"
     >
-      <div className="h-4 w-3/4 animate-pulse rounded bg-[var(--color-border-default)]" />
-      <div className="h-4 w-full animate-pulse rounded bg-[var(--color-border-default)]" />
-      <div className="h-4 w-2/3 animate-pulse rounded bg-[var(--color-border-default)]" />
+      <div className="h-4 w-3/4 motion-safe:animate-pulse rounded bg-[var(--color-border-default)]" />
+      <div className="h-4 w-full motion-safe:animate-pulse rounded bg-[var(--color-border-default)]" />
+      <div className="h-4 w-2/3 motion-safe:animate-pulse rounded bg-[var(--color-border-default)]" />
     </div>
   );
 }

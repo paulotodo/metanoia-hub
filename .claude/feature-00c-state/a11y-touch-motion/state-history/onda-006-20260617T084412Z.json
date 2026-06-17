@@ -1,0 +1,1286 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-touch-motion",
+  "execution": {
+    "id": "feat-a11y-touch-motion-20260617T071308Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 12.4: Touch Targets, Reduced Motion e Mobile Feedback (NFR-A2, UX). Alvos de toque min WCAG 2.5.5/2.5.8 (44x44 ou 24x24 com espacamento), prefers-reduced-motion (reduzir/desabilitar animacoes e transicoes), feedback tatil/visual em mobile. Tokens em packages/config/tailwind.preset.css (@theme, oklch).",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-17T07:13:08Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "review-task",
+  "next_instruction": "Continuar execute-task: A.5 (folhas apps/web — radar pills, plan-card, marketing-nav), B.2 (hover-only → active:), C.2 (motion-safe: nos pontos quentes), T.1 (E2E reduced-motion), T.2 (E2E touch-targets playwright mobile Chromium), T.4 (scan estatico), T.5 (checklist manual), P.1 (PR). Gate local obrigatorio antes de cada done. Branch: feat/12-4-a11y-touch-motion. NUNCA trocar branch.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-17T07:14:24Z",
+      "finished_at": "2026-06-17T07:19:00Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 276,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T07:18:42Z",
+          "decision_id": "dec-002"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-17T07:23:52Z",
+      "finished_at": "2026-06-17T07:40:03Z",
+      "executed_stages": [
+        "clarify",
+        "plan"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 971,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T07:24:45Z",
+          "decision_id": "dec-005"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T07:25:58Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-17T07:28:18Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-17T07:38:53Z",
+          "decision_id": null
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-17T07:38:53Z",
+          "decision_id": null
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-17T07:39:17Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-17T07:47:24Z",
+      "finished_at": "2026-06-17T07:50:34Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 190,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-17T07:50:11Z",
+          "decision_id": "dec-018"
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-17T07:55:45Z",
+      "finished_at": "2026-06-17T07:58:59Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 194,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-17T07:58:39Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-17T08:10:14Z",
+      "finished_at": "2026-06-17T08:27:55Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 1061,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-17T08:10:35Z",
+          "decision_id": "dec-027"
+        },
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-17T08:27:25Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-006",
+      "started_at": "2026-06-17T08:41:00Z",
+      "finished_at": "2026-06-17T08:44:03Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 183,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-17T07:13:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T07:18:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Geracao da spec.md para feature a11y-touch-motion",
+      "options_considered": [
+        "gerar-spec",
+        "abortar"
+      ],
+      "choice": "gerar-spec",
+      "rationale": "Spec autoritativa 12-4 presente, artefatos de referencia coletados (tailwind tokens, componentes existentes, AC da story). Spec gerada com 3 US, 14 FR, 11 SC e 2 NEEDS_CLARIFICATION.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T07:18:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-touch-motion)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story touch targets reduced motion mobile feedback",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T07:22:16Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:24:45Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:25:58Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:27:45Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "NC-2 (US-3/FR-3.4): criterio formal de animacao 'essencial' isenta de prefers-reduced-motion",
+      "options_considered": [
+        "criterio-substituto-nao-animado",
+        "criterio-custo-reimplementacao",
+        "nenhuma-isencao"
+      ],
+      "choice": "criterio-substituto-nao-animado",
+      "rationale": "Unico criterio auditavel (Constitution Princ. VI); alinhado a WCAG 2.3.3 e MDN; suportado por US-3, NC-2 proposta interna, FR-3.4 e SC-3.4. Toasts/skeletons NUNCA isentos.",
+      "justification_score": 2,
+      "evidence": "WCAG 2.3.3: animacao essencial quando 'removing the animation would substantially change the information or functionality of the content, and information and functionality cannot be achieved in another way'. spec SC-3.4: 'Nenhuma animacao essencial (sem substituto nao-animado) e suprimida sem substituto funcional.'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:27:45Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "NC-1 (US-1/FR-1.1): nivel WCAG para touch targets — 44x44 (AAA) vs 24x24 (AA)",
+      "options_considered": [
+        "44x44-mobile-definitivo",
+        "24x24-todos-viewports",
+        "hibrido-44mobile-24desktop"
+      ],
+      "choice": "hibrido-44mobile-24desktop",
+      "rationale": "Spec autoritativa 12-4 usa 44x44 como padrao; publico pastoral inclui idosos/baixa destreza (briefing) — 44x44 melhor. Hibrido ja codificado em FR-1.1 (44 mobile) + FR-1.4 (24 desktop, WCAG 2.5.8 AA fallback). Alinhado a Apple HIG (44pt) e Google Material (48dp).",
+      "justification_score": 2,
+      "evidence": "spec FR-1.1: '44x44 CSS px em viewport mobile (< 768px)'. spec FR-1.4: '24x24 CSS px com espacamento compensatorio (WCAG 2.5.8 AA)'. Referencia autoritativa: 12-4-touch-targets spec.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:33:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:36:12Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-touch-motion)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story touch targets reduced motion mobile feedback",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:36:46Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Estrategia touch-target: classe utilitaria compartilhada vs tokens @theme",
+      "options_considered": [
+        "classe-utilitaria-css-globals",
+        "novos-tokens-@theme",
+        "apenas-utilitarios-inline-min-h-44"
+      ],
+      "choice": "classe-utilitaria-css-globals",
+      "rationale": "Preset so define color/font/radius/font-size; grep '--spacing|--size|44|24' no preset retornou 0 hits de sizing. Tailwind v4 @theme nao tem token de tap target. Classe .touch-target (min-h 44 + pseudo-elemento area) centraliza FR-1.2 e e auditavel por grep.",
+      "justification_score": 3,
+      "evidence": "grep -nE -- '--spacing|--size|44|24' tailwind.preset.css => apenas linhas de --color-care-attention (cor), nenhum token de sizing/spacing.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:36:46Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Ponto de maior alavancagem para FR-1/FR-2/FR-3: primitivo Button",
+      "options_considered": [
+        "corrigir-button-primitivo-primeiro",
+        "corrigir-componentes-folha-um-a-um"
+      ],
+      "choice": "corrigir-button-primitivo-primeiro",
+      "rationale": "button.tsx tem size:icon h-10 w-10 (40px<44 FR-1), transition-colors SEM motion-safe (FR-3.2) e hover=6/active=0 (FR-2). Corrigir o primitivo propaga conformidade a todo consumidor shadcn.",
+      "justification_score": 3,
+      "evidence": "grep 'icon: \"h-10 w-10\"' button.tsx; grep -c hover/active => hover=6 active=0; transition-colors sem prefixo motion-safe na linha cva base.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:36:46Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Local da regra global FR-3.3 safety net (apps/web/globals vs packages/ui/globals)",
+      "options_considered": [
+        "packages-ui-styles-globals.css",
+        "apps-web-app-globals.css"
+      ],
+      "choice": "packages-ui-styles-globals.css",
+      "rationale": "FR-3.3 cita apps/web/app/globals.css 'ou equivalente'. O entry point CSS real importado por apps/web/app/layout.tsx e packages/ui/styles/globals.css (cabecalho do arquivo confirma 'Imported by apps/web/app/layout.tsx'). Os hits de prefers-reduced-motion sao em .next (build), nao no fonte.",
+      "justification_score": 3,
+      "evidence": "cabecalho globals.css: 'Imported by apps/web/app/layout.tsx'; grep prefers-reduced-motion no fonte = 0 (so .next/static build artifacts). @keyframes onboarding-shake presente sem guarda.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:36:46Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "FR-3.4/FR-4.1 citam Toast (Sonner) mas nenhuma lib de toast esta instalada",
+      "options_considered": [
+        "instalar-sonner-fora-de-escopo",
+        "escopar-e2e-para-dialog+skeleton-existentes",
+        "bloqueio-humano"
+      ],
+      "choice": "escopar-e2e-para-dialog+skeleton-existentes",
+      "rationale": "Nenhuma dep de toast (grep sonner/Toaster/useToast = 0 fora de node_modules; deps UI so tem @radix-ui/react-dialog+slot). Adicionar Sonner seria scope creep. E2E reduced-motion cobre Dialog (animate-in/fade/zoom/slide reais) + Skeleton (animate-pulse real). Toast registrado como N/A documentado.",
+      "justification_score": 3,
+      "evidence": "grep -rIl sonner|Toaster|useToast fora node_modules = vazio; package.json UI deps = @radix-ui/react-dialog, @radix-ui/react-slot. dialog.tsx contem animate-in/animate-out/fade/zoom/slide reais.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:36:46Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "touch-targets E2E exige viewport mobile; playwright.config so tem Desktop Chrome",
+      "options_considered": [
+        "adicionar-projeto-mobile-pixel5/iphone12",
+        "usar-page.setViewportSize-inline"
+      ],
+      "choice": "adicionar-projeto-mobile-pixel5/iphone12",
+      "rationale": "playwright.config.ts projects = apenas Desktop Chrome. FR-4.2 exige iPhone 12 ou equiv. Projeto mobile dedicado (devices['iPhone 12']) torna a medicao reprodutivel em CI e separa do baseline desktop.",
+      "justification_score": 3,
+      "evidence": "grep projects/devices playwright.config => 'Desktop Chrome' unico projeto; @axe-core/playwright ^4.11.3 e jest-axe ^10 ja instalados.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:38:53Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality (validate-documentation) sobre plan.md",
+      "options_considered": [
+        "aprovar",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "aprovar",
+      "rationale": "plan.md estruturado: 0 TBD/TODO, 9 secoes H2, FRs rastreados, paths reais citados (packages/ui + apps/web). Sem ambiguidades obvias.",
+      "justification_score": 3,
+      "evidence": "grep -ciE 'TBD|TODO|FIXME' plan.md = 0; grep -c '^## ' = 9 secoes; paths reais presentes.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:38:53Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security sobre arquitetura proposta (touch/motion/feedback)",
+      "options_considered": [
+        "aprovar-risco-baixo",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "aprovar-risco-baixo",
+      "rationale": "Superficie 100% front-end: CSS sizing/motion, classes Tailwind, specs de teste. Zero endpoint/dados/auth/entrada de usuario processada. !important global e CSS estatico (sem XSS/vazamento). Sem finding critical/high.",
+      "justification_score": 3,
+      "evidence": "Scan do plan: nenhum arquivo .ts de backend/api/route handler; mudancas em packages/ui/components/*.tsx (CSS), playwright/e2e specs. grep framer-motion/eval/dangerouslySetInnerHTML no escopo = 0.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T07:50:11Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Geracao e auto-resolucao do checklist ux+a11y (Story 12.4): quality gate de requisitos sobre spec.md + plan.md antes de create-tasks",
+      "options_considered": [
+        "gerar-checklist-ux-a11y",
+        "pular-checklist",
+        "usar-checklist-generico"
+      ],
+      "choice": "gerar-checklist-ux-a11y",
+      "rationale": "Spec+plan completos (3 US, 14 FR, 11 SC, 2 NC resolvidas, dec-008 hibrido). Dominio ux+a11y e o correto para validar qualidade WCAG 2.5.5/2.5.8/2.3.3.",
+      "justification_score": 3,
+      "evidence": "37 CHKs gerados, 100% rastreabilidade, 28 [x] auto-resolvidos. 5 gaps acionaveis: CHK010/CHK016/CHK035 [Ambiguity], CHK025+CHK033 [Conflict]. Verificado via jq/grep contra spec FR-1.1='44x44 CSS px em viewport mobile' e plan T2 dec-015='devices[iPhone 12]'.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T07:50:11Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate checklist (CHK033 CI-RISK [Conflict]): plan T2/dec-015 propoe playwright project com devices[iPhone 12] (engine WebKit); CI e Chromium-only sem WebKit instalado -> projeto mobile quebra o CI. Mitigacao do plan §7 esta incorreta (atribui o risco a 'device ausente', nao ao engine WebKit).",
+      "options_considered": [
+        "aceitar-risco-com-justificativa",
+        "corrigir-agora-na-spec-plan",
+        "escalar-para-humano"
+      ],
+      "choice": "corrigir-agora-na-spec-plan",
+      "rationale": "Precedente dec-012 (Story 12.1): CI Chromium-only, nao adicionar Firefox/WebKit. O projeto mobile DEVE usar emulacao Chromium (devices[Pixel 5]/Mobile Chrome OU Desktop Chrome+viewport mobile+hasTouch:true). Sera corrigido em create-tasks/clarify; registrado como gap acionavel CHK033.",
+      "justification_score": 3,
+      "evidence": "plan T2: 'project { name: mobile-a11y, use: { ...devices[iPhone 12] } }'. plan §7 risco: 'iPhone 12 device ausente no runner CI | devices e built-in'. Memory dec-012 a11y-teclado-publico: 'Chromium apenas; NAO adicionar Firefox/WebKit ao playwright.config.ts'.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T07:50:11Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate checklist (CHK025 [Conflict]): SC-3.1 verifica safety net via grep em apps/web/app/globals.css, mas plan dec-013 fixou a regra em packages/ui/styles/globals.css (entry real importado por layout.tsx). Criterio de aceite apontaria arquivo errado.",
+      "options_considered": [
+        "aceitar-risco-com-justificativa",
+        "corrigir-agora-na-spec-plan",
+        "escalar-para-humano"
+      ],
+      "choice": "corrigir-agora-na-spec-plan",
+      "rationale": "SC-3.1 deve apontar packages/ui/styles/globals.css para nao validar arquivo errado (gate verde falso). Gap acionavel para clarify; registrado CHK025.",
+      "justification_score": 3,
+      "evidence": "spec SC-3.1: 'Regra CSS global ... presente em apps/web/app/globals.css | grep prefers-reduced-motion no arquivo'. plan dec-013 (score 3): 'a regra vai em packages/ui/styles/globals.css (entry point real importado por apps/web/app/layout.tsx), nao em apps/web/app/globals.css'.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-17T07:54:16Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-17T07:55:54Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio da fase create-tasks: decompor Story 12.4 nos 3 eixos",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "estado em_andamento, 0 bloqueios, 0 ciclos detectados; prosseguir com backlog",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-17T07:56:11Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK033/dec-019 (CI-RISK): projeto mobile Playwright DEVE usar emulacao Chromium",
+      "options_considered": [
+        "devices[Pixel 5] Mobile Chrome",
+        "devices[iPhone 12] WebKit",
+        "Desktop Chrome+viewport+hasTouch"
+      ],
+      "choice": "devices[Pixel 5] Mobile Chrome",
+      "rationale": "CI Chromium-only: iPhone 12 usa WebKit que nao esta instalado no runner, quebraria job E2E. Pixel 5 = Mobile Chrome (Chromium). Evidencia: playwright.config.ts so tem project Desktop Chrome; browser install = chromium.",
+      "justification_score": 3,
+      "evidence": "playwright.config.ts: projects: [{ name: 'Desktop Chrome', use: { ...devices['Desktop Chrome'] } }]; browserslist CI = chromium only",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-17T07:56:11Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK025/dec-020 (path): safety net reduced-motion vai em packages/ui/styles/globals.css, NAO apps/web/app/globals.css",
+      "options_considered": [
+        "packages/ui/styles/globals.css",
+        "apps/web/app/globals.css"
+      ],
+      "choice": "packages/ui/styles/globals.css",
+      "rationale": "Entry point real importado por apps/web/app/layout.tsx (auditoria empirica do plan); apps/web/app/globals.css nao e importado pela arvore de componentes. Evidencia: grep 'globals.css' em layout.tsx aponta packages/ui.",
+      "justification_score": 3,
+      "evidence": "plan.md sec C1: Entry point real = packages/ui/styles/globals.css (Imported by apps/web/app/layout.tsx)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-025",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-17T07:58:59Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "tasks.md gerado: 15 tasks / 451 linhas / 62 checkboxes; CHK033+CHK025 materializados em dec-023+dec-024",
+      "options_considered": [
+        "concluir-avancar-execute-task",
+        "re-gerar",
+        "abortar"
+      ],
+      "choice": "concluir-avancar-execute-task",
+      "rationale": "tasks.md verificado: 21756 bytes, nao-vazio, 15 tasks em 5 eixos, checkboxes, matriz de dependencias, secoes Escopo Coberto/Excluido presentes",
+      "justification_score": 3,
+      "evidence": "ls -la: -rw-r--r-- 1 root root 21756; wc -l: 451; grep '### [A-Z]\\.' = 15; grep '- \\[ \\]' = 62",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-026",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-17T08:03:29Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-027",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-17T08:10:26Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Execucao das tasks EIXO-A (A.1-A.4) + B.1 (Dialog) + C.1 (reduced-motion) + T.3 (testes)",
+      "options_considered": [
+        "executar-a1-b1-c1-em-ondas-separadas",
+        "executar-todos-em-onda-unica"
+      ],
+      "choice": "executar-todos-em-onda-unica",
+      "rationale": "Tasks A.1-A.4 + B.1 + C.1 tem baixo risco e dependencias claras; execucao em lote economiza ondas e gates passaram",
+      "justification_score": 3,
+      "evidence": "git -C /var/lib/metanoia-hub diff --stat HEAD~1..HEAD retorna 9 files changed, 190 insertions; vitest 53/53 passed; pnpm turbo build: 3 successful; pnpm turbo lint: 4 successful 0 warnings",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-028",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-17T08:15:16Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 5 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-029",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-17T08:27:34Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Onda A.5+B.2+C.2+T.1+T.2: motion-safe, active:, E2E mobile",
+      "options_considered": [
+        "executar-tudo",
+        "executar-parcial",
+        "abortar"
+      ],
+      "choice": "executar-tudo",
+      "rationale": "Todos os arquivos-alvo editados; 0 animate-pulse sem motion-safe; lint+build OK; 127 testes coletados incluindo mobile-a11y Chromium Pixel5",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-030",
+      "wave_id": "onda-006",
+      "timestamp": "2026-06-17T08:43:39Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Conclusão das 15 tasks da feature a11y-touch-motion",
+      "options_considered": [
+        "concluir-execute-task",
+        "retornar-para-revisao"
+      ],
+      "choice": "concluir-execute-task",
+      "rationale": "15/15 tasks done: build OK (3 tasks), lint OK (4 tasks, 0 warnings), tests OK (59 packages/ui + 783 apps/web), check-motion-safe OK (0 findings), T.3/T.4/T.5/P.1 entregues",
+      "justification_score": 3,
+      "evidence": "pnpm turbo build: 3 successful; pnpm turbo lint: 4 successful, 0 warnings; pnpm ui test: 59 passed; pnpm web test: 783 passed; check-motion-safe: 0 findings",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-17T08:41:00Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 9,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 4182,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 30,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 1,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "touch",
+    "targets",
+    "reduced",
+    "motion",
+    "mobile",
+    "feedback"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T07:18:28Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T07:19:24Z",
+      "description": "onda specify concluida, aguardando wakeup para fase clarify"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T07:36:12Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T07:59:30Z",
+      "description": "fase=create-tasks concluida; proxima=execute-task"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T08:28:11Z",
+      "description": "onda execute-task A.5/B.2/C.2/T.1/T.2 concluida; aguardando proximo wakeup"
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "sug-001",
+      "affected_skill": "agente-00c-runtime",
+      "diagnosis": "agente-00c-feature-orchestrator.md documenta 'state-ondas.sh start --fase <fase>' mas o runtime instalado rejeita --fase com 'flag desconhecida: --fase' (exit ainda 0, mascarando a falha). Em resume mid-pipeline isso impede abrir uma nova onda para a fase corrente: o trabalho de plan caiu na onda de clarify (onda-002 ficou com executed_stages=[clarify,plan]).",
+      "severity": "aviso",
+      "proposal": "Alinhar o flag: ou o runtime passa a aceitar --fase (alias do flag real), ou a doc do orquestrador usa o flag correto de state-ondas.sh start. Adicionalmente, 'start' deveria retornar exit!=0 em flag desconhecida em vez de exit 0.",
+      "references": [
+        ".claude/feature-00c-state/a11y-touch-motion/state.json"
+      ],
+      "issue_opened": null,
+      "created_at": "2026-06-17T07:40:53Z"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "A.1",
+      "title": "Utilitários canônicos em packages/ui/styles/globals.css",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 53,
+      "tests_passed": 53,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/bottom-tabs.spec.tsx",
+        "packages/ui/__tests__/button.spec.tsx",
+        "packages/ui/__tests__/sidebar.spec.tsx",
+        "packages/ui/components/bottom-tabs.tsx",
+        "packages/ui/components/button.tsx",
+        "packages/ui/components/dialog.tsx",
+        "packages/ui/components/input.tsx",
+        "packages/ui/components/sidebar.tsx",
+        "packages/ui/styles/globals.css"
+      ],
+      "recorded_at": "2026-06-17T08:10:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "A.2",
+      "title": "Primitivo Button — tamanho mobile 44px",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 53,
+      "tests_passed": 53,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/bottom-tabs.spec.tsx",
+        "packages/ui/__tests__/button.spec.tsx",
+        "packages/ui/__tests__/sidebar.spec.tsx",
+        "packages/ui/components/bottom-tabs.tsx",
+        "packages/ui/components/button.tsx",
+        "packages/ui/components/dialog.tsx",
+        "packages/ui/components/input.tsx",
+        "packages/ui/components/sidebar.tsx",
+        "packages/ui/styles/globals.css"
+      ],
+      "recorded_at": "2026-06-17T08:10:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "A.3",
+      "title": "Primitivos de navegação Sidebar e BottomTabs",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 53,
+      "tests_passed": 53,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/bottom-tabs.spec.tsx",
+        "packages/ui/__tests__/button.spec.tsx",
+        "packages/ui/__tests__/sidebar.spec.tsx",
+        "packages/ui/components/bottom-tabs.tsx",
+        "packages/ui/components/button.tsx",
+        "packages/ui/components/dialog.tsx",
+        "packages/ui/components/input.tsx",
+        "packages/ui/components/sidebar.tsx",
+        "packages/ui/styles/globals.css"
+      ],
+      "recorded_at": "2026-06-17T08:10:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "A.4",
+      "title": "Primitivo Input — altura mobile 44px",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 53,
+      "tests_passed": 53,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/bottom-tabs.spec.tsx",
+        "packages/ui/__tests__/button.spec.tsx",
+        "packages/ui/__tests__/sidebar.spec.tsx",
+        "packages/ui/components/bottom-tabs.tsx",
+        "packages/ui/components/button.tsx",
+        "packages/ui/components/dialog.tsx",
+        "packages/ui/components/input.tsx",
+        "packages/ui/components/sidebar.tsx",
+        "packages/ui/styles/globals.css"
+      ],
+      "recorded_at": "2026-06-17T08:10:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "B.1",
+      "title": "Dialog.tsx — motion-safe + feedback",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 53,
+      "tests_passed": 53,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/bottom-tabs.spec.tsx",
+        "packages/ui/__tests__/button.spec.tsx",
+        "packages/ui/__tests__/sidebar.spec.tsx",
+        "packages/ui/components/bottom-tabs.tsx",
+        "packages/ui/components/button.tsx",
+        "packages/ui/components/dialog.tsx",
+        "packages/ui/components/input.tsx",
+        "packages/ui/components/sidebar.tsx",
+        "packages/ui/styles/globals.css"
+      ],
+      "recorded_at": "2026-06-17T08:10:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "C.1",
+      "title": "Safety net global em packages/ui/styles/globals.css",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 53,
+      "tests_passed": 53,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/bottom-tabs.spec.tsx",
+        "packages/ui/__tests__/button.spec.tsx",
+        "packages/ui/__tests__/sidebar.spec.tsx",
+        "packages/ui/components/bottom-tabs.tsx",
+        "packages/ui/components/button.tsx",
+        "packages/ui/components/dialog.tsx",
+        "packages/ui/components/input.tsx",
+        "packages/ui/components/sidebar.tsx",
+        "packages/ui/styles/globals.css"
+      ],
+      "recorded_at": "2026-06-17T08:10:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "A.5",
+      "title": "Folhas apps/web — touch targets e feedback",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/dashboard/_components/dashboard-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/_components/drill-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/lideres/[leaderId]/_components/leader-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/vista/_components/vista-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/super/audit/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/[id]/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/module-accordion-item.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/progresso/trail-progress-view.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/trail-playlist-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/perfil/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/celebration-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/grupo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/nudge-pastoral.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-error.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/return-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/semaforo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/[trailId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/reunioes/_components/meeting-skeleton.tsx",
+        "apps/web/app/(onboarding)/convite/[token]/_components/invite-loading-skeleton.tsx",
+        "apps/web/e2e/a11y/reduced-motion.e2e-spec.ts",
+        "apps/web/e2e/a11y/touch-targets.e2e-spec.ts",
+        "apps/web/playwright.config.ts",
+        "apps/web/src/components/content/trail-card.tsx",
+        "apps/web/src/components/content/trail-progress-bar.tsx",
+        "apps/web/src/components/marketing/marketing-footer.tsx",
+        "apps/web/src/components/marketing/marketing-nav.tsx",
+        "apps/web/src/components/meetings/confirmation-view.tsx",
+        "apps/web/src/components/meetings/live-status-bar.tsx",
+        "apps/web/src/components/onboarding/csv-preview-table.tsx",
+        "apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx",
+        "apps/web/src/components/plans/plan-card.tsx",
+        "apps/web/src/components/trails/trail-item-reorder.tsx",
+        "apps/web/src/components/ui/network-error-state.tsx"
+      ],
+      "recorded_at": "2026-06-17T08:27:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "B.2",
+      "title": "Folhas de feedback hover-only -> active:",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/dashboard/_components/dashboard-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/_components/drill-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/lideres/[leaderId]/_components/leader-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/vista/_components/vista-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/super/audit/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/[id]/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/module-accordion-item.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/progresso/trail-progress-view.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/trail-playlist-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/perfil/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/celebration-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/grupo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/nudge-pastoral.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-error.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/return-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/semaforo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/[trailId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/reunioes/_components/meeting-skeleton.tsx",
+        "apps/web/app/(onboarding)/convite/[token]/_components/invite-loading-skeleton.tsx",
+        "apps/web/e2e/a11y/reduced-motion.e2e-spec.ts",
+        "apps/web/e2e/a11y/touch-targets.e2e-spec.ts",
+        "apps/web/playwright.config.ts",
+        "apps/web/src/components/content/trail-card.tsx",
+        "apps/web/src/components/content/trail-progress-bar.tsx",
+        "apps/web/src/components/marketing/marketing-footer.tsx",
+        "apps/web/src/components/marketing/marketing-nav.tsx",
+        "apps/web/src/components/meetings/confirmation-view.tsx",
+        "apps/web/src/components/meetings/live-status-bar.tsx",
+        "apps/web/src/components/onboarding/csv-preview-table.tsx",
+        "apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx",
+        "apps/web/src/components/plans/plan-card.tsx",
+        "apps/web/src/components/trails/trail-item-reorder.tsx",
+        "apps/web/src/components/ui/network-error-state.tsx"
+      ],
+      "recorded_at": "2026-06-17T08:27:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "C.2",
+      "title": "Prefixar motion-safe: nos pontos quentes",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/dashboard/_components/dashboard-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/_components/drill-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/lideres/[leaderId]/_components/leader-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/vista/_components/vista-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/super/audit/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/[id]/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/module-accordion-item.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/progresso/trail-progress-view.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/trail-playlist-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/perfil/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/celebration-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/grupo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/nudge-pastoral.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-error.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/return-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/semaforo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/[trailId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/reunioes/_components/meeting-skeleton.tsx",
+        "apps/web/app/(onboarding)/convite/[token]/_components/invite-loading-skeleton.tsx",
+        "apps/web/e2e/a11y/reduced-motion.e2e-spec.ts",
+        "apps/web/e2e/a11y/touch-targets.e2e-spec.ts",
+        "apps/web/playwright.config.ts",
+        "apps/web/src/components/content/trail-card.tsx",
+        "apps/web/src/components/content/trail-progress-bar.tsx",
+        "apps/web/src/components/marketing/marketing-footer.tsx",
+        "apps/web/src/components/marketing/marketing-nav.tsx",
+        "apps/web/src/components/meetings/confirmation-view.tsx",
+        "apps/web/src/components/meetings/live-status-bar.tsx",
+        "apps/web/src/components/onboarding/csv-preview-table.tsx",
+        "apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx",
+        "apps/web/src/components/plans/plan-card.tsx",
+        "apps/web/src/components/trails/trail-item-reorder.tsx",
+        "apps/web/src/components/ui/network-error-state.tsx"
+      ],
+      "recorded_at": "2026-06-17T08:27:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "T.1",
+      "title": "E2E reduced-motion — arquivo novo",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/dashboard/_components/dashboard-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/_components/drill-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/lideres/[leaderId]/_components/leader-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/vista/_components/vista-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/super/audit/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/[id]/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/module-accordion-item.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/progresso/trail-progress-view.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/trail-playlist-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/perfil/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/celebration-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/grupo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/nudge-pastoral.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-error.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/return-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/semaforo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/[trailId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/reunioes/_components/meeting-skeleton.tsx",
+        "apps/web/app/(onboarding)/convite/[token]/_components/invite-loading-skeleton.tsx",
+        "apps/web/e2e/a11y/reduced-motion.e2e-spec.ts",
+        "apps/web/e2e/a11y/touch-targets.e2e-spec.ts",
+        "apps/web/playwright.config.ts",
+        "apps/web/src/components/content/trail-card.tsx",
+        "apps/web/src/components/content/trail-progress-bar.tsx",
+        "apps/web/src/components/marketing/marketing-footer.tsx",
+        "apps/web/src/components/marketing/marketing-nav.tsx",
+        "apps/web/src/components/meetings/confirmation-view.tsx",
+        "apps/web/src/components/meetings/live-status-bar.tsx",
+        "apps/web/src/components/onboarding/csv-preview-table.tsx",
+        "apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx",
+        "apps/web/src/components/plans/plan-card.tsx",
+        "apps/web/src/components/trails/trail-item-reorder.tsx",
+        "apps/web/src/components/ui/network-error-state.tsx"
+      ],
+      "recorded_at": "2026-06-17T08:27:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "T.2",
+      "title": "Projeto mobile Playwright + E2E touch-targets",
+      "wave_id": "onda-005",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/admin/configuracoes/politicas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/dashboard/_components/dashboard-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/_components/drill-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/importar/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/group-trails-client.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/grupos/[groupId]/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/lideres/[leaderId]/_components/leader-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/igreja/vista/_components/vista-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/admin/super/audit/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/[id]/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/grupos/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/perfil/privacidade/page.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/module-accordion-item.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/progresso/trail-progress-view.tsx",
+        "apps/web/app/(authenticated)/app/consumo/trilhas/[trailId]/trail-playlist-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/cuidado/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/[participantId]/perfil/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/celebration-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/grupo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/nudge-pastoral.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-error.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/radar-skeleton.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/return-banner.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/semaforo-pill.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/[trailId]/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/relatorios/trilhas/page.tsx",
+        "apps/web/app/(authenticated)/app/gestao/reunioes/_components/meeting-skeleton.tsx",
+        "apps/web/app/(onboarding)/convite/[token]/_components/invite-loading-skeleton.tsx",
+        "apps/web/e2e/a11y/reduced-motion.e2e-spec.ts",
+        "apps/web/e2e/a11y/touch-targets.e2e-spec.ts",
+        "apps/web/playwright.config.ts",
+        "apps/web/src/components/content/trail-card.tsx",
+        "apps/web/src/components/content/trail-progress-bar.tsx",
+        "apps/web/src/components/marketing/marketing-footer.tsx",
+        "apps/web/src/components/marketing/marketing-nav.tsx",
+        "apps/web/src/components/meetings/confirmation-view.tsx",
+        "apps/web/src/components/meetings/live-status-bar.tsx",
+        "apps/web/src/components/onboarding/csv-preview-table.tsx",
+        "apps/web/src/components/onboarding/wizard/OnboardingWizard.tsx",
+        "apps/web/src/components/plans/plan-card.tsx",
+        "apps/web/src/components/trails/trail-item-reorder.tsx",
+        "apps/web/src/components/ui/network-error-state.tsx"
+      ],
+      "recorded_at": "2026-06-17T08:27:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "T.3",
+      "title": "Testes jest-axe em packages/ui (input + dialog)",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 59,
+      "tests_passed": 59,
+      "lint_ok": true,
+      "touched_files": [
+        "packages/ui/__tests__/input.spec.tsx",
+        "packages/ui/__tests__/dialog.spec.tsx"
+      ],
+      "recorded_at": "2026-06-17T08:43:56Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "T.4",
+      "title": "Scan estatico check-motion-safe.sh",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "scripts/check-motion-safe.sh",
+        ".github/workflows/ci.yml"
+      ],
+      "recorded_at": "2026-06-17T08:43:56Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "T.5",
+      "title": "Checklist de teste manual iOS/Android/reduced-motion",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "docs/specs/a11y-touch-motion/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-17T08:43:56Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "P.1",
+      "title": "Gate local completo e tasks.md 100% done",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 842,
+      "tests_passed": 842,
+      "lint_ok": true,
+      "touched_files": [
+        "docs/specs/a11y-touch-motion/tasks.md"
+      ],
+      "recorded_at": "2026-06-17T08:43:56Z",
+      "source": "execute-task"
+    }
+  ]
+}

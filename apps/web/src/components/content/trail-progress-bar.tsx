@@ -23,7 +23,7 @@ export function TrailProgressBar({ progressPercent, label, className }: TrailPro
       <div className="flex items-center gap-2">
         <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
           <div
-            className="h-full bg-primary rounded-full transition-all duration-300"
+            className="h-full bg-primary rounded-full motion-safe:transition-all duration-300"
             style={{ width: `${clampedPercent}%` }}
           />
         </div>

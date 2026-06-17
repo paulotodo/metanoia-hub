@@ -34,7 +34,7 @@ export function ConfirmationView({
       <button
         type="button"
         onClick={onAction}
-        className="h-12 w-full rounded-lg bg-brand-teal px-4 text-base font-semibold text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
+        className="h-12 w-full rounded-lg bg-brand-teal px-4 text-base font-semibold text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
       >
         {actionLabel}
       </button>

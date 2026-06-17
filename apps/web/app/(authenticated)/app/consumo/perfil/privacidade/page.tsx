@@ -297,7 +297,7 @@ export default function PrivacidadeConsentimentoPage() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-16 animate-pulse rounded-lg bg-gray-100"
+              className="h-16 motion-safe:animate-pulse rounded-lg bg-gray-100"
               aria-hidden="true"
             />
           ))}

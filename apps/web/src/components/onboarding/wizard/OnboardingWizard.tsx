@@ -174,7 +174,7 @@ export function OnboardingWizard({
                 type="button"
                 aria-label={`${STEP_LABELS[i]} ${isCompleted ? '(concluído)' : isCurrent ? '(atual)' : '(pendente)'}`}
                 aria-current={isCurrent ? 'step' : undefined}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                className={`h-2.5 w-2.5 rounded-full motion-safe:transition-colors ${
                   isCompleted
                     ? 'bg-brand-primary'
                     : isCurrent
@@ -215,7 +215,7 @@ export function OnboardingWizard({
       {/* Progress bar */}
       <div className="h-1 w-full bg-surface-muted" aria-hidden="true">
         <div
-          className="h-1 bg-brand-primary transition-all"
+          className="h-1 bg-brand-primary motion-safe:transition-all"
           style={{ width: `${progressPercent}%` }}
         />
       </div>

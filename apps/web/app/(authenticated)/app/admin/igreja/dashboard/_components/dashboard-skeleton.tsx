@@ -1,6 +1,6 @@
 export function DashboardSkeleton() {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10 animate-pulse">
+    <div className="mx-auto max-w-6xl px-6 py-10 motion-safe:animate-pulse">
       {/* Header */}
       <div className="mb-6">
         <div className="h-8 w-72 rounded bg-bg-secondary" />

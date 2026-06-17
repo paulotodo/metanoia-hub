@@ -125,7 +125,7 @@ export function LoginForm() {
             />
             <button
               type="button"
-              className="text-caption absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm"
+              className="text-caption absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm md:h-9 md:w-9 active:opacity-70"
               onClick={() => setShowPassword((s) => !s)}
               aria-label={showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword}
               data-testid="login-toggle-password"
@@ -176,7 +176,7 @@ export function LoginForm() {
 
       <p className="text-body-sm mt-6 text-center text-text-secondary">
         {t.noAccount}{' '}
-        <Link href="/register" className="text-brand-primary hover:underline">
+        <Link href="/register" className="text-brand-primary underline underline-offset-2">
           {t.createAccount}
         </Link>
       </p>

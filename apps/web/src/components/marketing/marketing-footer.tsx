@@ -63,7 +63,7 @@ function FooterSection({
           <li key={link.href}>
             <Link
               href={link.href}
-              className="text-secondary transition-colors hover:text-text-primary"
+              className="text-secondary motion-safe:transition-colors hover:text-text-primary"
             >
               {link.label}
             </Link>

@@ -82,7 +82,7 @@ export function CelebrationBanner({ event, onDismiss }: CelebrationBannerProps) 
         type="button"
         onClick={dismiss}
         aria-label={PASTORAL_CELEBRATION_DISMISS}
-        className="shrink-0 rounded p-0.5 text-text-muted transition-colors hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+        className="shrink-0 rounded p-0.5 text-text-muted motion-safe:transition-colors hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
       >
         <X className="size-4" aria-hidden="true" />
       </button>

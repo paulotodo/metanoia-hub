@@ -28,7 +28,7 @@ export function SkipNav() {
         'bg-white text-text-primary font-medium text-sm',
         'border-2 border-brand-primary',
         // Transition for smooth reveal
-        'transition-transform duration-150',
+        'motion-safe:transition-transform duration-150',
         // Hidden state: slide up off-screen
         '-translate-y-[calc(100%+1rem)]',
         // Visible on focus

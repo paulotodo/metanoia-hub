@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-touch-motion",
+  "execution": {
+    "id": "feat-a11y-touch-motion-20260617T071308Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 12.4: Touch Targets, Reduced Motion e Mobile Feedback (NFR-A2, UX). Alvos de toque min WCAG 2.5.5/2.5.8 (44x44 ou 24x24 com espacamento), prefers-reduced-motion (reduzir/desabilitar animacoes e transicoes), feedback tatil/visual em mobile. Tokens em packages/config/tailwind.preset.css (@theme, oklch).",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-17T07:13:08Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker/answerer para resolver NEEDS_CLARIFICATION da spec.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-17T07:14:24Z",
+      "finished_at": "2026-06-17T07:19:00Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 276,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T07:18:42Z",
+          "decision_id": "dec-002"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-17T07:23:52Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T07:24:45Z",
+          "decision_id": "dec-005"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T07:25:58Z",
+          "decision_id": "dec-006"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-17T07:13:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T07:18:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Geracao da spec.md para feature a11y-touch-motion",
+      "options_considered": [
+        "gerar-spec",
+        "abortar"
+      ],
+      "choice": "gerar-spec",
+      "rationale": "Spec autoritativa 12-4 presente, artefatos de referencia coletados (tailwind tokens, componentes existentes, AC da story). Spec gerada com 3 US, 14 FR, 11 SC e 2 NEEDS_CLARIFICATION.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T07:18:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-touch-motion)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story touch targets reduced motion mobile feedback",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T07:22:16Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:24:45Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T07:25:58Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-17T07:23:52Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 1,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 276,
+    "max_depth_reached": 2,
+    "subagents_spawned": 1,
+    "decisions_total": 6,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "touch",
+    "targets",
+    "reduced",
+    "motion",
+    "mobile",
+    "feedback"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T07:18:28Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T07:19:24Z",
+      "description": "onda specify concluida, aguardando wakeup para fase clarify"
+    }
+  ]
+}

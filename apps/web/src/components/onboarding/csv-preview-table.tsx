@@ -55,7 +55,7 @@ function RowStatusBadge({
     return (
       <span
         role="status"
-        className="inline-block h-4 w-16 animate-pulse rounded bg-surface-muted"
+        className="inline-block h-4 w-16 motion-safe:animate-pulse rounded bg-surface-muted"
         aria-label="Verificando…"
         data-testid="status-skeleton"
       />
@@ -109,7 +109,7 @@ function SkeletonRow() {
     <tr aria-hidden="true">
       {Array.from({ length: 5 }).map((_, i) => (
         <td key={i} className="px-3 py-2">
-          <span className="inline-block h-4 w-full animate-pulse rounded bg-surface-muted" />
+          <span className="inline-block h-4 w-full motion-safe:animate-pulse rounded bg-surface-muted" />
         </td>
       ))}
     </tr>
@@ -222,7 +222,7 @@ export function CSVPreviewTable({
               <tr
                 key={row.rowIndex}
                 className={[
-                  'transition-colors',
+                  'motion-safe:transition-colors',
                   row.status === 'critico'
                     ? 'bg-care-alert/5'
                     : row.status === 'aviso'
@@ -270,7 +270,7 @@ export function CSVPreviewTable({
           onClick={onProceed}
           disabled={!canProceed || isChecking}
           aria-disabled={!canProceed || isChecking}
-          className="rounded-lg bg-interactive-primary px-5 py-2.5 text-sm font-semibold text-text-inverse transition-colors hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-interactive-primary px-5 py-2.5 text-sm font-semibold text-text-inverse motion-safe:transition-colors hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:cursor-not-allowed disabled:opacity-50"
           data-testid="proceed-btn"
         >
           {t.preview.proceed}

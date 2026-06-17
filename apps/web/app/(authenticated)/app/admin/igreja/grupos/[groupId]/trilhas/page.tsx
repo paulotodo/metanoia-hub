@@ -15,7 +15,7 @@ export default function GroupTrailsPage({ params }: PageProps) {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="h-16 animate-pulse rounded-lg border border-border bg-surface"
+                className="h-16 motion-safe:animate-pulse rounded-lg border border-border bg-surface"
               />
             ))}
           </div>

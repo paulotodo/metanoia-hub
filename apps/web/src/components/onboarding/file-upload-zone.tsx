@@ -202,7 +202,7 @@ export function FileUploadZone({
   const isError = displayState === 'error-size' || displayState === 'error-type';
 
   const zoneClasses = [
-    'relative flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-brand-teal/30',
+    'relative flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center motion-safe:transition-colors duration-150 focus-within:ring-2 focus-within:ring-brand-teal/30',
     isError
       ? 'border-care-alert bg-care-alert/5'
       : dragover

@@ -226,3 +226,34 @@ describe("Sidebar — acessibilidade (jest-axe)", () => {
     expect(results).toHaveNoViolations();
   });
 });
+
+describe("Sidebar — touch targets (A.3 / T.3 — NFR-A2 / FR-1.1 / dec-008)", () => {
+  it("links de navegacao tem min-h-[44px] (WCAG 2.5.5 mobile)", () => {
+    const { container } = render(
+      <Sidebar items={mockItems} activeKey="home" />,
+    );
+    const links = container.querySelectorAll("a");
+    for (const link of links) {
+      expect(link.className).toContain("min-h-[44px]");
+    }
+  });
+
+  it("links tem active:opacity-80 para feedback tatil (FR-2.1)", () => {
+    const { container } = render(
+      <Sidebar items={mockItems} activeKey="home" />,
+    );
+    const links = container.querySelectorAll("a");
+    for (const link of links) {
+      expect(link.className).toContain("active:opacity-80");
+    }
+  });
+
+  it("passa verificacao de acessibilidade com novos estilos", async () => {
+    const { container } = render(
+      <Sidebar items={mockItems} activeKey="home" />,
+    );
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+

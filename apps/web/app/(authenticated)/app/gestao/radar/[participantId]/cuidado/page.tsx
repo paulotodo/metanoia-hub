@@ -95,7 +95,7 @@ export default function CareActionPage({
           <button
             type="button"
             onClick={handleUndo}
-            className="text-sm font-medium text-brand-teal transition-colors hover:text-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+            className="text-sm font-medium text-brand-teal motion-safe:transition-colors hover:text-interactive-hover active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
           >
             Desfazer
           </button>
@@ -111,7 +111,7 @@ export default function CareActionPage({
       <button
         type="button"
         onClick={handleBack}
-        className="inline-flex items-center gap-1.5 text-sm text-text-secondary transition-colors hover:text-text-primary"
+        className="inline-flex items-center gap-1.5 text-sm text-text-secondary motion-safe:motion-safe:transition-colors hover:text-text-primary active:opacity-70"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         Voltar
@@ -168,7 +168,7 @@ export default function CareActionPage({
         type="button"
         onClick={handleSubmit}
         disabled={!note.trim() || pageState === "saving"}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-3 text-sm font-medium text-text-inverse transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:bg-interactive-disabled-bg disabled:text-interactive-disabled-text sm:w-auto"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-teal px-4 py-3 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:bg-interactive-disabled-bg disabled:text-interactive-disabled-text sm:w-auto"
       >
         {pageState === "saving" ? (
           <>
@@ -202,7 +202,7 @@ export default function CareActionPage({
               <button
                 type="button"
                 onClick={() => setShowAbandonDialog(false)}
-                className="rounded-md px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+                className="rounded-md px-4 py-2 text-sm font-medium text-text-secondary motion-safe:transition-colors hover:text-text-primary active:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
               >
                 Continuar escrevendo
               </button>
@@ -211,7 +211,7 @@ export default function CareActionPage({
                 onClick={() =>
                   router.push(`/app/gestao/radar/${participantId}`)
                 }
-                className="rounded-md bg-care-urgent px-4 py-2 text-sm font-medium text-text-inverse transition-colors hover:bg-care-urgent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+                className="rounded-md bg-care-urgent px-4 py-2 text-sm font-medium text-text-inverse motion-safe:transition-colors hover:bg-care-urgent/90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
               >
                 Sair
               </button>
