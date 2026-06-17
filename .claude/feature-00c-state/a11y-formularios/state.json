@@ -38,7 +38,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "review-task",
   "next_instruction": "fase create-tasks: invocar Skill(create-tasks) para decompor plano em tasks.md executável",
   "waves": [
     {
@@ -160,10 +160,10 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T10:46:20Z",
-      "finished_at": "2026-06-17T11:25:44Z",
+      "finished_at": "2026-06-17T11:44:33Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2364,
+      "wallclock_seconds": 3493,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -836,6 +836,24 @@
       "evidence": "TSC_EXIT=0 (pnpm --filter @metanoia/web exec tsc --noEmit); git log: c42d707 + b8f09f6 na branch feat/12-5-a11y-formularios",
       "references": [],
       "originating_artifact": null
+    },
+    {
+      "id": "dec-036",
+      "wave_id": "onda-006",
+      "timestamp": "2026-06-17T11:44:15Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Fase 3 concluída: T3.1 (E2E Playwright 5 rotas), T3.2 (specs jest-axe 4 novos formulários), T3.3 (gate SC-F verde)",
+      "options_considered": [
+        "avancar-para-review-task",
+        "bloquear-humano"
+      ],
+      "choice": "avancar-para-review-task",
+      "rationale": "build 3/3 verde, lint 4/4 verde, 836/837 testes passando (1 falha pre-existente recovery-form commit 265a6de), playwright --list detecta a11y-forms.spec.ts, SC-F aprovado",
+      "justification_score": 3,
+      "evidence": "Tasks:    3 successful, 3 total | Tasks:    4 successful, 4 total | 836 passed (837)",
+      "references": [],
+      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -868,12 +886,12 @@
     "current_wave_start": "2026-06-17T10:46:20Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 5472,
+    "wallclock_total_seconds": 8965,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 35,
+    "decisions_total": 36,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1581,6 +1599,58 @@
         "apps/web/src/components/meetings/reflection-form-field.tsx"
       ],
       "recorded_at": "2026-06-17T11:24:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.1",
+      "title": "E2E Playwright — rotas públicas acessíveis [high]",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/e2e/a11y-forms.spec.ts",
+        "apps/web/src/components/groups/__tests__/group-form.spec.tsx",
+        "apps/web/src/components/groups/__tests__/invite-members-form.spec.tsx",
+        "apps/web/src/components/marketing/__tests__/contact-message-form.spec.tsx",
+        "apps/web/src/components/marketing/__tests__/demo-request-form.spec.tsx",
+        "docs/specs/a11y-formularios/tasks.md",
+        "scripts/check-i18n-scf.sh"
+      ],
+      "recorded_at": "2026-06-17T11:43:52Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.2",
+      "title": "Cobertura jest-axe — todos os formulários [high]",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 836,
+      "tests_passed": 836,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/src/components/groups/__tests__/group-form.spec.tsx",
+        "apps/web/src/components/groups/__tests__/invite-members-form.spec.tsx",
+        "apps/web/src/components/marketing/__tests__/contact-message-form.spec.tsx",
+        "apps/web/src/components/marketing/__tests__/demo-request-form.spec.tsx"
+      ],
+      "recorded_at": "2026-06-17T11:43:59Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.3",
+      "title": "Gate de não-regressão e SC-F [crit]",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 836,
+      "tests_passed": 836,
+      "lint_ok": true,
+      "touched_files": [
+        "scripts/check-i18n-scf.sh",
+        "docs/specs/a11y-formularios/tasks.md"
+      ],
+      "recorded_at": "2026-06-17T11:44:05Z",
       "source": "execute-task"
     }
   ]
