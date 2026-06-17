@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
   "waves": [
     {
@@ -74,23 +74,6 @@
         {
           "skill": "owasp-security",
           "timestamp": "2026-06-17T12:40:13Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-17T12:48:09Z",
-      "finished_at": "2026-06-17T12:51:20Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 191,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-17T12:50:48Z",
           "decision_id": null
         }
       ]
@@ -339,63 +322,6 @@
       "evidence": "plan.md secao 8 Artefatos: novos = a11y-pages.json, axe-quality-gate.e2e-spec.ts, check-contrast.ts, vitest spec, a11y-checks.yml, audit-report.md; editados = axe-final.spec.ts, ci.yml, package.json — nenhum toca runtime de servidor/dados/auth",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T12:50:48Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Checklist a11y gerado (33 items, 100% rastreabilidade): 26 auto-satisfeitos, 4 gaps/ambiguities/conflicts, 1 humano. RISCO CRITICO PR#156 (pre-promocao FR-13) COBERTO pelos requisitos (CHK015/CHK016/T12).",
-      "options_considered": [
-        "avancar-para-create-tasks",
-        "bloquear-por-gaps",
-        "clarify-novamente"
-      ],
-      "choice": "avancar-para-create-tasks",
-      "rationale": "Gaps abertos sao leves e enderecaveis em create-tasks/clarify (CHK023 YAML-valido como criterio explicito; CHK030 conflito textual SC-5.1 vs NC-3 ja resolvido semanticamente por dec-007; CHK006/CHK017 ambiguidades residuais de implementacao). Nenhum gap impede avanco; FR-13 cobre o risco critico de CI vermelho.",
-      "justification_score": null,
-      "evidence": "grep spec linha 121: SC-5.1 ainda pede pagina autenticada; NC-3/dec-007 declara SC-5.1 ajustado p/ so publicas — conflito textual. plan §5.3 cita 'PR #156 — CI silenciosamente vermelho' + T12 cobre pre-promocao dos 3 scripts.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T12:51:07Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK030: conflito textual SC-5.1 (pede 'pelo menos uma pagina de fluxo autenticado-publico') vs NC-3/dec-007 ('SC-5.1 ajustado p/ so publicas').",
-      "options_considered": [
-        "enderecar-em-create-tasks",
-        "reabrir-clarify-agora",
-        "ignorar"
-      ],
-      "choice": "enderecar-em-create-tasks",
-      "rationale": "Conflito ja resolvido SEMANTICAMENTE por dec-007 (score 3): gate cobre so paginas publicas; a11y-pages.json so contem requiresAuth:false. Restou apenas a letra de SC-5.1 desatualizada. Sem risco de implementacao; tarefa de correcao textual basta.",
-      "justification_score": null,
-      "evidence": "spec linha 121 (SC-5.1) e linha 126 (NC-3/dec-007 'SC-5.1 ajustado: paginas iniciais sao /login, /, /register, /recuperar-senha (todas publicas)') coexistem no spec.md.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T12:51:07Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK023: validade do YAML dos workflows nao e criterio de aceite explicito (so coberto indiretamente via execucao 'act' no DoD).",
-      "options_considered": [
-        "adicionar-tarefa-validacao-yaml",
-        "bloquear",
-        "ignorar"
-      ],
-      "choice": "adicionar-tarefa-validacao-yaml",
-      "rationale": "Risco real (YAML invalido quebra o workflow silenciosamente). Endereçavel em create-tasks como tarefa de validacao (parse/lint YAML do a11y-checks.yml e ci.yml) alem do act local. Nao impede avanco da fase.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -410,15 +336,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T12:48:09Z"
+    "current_wave_start": "2026-06-17T12:28:04Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1438,
+    "wallclock_total_seconds": 1247,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 16,
+    "decisions_total": 13,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
