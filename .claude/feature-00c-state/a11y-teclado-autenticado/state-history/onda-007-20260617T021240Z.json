@@ -142,11 +142,11 @@
     {
       "id": "onda-007",
       "started_at": "2026-06-17T02:02:37Z",
-      "finished_at": "2026-06-17T02:12:50Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 613,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -743,9 +743,9 @@
     "current_wave_start": "2026-06-17T02:02:37Z"
   },
   "accumulated_metrics": {
-    "waves_total": 8,
+    "waves_total": 7,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4842,
+    "wallclock_total_seconds": 4229,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 29,
@@ -802,11 +802,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:57:28Z",
       "description": "onda-006 encerrada; aguardando wakeup para FASE 1"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T02:12:40Z",
-      "description": "FASE 1 concluída; aguardando wakeup para FASE 2"
     }
   ],
   "tasks": [

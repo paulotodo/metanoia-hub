@@ -138,23 +138,6 @@
           "decision_id": null
         }
       ]
-    },
-    {
-      "id": "onda-007",
-      "started_at": "2026-06-17T02:02:37Z",
-      "finished_at": "2026-06-17T02:12:50Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 613,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T02:12:40Z",
-          "decision_id": null
-        }
-      ]
     }
   ],
   "decisions": [
@@ -664,45 +647,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-17T02:01:16Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 6 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-17T02:12:40Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 1 concluída: 5 tasks de hooks/componentes transversais a11y",
-      "options_considered": [
-        "concluir-fase",
-        "parcial",
-        "abortar"
-      ],
-      "choice": "concluir-fase",
-      "rationale": "Todas 5 tasks executadas, 692 testes passando, build+lint ok, 2 commits na branch feat/12-2-a11y-teclado-autenticado",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -740,15 +684,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T02:02:37Z"
+    "current_wave_start": "2026-06-17T01:53:29Z"
   },
   "accumulated_metrics": {
-    "waves_total": 8,
+    "waves_total": 7,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4842,
+    "wallclock_total_seconds": 4229,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 29,
+    "decisions_total": 27,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -802,11 +746,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T01:57:28Z",
       "description": "onda-006 encerrada; aguardando wakeup para FASE 1"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T02:12:40Z",
-      "description": "FASE 1 concluída; aguardando wakeup para FASE 2"
     }
   ],
   "tasks": [
@@ -837,121 +776,6 @@
         "apps/web/e2e/keyboard/"
       ],
       "recorded_at": "2026-06-17T01:56:22Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.1",
-      "title": "useFocusOnRouteChange hook + testes unitários",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 692,
-      "tests_passed": 692,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/_components/__tests__/focus-manager.spec.tsx",
-        "apps/web/app/(authenticated)/_components/focus-manager.tsx",
-        "apps/web/app/(authenticated)/_components/navigation-shell.tsx",
-        "apps/web/src/components/a11y/__tests__/async-announcer.spec.tsx",
-        "apps/web/src/components/a11y/async-announcer.tsx",
-        "apps/web/src/hooks/__tests__/use-focus-on-route-change.spec.ts",
-        "apps/web/src/hooks/__tests__/use-roving-tabindex.spec.tsx",
-        "apps/web/src/hooks/use-focus-on-route-change.ts",
-        "apps/web/src/hooks/use-roving-tabindex.ts",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T02:12:26Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.2",
-      "title": "FocusManager Client Component",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 692,
-      "tests_passed": 692,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/_components/__tests__/focus-manager.spec.tsx",
-        "apps/web/app/(authenticated)/_components/focus-manager.tsx",
-        "apps/web/app/(authenticated)/_components/navigation-shell.tsx",
-        "apps/web/src/components/a11y/__tests__/async-announcer.spec.tsx",
-        "apps/web/src/components/a11y/async-announcer.tsx",
-        "apps/web/src/hooks/__tests__/use-focus-on-route-change.spec.ts",
-        "apps/web/src/hooks/__tests__/use-roving-tabindex.spec.tsx",
-        "apps/web/src/hooks/use-focus-on-route-change.ts",
-        "apps/web/src/hooks/use-roving-tabindex.ts",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T02:12:26Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.3",
-      "title": "useRovingTabindex hook + testes unitários",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 692,
-      "tests_passed": 692,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/_components/__tests__/focus-manager.spec.tsx",
-        "apps/web/app/(authenticated)/_components/focus-manager.tsx",
-        "apps/web/app/(authenticated)/_components/navigation-shell.tsx",
-        "apps/web/src/components/a11y/__tests__/async-announcer.spec.tsx",
-        "apps/web/src/components/a11y/async-announcer.tsx",
-        "apps/web/src/hooks/__tests__/use-focus-on-route-change.spec.ts",
-        "apps/web/src/hooks/__tests__/use-roving-tabindex.spec.tsx",
-        "apps/web/src/hooks/use-focus-on-route-change.ts",
-        "apps/web/src/hooks/use-roving-tabindex.ts",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T02:12:26Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.4",
-      "title": "AsyncAnnouncer + useAsyncAnnouncer",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 692,
-      "tests_passed": 692,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/_components/__tests__/focus-manager.spec.tsx",
-        "apps/web/app/(authenticated)/_components/focus-manager.tsx",
-        "apps/web/app/(authenticated)/_components/navigation-shell.tsx",
-        "apps/web/src/components/a11y/__tests__/async-announcer.spec.tsx",
-        "apps/web/src/components/a11y/async-announcer.tsx",
-        "apps/web/src/hooks/__tests__/use-focus-on-route-change.spec.ts",
-        "apps/web/src/hooks/__tests__/use-roving-tabindex.spec.tsx",
-        "apps/web/src/hooks/use-focus-on-route-change.ts",
-        "apps/web/src/hooks/use-roving-tabindex.ts",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T02:12:26Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.5",
-      "title": "Integrar AsyncAnnouncerProvider no NavigationShell",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 692,
-      "tests_passed": 692,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/_components/__tests__/focus-manager.spec.tsx",
-        "apps/web/app/(authenticated)/_components/focus-manager.tsx",
-        "apps/web/app/(authenticated)/_components/navigation-shell.tsx",
-        "apps/web/src/components/a11y/__tests__/async-announcer.spec.tsx",
-        "apps/web/src/components/a11y/async-announcer.tsx",
-        "apps/web/src/hooks/__tests__/use-focus-on-route-change.spec.ts",
-        "apps/web/src/hooks/__tests__/use-roving-tabindex.spec.tsx",
-        "apps/web/src/hooks/use-focus-on-route-change.ts",
-        "apps/web/src/hooks/use-roving-tabindex.ts",
-        "docs/specs/a11y-teclado-autenticado/tasks.md"
-      ],
-      "recorded_at": "2026-06-17T02:12:26Z",
       "source": "execute-task"
     }
   ]
