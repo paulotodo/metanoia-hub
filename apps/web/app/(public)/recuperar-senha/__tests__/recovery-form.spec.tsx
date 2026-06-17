@@ -23,7 +23,7 @@ beforeAll(() => {
 describe('RecoveryForm', () => {
   it('should render email field and submit button', () => {
     const { getByLabelText, getByRole } = render(<RecoveryForm />);
-    expect(getByLabelText('E-mail')).toBeDefined();
+    expect(getByLabelText(/E-mail/)).toBeDefined();
     expect(getByRole('button', { name: 'Enviar link' })).toBeDefined();
   });
 

@@ -228,6 +228,7 @@ export function GroupForm({
           ref={submitButtonRef}
           type="submit"
           disabled={pending}
+          aria-busy={pending || undefined}
           data-testid="group-form-submit"
           className={[
             "h-11 rounded-lg bg-[var(--color-brand-teal)] px-6",

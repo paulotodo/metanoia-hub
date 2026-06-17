@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ForgotPasswordSchema } from '@metanoia/types';
 import { Button, Card, Input } from '@metanoia/ui';
+import { FormField } from '@/components/forms';
+import { scrollToFirstError } from '@/lib/form-utils';
+import { SubmitButton } from '@/lib/submit-button';
 import messages from '../../../../messages/pt-BR.json';
 
 type FormState = 'idle' | 'sending' | 'sent';
@@ -34,6 +37,7 @@ export function RecoveryForm() {
       const result = ForgotPasswordSchema.safeParse({ email });
       if (!result.success) {
         setEmailError(t.errors.invalidEmail);
+        scrollToFirstError();
         return;
       }
 
@@ -108,35 +112,17 @@ export function RecoveryForm() {
       </p>
 
       <form onSubmit={submit} noValidate className="flex flex-col gap-4">
-        <div>
-          <label
-            htmlFor="recovery-email"
-            className="text-body-sm mb-1 block text-text-secondary"
-          >
-            {t.email}
-          </label>
+        <FormField label={t.email} error={emailError || undefined} required>
           <Input
             id="recovery-email"
             type="email"
             autoComplete="email"
             autoFocus
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            aria-invalid={!!emailError}
-            aria-describedby={emailError ? 'recovery-email-error' : undefined}
             data-testid="recovery-email-input"
           />
-          {emailError && (
-            <p
-              id="recovery-email-error"
-              className="text-caption mt-1 text-state-danger"
-              role="alert"
-            >
-              {emailError}
-            </p>
-          )}
-        </div>
+        </FormField>
 
         {serverError && (
           <p className="text-caption text-state-danger" role="alert">
@@ -144,14 +130,13 @@ export function RecoveryForm() {
           </p>
         )}
 
-        <Button
-          type="submit"
-          disabled={formState === 'sending'}
+        <SubmitButton
+          label={t.submit}
+          pendingLabel={t.submitting}
+          isPending={formState === 'sending'}
           className="mt-2 w-full"
           data-testid="recovery-submit"
-        >
-          {formState === 'sending' ? t.submitting : t.submit}
-        </Button>
+        />
       </form>
 
       <p className="text-body-sm mt-6 text-center">

@@ -151,38 +151,42 @@ export function Step2Community({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2">
-          <label htmlFor="wizard-city" className="block text-sm font-medium text-text-primary">
-            {t.step2.cityLabel}
-          </label>
-          <Input
-            id="wizard-city"
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder={t.step2.cityPlaceholder}
-            disabled={readOnly || isPending}
-            data-testid="step2-city"
-          />
-        </div>
+      {/* Task 1.5 — WCAG 1.3.1: fieldset agrupa cidade+estado relacionados */}
+      <fieldset className="space-y-1">
+        <legend className="text-sm font-medium text-text-primary">{t.step2.locationLabel}</legend>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <label htmlFor="wizard-city" className="block text-sm font-medium text-text-primary">
+              {t.step2.cityLabel}
+            </label>
+            <Input
+              id="wizard-city"
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder={t.step2.cityPlaceholder}
+              disabled={readOnly || isPending}
+              data-testid="step2-city"
+            />
+          </div>
 
-        <div className="space-y-2">
-          <label htmlFor="wizard-state" className="block text-sm font-medium text-text-primary">
-            {t.step2.stateLabel}
-          </label>
-          <Input
-            id="wizard-state"
-            type="text"
-            value={stateUf}
-            onChange={(e) => setStateUf(e.target.value.toUpperCase().slice(0, 2))}
-            placeholder={t.step2.statePlaceholder}
-            maxLength={2}
-            disabled={readOnly || isPending}
-            data-testid="step2-state"
-          />
+          <div className="space-y-2">
+            <label htmlFor="wizard-state" className="block text-sm font-medium text-text-primary">
+              {t.step2.stateLabel}
+            </label>
+            <Input
+              id="wizard-state"
+              type="text"
+              value={stateUf}
+              onChange={(e) => setStateUf(e.target.value.toUpperCase().slice(0, 2))}
+              placeholder={t.step2.statePlaceholder}
+              maxLength={2}
+              disabled={readOnly || isPending}
+              data-testid="step2-state"
+            />
+          </div>
         </div>
-      </div>
+      </fieldset>
 
       <div className="space-y-2">
         <span className="block text-sm font-medium text-text-primary">{t.step2.logoLabel}</span>
@@ -207,6 +211,7 @@ export function Step2Community({
               onChange={(e) => { void handleLogoChange(e); }}
               className="sr-only"
               disabled={isUploading || isPending}
+              aria-label={messages.form.file.select_community_logo}
               data-testid="step2-logo-input"
             />
           </label>
@@ -225,6 +230,7 @@ export function Step2Community({
           className="w-full"
           disabled={!name.trim() || isPending || isUploading}
           data-testid="step2-submit"
+          aria-busy={isPending || undefined}
         >
           {t.actions.next}
         </Button>

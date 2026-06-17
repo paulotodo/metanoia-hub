@@ -15,13 +15,14 @@ interface ReflectionFormFieldProps
   invalid?: boolean;
   value?: string;
   autoFocus?: boolean;
+  required?: boolean;
 }
 
 export const ReflectionFormField = forwardRef<
   HTMLTextAreaElement,
   ReflectionFormFieldProps
 >(function ReflectionFormField(
-  { label, counterTemplate, errorId, invalid, value = "", autoFocus, ...rest },
+  { label, counterTemplate, errorId, invalid, value = "", autoFocus, required, ...rest },
   ref,
 ) {
   const localRef = useRef<HTMLTextAreaElement | null>(null);
@@ -42,6 +43,7 @@ export const ReflectionFormField = forwardRef<
         className="block text-sm font-medium text-text-secondary"
       >
         {label}
+        {required && <span aria-hidden="true" className="ml-0.5 text-state-danger">*</span>}
       </label>
       <textarea
         id={fieldId}
@@ -53,6 +55,7 @@ export const ReflectionFormField = forwardRef<
         rows={4}
         maxLength={MAX}
         aria-invalid={invalid ? true : undefined}
+        aria-required={required ? true : undefined}
         aria-describedby={[counterId, errorId].filter(Boolean).join(" ") || undefined}
         className="w-full rounded-lg border border-surface-muted bg-surface px-3 py-2 text-base text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 aria-[invalid=true]:border-state-danger"
         value={value}

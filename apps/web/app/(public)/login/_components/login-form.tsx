@@ -4,8 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { LoginSchema } from '@metanoia/types';
 import { Button, Card, Input } from '@metanoia/ui';
+import { scrollToFirstError } from '@/lib/form-utils';
 import messages from '../../../../messages/pt-BR.json';
 
+// dec-029: FieldErrors gerenciado por useState (sem react-hook-form)
 interface FieldErrors {
   email?: string[];
   password?: string[];
@@ -34,6 +36,9 @@ export function LoginForm() {
       if (flat.email) mapped.email = flat.email;
       if (flat.password) mapped.password = flat.password;
       setErrors(mapped);
+      // WCAG 1.3.1: mover foco para o primeiro campo inválido
+      // scrollToFirstError usa requestAnimationFrame implícito via smooth scroll
+      setTimeout(scrollToFirstError, 0);
       return;
     }
 
@@ -63,9 +68,6 @@ export function LoginForm() {
       sessionStorage.setItem('sessionId', data.sessionId);
 
       // Redirect based on consent and tenant state.
-      // Consent route still pending; tracked as follow-up. Both tenant branches
-      // converge to /selecionar-igreja, which renders an empty-state if the
-      // user has no memberships.
       if (!data.user.hasConsent) {
         window.location.href = '/consent';
       } else {
@@ -94,7 +96,9 @@ export function LoginForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            aria-invalid={!!errors.email}
+            // dec-029: aria-invalid omitido (undefined) quando não há erro;
+            // presente como "true" quando há. Evita aria-invalid="false" no DOM.
+            aria-invalid={errors.email ? (true as unknown as boolean) : undefined}
             aria-describedby={errors.email ? 'login-email-error' : undefined}
           />
           {errors.email && (
@@ -120,7 +124,8 @@ export function LoginForm() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              aria-invalid={!!errors.password}
+              // dec-029: aria-invalid omitido quando válido
+              aria-invalid={errors.password ? (true as unknown as boolean) : undefined}
               aria-describedby={errors.password ? 'login-password-error' : undefined}
             />
             <button
@@ -152,8 +157,24 @@ export function LoginForm() {
           </p>
         )}
 
-        <Button type="submit" disabled={loading} className="mt-2 w-full">
-          {loading ? '...' : t.submit}
+        {/* dec-028: SubmitButton não usado aqui pois loading state usa mensagem inline;
+            Button nativo mantido + aria-busy para consistência */}
+        <Button
+          type="submit"
+          disabled={loading}
+          aria-busy={loading || undefined}
+          className="mt-2 w-full"
+        >
+          {loading ? (
+            <>
+              <span aria-hidden="true" className="mr-1.5 inline-block animate-spin">
+                ⟳
+              </span>
+              {t.submit}
+            </>
+          ) : (
+            t.submit
+          )}
         </Button>
       </form>
 

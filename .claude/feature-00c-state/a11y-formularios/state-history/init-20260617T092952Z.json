@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-formularios",
+  "execution": {
+    "id": "feat-a11y-formularios-20260617T092942Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 12.5: Formularios Acessiveis (NFR-A3). Labels associados, mensagens de erro acessiveis (aria-describedby/aria-invalid/role=alert), fieldset/legend, instrucoes e validacao anunciadas a leitores de tela, foco em erro no submit. Cobre formularios reais (login, registro, grupos, convite, config/branding, trilhas). Validacao Zod ja existe em packages/types; foco na camada de apresentacao acessivel.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-17T09:29:42Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "specify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [],
+  "decisions": [],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": null
+  },
+  "accumulated_metrics": {
+    "waves_total": 0,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 0,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 0,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "formularios",
+    "acessiveis",
+    "nfr",
+    "labels",
+    "associados",
+    "mensagens"
+  ]
+}

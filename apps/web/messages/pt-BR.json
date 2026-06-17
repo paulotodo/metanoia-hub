@@ -1342,7 +1342,8 @@
       "stateLabel": "Estado (UF)",
       "statePlaceholder": "Ex: SP",
       "logoLabel": "Logo da comunidade",
-      "logoHint": "PNG, JPEG ou WebP — máximo 2 MB"
+      "logoHint": "PNG, JPEG ou WebP — máximo 2 MB",
+      "locationLabel": "Localização"
     },
     "step3": {
       "title": "Seu Primeiro Grupo de Discipulado",
@@ -1514,6 +1515,39 @@
     "filterDropdown": {
       "open": "Abrir filtro {label}",
       "close": "Fechar filtro {label}"
+    }
+  },
+  "form": {
+    "required": "Campo obrigatório",
+    "optional": "(opcional)",
+    "error": {
+      "required": "Este campo é obrigatório",
+      "invalid": "Valor inválido",
+      "tooShort": "Muito curto",
+      "tooLong": "Muito longo",
+      "emailInvalid": "E-mail inválido",
+      "passwordMismatch": "As senhas não coincidem"
+    },
+    "submit": "Enviar",
+    "submitting": "Enviando…",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "file": {
+      "select": "Selecionar arquivo",
+      "select_profile_photo": "Selecionar foto de perfil",
+      "select_community_logo": "Selecionar logo da comunidade",
+      "uploading": "Enviando arquivo…",
+      "uploadSuccess": "Arquivo enviado com sucesso",
+      "uploadError": "Erro ao enviar arquivo",
+      "invalidType": "Tipo de arquivo não permitido",
+      "tooLarge": "Arquivo muito grande (máximo {{maxMb}} MB)"
+    },
+    "aria": {
+      "required": "obrigatório",
+      "optional": "opcional",
+      "loading": "carregando",
+      "errorCount": "{{count}} erro(s) no formulário"
     }
   }
 }
