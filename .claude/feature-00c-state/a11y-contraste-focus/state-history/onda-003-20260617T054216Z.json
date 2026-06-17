@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Executar fase checklist: validar qualidade dos requisitos da spec/plan (dominio ux/a11y) via skill checklist",
   "waves": [
     {
@@ -89,25 +89,6 @@
           "skill": "plan",
           "timestamp": "2026-06-17T05:37:31Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-17T05:43:45Z",
-      "finished_at": "2026-06-17T05:50:51Z",
-      "executed_stages": [
-        "checklist"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 426,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-17T05:50:35Z",
-          "decision_id": "dec-015"
         }
       ]
     }
@@ -356,45 +337,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-17T05:42:16Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase checklist)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T05:50:24Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Geracao e auto-resolucao do checklist a11y/ux para Story 12.3",
-      "options_considered": [
-        "gerar-checklist-a11y",
-        "pular-checklist",
-        "usar-checklist-generico"
-      ],
-      "choice": "gerar-checklist-a11y",
-      "rationale": "Spec+plan completos com 5 US, 13 FRs, 4 eixos tecnicos; checklist a11y/ux e o dominio correto para validar qualidade de requisitos WCAG AA. 34 items gerados, 100% com rastreabilidade, 9 gaps identificados (1 [Conflict], 6 [Gap], 2 [Ambiguity], 1 [Assumption]).",
-      "justification_score": 3,
-      "evidence": "34 CHKs gerados; CHK014 [Conflict] FR-03 spec vs plan; CHK009 [Gap] pares hard-gated nao enumerados; CHK025 [Gap] ring-primary 14x sem estrategia. Arquivo: docs/specs/a11y-contraste-focus/checklists/a11y.md (171 linhas)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -409,15 +351,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T05:43:45Z"
+    "current_wave_start": "2026-06-17T05:35:01Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1089,
+    "wallclock_total_seconds": 663,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 15,
+    "decisions_total": 13,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -448,11 +390,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T05:35:17Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T05:50:35Z",
-      "description": "onda-004 checklist concluida; proxima fase create-tasks"
     }
   ]
 }
