@@ -70,28 +70,24 @@ function MetricsSection({
           label={t.metrics.present}
           value={String(metrics.presentCount)}
           icon="✓"
-          iconLabel="Presente"
           color="text-pastoral-green"
         />
         <MetricCard
           label={t.metrics.partial}
           value={String(metrics.partialCount)}
           icon="◐"
-          iconLabel="Parcial"
           color="text-radar-yellow"
         />
         <MetricCard
           label={t.metrics.absent}
           value={String(metrics.absentCount)}
           icon="✗"
-          iconLabel="Ausente"
           color="text-care-alert"
         />
         <MetricCard
           label={t.metrics.attendanceRate}
           value={formatRate(metrics.attendanceRate)}
           icon="📊"
-          iconLabel="Taxa de presença"
           color="text-text-primary"
         />
       </dl>
@@ -103,19 +99,17 @@ function MetricCard({
   label,
   value,
   icon,
-  iconLabel,
   color,
 }: {
   label: string;
   value: string;
   icon: string;
-  iconLabel: string;
   color: string;
 }) {
   return (
     <div className="rounded-lg border border-border-default bg-surface-elevated p-3">
       <dt className="flex items-center gap-1 text-xs text-text-secondary">
-        {/* Icon with text label for a11y: icon is decorative but iconLabel provides semantic context */}
+        {/* Decorative icon (aria-hidden) + visible text label for a11y */}
         <span aria-hidden="true">{icon}</span>
         <span>{label}</span>
       </dt>
