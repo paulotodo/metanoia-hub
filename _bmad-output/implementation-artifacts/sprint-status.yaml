@@ -189,7 +189,7 @@ development_status:
   epic-12: in-progress
   12-1-navegacao-por-teclado-fluxos-publicos-infraestrutura-nf: done
   12-2-navegacao-por-teclado-fluxos-autenticados-nfr-a1: done
-  12-3-contraste-wcag-aa-focus-visible-nfr-a2-ux-dr19: ready-for-dev
+  12-3-contraste-wcag-aa-focus-visible-nfr-a2-ux-dr19: done
   12-4-touch-targets-reduced-motion-mobile-feedback-nfr-a2-ux-: ready-for-dev
   12-5-formularios-acessiveis-nfr-a3: ready-for-dev
   12-6-teste-automatizado-de-contraste-axe-core-quality-gate-n: ready-for-dev
