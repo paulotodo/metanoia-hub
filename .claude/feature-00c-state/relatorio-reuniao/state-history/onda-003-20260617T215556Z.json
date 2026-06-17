@@ -6,7 +6,7 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.1 — Relatório por Reunião (FR63): endpoint GET /api/v1/meetings/:id/report com métricas de presença e engagement score (participantDuration/meetingDuration, classificação alto/médio/baixo), export CSV assíncrono via BullMQ queue:reports (202 + polling), e página UI acessível /app/gestao/meetings/:id/report. Analytics como supporting subdomain (service direto Prisma), reusar apps/api/src/reports existente, multi-tenant RLS/AsyncLocalStorage, Zod em packages/types, gate a11y permanente.",
     "suggested_stack": null,
-    "status": "aguardando_humano",
+    "status": "em_andamento",
     "termination_reason": null,
     "started_at": "2026-06-17T21:23:23Z",
     "finished_at": null
@@ -72,11 +72,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-17T21:48:26Z",
-      "finished_at": "2026-06-17T21:56:32Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 486,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -404,23 +404,7 @@
       "originating_artifact": null
     }
   ],
-  "human_blocks": [
-    {
-      "id": "block-001",
-      "decision_id": "dec-016",
-      "question": "Gate owasp-security: finding HIGH (A01/API1 BOLA) no polling de export reutilizado. O endpoint existente ReportsService.getJobStatus(jobId) le cache:reports:export-job:<jobId> SEM bind de tenant/requester — qualquer lider pode obter a signedUrl (CSV com PII) de qualquer jobId, inclusive cross-grupo/cross-tenant. O plano FR63 ja mandata a mitigacao (bind tenantId+requesterUserId no status + validacao no polling + chave Redis prefixada por tenant) como acceptance criterion. CONFIRMA seguir com essa mitigacao no create-tasks/execute-task, ou prefere outra abordagem (ex: endpoint de polling dedicado a meeting, ou nao reusar o endpoint de trilhas)?",
-      "context_for_answer": "Ver docs/specs/relatorio-reuniao/plan.md secao 'Gate de Seguranca (owasp-security)' (S1) e 'Riscos & Mitigacoes'. Esta e uma vuln pre-existente do modulo reports/ (trilhas) que o FR63 herdaria; corrigi-la no escopo FR63 tambem fecha o gap para trilhas. Opcoes recomendadas: 'sim-mitigar-no-escopo' (corrige no FR63) | 'endpoint-dedicado' (polling meeting separado, nao toca trilhas) | 'escopo-separado' (abrir story de seguranca a parte).",
-      "recommended_options": [
-        "sim-mitigar-no-escopo",
-        "endpoint-dedicado",
-        "escopo-separado"
-      ],
-      "status": "aguardando",
-      "human_answer": null,
-      "answered_at": null,
-      "triggered_at": "2026-06-17T21:55:56Z"
-    }
-  ],
+  "human_blocks": [],
   "budgets": {
     "max_recursion": 3,
     "current_subagent_depth": 1,
@@ -435,13 +419,13 @@
     "current_wave_start": "2026-06-17T21:48:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1062,
+    "wallclock_total_seconds": 576,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 16,
-    "human_blocks_total": 1,
+    "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
   },
@@ -471,11 +455,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T21:47:47Z",
       "description": "etapa=plan hits=2"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T21:56:12Z",
-      "description": "onda-003 plan encerrada com bloqueio humano S1 (owasp HIGH); aguardando resposta do operador"
     }
   ]
 }
