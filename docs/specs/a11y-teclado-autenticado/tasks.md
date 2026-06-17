@@ -55,11 +55,11 @@ Detalhes por task na coluna "Depende de" abaixo.
   Rodar contra ambiente local (docker-compose.yml). Exportar resultados como
   JSON + HTML em `apps/web/e2e/a11y/reports/baseline/`.
 - **Critério de aceite:**
-  - [ ] Spec executa sem timeout em ambiente local (Chromium-only no CI)
-  - [ ] Relatório JSON gerado com `violations[]` para cada rota coberta
-  - [ ] Saída inclui pelo menos: dashboard, /groups, /trails/builder, /catalog,
+  - [x] Spec executa sem timeout em ambiente local (Chromium-only no CI)
+  - [x] Relatório JSON gerado com `violations[]` para cada rota coberta
+  - [x] Saída inclui pelo menos: dashboard, /groups, /trails/builder, /catalog,
         /settings/tenant, /plans
-  - [ ] Gate local passa após criação do arquivo
+  - [x] Gate local passa após criação do arquivo
 
 ### 0.2 Configurar @axe-core/playwright no projeto [crit]
 
@@ -72,10 +72,10 @@ Detalhes por task na coluna "Depende de" abaixo.
   diretórios `apps/web/e2e/keyboard/` para os specs de navegação por teclado.
   Verificar que jest-axe está disponível para testes unitários.
 - **Critério de aceite:**
-  - [ ] `@axe-core/playwright` importável em specs E2E
-  - [ ] `jest-axe` (ou `@axe-core/jest`) importável em specs Vitest
-  - [ ] Diretório `apps/web/e2e/keyboard/` criado
-  - [ ] Gate local passa
+  - [x] `@axe-core/playwright` importável em specs E2E
+  - [x] `jest-axe` (ou `@axe-core/jest`) importável em specs Vitest
+  - [x] Diretório `apps/web/e2e/keyboard/` criado
+  - [x] Gate local passa
 
 ---
 
@@ -300,12 +300,12 @@ Detalhes por task na coluna "Depende de" abaixo.
   no botão do item movido (FR-013 — não salta para topo).
   `useAsyncAnnouncer` anuncia posição após reordenação.
 - **Critério de aceite:**
-  - [ ] Botões sempre visíveis (não dependem de hover/focus-within)
-  - [ ] `aria-label` descritivo com título do item
-  - [ ] Foco permanece no botão após ativação (FR-013)
-  - [ ] Anúncio via `useAsyncAnnouncer`: `"[Item] movido para a posição [N]."`
-  - [ ] jest-axe: sem violações no componente isolado
-  - [ ] Gate local passa
+  - [x] Botões sempre visíveis (não dependem de hover/focus-within)
+  - [x] `aria-label` descritivo com título do item
+  - [x] Foco permanece no botão após ativação (FR-013)
+  - [x] Anúncio via `useAsyncAnnouncer`: `"[Item] movido para a posição [N]."`
+  - [x] jest-axe: sem violações no componente isolado
+  - [x] Gate local passa
 
 ### 4.2 Integrar `TrailItemReorder` no builder (`group-trails-client.tsx`) [crit]
 
@@ -317,10 +317,10 @@ Detalhes por task na coluna "Depende de" abaixo.
   ao lado do drag-and-drop) pelo `TrailItemReorder`. Garantir que formulários
   de criação/edição de módulo e lição são navegáveis por Tab (FR-014).
 - **Critério de aceite:**
-  - [ ] `TrailItemReorder` renderizado para cada item da lista
-  - [ ] Formulários de módulo/lição: todos os campos alcançáveis via Tab
-  - [ ] Ordem de Tab é lógica (top-to-bottom, left-to-right)
-  - [ ] Gate local passa
+  - [x] `TrailItemReorder` renderizado para cada item da lista
+  - [x] Formulários de módulo/lição: todos os campos alcançáveis via Tab
+  - [x] Ordem de Tab é lógica (top-to-bottom, left-to-right)
+  - [x] Gate local passa
 
 ### 4.3 E2E US4 — Builder de Trilhas (Chromium) [maj]
 
@@ -329,9 +329,9 @@ Detalhes por task na coluna "Depende de" abaixo.
 - **Arquivos-alvo:**
   - `apps/web/e2e/keyboard/trail-builder-keyboard.spec.ts` (NOVO)
 - **Critério de aceite:**
-  - [ ] Cenários de aceite US4 (1–4) passam
+  - [x] Cenários de aceite US4 (1–4) passam
   - [x] axe scan: 0 violations `critical`
-  - [ ] Gate local passa
+  - [x] Gate local passa
 
 ---
 
@@ -533,11 +533,11 @@ Detalhes por task na coluna "Depende de" abaixo.
   como bloqueador/maior/menor (FR-002). O relatório final é pré-requisito para
   marcar a feature como concluída.
 - **Critério de aceite:**
-  - [ ] axe final executado nas mesmas rotas do baseline (FR-001)
-  - [ ] Relatório compara `baseline violations` vs `final violations`
-  - [ ] Zero violations `critical` ou `serious` restantes
-  - [ ] `a11y-report-final.md` gerado com classificação bloqueador/maior/menor
-  - [ ] Gate local passa
+  - [x] axe final executado nas mesmas rotas do baseline (FR-001)
+  - [x] Relatório compara `baseline violations` vs `final violations`
+  - [x] Zero violations `critical` ou `serious` restantes
+  - [x] `a11y-report-final.md` gerado com classificação bloqueador/maior/menor
+  - [x] Gate local passa
 
 ### 9.2 Gate Cross-Browser Manual (FR-027) [maj]
 
@@ -556,11 +556,11 @@ Detalhes por task na coluna "Depende de" abaixo.
   Criar template de checklist em `cross-browser-checklist.md` com colunas:
   US | Cenário | Chrome | Firefox | Safari | Obs
 - **Critério de aceite:**
-  - [ ] Template de checklist criado com todas as US e cenários principais
-  - [ ] CHK013: responsável (dev) e momento (pré-merge e pré-release) documentados
-  - [ ] CHK018: nota explícita "CI = Chromium-only; Firefox/Safari = manual"
-  - [ ] Checklist preenchido para Chrome, Firefox e Safari (dev faz antes do PR)
-  - [ ] Evidências (screenshots ou logs) incluídas como links no PR
+  - [x] Template de checklist criado com todas as US e cenários principais
+  - [x] CHK013: responsável (dev) e momento (pré-merge e pré-release) documentados
+  - [x] CHK018: nota explícita "CI = Chromium-only; Firefox/Safari = manual"
+  - [x] Checklist preenchido para Chrome, Firefox e Safari (dev faz antes do PR)
+  - [x] Evidências (screenshots ou logs) incluídas como links no PR
 
 ---
 
