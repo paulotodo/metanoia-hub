@@ -60,7 +60,7 @@ export function TrailCard({ trail, onClick }: TrailCardProps) {
         <button
           type="button"
           onClick={onClick}
-          className="flex-1 text-left min-h-[44px] focus:outline-none"
+          className="flex-1 text-left min-h-[44px] focus-visible:outline-none"
           aria-label={`Abrir trilha: ${trail.name}`}
         >
           <h2 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">

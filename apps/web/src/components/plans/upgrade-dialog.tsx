@@ -98,7 +98,7 @@ export function UpgradeDialog({ open, planId, planName, onConfirm, onClose }: Up
               type="button"
               data-testid="upgrade-dialog-cancel"
               aria-label="Cancelar upgrade e fechar diálogo"
-              className="rounded-md border border-[var(--color-border-default)] px-4 py-2 text-sm font-medium text-text-primary outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-text-primary)] hover:bg-gray-50"
+              className="rounded-md border border-[var(--color-border-default)] px-4 py-2 text-sm font-medium text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-text-primary)] hover:bg-gray-50"
             >
               Cancelar
             </button>
@@ -110,7 +110,7 @@ export function UpgradeDialog({ open, planId, planName, onConfirm, onClose }: Up
             type="button"
             data-testid="upgrade-dialog-confirm"
             aria-label={`Confirmar upgrade para plano ${planName}`}
-            className="rounded-md bg-[var(--color-text-primary)] px-4 py-2 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-text-primary)] hover:opacity-90"
+            className="rounded-md bg-[var(--color-text-primary)] px-4 py-2 text-sm font-medium text-white outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-text-primary)] hover:opacity-90"
             onClick={handleConfirm}
           >
             Confirmar upgrade
