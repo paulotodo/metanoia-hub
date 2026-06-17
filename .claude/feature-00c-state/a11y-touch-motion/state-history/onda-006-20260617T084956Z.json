@@ -7,7 +7,7 @@
     "target_project_description": "Story 12.4: Touch Targets, Reduced Motion e Mobile Feedback (NFR-A2, UX). Alvos de toque min WCAG 2.5.5/2.5.8 (44x44 ou 24x24 com espacamento), prefers-reduced-motion (reduzir/desabilitar animacoes e transicoes), feedback tatil/visual em mobile. Tokens em packages/config/tailwind.preset.css (@theme, oklch).",
     "suggested_stack": null,
     "status": "concluida",
-    "termination_reason": "review-task completada — 15/15 tasks pass, gates verdes (build/lint OK), DoD coberto (checklist manual, E2E, jest-axe, check-motion-safe)",
+    "termination_reason": null,
     "started_at": "2026-06-17T07:13:08Z",
     "finished_at": "2026-06-17T08:49:56Z"
   },

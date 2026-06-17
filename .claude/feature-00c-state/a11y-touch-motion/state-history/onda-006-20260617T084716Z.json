@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.4: Touch Targets, Reduced Motion e Mobile Feedback (NFR-A2, UX). Alvos de toque min WCAG 2.5.5/2.5.8 (44x44 ou 24x24 com espacamento), prefers-reduced-motion (reduzir/desabilitar animacoes e transicoes), feedback tatil/visual em mobile. Tokens em packages/config/tailwind.preset.css (@theme, oklch).",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "review-task completada — 15/15 tasks pass, gates verdes (build/lint OK), DoD coberto (checklist manual, E2E, jest-axe, check-motion-safe)",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T07:13:08Z",
-    "finished_at": "2026-06-17T08:49:56Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -148,10 +148,10 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T08:41:00Z",
-      "finished_at": "2026-06-17T08:49:41Z",
+      "finished_at": "2026-06-17T08:44:03Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 521,
+      "wallclock_seconds": 183,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": []
@@ -727,26 +727,6 @@
       "evidence": "pnpm turbo build: 3 successful; pnpm turbo lint: 4 successful, 0 warnings; pnpm ui test: 59 passed; pnpm web test: 783 passed; check-motion-safe: 0 findings",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-031",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-17T08:47:16Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 6 (fase review-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:haiku",
-      "rationale": "sugerido=haiku aplicado=haiku origem=mapa | faixa=rasa fase=review-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -764,12 +744,12 @@
     "current_wave_start": "2026-06-17T08:41:00Z"
   },
   "accumulated_metrics": {
-    "waves_total": 10,
+    "waves_total": 9,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4703,
+    "wallclock_total_seconds": 4182,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 31,
+    "decisions_total": 30,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 1,
     "toolkit_issues_opened": 0
