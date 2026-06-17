@@ -251,23 +251,6 @@
           "decision_id": "dec-045"
         }
       ]
-    },
-    {
-      "id": "onda-012",
-      "started_at": "2026-06-17T03:37:45Z",
-      "finished_at": "2026-06-17T03:47:51Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 606,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-17T03:47:38Z",
-          "decision_id": null
-        }
-      ]
     }
   ],
   "decisions": [
@@ -1116,44 +1099,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-046",
-      "wave_id": "onda-011",
-      "timestamp": "2026-06-17T03:35:14Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 11 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-047",
-      "wave_id": "onda-012",
-      "timestamp": "2026-06-17T03:47:38Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 8 task 8.1 — PlanCard + UpgradeDialog + PlansPage concluídos",
-      "options_considered": [
-        "implementar",
-        "pular"
-      ],
-      "choice": "implementar",
-      "rationale": "Cards focáveis (tabIndex=0, role=article, aria-expanded), CTAs como button nativo, Radix Dialog com focus trap. 20/20 vitest OK, lint/build OK.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -1186,20 +1131,20 @@
     "max_retro_executions_per_feature": 2,
     "retro_executions_consumed": 0,
     "max_cycles_per_stage": 5,
-    "cycles_consumed_current_stage": 2,
+    "cycles_consumed_current_stage": 1,
     "tool_calls_threshold_wave": 80,
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T03:37:45Z"
+    "current_wave_start": "2026-06-17T03:23:45Z"
   },
   "accumulated_metrics": {
-    "waves_total": 15,
+    "waves_total": 14,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 9932,
+    "wallclock_total_seconds": 9326,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 47,
+    "decisions_total": 45,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -1632,37 +1577,6 @@
         "docs/specs/a11y-teclado-autenticado/tasks.md"
       ],
       "recorded_at": "2026-06-17T03:31:44Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "8.1",
-      "title": "Cards de plano focáveis + CTAs + diálogo de upgrade",
-      "wave_id": "onda-012",
-      "outcome": "pass",
-      "tests_run": 20,
-      "tests_passed": 20,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/planos/page.tsx",
-        "apps/web/src/components/plans/plan-card.tsx",
-        "apps/web/src/components/plans/upgrade-dialog.tsx",
-        "apps/web/src/__tests__/components/plans/plan-card.spec.tsx"
-      ],
-      "recorded_at": "2026-06-17T03:47:38Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "8.2",
-      "title": "E2E US7 — Gestão de Planos (Chromium)",
-      "wave_id": "onda-012",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/e2e/keyboard/planos-keyboard.spec.ts"
-      ],
-      "recorded_at": "2026-06-17T03:47:38Z",
       "source": "execute-task"
     }
   ]
