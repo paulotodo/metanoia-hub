@@ -34,10 +34,10 @@ Adicionar ao arquivo `packages/ui/styles/globals.css` (em `@layer utilities`, ap
 - `packages/ui/styles/globals.css`
 
 **Critério de aceite:**
-- [ ] `.touch-target` com `min-height: 44px` em mobile e `24px` em `>=768px`
-- [ ] `.touch-target-extend::before` com `height: 44px; width: 44px` e transform de centralização
-- [ ] `.touch-feedback` sem `transition` + `:active` com `opacity: 0.8; transform: scale(0.98)`
-- [ ] `pnpm turbo build` passa sem erros de CSS
+- [x] `.touch-target` com `min-height: 44px` em mobile e `24px` em `>=768px`
+- [x] `.touch-target-extend::before` com `height: 44px; width: 44px` e transform de centralização
+- [x] `.touch-feedback` sem `transition` + `:active` com `opacity: 0.8; transform: scale(0.98)`
+- [x] `pnpm turbo build` passa sem erros de CSS
 
 ---
 
@@ -57,11 +57,11 @@ Em `packages/ui/components/button.tsx` (cva variants), ajustar os tamanhos para 
 - `packages/ui/components/button.tsx`
 
 **Critério de aceite:**
-- [ ] `size:icon` resulta em ≥44px no viewport <768px (medível via `getBoundingClientRect`)
-- [ ] `size:sm` e `size:default` com `min-height ≥ 44px` em mobile
-- [ ] Todas as variantes de Button exibem `active:` imediato (sem delay de transition)
-- [ ] `motion-safe:transition-colors` no lugar de `transition-colors`
-- [ ] `pnpm turbo build` e `pnpm turbo lint` passam
+- [x] `size:icon` resulta em ≥44px no viewport <768px (medível via `getBoundingClientRect`)
+- [x] `size:sm` e `size:default` com `min-height ≥ 44px` em mobile
+- [x] Todas as variantes de Button exibem `active:` imediato (sem delay de transition)
+- [x] `motion-safe:transition-colors` no lugar de `transition-colors`
+- [x] `pnpm turbo build` e `pnpm turbo lint` passam
 
 ---
 
@@ -78,10 +78,10 @@ Em `packages/ui/components/button.tsx` (cva variants), ajustar os tamanhos para 
 - `packages/ui/components/bottom-tabs.tsx`
 
 **Critério de aceite:**
-- [ ] `Sidebar` com `min-h-[44px]` explícito no elemento clicável do link
-- [ ] `BottomTabs` com `active:opacity-80` aplicado ao tab item
-- [ ] `Sidebar` com `active:opacity-80` aplicado ao `linkClasses`
-- [ ] `pnpm turbo build` passa
+- [x] `Sidebar` com `min-h-[44px]` explícito no elemento clicável do link
+- [x] `BottomTabs` com `active:opacity-80` aplicado ao tab item
+- [x] `Sidebar` com `active:opacity-80` aplicado ao `linkClasses`
+- [x] `pnpm turbo build` passa
 
 ---
 
@@ -96,9 +96,9 @@ Em `packages/ui/components/input.tsx`, ajustar `h-10` (40px) para `h-11 md:h-10`
 - `packages/ui/components/input.tsx`
 
 **Critério de aceite:**
-- [ ] `Input` com `h-11` em mobile e `md:h-10` em desktop
-- [ ] Formulários de login/onboarding preservam layout (revisar visualmente)
-- [ ] `pnpm turbo build` passa
+- [x] `Input` com `h-11` em mobile e `md:h-10` em desktop
+- [x] Formulários de login/onboarding preservam layout (revisar visualmente)
+- [x] `pnpm turbo build` passa
 
 ---
 
@@ -128,10 +128,10 @@ Auditar e aplicar `.touch-target`, `min-h-[44px]` ou `touch-target-extend` nos c
 - `apps/web/app/(onboarding)/convite/[token]/_components/` (botões)
 
 **Critério de aceite:**
-- [ ] `getBoundingClientRect()` do elemento clicável real: `width ≥ 44 && height ≥ 44` em viewport 375px
-- [ ] Espaçamento entre alvos adjacentes ≥ 8px (SC-1.2 / FR-1.3)
-- [ ] `active:` presente em todos os componentes listados
-- [ ] `pnpm turbo lint --max-warnings 0` passa
+- [x] `getBoundingClientRect()` do elemento clicável real: `width ≥ 44 && height ≥ 44` em viewport 375px
+- [x] Espaçamento entre alvos adjacentes ≥ 8px (SC-1.2 / FR-1.3)
+- [x] `active:` presente em todos os componentes listados
+- [x] `pnpm turbo lint --max-warnings 0` passa
 
 ---
 
@@ -152,11 +152,11 @@ Em `packages/ui/components/dialog.tsx`:
 - `packages/ui/components/dialog.tsx`
 
 **Critério de aceite:**
-- [ ] Todas as classes `animate-in/out/fade/zoom/slide` com `motion-safe:` prefixo
-- [ ] `transition-opacity` substituído por `motion-safe:transition-opacity`
-- [ ] Close button com área ≥ 44×44px (medível)
-- [ ] Close button com `active:opacity-80`
-- [ ] `pnpm turbo build` passa
+- [x] Todas as classes `animate-in/out/fade/zoom/slide` com `motion-safe:` prefixo
+- [x] `transition-opacity` substituído por `motion-safe:transition-opacity`
+- [x] Close button com área ≥ 44×44px (medível)
+- [x] Close button com `active:opacity-80`
+- [x] `pnpm turbo build` passa
 
 ---
 
@@ -178,9 +178,9 @@ Componentes identificados no plano com hover sem active (FR-2 — 0 ocorrências
 - `apps/web/src/components/marketing/marketing-nav.tsx`
 
 **Critério de aceite:**
-- [ ] Todos os componentes listados com `active:` que seja visualmente distinto do estado `hover` (FR-2.4)
-- [ ] Nenhum `transition-all delay-*` ou `transition-opacity duration-*` que poste o estado `:active` (FR-2.2)
-- [ ] `pnpm turbo lint --max-warnings 0` passa
+- [x] Todos os componentes listados com `active:` que seja visualmente distinto do estado `hover` (FR-2.4)
+- [x] Nenhum `transition-all delay-*` ou `transition-opacity duration-*` que poste o estado `:active` (FR-2.2)
+- [x] `pnpm turbo lint --max-warnings 0` passa
 
 ---
 
@@ -211,9 +211,9 @@ Esta regra cobre TODA animação não prefixada (backstop universal, FR-3.3), in
 - `packages/ui/styles/globals.css` ← APENAS este arquivo (dec-024 / CHK025 resolvido)
 
 **Critério de aceite:**
-- [ ] Safety net presente em `packages/ui/styles/globals.css` (confirmar com `grep -n 'prefers-reduced-motion' packages/ui/styles/globals.css`)
-- [ ] `apps/web/app/globals.css` NÃO alterado (CHK025: arquivo errado para esta regra)
-- [ ] `pnpm turbo build` passa e regra compilada no bundle CSS
+- [x] Safety net presente em `packages/ui/styles/globals.css` (confirmar com `grep -n 'prefers-reduced-motion' packages/ui/styles/globals.css`)
+- [x] `apps/web/app/globals.css` NÃO alterado (CHK025: arquivo errado para esta regra)
+- [x] `pnpm turbo build` passa e regra compilada no bundle CSS
 
 ---
 
@@ -244,10 +244,10 @@ Defesa em profundidade além do safety net (FR-3.1/3.2, SC-3.2). Migrar:
 - `apps/web/src/components/meetings/live-status-bar.tsx` (skeleton)
 
 **Critério de aceite:**
-- [ ] `grep -rn 'animate-pulse' apps/web/src` retorna apenas `motion-safe:animate-pulse` (exceto isenções)
-- [ ] `grep -rn 'transition-all\|transition-colors\|transition-opacity' apps/web --include='*.tsx'` nos arquivos listados retorna prefixo `motion-safe:` (ou sem motion-related classes)
-- [ ] Isenções `animate-spin` documentadas em comentário `{/* motion-essential: loader sem alternativa não-animada */}`
-- [ ] `pnpm turbo lint --max-warnings 0` passa
+- [x] `grep -rn 'animate-pulse' apps/web/src` retorna apenas `motion-safe:animate-pulse` (exceto isenções)
+- [x] `grep -rn 'transition-all\|transition-colors\|transition-opacity' apps/web --include='*.tsx'` nos arquivos listados retorna prefixo `motion-safe:` (ou sem motion-related classes)
+- [x] Isenções `animate-spin` documentadas em comentário `{/* motion-essential: loader sem alternativa não-animada */}`
+- [x] `pnpm turbo lint --max-warnings 0` passa
 
 ---
 
@@ -271,10 +271,10 @@ Espelhar helpers de `contrast-focus.e2e-spec.ts` e `axe-baseline.spec.ts`.
 - `apps/web/e2e/a11y/reduced-motion.e2e-spec.ts` (novo)
 
 **Critério de aceite:**
-- [ ] Arquivo criado com os 2 cenários implementados (skeleton + dialog)
-- [ ] Comentário N/A de toast presente
-- [ ] `pnpm exec playwright test e2e/a11y/reduced-motion.e2e-spec.ts --project=Desktop` passa
-- [ ] Sem asserções de tempo/delay (apenas `getComputedStyle` de duração)
+- [x] Arquivo criado com os 2 cenários implementados (skeleton + dialog)
+- [x] Comentário N/A de toast presente
+- [x] `pnpm exec playwright test e2e/a11y/reduced-motion.e2e-spec.ts --project=Desktop` passa
+- [x] Sem asserções de tempo/delay (apenas `getComputedStyle` de duração)
 
 ---
 
@@ -297,11 +297,11 @@ Criar `apps/web/e2e/a11y/touch-targets.e2e-spec.ts`:
 - `apps/web/e2e/a11y/touch-targets.e2e-spec.ts` (novo)
 
 **Critério de aceite:**
-- [ ] `playwright.config.ts` com project `mobile-a11y` usando `devices['Pixel 5']` OU viewport+hasTouch (NUNCA `iPhone 12`/WebKit)
-- [ ] `pnpm exec playwright test --project=mobile-a11y` funciona no CI sem instalar WebKit
-- [ ] Todos os controles interativos públicos: `getBoundingClientRect()` com `width ≥ 44 && height ≥ 44` no viewport mobile
-- [ ] Espaçamento entre bottom-tabs adjacentes ≥ 8px
-- [ ] Cenário de `active:` com mudança de opacity detectada
+- [x] `playwright.config.ts` com project `mobile-a11y` usando `devices['Pixel 5']` OU viewport+hasTouch (NUNCA `iPhone 12`/WebKit)
+- [x] `pnpm exec playwright test --project=mobile-a11y` funciona no CI sem instalar WebKit
+- [x] Todos os controles interativos públicos: `getBoundingClientRect()` com `width ≥ 44 && height ≥ 44` no viewport mobile
+- [x] Espaçamento entre bottom-tabs adjacentes ≥ 8px
+- [x] Cenário de `active:` com mudança de opacity detectada
 
 ---
 
@@ -323,9 +323,9 @@ Reusar `vitest.setup.ts` (jest-axe configurado, `toHaveNoViolations` global).
 - `packages/ui/__tests__/sidebar.spec.tsx`
 
 **Critério de aceite:**
-- [ ] `button.spec.tsx` com test de className `h-11`/`min-h-[44px]` em size:icon
-- [ ] `toHaveNoViolations()` nas 3 specs sem findings
-- [ ] `pnpm turbo test` passa sem falhas
+- [x] `button.spec.tsx` com test de className `h-11`/`min-h-[44px]` em size:icon
+- [x] `toHaveNoViolations()` nas 3 specs sem findings
+- [x] `pnpm turbo test` passa sem falhas
 
 ---
 
@@ -340,9 +340,9 @@ Criar script de scan ou documentar como grep de CI/pre-commit para detectar `ani
 - `scripts/check-motion-safe.sh` (novo, opcional — pode ser documentado como comando grep manual)
 
 **Critério de aceite:**
-- [ ] Comando de scan documentado (grep ou script) que detecta padrões sem `motion-safe:` nos arquivos cobertos
-- [ ] Isenções `animate-spin` explicitamente excluídas do scan
-- [ ] Executável sem dependências extras (bash + grep puro)
+- [x] Comando de scan documentado (grep ou script) que detecta padrões sem `motion-safe:` nos arquivos cobertos
+- [x] Isenções `animate-spin` explicitamente excluídas do scan
+- [x] Executável sem dependências extras (bash + grep puro)
 
 ---
 
@@ -354,18 +354,18 @@ Criar script de scan ou documentar como grep de CI/pre-commit para detectar `ani
 Criar `docs/tests/manual/touch-targets.md` com checklist de aceite manual para iOS Safari + Android Chrome (gate de aceite final). Paridade com padrão da Story 12.1.
 
 Conteúdo mínimo:
-- [ ] iOS Safari 16+: todos os controles tocáveis sem erro de alvo
-- [ ] Android Chrome 120+: feedback `:active` visível
-- [ ] iOS/Android: `Reduce Motion` ativado → sem animações perceptíveis exceto spinners essenciais
-- [ ] Verificar espaçamento de bottom-tabs com dedo (não só mouse)
+- [x] iOS Safari 16+: todos os controles tocáveis sem erro de alvo
+- [x] Android Chrome 120+: feedback `:active` visível
+- [x] iOS/Android: `Reduce Motion` ativado → sem animações perceptíveis exceto spinners essenciais
+- [x] Verificar espaçamento de bottom-tabs com dedo (não só mouse)
 
 **Arquivos-alvo:**
 - `docs/tests/manual/touch-targets.md` (novo)
 
 **Critério de aceite:**
-- [ ] Arquivo criado com itens de checklist para iOS Safari + Android Chrome
-- [ ] Seção de isenções documentada (animate-spin essenciais)
-- [ ] Pendência operacional pós-merge explicitamente anotada
+- [x] Arquivo criado com itens de checklist para iOS Safari + Android Chrome
+- [x] Seção de isenções documentada (animate-spin essenciais)
+- [x] Pendência operacional pós-merge explicitamente anotada
 
 ---
 
@@ -394,11 +394,11 @@ Abrir PR para branch `dev` com:
 - (todos os arquivos modificados nas tasks anteriores)
 
 **Critério de aceite:**
-- [ ] `pnpm turbo build` passa (0 erros de TypeScript/CSS)
-- [ ] `pnpm turbo lint --max-warnings 0` passa
-- [ ] `pnpm turbo test` passa (incluindo jest-axe)
-- [ ] `playwright test --project=mobile-a11y` passa (Chromium — sem WebKit)
-- [ ] PR aberto em `dev` com revisão de acessibilidade solicitada
+- [x] `pnpm turbo build` passa (0 erros de TypeScript/CSS)
+- [x] `pnpm turbo lint --max-warnings 0` passa
+- [x] `pnpm turbo test` passa (incluindo jest-axe)
+- [x] `playwright test --project=mobile-a11y` passa (Chromium — sem WebKit)
+- [x] PR aberto em `dev` com revisão de acessibilidade solicitada
 
 ---
 
