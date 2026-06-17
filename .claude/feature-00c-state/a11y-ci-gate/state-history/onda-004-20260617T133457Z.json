@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "review-task",
-  "next_instruction": "Iniciar fase review-task: auditar T1-T12, findings, coverage de gates",
+  "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
   "waves": [
     {
       "id": "onda-001",
@@ -664,11 +664,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T12:40:43Z",
       "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T13:35:48Z",
-      "description": "execute-task concluido; avancando para review-task"
     }
   ],
   "tasks": [

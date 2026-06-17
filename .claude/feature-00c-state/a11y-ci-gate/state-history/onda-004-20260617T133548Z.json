@@ -664,11 +664,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T12:40:43Z",
       "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T13:35:48Z",
-      "description": "execute-task concluido; avancando para review-task"
     }
   ],
   "tasks": [

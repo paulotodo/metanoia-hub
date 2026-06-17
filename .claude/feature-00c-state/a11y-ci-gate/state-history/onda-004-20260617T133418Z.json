@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Iniciar fase review-task: auditar T1-T12, findings, coverage de gates",
+  "current_stage": "execute-task",
+  "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
   "waves": [
     {
       "id": "onda-001",
@@ -98,10 +98,10 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T12:57:35Z",
-      "finished_at": "2026-06-17T13:34:57Z",
+      "finished_at": "2026-06-17T13:20:53Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2242,
+      "wallclock_seconds": 1398,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -587,25 +587,6 @@
       "evidence": "check-motion-safe EXIT:0 | check-i18n-scf EXIT:0 | contrast-tokens EXIT:0 | tsx check-contrast EXIT:0 (NODE_PATH=apps/web/node_modules)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T13:34:18Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resolução color2k no CI: NODE_PATH=apps/web/node_modules antes de npx tsx scripts/check-contrast.ts",
-      "options_considered": [
-        "NODE_PATH",
-        "pnpm-filter",
-        "cd-apps-web"
-      ],
-      "choice": "NODE_PATH",
-      "rationale": "color2k é devDep em apps/web; script deve rodar da raiz do repo (--tokens-path default relativo ao cwd). NODE_PATH resolve sem mudar diretório",
-      "justification_score": 3,
-      "evidence": "NODE_PATH=apps/web/node_modules npx tsx scripts/check-contrast.ts → EXIT:0 (7 pares OK)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -623,12 +604,12 @@
     "current_wave_start": "2026-06-17T12:57:35Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 5522,
+    "wallclock_total_seconds": 3280,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 26,
+    "decisions_total": 25,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -664,11 +645,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-17T12:40:43Z",
       "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T13:35:48Z",
-      "description": "execute-task concluido; avancando para review-task"
     }
   ],
   "tasks": [
