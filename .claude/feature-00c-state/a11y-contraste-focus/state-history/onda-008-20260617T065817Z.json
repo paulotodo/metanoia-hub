@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.3: Contraste WCAG AA e Focus Visible (NFR-A2, UX DR19). Resolve tech debt do baseline axe 12.1 (color-contrast em /, link-in-text-block em /login), triagem de 22/35 pares de tokens care-* no uso real, e consolidacao do focus-ring (8 variantes -> --ring brand-teal). Tokens em packages/config/tailwind.preset.css (@theme, oklch).",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "review-task completo: todas as tarefas done, gates PASS, testes PASS",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T05:11:56Z",
-    "finished_at": "2026-06-17T07:03:06Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -174,10 +174,10 @@
     {
       "id": "onda-008",
       "started_at": "2026-06-17T06:50:20Z",
-      "finished_at": "2026-06-17T07:02:56Z",
+      "finished_at": "2026-06-17T06:55:09Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 756,
+      "wallclock_seconds": 289,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": []
@@ -770,45 +770,6 @@
       "evidence": "check-contrast-tokens.mjs: 0 falha(s) HARD | 1 aviso(s) WARN; check-focus-ring-variants.sh: focus-ring-guard: OK (0 variantes proibidas); Tests: 783 passed (783)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-032",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T06:58:17Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 8 (fase review-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:haiku",
-      "rationale": "sugerido=haiku aplicado=haiku origem=mapa | faixa=rasa fase=review-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-033",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T07:03:20Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Revisão final: todas 60 tasks done, gates PASS, testes 783/783 PASS (UI+web), DoD satisfeito",
-      "options_considered": [
-        "aprovar-merge",
-        "requerer-ajustes",
-        "abortar"
-      ],
-      "choice": "aprovar-merge",
-      "rationale": "UI tests (42), types (489), web (783) = 1314 testes PASS. Check-contrast-tokens.mjs PASS (6/6 HARD pares OK, 1 WARN documentado). Focus-ring codemod PASS (0 variantes proibidas). Build PASS, lint PASS. Final-report.md completo. Risco de RLS API tests (não relacionado a a11y-contraste-focus).",
-      "justification_score": 3,
-      "evidence": "jest-axe Button/Input/Dialog/Card/Sidebar/BottomTabs + E2E axe home/login PASS. Pares WCAG AA corrigidos: text-primary-on-surface (15.06:1), text-primary-on-care-ok (5.58:1), text-secondary-on-surface (6.58:1), brand-primary-on-surface (4.83:1), interactive-focus-on-surface (5.05:1). Token documentação + codemod aplicado. Pastoral Radar semáforo auditoria deferida (Epic 7).",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -826,12 +787,12 @@
     "current_wave_start": "2026-06-17T06:50:20Z"
   },
   "accumulated_metrics": {
-    "waves_total": 10,
+    "waves_total": 9,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4535,
+    "wallclock_total_seconds": 3779,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 33,
+    "decisions_total": 31,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

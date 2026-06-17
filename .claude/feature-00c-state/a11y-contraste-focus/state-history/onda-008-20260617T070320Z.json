@@ -790,25 +790,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-033",
-      "wave_id": "onda-008",
-      "timestamp": "2026-06-17T07:03:20Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Revisão final: todas 60 tasks done, gates PASS, testes 783/783 PASS (UI+web), DoD satisfeito",
-      "options_considered": [
-        "aprovar-merge",
-        "requerer-ajustes",
-        "abortar"
-      ],
-      "choice": "aprovar-merge",
-      "rationale": "UI tests (42), types (489), web (783) = 1314 testes PASS. Check-contrast-tokens.mjs PASS (6/6 HARD pares OK, 1 WARN documentado). Focus-ring codemod PASS (0 variantes proibidas). Build PASS, lint PASS. Final-report.md completo. Risco de RLS API tests (não relacionado a a11y-contraste-focus).",
-      "justification_score": 3,
-      "evidence": "jest-axe Button/Input/Dialog/Card/Sidebar/BottomTabs + E2E axe home/login PASS. Pares WCAG AA corrigidos: text-primary-on-surface (15.06:1), text-primary-on-care-ok (5.58:1), text-secondary-on-surface (6.58:1), brand-primary-on-surface (4.83:1), interactive-focus-on-surface (5.05:1). Token documentação + codemod aplicado. Pastoral Radar semáforo auditoria deferida (Epic 7).",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -831,7 +812,7 @@
     "wallclock_total_seconds": 4535,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 33,
+    "decisions_total": 32,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
