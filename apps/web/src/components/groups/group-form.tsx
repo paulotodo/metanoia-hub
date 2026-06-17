@@ -118,7 +118,7 @@ export function GroupForm({
             "h-11 w-full rounded-lg border border-[var(--border)]",
             "bg-[var(--card)] px-3 text-sm text-[var(--color-text-primary)]",
             "placeholder:text-[var(--color-text-muted)]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
             "disabled:opacity-60",
           ].join(" ")}
         />
@@ -145,7 +145,7 @@ export function GroupForm({
             className={[
               "h-11 flex-1 rounded-lg border border-[var(--border)]",
               "bg-[var(--card)] px-3 text-sm text-[var(--color-text-primary)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               "disabled:opacity-60",
             ].join(" ")}
           >
@@ -171,7 +171,7 @@ export function GroupForm({
             className={[
               "h-11 w-32 rounded-lg border border-[var(--border)]",
               "bg-[var(--card)] px-3 text-sm text-[var(--color-text-primary)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               "disabled:opacity-60",
             ].join(" ")}
           />
@@ -200,7 +200,7 @@ export function GroupForm({
             "w-full rounded-lg border border-[var(--border)]",
             "bg-[var(--card)] px-3 py-2 text-sm text-[var(--color-text-primary)]",
             "placeholder:text-[var(--color-text-muted)]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
             "resize-y disabled:opacity-60",
           ].join(" ")}
         />
@@ -217,7 +217,7 @@ export function GroupForm({
               "h-11 rounded-lg border border-[var(--border)] px-4",
               "text-sm font-medium text-[var(--color-text-primary)]",
               "hover:bg-[var(--surface-muted)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               "disabled:opacity-60",
             ].join(" ")}
           >
@@ -233,7 +233,7 @@ export function GroupForm({
             "h-11 rounded-lg bg-[var(--color-brand-teal)] px-6",
             "text-sm font-semibold text-white",
             "hover:bg-[var(--color-brand-teal)]/90",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
             "disabled:opacity-60",
           ].join(" ")}
         >

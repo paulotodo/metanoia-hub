@@ -270,7 +270,7 @@ export function CSVPreviewTable({
           onClick={onProceed}
           disabled={!canProceed || isChecking}
           aria-disabled={!canProceed || isChecking}
-          className="rounded-lg bg-interactive-primary px-5 py-2.5 text-sm font-semibold text-text-inverse transition-colors hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-interactive-primary px-5 py-2.5 text-sm font-semibold text-text-inverse transition-colors hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:cursor-not-allowed disabled:opacity-50"
           data-testid="proceed-btn"
         >
           {t.preview.proceed}

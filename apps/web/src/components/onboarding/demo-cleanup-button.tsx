@@ -43,7 +43,7 @@ export function DemoCleanupButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="h-10 rounded-lg border border-surface-muted px-4 text-sm font-medium text-text-secondary hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus"
+        className="h-10 rounded-lg border border-surface-muted px-4 text-sm font-medium text-text-secondary hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
       >
         {t.cleanupButtonLabel}
       </button>
@@ -59,7 +59,7 @@ export function DemoCleanupButton() {
               type="button"
               onClick={() => setOpen(false)}
               disabled={isPending}
-              className="h-11 rounded-lg border border-surface-muted px-4 text-sm font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:opacity-60"
+              className="h-11 rounded-lg border border-surface-muted px-4 text-sm font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:opacity-60"
             >
               {t.cleanupConfirmCancel}
             </button>
@@ -67,7 +67,7 @@ export function DemoCleanupButton() {
               type="button"
               onClick={handleConfirm}
               disabled={isPending}
-              className="h-11 rounded-lg bg-care-alert px-4 text-sm font-semibold text-text-inverse hover:bg-care-alert/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus disabled:opacity-60"
+              className="h-11 rounded-lg bg-care-alert px-4 text-sm font-semibold text-text-inverse hover:bg-care-alert/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:opacity-60"
             >
               {t.cleanupConfirmAction}
             </button>

@@ -24,7 +24,7 @@ export function FeatureBlocks() {
               <h3 className="text-xl font-semibold text-text-primary">
                 {feature.title}
               </h3>
-              <p className="mt-3 text-base leading-relaxed text-[var(--color-text-muted)]">
+              <p className="mt-3 text-base leading-relaxed text-secondary">
                 {feature.body}
               </p>
             </article>

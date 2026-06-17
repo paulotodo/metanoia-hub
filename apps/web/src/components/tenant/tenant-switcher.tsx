@@ -68,7 +68,7 @@ export function TenantSwitcher({ className }: TenantSwitcherProps) {
           type="button"
           data-testid="tenant-switcher-trigger"
           className={
-            'flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)] ' +
+            'flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 ' +
             (className ?? '')
           }
         >
@@ -101,7 +101,7 @@ export function TenantSwitcher({ className }: TenantSwitcherProps) {
                   data-testid={`tenant-switcher-item-${tenant.tenantId}`}
                   disabled={selectTenant.isPending}
                   onClick={() => handleSelect(tenant.tenantId)}
-                  className="flex w-full items-center gap-3 rounded-lg border border-[var(--border)] p-3 text-left transition hover:border-[var(--color-brand-teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex w-full items-center gap-3 rounded-lg border border-[var(--border)] p-3 text-left transition hover:border-[var(--color-brand-teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <span aria-hidden="true" className="text-xl">
                     {isLoading ? (

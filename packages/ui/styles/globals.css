@@ -40,6 +40,9 @@
 
   --border: var(--color-border-default);
   --input: var(--color-border-default);
+  /* --ring: token shadcn canônico de focus-ring. Aponta para brand-teal (#2b7a78 = 5.05:1 PASS).
+     Padrão canônico de uso: focus-visible:outline-none focus-visible:ring-2
+     focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2 */
   --ring: var(--color-interactive-focus-ring);
   --radius: var(--radius-md);
 

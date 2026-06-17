@@ -96,7 +96,7 @@ function FilterDropdown({ label, options, value, onChange }: FilterDropdownProps
         className={[
           'flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm',
           'hover:bg-accent/50',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2',
         ].join(' ')}
       >
         <span>{label}:</span>
@@ -164,7 +164,7 @@ function Pagination({ page, totalPages, onPrev, onNext }: PaginationProps) {
         aria-disabled={page <= 1}
         className={[
           'rounded-md border border-border px-3 py-1.5 text-sm',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2',
           page <= 1 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-accent/50',
         ].join(' ')}
       >
@@ -179,7 +179,7 @@ function Pagination({ page, totalPages, onPrev, onNext }: PaginationProps) {
         aria-disabled={page >= totalPages}
         className={[
           'rounded-md border border-border px-3 py-1.5 text-sm',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2',
           page >= totalPages ? 'opacity-40 cursor-not-allowed' : 'hover:bg-accent/50',
         ].join(' ')}
       >
@@ -281,7 +281,7 @@ export function CatalogSearch() {
           autoComplete="off"
           className={[
             'w-full rounded-md border border-border bg-background px-3 py-2 text-sm shadow-sm',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+            'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2',
           ].join(' ')}
         />
 
@@ -356,7 +356,7 @@ export function CatalogSearch() {
                   className={[
                     'block rounded-lg border border-border bg-background p-4',
                     'hover:bg-accent/50',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-2',
                     'transition-colors',
                   ].join(' ')}
                 >

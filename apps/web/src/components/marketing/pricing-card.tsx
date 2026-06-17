@@ -30,8 +30,8 @@ export function PricingCard({
       ].join(' ')}
     >
       <h3 className="text-xl font-semibold text-text-primary">{name}</h3>
-      <p className="mt-2 text-base text-[var(--color-text-muted)]">{price}</p>
-      <p className="mt-6 flex-1 text-base leading-relaxed text-[var(--color-text-muted)]">
+      <p className="mt-2 text-base text-secondary">{price}</p>
+      <p className="mt-6 flex-1 text-base leading-relaxed text-secondary">
         {description}
       </p>
       <div className="mt-8">

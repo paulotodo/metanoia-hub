@@ -30,7 +30,7 @@ export function MarketingFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-4">
         <div className="md:col-span-1">
           <p className="text-base font-semibold text-text-primary">{nav.brand}</p>
-          <p className="mt-2 text-sm text-[var(--color-text-muted)]">{t.tagline}</p>
+          <p className="mt-2 text-sm text-secondary">{t.tagline}</p>
         </div>
         <FooterSection title={t.sectionProduto} links={SECTION_PRODUTO} />
         <FooterSection title={t.sectionIgreja} links={SECTION_IGREJA} />
@@ -39,7 +39,7 @@ export function MarketingFooter() {
       <div className="border-t border-[var(--color-border-default)] px-4 py-4">
         <p
           data-testid="marketing-footer-copyright"
-          className="mx-auto max-w-6xl text-center text-xs text-[var(--color-text-muted)]"
+          className="mx-auto max-w-6xl text-center text-xs text-secondary"
         >
           {t.copyright.replace('{year}', String(year))}
         </p>
@@ -63,7 +63,7 @@ function FooterSection({
           <li key={link.href}>
             <Link
               href={link.href}
-              className="text-[var(--color-text-muted)] transition-colors hover:text-text-primary"
+              className="text-secondary transition-colors hover:text-text-primary"
             >
               {link.label}
             </Link>

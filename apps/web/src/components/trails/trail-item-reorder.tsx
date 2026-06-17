@@ -137,7 +137,7 @@ export function TrailItemReorder({
           "border border-border bg-background",
           "text-foreground transition-colors",
           "hover:bg-accent hover:text-accent-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-1",
           "disabled:pointer-events-none disabled:opacity-40",
         ].join(" ")}
       >
@@ -174,7 +174,7 @@ export function TrailItemReorder({
           "border border-border bg-background",
           "text-foreground transition-colors",
           "hover:bg-accent hover:text-accent-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 focus-visible:ring-offset-1",
           "disabled:pointer-events-none disabled:opacity-40",
         ].join(" ")}
       >

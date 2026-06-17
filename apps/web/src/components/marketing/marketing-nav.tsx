@@ -33,7 +33,7 @@ export function MarketingNav() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-[var(--color-text-muted)] transition-colors hover:text-text-primary"
+                className="text-secondary transition-colors hover:text-text-primary"
               >
                 {link.label}
               </Link>

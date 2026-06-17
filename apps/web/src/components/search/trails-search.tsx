@@ -65,7 +65,7 @@ export function TrailsSearch({ className, onResultClick }: TrailsSearchProps) {
         aria-label={t.placeholder}
         aria-busy={isLoading}
         aria-controls="trilhas-search-results"
-        className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+        className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-teal/30"
         autoComplete="off"
       />
 
@@ -108,7 +108,7 @@ export function TrailsSearch({ className, onResultClick }: TrailsSearchProps) {
                       onResultClick?.(item);
                     }
                   }}
-                  className="w-full rounded-md border border-border p-3 text-left hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full rounded-md border border-border p-3 text-left hover:bg-accent focus:outline-none focus:ring-2 focus:ring-brand-teal/30"
                   aria-label={`${item.lessonName} — ${item.trailName}`}
                 >
                   <div className="flex items-center gap-2">

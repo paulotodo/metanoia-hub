@@ -87,7 +87,7 @@ export function DeleteGroupDialog({
               "h-11 rounded-lg border border-[var(--border)] px-4",
               "text-sm font-medium text-[var(--color-text-primary)]",
               "hover:bg-[var(--surface-muted)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-teal)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30",
               "disabled:opacity-60",
             ].join(" ")}
           >

@@ -39,7 +39,7 @@ export function BlogList() {
     return (
       <p
         data-testid="blog-empty"
-        className="mt-12 text-center text-base text-[var(--color-text-muted)]"
+        className="mt-12 text-center text-base text-secondary"
       >
         {t.empty}
       </p>
@@ -54,16 +54,16 @@ export function BlogList() {
           data-testid={`blog-post-${post.slug}`}
           className="rounded-lg border border-[var(--color-border-default)] bg-surface-base p-6"
         >
-          <p className="text-xs uppercase tracking-wide text-[var(--color-text-muted)]">
+          <p className="text-xs uppercase tracking-wide text-secondary">
             {dateFormatter.format(new Date(post.publishedAt))} · {post.author}
           </p>
           <h2 className="mt-2 text-xl font-semibold text-text-primary">
             {post.title}
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mt-3 text-base leading-relaxed text-secondary">
             {post.excerpt}
           </p>
-          <p className="mt-4 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-4 text-sm text-secondary">
             {t.readMore} →
           </p>
         </li>
