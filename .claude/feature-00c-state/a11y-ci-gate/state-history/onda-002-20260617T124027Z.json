@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "checklist",
-  "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
+  "next_instruction": "clarify",
   "waves": [
     {
       "id": "onda-001",
@@ -52,14 +52,14 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T12:28:04Z",
-      "finished_at": "2026-06-17T12:40:44Z",
+      "finished_at": "2026-06-17T12:30:59Z",
       "executed_stages": [
         "clarify"
       ],
       "tool_calls": 0,
-      "wallclock_seconds": 760,
+      "wallclock_seconds": 175,
       "termination_reason": "concluido",
-      "next_wave_scheduled_for": "checklist",
+      "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "clarify",
@@ -339,9 +339,9 @@
     "current_wave_start": "2026-06-17T12:28:04Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1247,
+    "wallclock_total_seconds": 487,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 13,
@@ -375,11 +375,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-17T12:36:01Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-17T12:40:43Z",
-      "description": "onda-002 plan encerrada, aguardando wakeup p/ checklist"
     }
   ]
 }

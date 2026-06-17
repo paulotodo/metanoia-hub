@@ -1,7 +1,7 @@
 {
   "wave_number": 2,
-  "captured_at": "2026-06-17T12:30:52Z",
-  "state_sha256_self": "97d93de97af4dfa9435f32d22ce4bcffae9d8f98b333209c13c7475cd211b1fa",
+  "captured_at": "2026-06-17T12:40:27Z",
+  "state_sha256_self": "d81d8ce676c55e348c0fe485332445e975be52b40db5d93af11f5cdb67e43a38",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "a11y-ci-gate",
@@ -26,8 +26,8 @@
         "version": "1.0.0"
       }
     },
-    "current_stage": "plan",
-    "next_instruction": "clarify",
+    "current_stage": "checklist",
+    "next_instruction": "checklist phase: rodar skill checklist (dominio a11y/ci) sobre docs/specs/a11y-ci-gate/spec.md + plan.md; validar ACs testaveis/nao-ambiguos antes de create-tasks",
     "waves": [
       {
         "id": "onda-001",
@@ -56,17 +56,29 @@
       {
         "id": "onda-002",
         "started_at": "2026-06-17T12:28:04Z",
-        "finished_at": null,
-        "executed_stages": [],
+        "finished_at": "2026-06-17T12:30:59Z",
+        "executed_stages": [
+          "clarify"
+        ],
         "tool_calls": 0,
-        "wallclock_seconds": 0,
-        "termination_reason": null,
+        "wallclock_seconds": 175,
+        "termination_reason": "concluido",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
           {
             "skill": "clarify",
             "timestamp": "2026-06-17T12:29:25Z",
             "decision_id": "dec-008"
+          },
+          {
+            "skill": "plan",
+            "timestamp": "2026-06-17T12:40:12Z",
+            "decision_id": null
+          },
+          {
+            "skill": "owasp-security",
+            "timestamp": "2026-06-17T12:40:13Z",
+            "decision_id": null
           }
         ]
       }
@@ -240,6 +252,80 @@
         "evidence": null,
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-010",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T12:34:17Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 2 (fase plan)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:opus",
+        "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-011",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T12:36:16Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-ci-gate)",
+        "options_considered": [
+          "injetar-achados",
+          "no-op"
+        ],
+        "choice": "injetar-achados",
+        "rationale": "termos derivados: story teste automatizado contraste axe core quality; corrobora @axe-core/playwright ja instalado e padrao de scan de paginas publicas",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-012",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T12:40:12Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "plan.md gerado para a11y-ci-gate materializando dec-005/006/007 (5 eixos + relatorio auditoria)",
+        "options_considered": [
+          "gerar-plan",
+          "abortar"
+        ],
+        "choice": "gerar-plan",
+        "rationale": "5 eixos (gate axe parametrizado + check-contrast.ts color2k + axe-final serious=0 + promocao motion/i18n + relatorio epic12); todos 14 FRs cobertos; arquivos/linhas reais verificados empiricamente",
+        "justification_score": 3,
+        "evidence": "axe-final.spec.ts:114 expect(bySeverity.critical).toBe(0) confirmado; ci.yml:106-107 motion-safe --warn; ci.yml:103-104 contrast-tokens.mjs hard; @axe-core/playwright ^4.11.3 presente; color2k ABSENT; check-i18n-scf.sh:12 suporta --strict exit1; check-motion-safe.sh:177 exit 1 sem --warn",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-013",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-17T12:40:12Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Skip do gate owasp-security: feature e pure-frontend + config CI (testes a11y, scripts CLI de contraste, edicao de workflow YAML), sem endpoint/dados/auth/superficie de ataque",
+        "options_considered": [
+          "rodar-gate",
+          "skip-com-justificativa"
+        ],
+        "choice": "skip-com-justificativa",
+        "rationale": "Nenhum endpoint, persistencia, autenticacao ou entrada de usuario na arquitetura do plano; superficie OWASP/ASVS ausente. Risco baixo confirmado no briefing da onda.",
+        "justification_score": 3,
+        "evidence": "plan.md secao 8 Artefatos: novos = a11y-pages.json, axe-quality-gate.e2e-spec.ts, check-contrast.ts, vitest spec, a11y-checks.yml, audit-report.md; editados = axe-final.spec.ts, ci.yml, package.json — nenhum toca runtime de servidor/dados/auth",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [],
@@ -257,12 +343,12 @@
       "current_wave_start": "2026-06-17T12:28:04Z"
     },
     "accumulated_metrics": {
-      "waves_total": 1,
+      "waves_total": 2,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 312,
+      "wallclock_total_seconds": 487,
       "max_depth_reached": 1,
       "subagents_spawned": 0,
-      "decisions_total": 9,
+      "decisions_total": 13,
       "human_blocks_total": 0,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0
@@ -288,6 +374,11 @@
         "event_type": "schedule_wait",
         "timestamp": "2026-06-17T12:23:24Z",
         "description": "onda-001 encerrada; proxima=clarify"
+      },
+      {
+        "event_type": "recall_consulted",
+        "timestamp": "2026-06-17T12:36:01Z",
+        "description": "etapa=plan hits=4"
       }
     ]
   }
