@@ -2,7 +2,7 @@
 
 **Feature:** a11y-ci-gate  
 **Short name:** a11y-ci-gate  
-**Status:** draft  
+**Status:** clarified  
 **Story BMAD:** 12.6 — Teste Automatizado de Contraste & axe-core Quality Gate no CI (UX-DR21)  
 **Epic:** 12 — Hardening de Acessibilidade & Qualidade UX  
 **NFRs cobertos:** NFR-A2 (contraste WCAG AA), NFR-A3 (testes automatizados)  
@@ -57,7 +57,7 @@ A **12.6** é a última story do épico. Com as violações corrigidas, o gate p
 - SC-1.8: Legenda WCAG AA (4.5:1 normal, 3:1 large, 7:1 enhanced) incluída na saída de falha.
 - SC-1.9: Testes unitários Vitest em `scripts/__tests__/check-contrast.spec.ts` cobrem: pares que passam (exit 0), pares que falham (exit 1 + formato), flag `--verbose`, flag `--tokens-path`, sugestões de fix.
 
-> **NEEDS_CLARIFICATION NC-1:** O script `scripts/check-contrast.ts` (novo, 12.6) é distinto do script existente `apps/web/scripts/check-contrast-tokens.mjs` (criado em 12.3). Confirmar se o novo script **substitui** o `.mjs` (atualizar referência no CI) ou **coexiste** (dois layers de proteção). Posição padrão: coexistência — `.mjs` permanece no job Lint; `.ts` adicionado ao `a11y-checks.yml`.
+> **RESOLVED NC-1 (dec-005, score 3):** `check-contrast.ts` (novo) **coexiste** com `check-contrast-tokens.mjs` (12.3) — dois layers complementares. O `.mjs` permanece inalterado no job Lint do `ci.yml` (gate para tokens CSS existentes). O `check-contrast.ts` é adicionado ao `a11y-checks.yml` com `color2k` para resolução de `oklch(from …)` relative-color e WCAG AA parametrizável — funcionalidade distinta não coberta pelo `.mjs`. Anti-pattern de duplicação evitado: cada script tem responsabilidade única. Evidência: spec Restrições §"Nao duplicar gates existentes" + `apps/web/scripts/check-contrast-tokens.mjs` constatado em inspeção (distinto de `scripts/check-contrast.ts`).
 
 ---
 
@@ -107,7 +107,7 @@ A **12.6** é a última story do épico. Com as violações corrigidas, o gate p
 - SC-4.5: O relatório lista issues aceitas como tech debt R2 (screen reader NFR-A4, etc.) com justificativa.
 - SC-4.6: A seção Gate Status confirma: (a) `axe-final.spec.ts` verde, (b) `check-contrast.ts` verde, (c) todos os scripts hard gate verdes no estado pós-epic.
 
-> **NEEDS_CLARIFICATION NC-2:** O arquivo `apps/web/e2e/a11y/axe-final.spec.ts` existe no repositório. Seu conteúdo exato (se usa `toHaveLength(0)` bloqueante ou ainda aceita violações) será verificado no execute-task. Se permissivo, o task o torna bloqueante.
+> **RESOLVED NC-2 (dec-006, score 3):** `axe-final.spec.ts` está **parcialmente bloqueante** — asserta apenas `expect(bySeverity.critical).toBe(0)` (linha 114), sem cobertura para `serious` violations. FR-9 exige hard gate completo (critical + serious). Decisão: na task de execute-task, adicionar `expect(bySeverity.serious).toBe(0)` ao `axe-final.spec.ts`. O gate permanente oficial é o novo `axe-quality-gate.e2e-spec.ts` (FR-5) com `expect(violations).toHaveLength(0)`. `axe-final.spec.ts` é promovido para cobrir também `serious` por alinhamento com FR-9. Evidência: grep linha 114 `axe-final.spec.ts`: `expect(bySeverity.critical).toBe(0)` — sem assertiva para serious.
 
 ---
 
@@ -123,7 +123,7 @@ A **12.6** é a última story do épico. Com as violações corrigidas, o gate p
 - SC-5.3: `apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts` itera dinamicamente sobre o array; adicionar entrada ao JSON não requer edição no spec file.
 - SC-5.4: O cabeçalho do `a11y-checks.yml` documenta o processo de adição de páginas.
 
-> **NEEDS_CLARIFICATION NC-3:** Páginas autenticadas em `a11y-pages.json` requerem setup de sessão Keycloak no E2E runner. O gate inicial cobre apenas páginas públicas (`requiresAuth: false`), com páginas autenticadas como escopo de R2? Posição padrão: gate inicial cobre apenas páginas públicas; `requiresAuth: true` é suportado no JSON mas não processado pelo spec neste sprint.
+> **RESOLVED NC-3 (dec-007, score 3):** Gate axe cobre **apenas páginas públicas** neste sprint. Páginas autenticadas requerem `loginAs` helper + Keycloak stack + seed — setup frágil no CI (histórico: PR #156 corrigiu KEYCLOAK_PUBLIC_URL que silenciou CI). `a11y-pages.json` suporta o campo `requiresAuth: boolean` no schema, mas `axe-quality-gate.e2e-spec.ts` filtra e processa apenas entradas com `requiresAuth: false` neste sprint. Páginas autenticadas marcadas com `requiresAuth: true` são skipped automaticamente. Páginas autenticadas = R2 explícito. SC-5.1 ajustado: páginas iniciais são `/login`, `/` (home-marketing), `/register`, `/recuperar-senha` (todas públicas). Evidência: `axe-baseline-authenticated.spec.ts` usa `loginAs()` + `networkidle` — frágil; histórico de regressão CI documentado em MEMORY.
 
 ---
 
@@ -186,13 +186,13 @@ A **12.6** é a última story do épico. Com as violações corrigidas, o gate p
 
 ---
 
-## Clarifications Pendentes
+## Clarifications
 
-| ID | Pergunta | Posicao padrao |
-|---|---|---|
-| NC-1 | `check-contrast.ts` substitui ou coexiste com `check-contrast-tokens.mjs`? | Coexistência: `.mjs` permanece no Lint job; `.ts` vai ao `a11y-checks.yml` |
-| NC-2 | `axe-final.spec.ts` já é bloqueante ou ainda permissivo? | Verificar no execute-task; tornar bloqueante se necessário |
-| NC-3 | Gate axe cobre páginas autenticadas neste sprint ou apenas públicas? | Apenas públicas neste gate; autenticadas = R2 |
+| ID | Decisão | Score | Resolução |
+|---|---|---|---|
+| NC-1 | `check-contrast.ts` (novo) **coexiste** com `check-contrast-tokens.mjs` (12.3) | 3 | `.mjs` permanece no Lint job; `.ts` no `a11y-checks.yml` com `color2k` para oklch/WCAG AA parametrizável. Camadas complementares, responsabilidades distintas. (dec-005) |
+| NC-2 | `axe-final.spec.ts` **parcialmente bloqueante** — apenas `critical=0`; falta `serious` | 3 | Task execute-task adiciona `expect(bySeverity.serious).toBe(0)`. Gate permanente oficial: `axe-quality-gate.e2e-spec.ts` (FR-5) com `toHaveLength(0)`. (dec-006) |
+| NC-3 | Gate axe cobre **apenas páginas públicas** neste sprint | 3 | `axe-quality-gate.e2e-spec.ts` filtra `requiresAuth: false` do `a11y-pages.json`. Autenticadas = R2 explícito. Páginas: `/login`, `/`, `/register`, `/recuperar-senha`. (dec-007) |
 
 ---
 

@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "clarify",
   "waves": [
     {
@@ -52,21 +52,13 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-17T12:28:04Z",
-      "finished_at": "2026-06-17T12:30:59Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 175,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-17T12:29:25Z",
-          "decision_id": "dec-008"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -183,61 +175,6 @@
       "evidence": "axe-final.spec.ts linha 114: 'expect(bySeverity.critical).toBe(0)' — sem assertiva para serious. Linha 117: 'expect(results).toBeDefined()' (trivial). DoD nota: 'dod_pass: regressions.filter((r) => r.impact === critical).length === 0' — apenas critical coberto.",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-007",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T12:29:14Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "NC-3: gate axe cobre paginas autenticadas neste sprint ou apenas publicas?",
-      "options_considered": [
-        "apenas-publicas-r2-autenticadas",
-        "incluir-autenticadas-agora",
-        "suportar-json-mas-nao-processar"
-      ],
-      "choice": "apenas-publicas-r2-autenticadas",
-      "rationale": "Paginas autenticadas requerem loginAs helper + Keycloak stack + seed — setup fragil no CI (evidenciado por PR #156 e pela regressao do KEYCLOAK_PUBLIC_URL que silenciou o CI). gate automatizado deve ser deterministico e robusto. Paginas publicas (/, /login, /register, /recuperar-senha) nao requerem auth e sao estaveis. SC-5.1 menciona 'pelo menos uma pagina de fluxo autenticado-publico' — o campo requiresAuth:false em a11y-pages.json resolve: dashboard/grupos podem ser listados mas marcados requiresAuth:true e skipped pelo spec neste sprint. Autenticadas = R2 explicito.",
-      "justification_score": 3,
-      "evidence": "axe-baseline-authenticated.spec.ts: usa 'loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD)' + 'networkidle' — fragil. Memory: 'Epic 12 CI Keycloak regression — dev CI was silently red for all PRs (ccfccfd missing KEYCLOAK_PUBLIC_URL)'. SC-5.2 do spec suporta campo requiresAuth booleano — skip condicional no spec resolve sem bloquear R2.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T12:29:25Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "inicio-execucao-clarify",
-      "options_considered": [
-        "iniciar",
-        "abortar"
-      ],
-      "choice": "iniciar",
-      "rationale": "3 NC resolvidos autonomamente com score 3 via inspecao empirica dos artefatos (check-contrast-tokens.mjs, axe-final.spec.ts, axe-baseline-authenticated.spec.ts). Nenhum NC exige decisao humana de produto — todos sao decisoes tecnicas defensaveis.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-17T12:30:43Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "transicao clarify→plan: todos NC resolvidos autonomamente",
-      "options_considered": [
-        "avancar-para-plan",
-        "pausar-humano"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "3 NC resolvidos com score 3 via inspecao empirica. Nenhum NC exige decisao humana de produto. Spec atualizada com secao Clarifications (status: clarified). Sem bloqueios pendentes.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -255,12 +192,12 @@
     "current_wave_start": "2026-06-17T12:28:04Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 487,
+    "wallclock_total_seconds": 312,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 9,
+    "decisions_total": 6,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
