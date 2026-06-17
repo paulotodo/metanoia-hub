@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.5: Formularios Acessiveis (NFR-A3). Labels associados, mensagens de erro acessiveis (aria-describedby/aria-invalid/role=alert), fieldset/legend, instrucoes e validacao anunciadas a leitores de tela, foco em erro no submit. Cobre formularios reais (login, registro, grupos, convite, config/branding, trilhas). Validacao Zod ja existe em packages/types; foco na camada de apresentacao acessivel.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "review-task-green",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T09:29:42Z",
-    "finished_at": "2026-06-17T11:56:56Z",
+    "finished_at": null,
     "tasks_concluidas": [
       "0.1",
       "0.2",
@@ -160,10 +160,10 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T10:46:20Z",
-      "finished_at": "2026-06-17T11:56:33Z",
+      "finished_at": "2026-06-17T11:44:33Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 4213,
+      "wallclock_seconds": 3493,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -910,9 +910,9 @@
     "current_wave_start": "2026-06-17T10:46:20Z"
   },
   "accumulated_metrics": {
-    "waves_total": 9,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 13178,
+    "wallclock_total_seconds": 8965,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 37,

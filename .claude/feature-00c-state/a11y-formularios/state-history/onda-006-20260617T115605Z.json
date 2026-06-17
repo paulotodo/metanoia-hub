@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 12.5: Formularios Acessiveis (NFR-A3). Labels associados, mensagens de erro acessiveis (aria-describedby/aria-invalid/role=alert), fieldset/legend, instrucoes e validacao anunciadas a leitores de tela, foco em erro no submit. Cobre formularios reais (login, registro, grupos, convite, config/branding, trilhas). Validacao Zod ja existe em packages/types; foco na camada de apresentacao acessivel.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "review-task-green",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T09:29:42Z",
-    "finished_at": "2026-06-17T11:56:56Z",
+    "finished_at": null,
     "tasks_concluidas": [
       "0.1",
       "0.2",
@@ -160,10 +160,10 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-17T10:46:20Z",
-      "finished_at": "2026-06-17T11:56:33Z",
+      "finished_at": "2026-06-17T11:44:33Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 4213,
+      "wallclock_seconds": 3493,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -176,11 +176,6 @@
           "skill": "execute-task",
           "timestamp": "2026-06-17T11:25:00Z",
           "decision_id": "dec-035"
-        },
-        {
-          "skill": "review-task",
-          "timestamp": "2026-06-17T11:56:12Z",
-          "decision_id": "dec-037"
         }
       ]
     }
@@ -859,25 +854,6 @@
       "evidence": "Tasks:    3 successful, 3 total | Tasks:    4 successful, 4 total | 836 passed (837)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-037",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-17T11:56:05Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "review-task: validacao final de gates e cobertura de artefatos",
-      "options_considered": [
-        "concluir",
-        "retornar-para-correcao",
-        "bloquear-humano"
-      ],
-      "choice": "concluir",
-      "rationale": "prisma generate OK; pnpm turbo build 3/3 OK; pnpm turbo lint 4/4 0 warnings; pnpm web test 837/837; SC-F APROVADO; playwright list 138 testes (11 a11y-forms); 29 tasks pass no state.json; FormField + form-utils + E2E spec criados; BrandingSettings+super-admin diferidos documentados (dec-013)",
-      "justification_score": null,
-      "evidence": "Tests 837 passed (837) — Duration 41.28s; lint 4 successful; build 3 successful; SC-F: APROVADO; playwright 138 tests in 23 files",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -910,12 +886,12 @@
     "current_wave_start": "2026-06-17T10:46:20Z"
   },
   "accumulated_metrics": {
-    "waves_total": 9,
+    "waves_total": 8,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 13178,
+    "wallclock_total_seconds": 8965,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 37,
+    "decisions_total": 36,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

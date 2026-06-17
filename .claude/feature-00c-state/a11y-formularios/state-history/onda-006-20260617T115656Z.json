@@ -9,7 +9,7 @@
     "status": "concluida",
     "termination_reason": "review-task-green",
     "started_at": "2026-06-17T09:29:42Z",
-    "finished_at": "2026-06-17T11:56:56Z",
+    "finished_at": null,
     "tasks_concluidas": [
       "0.1",
       "0.2",

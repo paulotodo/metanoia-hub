@@ -1,7 +1,7 @@
 {
   "wave_number": 6,
-  "captured_at": "2026-06-17T11:44:27Z",
-  "state_sha256_self": "5e6bd13fe6d2ad635dd7b603b09161f20d9492fb11d0a29d97ef2cd298a7d029",
+  "captured_at": "2026-06-17T11:56:19Z",
+  "state_sha256_self": "bc15774714370c23d6f4d680c2e3a204b983009055a0054357e49c928217d90e",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "a11y-formularios",
@@ -164,10 +164,10 @@
       {
         "id": "onda-006",
         "started_at": "2026-06-17T10:46:20Z",
-        "finished_at": "2026-06-17T11:25:44Z",
+        "finished_at": "2026-06-17T11:44:33Z",
         "executed_stages": [],
         "tool_calls": 0,
-        "wallclock_seconds": 2364,
+        "wallclock_seconds": 3493,
         "termination_reason": "concluido",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
@@ -180,6 +180,11 @@
             "skill": "execute-task",
             "timestamp": "2026-06-17T11:25:00Z",
             "decision_id": "dec-035"
+          },
+          {
+            "skill": "review-task",
+            "timestamp": "2026-06-17T11:56:12Z",
+            "decision_id": "dec-037"
           }
         ]
       }
@@ -858,6 +863,25 @@
         "evidence": "Tasks:    3 successful, 3 total | Tasks:    4 successful, 4 total | 836 passed (837)",
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-037",
+        "wave_id": "onda-006",
+        "timestamp": "2026-06-17T11:56:05Z",
+        "stage": "review-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "review-task: validacao final de gates e cobertura de artefatos",
+        "options_considered": [
+          "concluir",
+          "retornar-para-correcao",
+          "bloquear-humano"
+        ],
+        "choice": "concluir",
+        "rationale": "prisma generate OK; pnpm turbo build 3/3 OK; pnpm turbo lint 4/4 0 warnings; pnpm web test 837/837; SC-F APROVADO; playwright list 138 testes (11 a11y-forms); 29 tasks pass no state.json; FormField + form-utils + E2E spec criados; BrandingSettings+super-admin diferidos documentados (dec-013)",
+        "justification_score": null,
+        "evidence": "Tests 837 passed (837) — Duration 41.28s; lint 4 successful; build 3 successful; SC-F: APROVADO; playwright 138 tests in 23 files",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [
@@ -890,12 +914,12 @@
       "current_wave_start": "2026-06-17T10:46:20Z"
     },
     "accumulated_metrics": {
-      "waves_total": 7,
+      "waves_total": 8,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 5472,
+      "wallclock_total_seconds": 8965,
       "max_depth_reached": 2,
       "subagents_spawned": 2,
-      "decisions_total": 36,
+      "decisions_total": 37,
       "human_blocks_total": 1,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0,
