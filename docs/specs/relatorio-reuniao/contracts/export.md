@@ -13,9 +13,11 @@ Authorization: Bearer <jwt>
 - `@Roles(Role.LIDER, Role.ADMIN_TENANT, 'pastor', 'admin')` — **sem** `PARTICIPANTE`.
 - Autorização: exige `canSeeFull=true`. Se `false` → **403 Forbidden** (Decision 5:
   o CSV é a visão completa com PII de todos; não há export pessoal no FR63).
-- Ação: gera `jobId` (`generateId()`), grava status `processing` em
-  `cache:reports:export-job:<jobId>`, enfileira job `export-meeting-csv` com
+- Ação: gera `jobId` (`generateId()`), grava status `processing` na chave
+  **prefixada por tenant** `cache:reports:export-job:<tenantId>:<jobId>` (mitigação S1, dec-017),
+  enfileira job `export-meeting-csv` com
   payload `{kind:'meeting', jobId, tenantId, meetingId, requesterUserId, canSeeFull}`.
+  O payload de status persistido em Redis **deve** incluir `tenantId` + `requesterUserId` para bind no polling.
 
 ### Response 202
 ```json
@@ -26,10 +28,16 @@ Schema: `ExportJobAcceptedSchema` (existente).
 ### Idempotência
 Sem dedup (dec): cada POST gera um jobId independente.
 
-## 2) GET /api/v1/reports/jobs/:jobId  → 200 (polling) — REUSO do endpoint existente
-Servido por `ReportsController` (`reports/`), já implementado. O jobId é opaco;
-a mesma chave Redis `cache:reports:export-job:*` serve meeting e trilha.
-- `@Roles(Role.ADMIN_TENANT, Role.LIDER)`.
+## 2) GET /api/v1/reports/jobs/:jobId  → 200 (polling) — endpoint REUSADO, MAS endurecido (mitigação S1, dec-017)
+Servido por `ReportsController` (`reports/`). O jobId é opaco;
+a chave Redis passa a ser **prefixada por tenant**: `cache:reports:export-job:<tenantId>:<jobId>`.
+- `@Roles(Role.ADMIN_TENANT, Role.LIDER)` **não é suficiente** — apenas filtra papel, não objeto.
+- `getJobStatus` deve: (a) derivar `tenantId` do `RequestContext` (AsyncLocalStorage),
+  nunca de parâmetro; (b) ler a chave já prefixada por esse `tenantId`;
+  (c) validar `job.requesterUserId === ctx.userId`.
+- Acesso a job de outro tenant ou de outro requester → **404** (não 403; não revela existência).
+- ADMIN_TENANT lê qualquer job **do próprio tenant** (sem bind por requester); o isolamento de tenant
+  é garantido pelo prefixo da chave. Cross-tenant é impossível por construção (prefixo derivado do contexto).
 
 ### Response 200
 ```json
@@ -73,11 +81,13 @@ if (job.name === 'export-meeting-csv')
 "Ana Souza","ana@exemplo.com","Presente","19:31","20:58","87","0.87"
 ```
 - BOM UTF-8 (`REPORTS_CSV_BOM`). Aspas escapadas (`"` → `""`).
+- **Anti CSV/fórmula injection (S4, A05):** célula cujo conteúdo inicie com `=`, `+`, `-`, `@`, TAB ou CR deve ser prefixada com apóstrofo (`'`) antes do escape de aspas, neutralizando execução de fórmula no Excel/Sheets. Aplica-se a todos os campos de texto livre (Nome, Email).
 - Reunião sem presentes → apenas o cabeçalho (P2 edge case).
 - `Status` PT-BR: Presente/Parcial/Ausente.
 
 ## Segurança (gate owasp-security)
 - PII no CSV (nome/email/horários) → export restrito a gestão (403 p/ Participante).
 - Link via signed URL temporária (1h); sem ACL pública no bucket.
-- jobId opaco; status legível por LIDER/ADMIN_TENANT (RLS isola tenant; mas o
-  jobId não embute meetingId — ver risco "IDOR no polling" no plan.md §Riscos).
+- jobId opaco. **IDOR/BOLA no polling mitigado (S1, dec-017):** chave Redis prefixada por
+  tenant + bind `tenantId`/`requesterUserId` validados em `getJobStatus`. Ver FR-07.1 e SC-08 na spec.
+  Teste de autorização obrigatório: líder A não acessa jobId de líder B nem cross-tenant (→ 404).

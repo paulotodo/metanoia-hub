@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "current_stage=create-tasks: decompor FR63 em backlog (fases types/Zod -> backend report -> backend export+mitigacao S1 -> frontend a11y -> testes RLS/e2e). Consumir gaps do checklist (plan.md secao Saida do Checklist): CHK035/040/041/024 viram tasks; CHK018/021 clarify; CHK008/042 {humano}. Garantir cobertura testavel da mitigacao S1 (bind tenantId+requesterUserId, chave Redis prefixada, teste liderA!=liderB).",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -93,23 +93,6 @@
           "skill": "owasp-security",
           "timestamp": "2026-06-17T21:55:56Z",
           "decision_id": "dec-016"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-17T22:03:50Z",
-      "finished_at": "2026-06-17T22:08:11Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 261,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-17T22:07:37Z",
-          "decision_id": "dec-019"
         }
       ]
     }
@@ -458,43 +441,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T22:07:37Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate checklist (qualidade de requisitos) FR63: a mitigacao S1 (dec-017) estava apenas como risco documentado, nao como requisito testavel. Refinei spec/contrato para expressar FR-07.1 (bind tenantId+requesterUserId, chave Redis prefixada por tenant, 404 nao-vazante) + SC-08 (teste de autorizacao liderA nao acessa jobId de liderB nem cross-tenant) + criterio S4 anti CSV-injection.",
-      "options_considered": [
-        "promover-mitigacao-a-requisito-testavel",
-        "manter-como-risco",
-        "escalar-humano"
-      ],
-      "choice": "promover-mitigacao-a-requisito-testavel",
-      "rationale": "dec-017 mandata cobertura no escopo; checklist exige requisito testavel, nao prosa de risco.",
-      "justification_score": 3,
-      "evidence": "grep confirma: spec.md L158/L161 e contracts/export.md L17/L33 agora usam 'cache:reports:export-job:<tenantId>:<jobId>'; FR-07.1 e SC-08 adicionados; contract polling marcado 'endurecido (mitigacao S1, dec-017)'.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-17T22:07:37Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Checklist revelou 6 itens abertos roteados para create-tasks/clarify: CHK018/CHK021 (a11y ambiguity contraste-escopo e tabela-equivalente da tendencia), CHK024 (a11y gap estado disabled do CTA), CHK035 (api gap: prefixo de tenant na chave compartilhada meeting/trilha pode quebrar polling de trilhas), CHK040/CHK041 (perf gap: cadencia de polling e carga acima do alvo). 2 itens {humano}: CHK008 (apetite ADMIN_TENANT), CHK042 (limite de participantes).",
-      "options_considered": [
-        "rotear-gaps-para-create-tasks",
-        "bloquear-humano-agora"
-      ],
-      "choice": "rotear-gaps-para-create-tasks",
-      "rationale": "Gaps sao de requisito (nao impeditivos de seguranca); melhor destino e virar task de definicao no create-tasks. Itens {humano} nao-bloqueantes para avancar a fase.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -525,15 +471,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T22:03:50Z"
+    "current_wave_start": "2026-06-17T21:48:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1323,
+    "wallclock_total_seconds": 1062,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 20,
+    "decisions_total": 18,
     "human_blocks_total": 1,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

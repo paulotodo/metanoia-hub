@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "create-tasks",
-  "next_instruction": "current_stage=create-tasks: decompor FR63 em backlog (fases types/Zod -> backend report -> backend export+mitigacao S1 -> frontend a11y -> testes RLS/e2e). Consumir gaps do checklist (plan.md secao Saida do Checklist): CHK035/040/041/024 viram tasks; CHK018/021 clarify; CHK008/042 {humano}. Garantir cobertura testavel da mitigacao S1 (bind tenantId+requesterUserId, chave Redis prefixada, teste liderA!=liderB).",
+  "next_instruction": "Iniciar etapa checklist — plan concluido (artefatos gerados, gates doc+owasp rodados), bloqueio S1 resolvido (sim-mitigar-no-escopo). Validar qualidade dos requisitos da spec/plan FR63.",
   "waves": [
     {
       "id": "onda-001",

@@ -155,7 +155,14 @@ O CSV é gravado no bucket único `metanoia-storage` (CONTENT_BUCKET) sob o pref
 
 O sistema deve expor um endpoint de consulta de status do job de export, retornando: identificador do job, status (em processamento / concluído / falhou), URL assinada (quando concluído, nula caso contrário), data de expiração da URL, e motivo de falha (quando falhou, nulo caso contrário).
 
-O registro `ExportJob` é **Redis-only** (chave `cache:reports:export-job:*`), sem persistência em banco. Seu TTL acompanha `REPORTS_JOB_TTL_SECONDS`, mantendo o registro consultável pelo mesmo período da URL assinada. (dec-009)
+O registro `ExportJob` é **Redis-only** (chave `cache:reports:export-job:<tenantId>:<jobId>`), sem persistência em banco. Seu TTL acompanha `REPORTS_JOB_TTL_SECONDS`, mantendo o registro consultável pelo mesmo período da URL assinada. (dec-009)
+
+**FR-07.1 — Autorização do polling (mitigação S1, dec-017 — acceptance criterion obrigatório, não diferível):** o endpoint de polling deve impedir BOLA/IDOR (OWASP A01/API1). O payload de status do job deve gravar `tenantId` + `requesterUserId`. Ao consultar o status, o sistema deve:
+- ler a chave Redis **prefixada por tenant** (`cache:reports:export-job:<tenantId>:<jobId>`), derivando `tenantId` do contexto de autenticação (RequestContext/AsyncLocalStorage), nunca de parâmetro de requisição;
+- validar que o `requesterUserId` gravado no job é igual ao `userId` do solicitante corrente;
+- retornar **404 (Not Found)** — não 403 — quando o job não existe para aquele tenant ou o requester não confere, de forma a não revelar a existência de jobs de outros líderes/tenants.
+
+Sem essa mitigação, qualquer líder com `@Roles(ADMIN_TENANT, LIDER)` poderia consultar qualquer `jobId` e obter a `signedUrl` de um CSV com PII de outro grupo/tenant. A guarda de role isolada **não** satisfaz este requisito.
 
 ### FR-08: Interface de relatório acessível
 
@@ -212,6 +219,9 @@ Todos os elementos de classificação de engajamento (badges) e status de presen
 
 ### SC-07: Disponibilidade do export
 O link de download do export deve estar disponível em menos de 60 segundos após a solicitação para reuniões com até 200 participantes.
+
+### SC-08: Isolamento do polling de export (mitigação S1)
+O endpoint de polling de status deve impedir acesso cruzado a jobs de export. Verificável por teste de autorização determinístico: o líder A (tenant T1) **não** consegue ler o status nem a `signedUrl` de um `jobId` criado pelo líder B — seja líder B do mesmo tenant (grupo diferente) ou de outro tenant. A tentativa retorna 404, sem vazar a existência do job. Cobre FR-07.1 (dec-017).
 
 ---
 

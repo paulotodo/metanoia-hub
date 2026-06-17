@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "create-tasks",
-  "next_instruction": "current_stage=create-tasks: decompor FR63 em backlog (fases types/Zod -> backend report -> backend export+mitigacao S1 -> frontend a11y -> testes RLS/e2e). Consumir gaps do checklist (plan.md secao Saida do Checklist): CHK035/040/041/024 viram tasks; CHK018/021 clarify; CHK008/042 {humano}. Garantir cobertura testavel da mitigacao S1 (bind tenantId+requesterUserId, chave Redis prefixada, teste liderA!=liderB).",
+  "next_instruction": "Iniciar etapa checklist — plan concluido (artefatos gerados, gates doc+owasp rodados), bloqueio S1 resolvido (sim-mitigar-no-escopo). Validar qualidade dos requisitos da spec/plan FR63.",
   "waves": [
     {
       "id": "onda-001",
@@ -99,11 +99,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-17T22:03:50Z",
-      "finished_at": "2026-06-17T22:08:11Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 261,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -528,9 +528,9 @@
     "current_wave_start": "2026-06-17T22:03:50Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1323,
+    "wallclock_total_seconds": 1062,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 20,

@@ -171,6 +171,20 @@ página web). Sem migration → princípio I intacto. Polling reusa endpoint
 existente → sem inflar superfície de API. Todos os MUST permanecem PASS. **Sem
 complexidade não justificada.**
 
+## Saída do Checklist (gate de requisitos — onda-004, dec-019/dec-020)
+
+Checklists em `checklists/{security,a11y,api,performance}.md`. A mitigação S1 (dec-017) foi promovida de risco a requisito testável (FR-07.1 + SC-08 + contrato endurecido + critério S4). Gaps abertos a cobrir no `create-tasks`:
+
+| Item | Tipo | Ação no create-tasks |
+|------|------|----------------------|
+| CHK035 (api) | Gap | A chave Redis prefixada por tenant é COMPARTILHADA com export de trilhas (`kind:'track'`). A task da mitigação S1 deve cobrir AMBOS os kinds (meeting+track) no `getJobStatus`/`setJobStatus`, ou isolar a chave do meeting — senão quebra o polling de trilhas existente. |
+| CHK040 (perf) | Gap | Definir cadência de polling recomendada (intervalo mínimo / backoff / máx tentativas) para evitar busy-poll no `GET /reports/jobs/:jobId`. |
+| CHK041 (perf) | Gap | Definir comportamento acima do alvo (relatório >50, export >200): paginação ou limite explícito. |
+| CHK024 (a11y) | Gap | Especificar tratamento a11y do estado disabled do CTA pastoral (aria-disabled vs. remoção do tab order, anúncio para leitor de tela). |
+| CHK018 (a11y) | Ambiguity | Clarificar escopo do contraste 4.5:1 — todos os pares texto/fundo vs. só token secundário. |
+| CHK021 (a11y) | Ambiguity | Fixar: se a tendência FR-10 renderizar, a tabela equivalente acessível é obrigatória. |
+| CHK008 / CHK042 | {humano} | Decisões de produto (não-bloqueantes): apetite ADMIN_TENANT ler qualquer job do tenant; limite superior de participantes por reunião. |
+
 ## Próximos passos (pipeline)
 
 1. `/checklist` — quality gate de requisitos (foco: security, a11y, api).
