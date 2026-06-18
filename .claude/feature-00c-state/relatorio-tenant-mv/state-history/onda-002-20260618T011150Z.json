@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -45,21 +45,13 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-18T01:11:03Z",
-      "finished_at": "2026-06-18T01:14:40Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 217,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-18T01:12:10Z",
-          "decision_id": "dec-009"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -269,62 +261,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:11:50Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Stale threshold para banner de dados desatualizados: 20min fixo vs configuravel",
-      "options_considered": [
-        "20min-fixo",
-        "configuravel",
-        "outros-valores"
-      ],
-      "choice": "20min-fixo",
-      "rationale": "Threshold 20min matematicamente derivado: cron 15min + retry backoff maximo (30s+60s+120s=3.5min) = 18.5min stale no pior caso de 1 falha. 20min da margem de 1.5min. Configurabilidade seria scope creep para MVP. Spec autoritativa nao exige configurabilidade. YAGNI.",
-      "justification_score": 3,
-      "evidence": "Calculo: cron=15min + backoff_max=30+60+120s=3.5min = 18.5min. Threshold=20min => margem 1.5min. Com 3 falhas consecutivas: stale > 20min => banner ativo corretamente.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:12:03Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Filtro period na MV: MV com colunas por periodo fixo vs query ao vivo",
-      "options_considered": [
-        "mv-colunas-periodos-fixos",
-        "query-ao-vivo",
-        "hibrido"
-      ],
-      "choice": "mv-colunas-periodos-fixos",
-      "rationale": "NFR-02 (<2s com 500 tenants x 10 grupos x 50 participantes) so atingivel via MV. Query ao vivo sobre 250k registros com JOINs nao atinge <2s. MV com 6 colunas adicionais (avg_attendance_7d/30d/90d, avg_trail_7d/30d/90d). Periodo custom executa query ao vivo com aviso de performance na UI. Default 30d.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:14:23Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Preflight gate clarify->plan (FR-010A): verificacao de constitution e spec",
-      "options_considered": [
-        "avancar-para-plan",
-        "bloquear"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "feature-00c-preflight.sh check retornou ok=true, findings=[]. Todas as 5 clarifications resolvidas com score>=2. Nenhum bloqueio pendente.",
-      "justification_score": 3,
-      "evidence": "preflight.sh output: {\"ok\": true, \"findings\": []}",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -342,12 +278,12 @@
     "current_wave_start": "2026-06-18T01:11:03Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 522,
+    "wallclock_total_seconds": 305,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 14,
+    "decisions_total": 11,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -373,11 +309,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-18T01:05:34Z",
       "description": "onda-001 specify concluida; proxima onda=clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:14:58Z",
-      "description": "clarify concluido, proxima fase: plan"
     }
   ]
 }

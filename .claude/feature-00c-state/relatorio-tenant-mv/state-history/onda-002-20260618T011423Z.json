@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "plan",
-  "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -45,13 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-18T01:11:03Z",
-      "finished_at": "2026-06-18T01:14:40Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 217,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -342,9 +340,9 @@
     "current_wave_start": "2026-06-18T01:11:03Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 522,
+    "wallclock_total_seconds": 305,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 14,
@@ -373,11 +371,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-18T01:05:34Z",
       "description": "onda-001 specify concluida; proxima onda=clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:14:58Z",
-      "description": "clarify concluido, proxima fase: plan"
     }
   ]
 }

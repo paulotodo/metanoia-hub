@@ -273,19 +273,71 @@ Para monitorar a saude geral da comunidade com filtros e alertas visuais
 
 ## Clarifications
 
-*(A preencher na fase clarify)*
+*(Fase clarify concluida — 2026-06-18. Todas as 5 decisoes resolvidas autonomamente com score >= 2. Nenhum bloqueio humano necessario.)*
 
-### Decisoes pendentes para clarify/plan
+### CL-01: RLS-em-MV — Opcao adotada: A (filtro explicito no service) [dec-009, score 3]
 
-1. **RLS-em-MV (RISCO CRITICO):** Qual opcao de mitigacao adotar? (A: filtro explicito no service, B: security-barrier view, D: ALTER TABLE ENABLE ROW LEVEL SECURITY na MV). O clarify-answerer deve decidir com score >= 2.
+**Decisao:** Opcao A — `WHERE tenant_id = getRequestContext().tenantId` EXPLICITO em todo query a `mv_tenant_report` no service layer.
 
-2. **`last_refresh_at` — armazenamento:** Usar tabela auxiliar `mv_refresh_log` (referenciada acima) ou coluna adicional em outra tabela de controle? Entidades Prisma existentes tem esse padrao?
+**Justificativa:** Constitution Principio I (NON-NEGOTIABLE): multi-tenancy absoluto. Spec autoritativa (Dev Notes Guardrails): "All queries must include `WHERE tenant_id = <context_tenant_id>`". A extensao Prisma nao cobre MVs (nao sao tabelas Prisma mapeadas). Opcao D (RLS na MV via `ALTER TABLE`) exigiria `SET LOCAL` por request — complexidade DDL sem ganho sobre o filtro no service. Opcao B (security-barrier view) adiciona DDL extra desnecessario dado que o service ja tem o contexto disponivel via `RequestContext`.
 
-3. **Semaforo agregado por grupo na MV:** A MV deve computar o semaforo predominante do grupo como a pior condicao (qualquer vermelho = grupo vermelho) ou como maioria? Verificar padrao em Epic 7.
+**Gate obrigatorio:** Teste RLS isolation em `apps/api/test/rls/mv-tenant-report.rls-spec.ts` — Admin Tenant A NAO ve dados do Tenant B — e pre-requisito de merge.
 
-4. **Stale threshold para banner:** 20min e adequado (1 ciclo de 15min + margem)? Ou configuravel?
+---
 
-5. **Filtro `period` na MV:** A MV e snapshot point-in-time (sem filtro de periodo interno). O filtro `?period=30d` para `avg_attendance_percent` e `avg_trail_progress_percent` — a MV deve ser parametrizada por periodo ou o filtro vai para query ao vivo? Se ao vivo, perde a performance alvo. Decisao arquitetural importante.
+### CL-02: `last_refresh_at` — Armazenamento: tabela `mv_refresh_log` [dec-010, score 2]
+
+**Decisao:** Tabela auxiliar Prisma `mv_refresh_log` com campos: `id` (UUIDv7), `tenant_id` (UUID, nullable para refresh global), `mv_name` (text), `refreshed_at` (timestamp), `duration_ms` (int), `status` (enum: `success` | `failed`).
+
+**Justificativa:** Auditoria e diagnostico: historico de refreshes e util para rastreamento de falhas. Prisma entity garante tipagem e cobertura de RLS padrao. Redis rejeitado (volatil — perda de dados no restart). Coluna em tabela de configuracao de tenant rejeitada (sem historico, menos auditavel). O processor grava uma entrada pos-`REFRESH MATERIALIZED VIEW CONCURRENTLY`; o service executa `SELECT MAX(refreshed_at) FROM mv_refresh_log WHERE mv_name = 'mv_tenant_report'` para expor `lastRefreshAt` na meta do endpoint.
+
+---
+
+### CL-03: Semaforo agregado por grupo — Logica MAIORIA com floor amarelo [dec-011, score 2]
+
+**Decisao:** Logica de semaforo no calculo da MV: **MAIORIA** (status mais frequente entre membros do grupo) com **floor amarelo quando `risk_count > 0`**. Campo adicional `risk_count` na MV conta membros em vermelho.
+
+**Regras de calculo:**
+- `semaforo = MAIORIA(status dos membros)`
+- Se `risk_count > 0` E `semaforo = 'verde'` => promover para `'amarelo'` (floor)
+- Grupos com `semaforo = 'amarelo'` OU `'vermelho'` permanecem sem alteracao
+
+**Justificativa:** Constitution Quality Standards: "sinal pastoral prioriza padroes sobre eventos isolados, permite correcao humana e nunca penaliza por falha tecnica." Pior condicao seria excessivamente punitiva para grupos grandes. `risk_count` garante que problemas individuais sejam visiveis sem impacto desproporcionado no semaforo geral. Floor amarelo impede ocultacao completa de risco.
+
+---
+
+### CL-04: Stale threshold para banner — 20min fixo [dec-012, score 3]
+
+**Decisao:** Threshold fixo de **20 minutos** (nao configuravel no MVP).
+
+**Calculo base:**
+- Cron: 15min
+- Retry backoff maximo: 30s + 60s + 120s = 3,5min
+- Stale no pior caso (1 falha + 3 retries): ~18,5min
+- Threshold 20min = margem de 1,5min sobre o pior caso
+
+**Comportamento:** Se `NOW() - lastRefreshAt > 20min`, exibir banner "Dados podem estar desatualizados" com `role="alert"` + `aria-live="assertive"`. Configurabilidade seria scope creep para MVP (YAGNI).
+
+---
+
+### CL-05: Filtro `period` na MV — Colunas por periodo fixo na MV [dec-013, score 2]
+
+**Decisao:** MV materializa os 3 periodos fixos como **colunas separadas**. Periodo `custom` executa query ao vivo com aviso de performance na UI.
+
+**Schema adicional na MV:**
+
+| Campo adicional | Tipo | Descricao |
+|---|---|---|
+| `avg_attendance_7d` | numeric(5,2) | Media de presenca ultimos 7 dias |
+| `avg_attendance_30d` | numeric(5,2) | Media de presenca ultimos 30 dias |
+| `avg_attendance_90d` | numeric(5,2) | Media de presenca ultimos 90 dias |
+| `avg_trail_7d` | numeric(5,2) | Media de progresso em trilha ultimos 7 dias |
+| `avg_trail_30d` | numeric(5,2) | Media de progresso em trilha ultimos 30 dias |
+| `avg_trail_90d` | numeric(5,2) | Media de progresso em trilha ultimos 90 dias |
+
+**Mapeamento no endpoint:** `?period=7d` => colunas `*_7d`; `?period=30d` (default) => `*_30d`; `?period=90d` => `*_90d`; `?period=custom` => query ao vivo (SEM garantia de <2s — aviso na UI: "Periodo personalizado pode demorar mais para carregar").
+
+**Justificativa:** NFR-02 (<2s com 500 tenants x 10 grupos x 50 participantes) so e atingivel via MV. Query ao vivo sobre ~250k registros com JOINs nao atinge <2s sem cache dedicado. MV com 6 colunas adicionais e viavel — o `REFRESH CONCURRENTLY` admite query mais pesada pois roda offline. Periodo custom e caso de uso avancado (aceita degradacao documentada).
 
 ---
 

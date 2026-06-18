@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -39,25 +39,6 @@
           "skill": "specify",
           "timestamp": "2026-06-18T01:04:27Z",
           "decision_id": "dec-004"
-        }
-      ]
-    },
-    {
-      "id": "onda-002",
-      "started_at": "2026-06-18T01:11:03Z",
-      "finished_at": "2026-06-18T01:14:40Z",
-      "executed_stages": [
-        "clarify"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 217,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-18T01:12:10Z",
-          "decision_id": "dec-009"
         }
       ]
     }
@@ -192,139 +173,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-001",
-      "timestamp": "2026-06-18T01:08:14Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 1 (fase clarify)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:11:22Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "RLS-em-MV: Opcao de mitigacao para isolamento de Materialized View",
-      "options_considered": [
-        "opcao-A-filtro-service",
-        "opcao-B-security-barrier-view",
-        "opcao-D-rls-na-mv"
-      ],
-      "choice": "opcao-A-filtro-service",
-      "rationale": "Constitution Principio I (NON-NEGOTIABLE): multi-tenancy absoluto. Spec autoritativa Dev Notes: 'All queries must include WHERE tenant_id'. Prisma extension nao cobre MVs. Opcao A e o padrao do projeto via AsyncLocalStorage. Opcao D exigiria SET LOCAL por request — complexidade DDL sem ganho. Opcao B DDL extra desnecessario.",
-      "justification_score": 3,
-      "evidence": "Constitution §I: 'Multi-tenancy Absoluto (NON-NEGOTIABLE)' + spec-autoritativa Dev Notes: 'Guardrails Arquiteturais: All queries must include WHERE tenant_id = <context_tenant_id>'",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:11:30Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "last_refresh_at: armazenamento — tabela auxiliar mv_refresh_log vs coluna vs Redis",
-      "options_considered": [
-        "tabela-mv_refresh_log",
-        "coluna-config-tenant",
-        "chave-redis"
-      ],
-      "choice": "tabela-mv_refresh_log",
-      "rationale": "LGPD + auditoria: historico de refreshes relevante para diagnostico. Prisma entity garante tipagem e RLS padrao. Redis e volatil (perda de dados no restart). Tabela minimal: id UUIDv7, tenant_id, refreshed_at, duration_ms, status enum success|failed. Service le max(refreshed_at) WHERE tenant_id para meta.lastRefreshAt do endpoint.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:11:40Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Semaforo agregado por grupo na MV: logica de pior-condicao vs maioria",
-      "options_considered": [
-        "pior-condicao",
-        "maioria",
-        "maioria-com-floor-amarelo"
-      ],
-      "choice": "maioria-com-floor-amarelo",
-      "rationale": "Constitution Quality Standards: 'sinal pastoral prioriza padroes sobre eventos isolados, permite correcao humana e nunca penaliza por falha tecnica'. Maioria justa para grupos grandes. risk_count (campo adicional na MV) garante visibilidade. Floor amarelo quando risk_count > 0 impede ocultacao de problemas.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:11:50Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Stale threshold para banner de dados desatualizados: 20min fixo vs configuravel",
-      "options_considered": [
-        "20min-fixo",
-        "configuravel",
-        "outros-valores"
-      ],
-      "choice": "20min-fixo",
-      "rationale": "Threshold 20min matematicamente derivado: cron 15min + retry backoff maximo (30s+60s+120s=3.5min) = 18.5min stale no pior caso de 1 falha. 20min da margem de 1.5min. Configurabilidade seria scope creep para MVP. Spec autoritativa nao exige configurabilidade. YAGNI.",
-      "justification_score": 3,
-      "evidence": "Calculo: cron=15min + backoff_max=30+60+120s=3.5min = 18.5min. Threshold=20min => margem 1.5min. Com 3 falhas consecutivas: stale > 20min => banner ativo corretamente.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:12:03Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Filtro period na MV: MV com colunas por periodo fixo vs query ao vivo",
-      "options_considered": [
-        "mv-colunas-periodos-fixos",
-        "query-ao-vivo",
-        "hibrido"
-      ],
-      "choice": "mv-colunas-periodos-fixos",
-      "rationale": "NFR-02 (<2s com 500 tenants x 10 grupos x 50 participantes) so atingivel via MV. Query ao vivo sobre 250k registros com JOINs nao atinge <2s. MV com 6 colunas adicionais (avg_attendance_7d/30d/90d, avg_trail_7d/30d/90d). Periodo custom executa query ao vivo com aviso de performance na UI. Default 30d.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-18T01:14:23Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Preflight gate clarify->plan (FR-010A): verificacao de constitution e spec",
-      "options_considered": [
-        "avancar-para-plan",
-        "bloquear"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "feature-00c-preflight.sh check retornou ok=true, findings=[]. Todas as 5 clarifications resolvidas com score>=2. Nenhum bloqueio pendente.",
-      "justification_score": 3,
-      "evidence": "preflight.sh output: {\"ok\": true, \"findings\": []}",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -339,15 +187,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-18T01:11:03Z"
+    "current_wave_start": "2026-06-18T01:00:04Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 522,
+    "wallclock_total_seconds": 305,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 14,
+    "decisions_total": 7,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -373,11 +221,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-18T01:05:34Z",
       "description": "onda-001 specify concluida; proxima onda=clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:14:58Z",
-      "description": "clarify concluido, proxima fase: plan"
     }
   ]
 }
