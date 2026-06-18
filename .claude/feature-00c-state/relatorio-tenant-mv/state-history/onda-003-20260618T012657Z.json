@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "plan",
   "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
@@ -64,13 +64,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-18T01:19:52Z",
-      "finished_at": "2026-06-18T01:27:07Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 435,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -496,9 +494,9 @@
     "current_wave_start": "2026-06-18T01:19:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 957,
+    "wallclock_total_seconds": 522,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 21,
@@ -537,11 +535,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-18T01:21:06Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:27:07Z",
-      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
     }
   ]
 }

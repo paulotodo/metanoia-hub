@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "plan",
   "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
@@ -64,13 +64,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-18T01:19:52Z",
-      "finished_at": "2026-06-18T01:27:07Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 435,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -461,24 +459,6 @@
       "evidence": "owasp-security gate: 0 CRITICAL; F-01/F-02/F-03 HIGH (A01/API1 cross-tenant MV read, mv_refresh_log leak, A03 injection) cobertos por AC-SEC-01..03 no plan.md; MV sem RLS nativo compensada por filtro withTenantTx + teste mv-tenant-report.rls-spec.ts",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-18T01:26:48Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate doc-quality (validate-documentation): skill nao instalada em ~/.claude/skills/ neste toolkit (apenas owasp-security disponivel); artefatos de plan revisados estruturalmente inline (headings completos, sem TBD, sem placeholders), cross-check sera coberto por analyze/checklist na proxima fase",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "validate-documentation indisponivel (ls ~/.claude/skills nao lista a skill); o gate de seguranca mandatorio (owasp-security) rodou; checklist/analyze cobrem consistencia na fase seguinte",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -496,12 +476,12 @@
     "current_wave_start": "2026-06-18T01:19:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 957,
+    "wallclock_total_seconds": 522,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 21,
+    "decisions_total": 20,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -537,11 +517,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-18T01:21:06Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:27:07Z",
-      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
     }
   ]
 }

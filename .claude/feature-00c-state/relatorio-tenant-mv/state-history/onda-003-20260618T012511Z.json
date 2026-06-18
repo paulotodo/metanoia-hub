@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "plan",
   "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
@@ -64,23 +64,16 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-18T01:19:52Z",
-      "finished_at": "2026-06-18T01:27:07Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 435,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "plan",
           "timestamp": "2026-06-18T01:25:11Z",
-          "decision_id": null
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-18T01:26:48Z",
           "decision_id": null
         }
       ]
@@ -423,62 +416,6 @@
       "evidence": "schema.prisma: Meeting.scheduledFor/status @@map('meetings'); MeetingAttendance.presenceType/totalDurationSeconds @@unique([meetingId,userId]); TrailProgress.progressPercent(Int)/completedAt; GroupMember.role/deletedAt; ParticipantRadarStatus.participantId/status @@unique([tenantId,groupId,participantId])",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-18T01:25:11Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "P-03 RLS-em-MV (dec-009 Opcao A): MV sem RLS nativo; isolamento por filtro explicito tenant_id dentro de withTenantTx usando a form NULLIF canonica do projeto + coluna tenant_id na MV + teste RLS obrigatorio",
-      "options_considered": [
-        "filtro-explicito-no-service",
-        "view-wrapper-security-barrier",
-        "ler-mv-cru-sem-filtro"
-      ],
-      "choice": "filtro-explicito-no-service",
-      "rationale": "PostgreSQL nao aplica RLS em MV; form NULLIF closed-by-default; defesa em profundidade com teste mv-tenant-report.rls-spec.ts",
-      "justification_score": 3,
-      "evidence": "migration 20260510210000_consolidate_rls_nullif: USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid); with-tenant-tx.ts emite SET LOCAL app.current_tenant_id na mesma conexao; MV nao suporta CREATE POLICY -> filtro explicito no service",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-18T01:26:48Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security reportou 3 HIGH (cross-tenant MV read, refresh_log leak, SQL injection raw query) — constitution faz isolamento tenant um MUST",
-      "options_considered": [
-        "mitigar-no-escopo-como-AC",
-        "escalar-para-humano",
-        "aceitar-risco"
-      ],
-      "choice": "mitigar-no-escopo-como-AC",
-      "rationale": "vuln cross-tenant deve ser corrigida no escopo (regra multi-tenant absoluta); ja coberta por design + ACs AC-SEC-01..06; paridade relatorio-reuniao block-001",
-      "justification_score": 3,
-      "evidence": "owasp-security gate: 0 CRITICAL; F-01/F-02/F-03 HIGH (A01/API1 cross-tenant MV read, mv_refresh_log leak, A03 injection) cobertos por AC-SEC-01..03 no plan.md; MV sem RLS nativo compensada por filtro withTenantTx + teste mv-tenant-report.rls-spec.ts",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-18T01:26:48Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate doc-quality (validate-documentation): skill nao instalada em ~/.claude/skills/ neste toolkit (apenas owasp-security disponivel); artefatos de plan revisados estruturalmente inline (headings completos, sem TBD, sem placeholders), cross-check sera coberto por analyze/checklist na proxima fase",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "validate-documentation indisponivel (ls ~/.claude/skills nao lista a skill); o gate de seguranca mandatorio (owasp-security) rodou; checklist/analyze cobrem consistencia na fase seguinte",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -496,12 +433,12 @@
     "current_wave_start": "2026-06-18T01:19:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 957,
+    "wallclock_total_seconds": 522,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 21,
+    "decisions_total": 18,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -537,11 +474,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-18T01:21:06Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:27:07Z",
-      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
     }
   ]
 }
