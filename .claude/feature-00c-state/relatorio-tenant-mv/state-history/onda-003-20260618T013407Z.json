@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
@@ -81,25 +81,6 @@
         {
           "skill": "owasp-security",
           "timestamp": "2026-06-18T01:26:48Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-18T01:34:07Z",
-      "finished_at": "2026-06-18T01:36:13Z",
-      "executed_stages": [
-        "checklist"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 126,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-18T01:35:50Z",
           "decision_id": null
         }
       ]
@@ -518,119 +499,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:34:15Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execucao da onda de checklist — quality gate de requisitos FR65",
-      "options_considered": [
-        "executar-checklist",
-        "pausar-para-revisao-humana"
-      ],
-      "choice": "executar-checklist",
-      "rationale": "24 OK, 5 gaps identificados: 2 inconsistencias (RL-KEY-GAP, API-TENANTID) e 3 gaps menores. Todos corrigiveis inline sem bloqueio humano.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:35:43Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gap AC-SEC-06: limite range custom ausente do TenantSummaryQuerySchema",
-      "options_considered": [
-        "adicionar-refinement-365d",
-        "deixar-para-implementacao",
-        "bloqueio-humano"
-      ],
-      "choice": "adicionar-refinement-365d",
-      "rationale": "Gate F-06 menciona max 1 ano mas data-model.md nao refletia. Adicionado refinement explicito no schema Zod (range maximo 365 dias) para prevenir resource consumption (OWASP API4).",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:35:43Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gap RL-KEY-GAP: inconsistencia chave Redis entre spec US-02 e contract.md",
-      "options_considered": [
-        "unificar-para-contract",
-        "unificar-para-spec",
-        "bloqueio-humano"
-      ],
-      "choice": "unificar-para-contract",
-      "rationale": "contract.md usa rate:tenant-report-refresh:{tenantId} (conforme namespace Redis do projeto: rate:*). spec.md US-02 AC-02.3 e FR-04 atualizados para mesma chave. Fonte autoritativa: contract.md (mais recente, revisado por gate owasp).",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:35:43Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gap INF-CORRLOG: correlationId ausente no log mv_refresh_failed de FR-02",
-      "options_considered": [
-        "adicionar-correlationId-e-durationMs",
-        "manter-sem-correlationId",
-        "bloqueio-humano"
-      ],
-      "choice": "adicionar-correlationId-e-durationMs",
-      "rationale": "NFR-03 exige correlationId em toda operacao do job. Log de falha final (apos 3 tentativas) sem correlationId prejudica rastreabilidade. Adicionado durationMs tambem para paridade com mv_refresh_slow.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:35:43Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gap API-TENANTID: FR-03 descrevia tenantId em meta, mas Zod schema nao inclui (correto per AC-SEC)",
-      "options_considered": [
-        "remover-tenantId-da-descricao-FR-03",
-        "adicionar-tenantId-ao-Zod",
-        "bloqueio-humano"
-      ],
-      "choice": "remover-tenantId-da-descricao-FR-03",
-      "rationale": "AC-SEC-01 proibe tenant_id no payload. TenantSummaryMetaSchema correto sem tenantId. FR-03 descricao atualizada para {lastRefreshAt, period, stale, fromMaterializedView} — campos reais do Zod schema.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:35:43Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gap A11Y-KB: ausencia de AC de keyboard navigation para filtros em US-03",
-      "options_considered": [
-        "adicionar-AC-03-12-keyboard",
-        "deixar-implicito",
-        "bloqueio-humano"
-      ],
-      "choice": "adicionar-AC-03-12-keyboard",
-      "rationale": "WCAG 2.1 SC 2.1.1 (Level A): toda funcionalidade disponivel via teclado. Adicionado AC-03.12 com clausula de validacao de ausencia de armadilha de foco. Risco baixo pois herda FormField shadcn/ui mas necessario como AC testavel.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -645,15 +513,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-18T01:34:07Z"
+    "current_wave_start": "2026-06-18T01:19:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1083,
+    "wallclock_total_seconds": 957,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 28,
+    "decisions_total": 22,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

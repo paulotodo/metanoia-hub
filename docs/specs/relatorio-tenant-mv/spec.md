@@ -123,7 +123,7 @@ Para forcar atualizacao imediata dos dados fora do ciclo de 15min
 
 - AC-02.1: O endpoint dispara o job BullMQ `refresh-tenant-views` na fila `queue:reports`
 - AC-02.2: Retorna HTTP 202 com `{ "data": { "jobId": "<uuid>", "estimatedRefreshAt": "<ISO 8601>" } }`
-- AC-02.3: Rate limit: maximo 1 requisicao por 5 minutos por tenant (chave Redis `rate:reports:tenant-refresh:<tenantId>`)
+- AC-02.3: Rate limit: maximo 1 requisicao por 5 minutos por tenant (chave Redis `rate:tenant-report-refresh:<tenantId>`)
 - AC-02.4: Se rate-limited, retorna HTTP 429 com `{ "statusCode": 429, "error": "Too Many Requests", "message": "Atualizacao disponivel em X minutos", "details": { "retryAfter": <segundos> } }`
 - AC-02.5: O tenant_id vem exclusivamente de `RequestContext` (AsyncLocalStorage) — nunca de parametro
 - AC-02.6: Guard `@Roles('admin_tenant')` obrigatorio
@@ -151,6 +151,7 @@ Para monitorar a saude geral da comunidade com filtros e alertas visuais
 - AC-03.9: Banner stale com `role="alert"` + `aria-live="assertive"`; toasts com `aria-live="polite"`
 - AC-03.10: Botao "Atualizar agora" com `aria-busy` durante carregamento
 - AC-03.11: Reutilizar `FormField` (Epic 12, Story 12.5) e `text-secondary` para contraste acessivel
+- AC-03.12: Filtros de periodo, grupo e status-semaforo navegaveis via teclado (Tab/Enter/Escape) — satisfeito por heranca do componente `FormField` shadcn/ui; validar ausencia de armadilha de foco
 
 ---
 
@@ -181,7 +182,7 @@ Para monitorar a saude geral da comunidade com filtros e alertas visuais
 - Timeout por execucao: 10 minutos
 - Retry: 3 tentativas com backoff exponencial — delays 30s / 60s / 120s
 - Se duracao > 5min: emite alerta via Pino `{ level: 'warn', msg: 'mv_refresh_slow', durationMs, correlationId }`
-- Falha apos 3 tentativas: log `{ level: 'error', msg: 'mv_refresh_failed', correlationId }` — dados stale servidos normalmente
+- Falha apos 3 tentativas: log `{ level: 'error', msg: 'mv_refresh_failed', correlationId, durationMs }` — dados stale servidos normalmente
 - Processor: `apps/api/src/reports/jobs/refresh-tenant-views.processor.ts`
 - **Escopo:** Apenas `mv_tenant_report`. O job `refresh-platform-views` (Story 13.4) NAO e child deste job nesta story
 
@@ -191,14 +192,14 @@ Para monitorar a saude geral da comunidade com filtros e alertas visuais
 - Tenant isolamento: `WHERE tenant_id = getRequestContext().tenantId` explicito no query a MV
 - Suporte a query params: `period` (7d|30d|90d|custom), `startDate`, `endDate`, `groupId`, `semaforo`
 - Validacao: `TenantSummaryQuerySchema` (Zod, em `packages/types`)
-- Resposta: `{ data: { groups: [...], summary: {...} }, meta: { lastRefreshAt, period, tenantId } }`
+- Resposta: `{ data: { groups: [...], summary: {...} }, meta: { lastRefreshAt, period, stale, fromMaterializedView } }`
 - Strings user-facing em PT-BR; campos tecnicos em ingles
 - Performance: query na MV deve completar em menos de 2s com 500 tenants x 10 grupos x 50 participantes
 
 ### FR-04: Endpoint POST /api/v1/reports/tenant-summary/refresh
 
 - Guard: `@Roles('admin_tenant')`
-- Rate limit Redis: chave `rate:reports:tenant-refresh:<tenantId>`, TTL 300s, max 1 por janela
+- Rate limit Redis: chave `rate:tenant-report-refresh:<tenantId>`, TTL 300s, max 1 por janela
 - 429: `{ statusCode: 429, error: "Too Many Requests", message: "...", details: { retryAfter: <segundos> } }`
 - 202: `{ data: { jobId: "<uuid>", estimatedRefreshAt: "<ISO 8601 + 15min>" } }`
 - Tenant id via `getRequestContext()` exclusivamente

@@ -81,7 +81,7 @@ WHERE mv_name='mv_tenant_report' AND status='success'`.
 
 - `TenantSummaryPeriodSchema = z.enum(['7d','30d','90d','custom'])`.
 - `TenantSummaryQuerySchema`: `{ period, startDate?, endDate?, groupId?, status? }`
-  com refinement (`period='custom'` exige `startDate`+`endDate`, `startDate<endDate`);
+  com refinement (`period='custom'` exige `startDate`+`endDate`; `startDate<endDate`; range maximo 365 dias — AC-SEC-06: Zod rejeita range > 365 dias para prevenir resource consumption);
   `status` = filtro semáforo `z.enum(['verde','amarelo','vermelho']).optional()`.
 - `TenantGroupMetricsSchema`: `{ groupId(uuid), groupName, leaderName(nullable),
   attendanceAvgPercent(number|null), trailProgressAvgPercent(number),

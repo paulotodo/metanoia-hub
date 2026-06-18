@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
@@ -88,21 +88,13 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-18T01:34:07Z",
-      "finished_at": "2026-06-18T01:36:13Z",
-      "executed_stages": [
-        "checklist"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 126,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-18T01:35:50Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -612,25 +604,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-18T01:35:43Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gap A11Y-KB: ausencia de AC de keyboard navigation para filtros em US-03",
-      "options_considered": [
-        "adicionar-AC-03-12-keyboard",
-        "deixar-implicito",
-        "bloqueio-humano"
-      ],
-      "choice": "adicionar-AC-03-12-keyboard",
-      "rationale": "WCAG 2.1 SC 2.1.1 (Level A): toda funcionalidade disponivel via teclado. Adicionado AC-03.12 com clausula de validacao de ausencia de armadilha de foco. Risco baixo pois herda FormField shadcn/ui mas necessario como AC testavel.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -648,12 +621,12 @@
     "current_wave_start": "2026-06-18T01:34:07Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1083,
+    "wallclock_total_seconds": 957,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 28,
+    "decisions_total": 27,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
