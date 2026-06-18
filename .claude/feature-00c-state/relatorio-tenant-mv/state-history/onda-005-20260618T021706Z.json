@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Iniciar review-task — FASES 1-6 entregues (migration MV, job, service, Zod, UI, RLS spec; build 3/3 verde). FASE 7 (lint/suite/PR) é qualidade final coberta por review-task + gate do PAI.",
+  "current_stage": "execute-task",
+  "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
       "id": "onda-001",
@@ -107,11 +107,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-18T01:40:39Z",
-      "finished_at": "2026-06-18T02:17:14Z",
+      "finished_at": "2026-06-18T01:47:58Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2195,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 439,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -823,9 +823,9 @@
     "current_wave_start": "2026-06-18T01:40:39Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3717,
+    "wallclock_total_seconds": 1522,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 36,

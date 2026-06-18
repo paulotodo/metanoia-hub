@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Iniciar review-task — FASES 1-6 entregues (migration MV, job, service, Zod, UI, RLS spec; build 3/3 verde). FASE 7 (lint/suite/PR) é qualidade final coberta por review-task + gate do PAI.",
+  "current_stage": "execute-task",
+  "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
   "waves": [
     {
       "id": "onda-001",
@@ -107,11 +107,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-18T01:40:39Z",
-      "finished_at": "2026-06-18T02:17:14Z",
+      "finished_at": "2026-06-18T01:47:58Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2195,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 439,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -122,11 +122,6 @@
         {
           "skill": "validate-tasks-template",
           "timestamp": "2026-06-18T01:47:36Z",
-          "decision_id": null
-        },
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-18T02:16:54Z",
           "decision_id": null
         }
       ]
@@ -788,24 +783,6 @@
       "evidence": "grep confirmou: backoff exponential delay 30_000; redis.set(rateKey,'1','EX',300,'NX'); WHERE tenant_id = NULLIF(current_setting('app.current_tenant_id', true),'')::uuid no service",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-036",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-18T02:15:29Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 5 concluida: UI /app/admin/igreja/relatorio (autenticada, fora do gate axe publico). Dashboard TanStack polling, refresh button 429-aware, semaforo badge icone+texto, filtros teclado, pt-BR.json. tsc exit 0, web suite 861 testes verdes.",
-      "options_considered": [
-        "concluir-fase5",
-        "abortar"
-      ],
-      "choice": "concluir-fase5",
-      "rationale": "9 testes da feature (5 axe sem violacoes + 4 comportamento) + 861 suite web completa passando. a11y-pages.json/a11y-checks.yml NAO tocados.",
-      "justification_score": 3,
-      "evidence": "pnpm web test: Test Files 133 passed, Tests 861 passed; web tsc --noEmit EXIT 0; git status confirmou a11y gate files NOT modified",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -823,12 +800,12 @@
     "current_wave_start": "2026-06-18T01:40:39Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3717,
+    "wallclock_total_seconds": 1522,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 36,
+    "decisions_total": 35,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -1200,167 +1177,6 @@
         "packages/types/src/reports/tenant-summary.ts"
       ],
       "recorded_at": "2026-06-18T02:07:01Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.1",
-      "title": "page.tsx Server Component shell",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:02Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.2",
-      "title": "TenantSummaryDashboard Client Component",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:03Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.3",
-      "title": "Botao Atualizar agora a11y",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:03Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.4",
-      "title": "Filtros navegacao teclado",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:03Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.5",
-      "title": "Badges semaforo acessiveis",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:03Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.6",
-      "title": "Mensagens PT-BR pt-BR.json",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:03Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.7",
-      "title": "Testes axe-core componentes UI",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/semaforo-badge.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/__tests__/tenant-summary-dashboard.spec.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/refresh-button.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/semaforo-badge.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/_components/tenant-summary-skeleton.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/page.tsx",
-        "apps/web/app/(authenticated)/app/admin/igreja/relatorio/tenant-summary-dashboard.tsx",
-        "apps/web/messages/pt-BR.json",
-        "apps/web/src/lib/api/hooks/use-tenant-report.ts",
-        "docs/specs/relatorio-tenant-mv/tasks.md"
-      ],
-      "recorded_at": "2026-06-18T02:16:03Z",
       "source": "execute-task"
     }
   ]

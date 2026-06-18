@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "review-task",
-  "next_instruction": "Iniciar review-task — FASES 1-6 entregues (migration MV, job, service, Zod, UI, RLS spec; build 3/3 verde). FASE 7 (lint/suite/PR) é qualidade final coberta por review-task + gate do PAI.",
+  "next_instruction": "Onda 5 entregou FASES 1-6 (backend MV+job+endpoints+Zod+UI+RLS, 2 commits: 37b92a3 backend, fbfb455 UI). Resta FASE 7: suite completa de testes (apps/api/test/rls precisa Postgres via docker-compose.test.yml), lint Turborepo, checklist seguranca AC-SEC-01..06, abrir PR. Branch feat/13-2b-relatorio-tenant-mv. Avancar para review-task.",
   "waves": [
     {
       "id": "onda-001",
