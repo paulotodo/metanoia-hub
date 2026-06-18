@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Param,
   Query,
   Res,
@@ -16,8 +17,10 @@ import { TenantGuard } from '../auth/guards/tenant.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
-import { TrailReportQuerySchema, type TrailReportQuery, LeaderSummaryQuerySchema, type LeaderSummaryQuery } from '@metanoia/types';
+import { TrailReportQuerySchema, type TrailReportQuery, LeaderSummaryQuerySchema, type LeaderSummaryQuery, TenantSummaryQuerySchema, type TenantSummaryQuery } from '@metanoia/types';
 import { ReportsService } from './reports.service';
+import { TenantReportService } from './tenant-report.service';
+import { TenantReportRefreshService } from './tenant-report-refresh.service';
 import {
   ApiBearerAuth,
   ApiBadRequestResponse,
@@ -34,7 +37,11 @@ import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.in
 @Controller('api/v1/reports')
 @UseGuards(KeycloakAuthGuard, RolesGuard, TenantGuard)
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+  constructor(
+    private readonly reportsService: ReportsService,
+    private readonly tenantReportService: TenantReportService,
+    private readonly tenantReportRefreshService: TenantReportRefreshService,
+  ) {}
 
   /**
    * GET /api/v1/reports/trails
@@ -144,5 +151,47 @@ export class ReportsController {
   ) {
     return this.reportsService.getLeaderSummary(query, req.user);
   }
+
+  /**
+   * GET /api/v1/reports/tenant-summary
+   * Admin: resumo consolidado por grupo da MV mv_tenant_report (FR65).
+   */
+  @Get('tenant-summary')
+  @Roles(Role.ADMIN_TENANT)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Tenant summary from Materialized View (FR65)',
+    description:
+      'Returns consolidated per-group metrics from mv_tenant_report. ' +
+      'Tenant isolation via explicit WHERE tenant_id filter (AC-SEC-01). ' +
+      'last_refresh_at and stale flag in meta.',
+  })
+  @ApiOkResponse({ description: 'Groups array + overall metrics + refresh meta' })
+  @ApiForbiddenResponse({ description: 'Role ADMIN_TENANT required' })
+  async getTenantSummary(
+    @Query(new ZodValidationPipe(TenantSummaryQuerySchema)) query: TenantSummaryQuery,
+  ) {
+    return this.tenantReportService.getTenantSummary(query);
+  }
+
+  /**
+   * POST /api/v1/reports/tenant-summary/refresh
+   * Admin: dispara refresh on-demand da MV (rate-limited 1/5min/tenant).
+   */
+  @Post('tenant-summary/refresh')
+  @Roles(Role.ADMIN_TENANT)
+  @ApiOperation({
+    summary: 'Trigger on-demand MV refresh (AC-SEC-05)',
+    description:
+      'Rate-limited: 1 request per tenant per 5 minutes (Redis SET NX). ' +
+      'Returns 202 Accepted or 429 Too Many Requests with retryAfter.',
+  })
+  @ApiOkResponse({ description: '202 Accepted or 429 rate-limited' })
+  @ApiForbiddenResponse({ description: 'Role ADMIN_TENANT required' })
+  async refreshTenantSummary(@Res() res: import('express').Response) {
+    const result = await this.tenantReportRefreshService.requestRefresh();
+    res.status(result.status).json(result.body);
+  }
+
 
 }

@@ -40,7 +40,7 @@ const liderUser: AuthenticatedUser = {
 // ─── Controller factory ───────────────────────────────────────────────────────
 
 function makeController(): ReportsController {
-  return new ReportsController(mockReportsService as never);
+  return new ReportsController(mockReportsService as never, {} as never, {} as never);
 }
 
 // ─── Tests ───────────────────────────────────────────────────────────────────

@@ -104,9 +104,9 @@ CREATE POLICY tenant_isolation ON mv_refresh_log
 ```
 Linhas com `tenant_id IS NULL` visíveis a todos (refresh global).
 
-- [ ] Migration criada com DDL completo (MV + UNIQUE INDEX + mv_refresh_log + RLS)
-- [ ] UNIQUE INDEX `(tenant_id, group_id)` presente (obrigatório para REFRESH CONCURRENTLY)
-- [ ] RLS em `mv_refresh_log` com policy `tenant_isolation` usando `NULLIF(current_setting(...))`
+- [x] Migration criada com DDL completo (MV + UNIQUE INDEX + mv_refresh_log + RLS)
+- [x] UNIQUE INDEX `(tenant_id, group_id)` presente (obrigatório para REFRESH CONCURRENTLY)
+- [x] RLS em `mv_refresh_log` com policy `tenant_isolation` usando `NULLIF(current_setting(...))`
 
 ### 1.2 Adicionar `model MvRefreshLog` ao `schema.prisma` `[C]`
 
@@ -130,7 +130,7 @@ model MvRefreshLog {
 
 **Atenção:** `id` usa `dbgenerated` como fallback; o service DEVE usar `generateId()` (UUIDv7) ao criar registros. `@default(uuid())` é proibido no projeto.
 
-- [ ] Model `MvRefreshLog` adicionado ao `schema.prisma` com todos os campos e `@@map`
+- [x] Model `MvRefreshLog` adicionado ao `schema.prisma` com todos os campos e `@@map`
 
 ### 1.3 Executar `prisma generate` e validar compilação TypeScript `[C]`
 
@@ -141,8 +141,8 @@ pnpm --filter @metanoia/api exec tsc --noEmit
 
 Ambos devem passar sem erros. `MvRefreshLog` deve aparecer no Prisma client gerado.
 
-- [ ] `prisma generate` sem erro
-- [ ] `tsc --noEmit` sem erro após geração do client
+- [x] `prisma generate` sem erro
+- [x] `tsc --noEmit` sem erro após geração do client
 
 ---
 
@@ -177,13 +177,13 @@ Criar processor seguindo idiom do projeto (`presence-checkpoint.service.ts`):
   7. Em catch: log Pino `{ level: 'error', msg: 'mv_refresh_failed', correlationId, durationMs }` + gravar `{ status: 'failed' }`
 - `correlationId` em TODOS os logs (sem `console.log`)
 
-- [ ] Cron `*/15 * * * *` com `jobId` estável para idempotência do scheduler
-- [ ] Retry 3x com backoff 30s/60s/120s
-- [ ] Timeout 10min implementado
-- [ ] Alerta Pino `mv_refresh_slow` se `durationMs > 300_000`
-- [ ] Log Pino `mv_refresh_failed` após 3 falhas
-- [ ] `correlationId` (UUIDv7 via `generateId()`) em todos os logs
-- [ ] Grava `mv_refresh_log` em success e failed (`tenantId: null` — refresh global)
+- [x] Cron `*/15 * * * *` com `jobId` estável para idempotência do scheduler
+- [x] Retry 3x com backoff 30s/60s/120s
+- [x] Timeout 10min implementado
+- [x] Alerta Pino `mv_refresh_slow` se `durationMs > 300_000`
+- [x] Log Pino `mv_refresh_failed` após 3 falhas
+- [x] `correlationId` (UUIDv7 via `generateId()`) em todos os logs
+- [x] Grava `mv_refresh_log` em success e failed (`tenantId: null` — refresh global)
 
 ### 2.2 Registrar processor no `ReportsModule` `[A]`
 
@@ -191,8 +191,8 @@ Criar processor seguindo idiom do projeto (`presence-checkpoint.service.ts`):
 
 Adicionar `RefreshTenantViewsProcessor`, `TenantReportService` e `TenantReportRefreshService` no array `providers`. Módulo já importa `BullMqModule`, `PrismaModule`, `RedisModule` — não duplicar imports.
 
-- [ ] `RefreshTenantViewsProcessor` registrado em `providers`
-- [ ] `TenantReportService` e `TenantReportRefreshService` registrados em `providers`
+- [x] `RefreshTenantViewsProcessor` registrado em `providers`
+- [x] `TenantReportService` e `TenantReportRefreshService` registrados em `providers`
 
 ---
 
@@ -225,12 +225,12 @@ Método `getTenantSummary(query: TenantSummaryQuery)`:
 10. **BOLA prevention (AC-SEC-04):** `groupId` fora do tenant → resultado vazio, não 403
 11. Todo o acesso à MV dentro de `withTenantTx` (padrão do projeto)
 
-- [ ] Filtro explícito `WHERE tenant_id = NULLIF(current_setting(...))::uuid` em toda leitura da MV
-- [ ] `$queryRaw` tagged-template para `groupId`/`startDate`/`endDate` — sem interpolação string (AC-SEC-03)
-- [ ] `last_refresh_at` sem `tenant_id` no SELECT (AC-SEC-02)
-- [ ] Semáforo MAIORIA com floor amarelo (CL-03)
-- [ ] `tenant_id` ausente do payload retornado (AC-SEC-01)
-- [ ] `groupId` de outro tenant → resultado vazio, não erro (AC-SEC-04)
+- [x] Filtro explícito `WHERE tenant_id = NULLIF(current_setting(...))::uuid` em toda leitura da MV
+- [x] `$queryRaw` tagged-template para `groupId`/`startDate`/`endDate` — sem interpolação string (AC-SEC-03)
+- [x] `last_refresh_at` sem `tenant_id` no SELECT (AC-SEC-02)
+- [x] Semáforo MAIORIA com floor amarelo (CL-03)
+- [x] `tenant_id` ausente do payload retornado (AC-SEC-01)
+- [x] `groupId` de outro tenant → resultado vazio, não erro (AC-SEC-04)
 
 ### 3.2 Criar `TenantReportRefreshService` `[C]`
 
@@ -247,10 +247,10 @@ Método `requestRefresh()`:
 5. Retornar `{ accepted: true, jobId, estimatedRefreshAt: ISO 8601 + 15min }` → 202
 6. Se bloqueado: retornar `{ accepted: false, jobId: null, retryAfter }` → 429
 
-- [ ] Rate-limit `SET NX EX 300` atômico — não GET-then-SET (AC-SEC-05)
-- [ ] `tenantId` exclusivamente via `RequestContext` (AC-02.5)
-- [ ] `generateId()` (UUIDv7) para `jobId`
-- [ ] `mv_refresh_log` gravado com `tenantId` no on-demand
+- [x] Rate-limit `SET NX EX 300` atômico — não GET-then-SET (AC-SEC-05)
+- [x] `tenantId` exclusivamente via `RequestContext` (AC-02.5)
+- [x] `generateId()` (UUIDv7) para `jobId`
+- [x] `mv_refresh_log` gravado com `tenantId` no on-demand
 
 ### 3.3 Adicionar endpoints ao `reports.controller.ts` `[C]`
 
@@ -272,10 +272,10 @@ Adicionar dois endpoints ao controller existente:
 - 429: `{ data: { accepted: false, jobId: null }, meta: { retryAfter } }` + header `Retry-After: <s>`
 - Swagger: `@ApiResponse(202/429/403)`
 
-- [ ] GET com guard `admin_tenant`, sem `tenantId` como query param (BOLA prevention)
-- [ ] POST com guard `admin_tenant`, resposta 202 e 429
-- [ ] Header `Retry-After` no 429
-- [ ] Swagger com descrições em inglês
+- [x] GET com guard `admin_tenant`, sem `tenantId` como query param (BOLA prevention)
+- [x] POST com guard `admin_tenant`, resposta 202 e 429
+- [x] Header `Retry-After` no 429
+- [x] Swagger com descrições em inglês
 
 ---
 
@@ -297,9 +297,9 @@ Implementar os 6+ schemas Zod 4 conforme data-model.md:
 
 **Regra do projeto:** todos os opcionais usam `.nullable().default(null)` (sem `undefined` em JSON).
 
-- [ ] Todos os 6 schemas exportados (Period, Query, GroupMetrics, Overall, Meta, Response + RefreshResponse)
-- [ ] 3 refinements em `TenantSummaryQuerySchema` (custom, ordem, range ≤ 365 dias)
-- [ ] `.nullable().default(null)` em todos os campos opcionais — sem `undefined`
+- [x] Todos os 6 schemas exportados (Period, Query, GroupMetrics, Overall, Meta, Response + RefreshResponse)
+- [x] 3 refinements em `TenantSummaryQuerySchema` (custom, ordem, range ≤ 365 dias)
+- [x] `.nullable().default(null)` em todos os campos opcionais — sem `undefined`
 
 ### 4.2 Atualizar re-export em `packages/types/src/reports/index.ts` `[A]`
 
@@ -313,7 +313,7 @@ export * from './tenant-summary';
 
 Verificar antes: nenhum nome do prefixo `Tenant` conflita com exports existentes.
 
-- [ ] Re-export adicionado sem conflito com exports existentes
+- [x] Re-export adicionado sem conflito com exports existentes
 
 ### 4.3 Snapshot tests dos schemas Zod `[C]`
 
@@ -342,10 +342,10 @@ describe('TenantSummaryQuerySchema', () => {
 
 Executar `pnpm --filter @metanoia/types test -- --run` para gerar snapshots iniciais e commitá-los.
 
-- [ ] Snapshot test para mínimo 4 schemas
-- [ ] Teste: `custom` sem `startDate` lança erro
-- [ ] Teste: range > 365 dias lança erro (AC-SEC-06)
-- [ ] Snapshots gerados e commitados no repositório
+- [x] Snapshot test para mínimo 4 schemas
+- [x] Teste: `custom` sem `startDate` lança erro
+- [x] Teste: range > 365 dias lança erro (AC-SEC-06)
+- [x] Snapshots gerados e commitados no repositório
 
 ---
 
@@ -511,10 +511,10 @@ describe('MV mv_tenant_report — RLS isolation', () => {
 
 **Gate:** Este teste é pré-requisito de merge (CL-01 — dec-009 score 3; constitution multi-tenancy ABSOLUTO).
 
-- [ ] Teste: Tenant A não vê dados do Tenant B (AC-SEC-01)
-- [ ] Teste: `current_setting` vazio → 0 linhas (closed-by-default)
-- [ ] Teste: Tenant B vê apenas seus próprios grupos
-- [ ] Teste passa com `docker-compose.test.yml` (PostgreSQL real)
+- [x] Teste: Tenant A não vê dados do Tenant B (AC-SEC-01)
+- [x] Teste: `current_setting` vazio → 0 linhas (closed-by-default)
+- [x] Teste: Tenant B vê apenas seus próprios grupos
+- [x] Teste passa com `docker-compose.test.yml` (PostgreSQL real)
 
 ---
 

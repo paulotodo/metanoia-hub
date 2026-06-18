@@ -164,3 +164,4 @@ export {
   type LeaderSummaryMeta,
   type LeaderSummaryResponse,
 } from './leader-summary';
+export * from './tenant-summary';
