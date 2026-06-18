@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "execute-task: iniciar execucao da FASE 1 (Contrato & Tipos)",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",

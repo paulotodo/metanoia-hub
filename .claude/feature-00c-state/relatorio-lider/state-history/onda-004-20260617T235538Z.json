@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "execute-task: iniciar execucao da FASE 1 (Contrato & Tipos)",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -112,23 +112,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-17T23:48:23Z",
           "decision_id": "dec-019"
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-17T23:55:38Z",
-      "finished_at": "2026-06-17T23:59:45Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 247,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-17T23:59:29Z",
-          "decision_id": "dec-022"
         }
       ]
     }
@@ -532,43 +515,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T23:55:48Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "inicio da onda create-tasks (onda-005) — decompor spec FR79 em backlog executavel",
-      "options_considered": [
-        "executar-create-tasks",
-        "pular-para-execute-task"
-      ],
-      "choice": "executar-create-tasks",
-      "rationale": "Fase obrigatoria: decompor spec/plan/checklist em tasks.md com fases, deps e criticidade. 5 gaps do checklist ja corrigidos na spec. 6 garantias obrigatorias: authz/BOLA, endpoint, fontes reais, camadas, a11y, perf.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-17T23:59:29Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "tasks.md gerado com 21 tarefas, 130 subtarefas; gate validate-tasks-template: 0 critical 0 warning",
-      "options_considered": [
-        "aprovar-tasks",
-        "revisar-tasks",
-        "bloquear"
-      ],
-      "choice": "aprovar-tasks",
-      "rationale": "tasks.md cobre todas 6 garantias obrigatorias: authz/BOLA (FASE 2/4 com AC-SEC-01/02), endpoint (FASE 2/3), fontes reais (FASE 2 com tables/fields reais), camadas (FASE 1-6), a11y (FASE 6/7 axe-core), perf (FASE 4 P13). Gate deterministico: critical=0 warning=0.",
-      "justification_score": 3,
-      "evidence": "validate-tasks-template.sh: RESULT|...|critical=0|warning=0; grep -c '- \\[ \\]': 132 checkboxes; 8 FASEs completas",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -583,15 +529,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-17T23:55:38Z"
+    "current_wave_start": "2026-06-17T23:48:02Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1294,
+    "wallclock_total_seconds": 1047,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 23,
+    "decisions_total": 21,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
