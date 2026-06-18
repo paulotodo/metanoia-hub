@@ -71,26 +71,6 @@ function makeService(): ReportsService {
   return svc;
 }
 
-// ─── Default mock setup ───────────────────────────────────────────────────────
-
-function setupLiderMocks(groupIds = ['group-001']) {
-  // resolveLeaderGroupUniverse: return lider's groups
-  mockTx.groupMember.findMany.mockResolvedValueOnce(
-    groupIds.map((gid) => ({ groupId: gid, group: { id: gid, name: `Grupo ${gid}` } })),
-  );
-  // computeGroupMetrics: active members
-  mockTx.groupMember.findMany.mockResolvedValue([
-    { userId: 'user-p-01' },
-    { userId: 'user-p-02' },
-  ]);
-  // at-risk radar statuses
-  mockTx.participantRadarStatus.findMany.mockResolvedValue([]);
-  // meetings
-  mockTx.meeting.findMany.mockResolvedValue([]);
-  // trail progress
-  mockTx.trailProgress.findMany.mockResolvedValue([]);
-}
-
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe('ReportsService.getLeaderSummary', () => {

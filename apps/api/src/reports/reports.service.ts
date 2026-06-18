@@ -760,8 +760,8 @@ export class ReportsService implements OnModuleInit {
     const now = new Date();
     if (query.period === 'custom') {
       return {
-        startDate: new Date(query.startDate!),
-        endDate: new Date(query.endDate!),
+        startDate: new Date(query.startDate as string),
+        endDate: new Date(query.endDate as string),
       };
     }
     const days = query.period === '7d' ? 7 : query.period === '90d' ? 90 : 30;
@@ -865,7 +865,8 @@ export class ReportsService implements OnModuleInit {
           if (!attendanceByMeeting.has(row.meetingId)) {
             attendanceByMeeting.set(row.meetingId, new Set());
           }
-          attendanceByMeeting.get(row.meetingId)!.add(row.userId);
+          const bucket = attendanceByMeeting.get(row.meetingId);
+          if (bucket) bucket.add(row.userId);
         }
         const perMeetingPct = meetings.map((m) => {
           const attended = attendanceByMeeting.get(m.id) ?? new Set<string>();
@@ -921,7 +922,7 @@ export class ReportsService implements OnModuleInit {
         0,
       );
       const weightedSum = groupsWithAttendance.reduce(
-        (acc, g) => acc + (g.avgAttendancePercent! * g.activeParticipantsCount),
+        (acc, g) => acc + ((g.avgAttendancePercent ?? 0) * g.activeParticipantsCount),
         0,
       );
       overallAttendancePercent = totalWeight > 0 ? weightedSum / totalWeight : null;
