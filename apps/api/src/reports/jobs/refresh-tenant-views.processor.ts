@@ -1,8 +1,12 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import type { Job, Queue, Worker } from 'bullmq';
 import { generateId, REPORTS_QUEUE_NAME } from '@metanoia/types';
 import { BullMqService } from '../../bullmq/bullmq.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import type { EnvConfig } from '../../config/env.validation';
 
 const JOB_NAME = 'refresh-tenant-views';
 const JOB_ID = 'refresh-tenant-views-scheduler';
@@ -17,6 +21,7 @@ export class RefreshTenantViewsProcessor implements OnModuleInit {
   constructor(
     private readonly bullMqService: BullMqService,
     private readonly prisma: PrismaService,
+    private readonly configService: ConfigService<EnvConfig, true>,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -53,20 +58,38 @@ export class RefreshTenantViewsProcessor implements OnModuleInit {
     }
   }
 
+  /**
+   * Build a dedicated PRIVILEGED Prisma client (DATABASE_URL, role `metanoia`
+   * superuser). REFRESH MATERIALIZED VIEW [CONCURRENTLY] requires the caller to
+   * be OWNER of the MV and to see ALL tenants. The application role
+   * (`metanoia_app`, NOSUPERUSER) is neither the owner nor RLS-bypassing
+   * (FORCE ROW LEVEL SECURITY on base tables), so the refresh must run here.
+   */
+  private createPrivilegedClient(): PrismaClient {
+    const connectionString = this.configService.get('DATABASE_URL', { infer: true });
+    const adapter = new PrismaPg({ connectionString });
+    return new PrismaClient({ adapter });
+  }
+
   private async processRefresh(_job: Job): Promise<void> {
     const correlationId = generateId();
     const startedAt = Date.now();
 
     this.logger.log({ correlationId }, 'mv refresh started');
 
-    const refreshPromise = this.prisma.client.$executeRaw`
-      REFRESH MATERIALIZED VIEW CONCURRENTLY mv_tenant_report
-    `;
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('mv refresh timeout (10min)')), TIMEOUT_MS),
-    );
+    // Privileged connection: owner of the MV + bypasses RLS (all tenants).
+    const privileged = this.createPrivilegedClient();
 
     try {
+      // CONCURRENTLY cannot run inside a transaction — issue the statement
+      // directly on the privileged client (never via $transaction).
+      const refreshPromise = privileged.$executeRawUnsafe(
+        'REFRESH MATERIALIZED VIEW CONCURRENTLY mv_tenant_report',
+      );
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('mv refresh timeout (10min)')), TIMEOUT_MS),
+      );
+
       await Promise.race([refreshPromise, timeoutPromise]);
       const durationMs = Date.now() - startedAt;
 
@@ -76,6 +99,8 @@ export class RefreshTenantViewsProcessor implements OnModuleInit {
         this.logger.log({ correlationId, durationMs }, 'mv refresh completed');
       }
 
+      // Log write stays on the app client — the mv_refresh_log RLS policy
+      // permits tenant_id IS NULL inserts, which is what the job writes.
       await this.prisma.client.mvRefreshLog.create({
         data: {
           id: generateId(),
@@ -100,6 +125,9 @@ export class RefreshTenantViewsProcessor implements OnModuleInit {
       });
 
       throw err;
+    } finally {
+      // Always release the privileged connection — never leak it.
+      await privileged.$disconnect();
     }
   }
 }

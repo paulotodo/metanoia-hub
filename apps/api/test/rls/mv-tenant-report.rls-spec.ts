@@ -36,8 +36,11 @@ async function seedGroup(
   return { groupId };
 }
 
-async function refreshMv(prisma: PrismaClient) {
-  await prisma.$executeRawUnsafe('REFRESH MATERIALIZED VIEW mv_tenant_report');
+// REFRESH requires owner of the MV + bypass-RLS (see all tenants).
+// The app role (metanoia_app, NOSUPERUSER) is neither owner nor RLS-bypassing,
+// so the refresh MUST run on the SUPERUSER connection (DATABASE_URL).
+async function refreshMv(su: PrismaClient) {
+  await su.$executeRawUnsafe('REFRESH MATERIALIZED VIEW mv_tenant_report');
 }
 
 async function queryMvForTenant(
@@ -65,7 +68,11 @@ async function queryMvNoContext(
   `;
 }
 
-async function cleanupGroups(prisma: PrismaClient, groupNames: string[]) {
+async function cleanupGroups(
+  prisma: PrismaClient,
+  su: PrismaClient,
+  groupNames: string[],
+) {
   const list = groupNames.map((n) => `'${n}'`).join(',');
   for (const tenantId of [TENANT_A_ID, TENANT_B_ID]) {
     await prisma.$transaction(async (tx) => {
@@ -73,7 +80,7 @@ async function cleanupGroups(prisma: PrismaClient, groupNames: string[]) {
       await tx.$executeRawUnsafe(`DELETE FROM groups WHERE name IN (${list})`);
     });
   }
-  await refreshMv(prisma);
+  await refreshMv(su);
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -82,31 +89,39 @@ async function cleanupGroups(prisma: PrismaClient, groupNames: string[]) {
 
 describe('MV mv_tenant_report — RLS isolation', () => {
   let prisma: PrismaClient;
+  let su: PrismaClient;
   const groupAName = 'rls-mv-group-tenant-a';
   const groupBName = 'rls-mv-group-tenant-b';
   let tenantAGroupId: string;
   let tenantBGroupId: string;
 
   beforeAll(async () => {
-    const connectionString = process.env.DATABASE_APP_URL!;
-    const adapter = new PrismaPg({ connectionString });
-    prisma = new PrismaClient({ adapter });
+    // App client (metanoia_app, NOSUPERUSER) — exercises RLS on SELECT/INSERT.
+    const appConnectionString = process.env.DATABASE_APP_URL!;
+    prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: appConnectionString }) });
     await prisma.$connect();
+
+    // Superuser client (metanoia, DATABASE_URL) — owner of the MV + bypasses RLS,
+    // required so REFRESH can rebuild the MV across all tenants.
+    const suConnectionString = process.env.DATABASE_URL!;
+    su = new PrismaClient({ adapter: new PrismaPg({ connectionString: suConnectionString }) });
+    await su.$connect();
 
     await ensureTenant(prisma, TENANT_A_ID, 'Tenant A — MV RLS');
     await ensureTenant(prisma, TENANT_B_ID, 'Tenant B — MV RLS');
   });
 
   afterAll(async () => {
-    await cleanupGroups(prisma, [groupAName, groupBName]).catch(() => undefined);
+    await cleanupGroups(prisma, su, [groupAName, groupBName]).catch(() => undefined);
     await prisma.$disconnect();
+    await su.$disconnect();
   });
 
   beforeEach(async () => {
-    await cleanupGroups(prisma, [groupAName, groupBName]);
+    await cleanupGroups(prisma, su, [groupAName, groupBName]);
     ({ groupId: tenantAGroupId } = await seedGroup(prisma, TENANT_A_ID, groupAName));
     ({ groupId: tenantBGroupId } = await seedGroup(prisma, TENANT_B_ID, groupBName));
-    await refreshMv(prisma);
+    await refreshMv(su);
   });
 
   it('Admin Tenant A NÃO vê grupos do Tenant B na MV (AC-SEC-01)', async () => {
