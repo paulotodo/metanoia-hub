@@ -58,7 +58,7 @@ SELECT
   ROUND(COALESCE(p.prog_avg, 0), 2)                  AS trail_progress_avg_30d,
   ROUND(COALESCE(p.prog_avg, 0), 2)                  AS trail_progress_avg_90d,
   COALESCE(r.risk_count, 0)::int                      AS risk_count,
-  (SELECT COUNT(*)::int FROM active_members am2 WHERE am2.group_id = g.id) AS active_participants,
+  (SELECT COUNT(*)::int FROM active_members am2 WHERE am2.group_id = g.id AND am2.tenant_id = g.tenant_id) AS active_participants,
   now()                                               AS refreshed_at
 FROM groups g
 LEFT JOIN leaders    l ON l.group_id  = g.id
