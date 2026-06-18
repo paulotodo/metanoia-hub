@@ -64,8 +64,7 @@ FROM groups g
 LEFT JOIN leaders    l ON l.group_id  = g.id
 LEFT JOIN attendance a ON a.group_id  = g.id AND a.tenant_id = g.tenant_id
 LEFT JOIN progress   p ON p.group_id  = g.id AND p.tenant_id = g.tenant_id
-LEFT JOIN risk       r ON r.group_id  = g.id AND r.tenant_id = g.tenant_id
-WHERE g.deleted_at IS NULL;
+LEFT JOIN risk       r ON r.group_id  = g.id AND r.tenant_id = g.tenant_id;
 
 -- 2. UNIQUE INDEX (obrigatório para REFRESH MATERIALIZED VIEW CONCURRENTLY)
 CREATE UNIQUE INDEX mv_tenant_report_pk ON mv_tenant_report (tenant_id, group_id);
