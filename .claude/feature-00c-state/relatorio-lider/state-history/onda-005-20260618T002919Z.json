@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.2a — Relatório Consolidado por Líder (FR79): endpoint GET /api/v1/reports/leader-summary?period com agregação por grupo (presença média, progresso de trilha, contagem em risco/semáforo, ativos) e sumário geral; UI acessível /app/gestao/reports com filtros (período/grupo/semáforo) e cards drill-down. Analytics supporting subdomain, estende ReportService da 13.1, agrega Epic 5/7/8, multi-tenant RLS, Zod packages/types, gate a11y.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-17T23:16:03Z",
-    "finished_at": "2026-06-18T00:29:43Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -118,10 +118,10 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-17T23:55:38Z",
-      "finished_at": "2026-06-18T00:29:29Z",
+      "finished_at": "2026-06-18T00:21:22Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2031,
+      "wallclock_seconds": 1544,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -134,11 +134,6 @@
           "skill": "execute-task",
           "timestamp": "2026-06-18T00:21:22Z",
           "decision_id": "dec-execute-task-complete"
-        },
-        {
-          "skill": "review-task",
-          "timestamp": "2026-06-18T00:29:29Z",
-          "decision_id": "dec-026"
         }
       ]
     }
@@ -617,25 +612,6 @@
       "evidence": "git log: 90280c8 docs(relatorio-lider): marca 132 tasks; pnpm --filter @metanoia/web test: 852 passed; pnpm --filter @metanoia/types test: 522 passed",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-18T00:29:19Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Auditoria review-task Story 13.2a (FR79): lint corrigido, corretude verificada, testes verdes",
-      "options_considered": [
-        "concluir",
-        "abrir-bloqueio",
-        "nova-onda"
-      ],
-      "choice": "concluir",
-      "rationale": "Lint: 5 erros corrigidos (setupLiderMocks unused + 4 no-non-null-assertion). Corretude: aggregação ponderada OK, BOLA authz OK, RLS via withTenantTx OK, a11y ok (text-secondary, article/dl/aria-label, axe-core). Gates a11y publicos nao tocados. Testes: types 522/36 api-reports passed.",
-      "justification_score": 3,
-      "evidence": "pnpm turbo lint: 4 successful 0 warnings. api-reports: Test Files 5 passed, Tests 36 passed",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -653,12 +629,12 @@
     "current_wave_start": "2026-06-17T23:55:38Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4869,
+    "wallclock_total_seconds": 2838,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 26,
+    "decisions_total": 25,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

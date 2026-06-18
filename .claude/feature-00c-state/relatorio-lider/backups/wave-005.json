@@ -1,7 +1,7 @@
 {
   "wave_number": 5,
-  "captured_at": "2026-06-17T23:59:38Z",
-  "state_sha256_self": "49e385f8785db89b08e0a93964896d15baee090ebfa5ce23e571666e636b29ed",
+  "captured_at": "2026-06-18T00:29:36Z",
+  "state_sha256_self": "b53a41c9865e6a716ad66b6f5e7447bc08ad5205972a41c761f2bae0a2893012",
   "state_snapshot": {
     "schema_version": "1.0.0",
     "short_name": "relatorio-lider",
@@ -26,8 +26,8 @@
         "version": "1.0.0"
       }
     },
-    "current_stage": "create-tasks",
-    "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+    "current_stage": "review-task",
+    "next_instruction": "Onda execute-task concluída. Todas 21 tarefas + 132 checkboxes done. Próxima onda: review-task. Ver /feature-00c-resume relatorio-lider.",
     "waves": [
       {
         "id": "onda-001",
@@ -122,17 +122,27 @@
       {
         "id": "onda-005",
         "started_at": "2026-06-17T23:55:38Z",
-        "finished_at": null,
+        "finished_at": "2026-06-18T00:29:29Z",
         "executed_stages": [],
         "tool_calls": 0,
-        "wallclock_seconds": 0,
-        "termination_reason": null,
+        "wallclock_seconds": 2031,
+        "termination_reason": "concluido",
         "next_wave_scheduled_for": null,
         "skills_invoked": [
           {
             "skill": "create-tasks",
             "timestamp": "2026-06-17T23:59:29Z",
             "decision_id": "dec-022"
+          },
+          {
+            "skill": "execute-task",
+            "timestamp": "2026-06-18T00:21:22Z",
+            "decision_id": "dec-execute-task-complete"
+          },
+          {
+            "skill": "review-task",
+            "timestamp": "2026-06-18T00:29:29Z",
+            "decision_id": "dec-026"
           }
         ]
       }
@@ -573,6 +583,63 @@
         "evidence": "validate-tasks-template.sh: RESULT|...|critical=0|warning=0; grep -c '- \\[ \\]': 132 checkboxes; 8 FASEs completas",
         "references": [],
         "originating_artifact": null
+      },
+      {
+        "id": "dec-024",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-18T00:04:14Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 5 (fase execute-task)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-025",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-18T00:21:22Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Todas as 21 tarefas (132 checkboxes) concluídas — FASE 1-8 done",
+        "options_considered": [
+          "concluir",
+          "continuar"
+        ],
+        "choice": "concluir",
+        "rationale": "builds OK (types+api+web), 863+ testes passando, a11y axe-core verde, commits 9672d6c+8b2fa54+90280c8",
+        "justification_score": 3,
+        "evidence": "git log: 90280c8 docs(relatorio-lider): marca 132 tasks; pnpm --filter @metanoia/web test: 852 passed; pnpm --filter @metanoia/types test: 522 passed",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-026",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-18T00:29:19Z",
+        "stage": "review-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Auditoria review-task Story 13.2a (FR79): lint corrigido, corretude verificada, testes verdes",
+        "options_considered": [
+          "concluir",
+          "abrir-bloqueio",
+          "nova-onda"
+        ],
+        "choice": "concluir",
+        "rationale": "Lint: 5 erros corrigidos (setupLiderMocks unused + 4 no-non-null-assertion). Corretude: aggregação ponderada OK, BOLA authz OK, RLS via withTenantTx OK, a11y ok (text-secondary, article/dl/aria-label, axe-core). Gates a11y publicos nao tocados. Testes: types 522/36 api-reports passed.",
+        "justification_score": 3,
+        "evidence": "pnpm turbo lint: 4 successful 0 warnings. api-reports: Test Files 5 passed, Tests 36 passed",
+        "references": [],
+        "originating_artifact": null
       }
     ],
     "human_blocks": [],
@@ -590,12 +657,12 @@
       "current_wave_start": "2026-06-17T23:55:38Z"
     },
     "accumulated_metrics": {
-      "waves_total": 4,
+      "waves_total": 7,
       "tool_calls_total": 0,
-      "wallclock_total_seconds": 1047,
+      "wallclock_total_seconds": 4869,
       "max_depth_reached": 2,
       "subagents_spawned": 2,
-      "decisions_total": 23,
+      "decisions_total": 26,
       "human_blocks_total": 0,
       "global_skill_suggestions_total": 0,
       "toolkit_issues_opened": 0

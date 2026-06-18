@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-relatorio-lider-20260617T231603Z
 
-**Gerado em**: 2026-06-17T23:51:15Z
-**Status no momento**: em_andamento
+**Gerado em**: 2026-06-18T00:29:58Z
+**Status no momento**: concluida
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,13 +14,13 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | Story 13.2a — Relatório Consolidado por Líder (FR79): endpoint GET /api/v1/reports/leader-summary?period com agregação por grupo (presença média, progresso de trilha, contagem em risco/semáforo, ativos) e sumário geral; UI acessível /app/gestao/reports com filtros (período/grupo/semáforo) e cards drill-down. Analytics supporting subdomain, estende ReportService da 13.1, agrega Epic 5/7/8, multi-tenant RLS, Zod packages/types, gate a11y. |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | em_andamento |
-| Motivo termino | (em andamento) |
+| Status | concluida |
+| Motivo termino | concluido |
 | Iniciada em | 2026-06-17T23:16:03Z |
-| Terminada em | ainda em andamento |
-| Ondas executadas | 4 |
+| Terminada em | 2026-06-18T00:29:43Z |
+| Ondas executadas | 7 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 20 |
+| Decisoes registradas | 26 |
 | Bloqueios humanos | 0 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -36,16 +36,17 @@
 | onda-002 | 2026-06-17T23:25:25Z | 2026-06-17T23:29:46Z |  | 0 | 261s | etapa_concluida_avancando |
 | onda-003 | 2026-06-17T23:33:57Z | 2026-06-17T23:41:10Z | plan | 0 | 433s | concluido |
 | onda-004 | 2026-06-17T23:48:02Z | 2026-06-17T23:50:55Z |  | 0 | 173s | concluido |
+| onda-005 | 2026-06-17T23:55:38Z | 2026-06-18T00:29:29Z |  | 0 | 2031s | concluido |
 
 ## 3. Decisoes
 
-Total: 20 decisoes registradas.
+Total: 26 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 20 |
+| agente-00c-feature-orchestrator | 26 |
 
 ### 3.2 Lista detalhada
 
@@ -369,6 +370,102 @@ Total: 20 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-021 — model-routing — agente-00c-feature-orchestrator — 2026-06-17T23:54:14Z
+
+**Contexto**: Selecao de modelo para onda 4 (fase create-tasks)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-022 — create-tasks — agente-00c-feature-orchestrator — 2026-06-17T23:55:48Z
+
+**Contexto**: inicio da onda create-tasks (onda-005) — decompor spec FR79 em backlog executavel
+
+**Opcoes consideradas**: executar-create-tasks / pular-para-execute-task
+
+**Escolha**: executar-create-tasks
+
+**Justificativa**: Fase obrigatoria: decompor spec/plan/checklist em tasks.md com fases, deps e criticidade. 5 gaps do checklist ja corrigidos na spec. 6 garantias obrigatorias: authz/BOLA, endpoint, fontes reais, camadas, a11y, perf.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-023 — create-tasks — agente-00c-feature-orchestrator — 2026-06-17T23:59:29Z
+
+**Contexto**: tasks.md gerado com 21 tarefas, 130 subtarefas; gate validate-tasks-template: 0 critical 0 warning
+
+**Opcoes consideradas**: aprovar-tasks / revisar-tasks / bloquear
+
+**Escolha**: aprovar-tasks
+
+**Justificativa**: tasks.md cobre todas 6 garantias obrigatorias: authz/BOLA (FASE 2/4 com AC-SEC-01/02), endpoint (FASE 2/3), fontes reais (FASE 2 com tables/fields reais), camadas (FASE 1-6), a11y (FASE 6/7 axe-core), perf (FASE 4 P13). Gate deterministico: critical=0 warning=0.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-024 — model-routing — agente-00c-feature-orchestrator — 2026-06-18T00:04:14Z
+
+**Contexto**: Selecao de modelo para onda 5 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-025 — execute-task — agente-00c-feature-orchestrator — 2026-06-18T00:21:22Z
+
+**Contexto**: Todas as 21 tarefas (132 checkboxes) concluídas — FASE 1-8 done
+
+**Opcoes consideradas**: concluir / continuar
+
+**Escolha**: concluir
+
+**Justificativa**: builds OK (types+api+web), 863+ testes passando, a11y axe-core verde, commits 9672d6c+8b2fa54+90280c8
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-026 — review-task — agente-00c-feature-orchestrator — 2026-06-18T00:29:19Z
+
+**Contexto**: Auditoria review-task Story 13.2a (FR79): lint corrigido, corretude verificada, testes verdes
+
+**Opcoes consideradas**: concluir / abrir-bloqueio / nova-onda
+
+**Escolha**: concluir
+
+**Justificativa**: Lint: 5 erros corrigidos (setupLiderMocks unused + 4 no-non-null-assertion). Corretude: aggregação ponderada OK, BOLA authz OK, RLS via withTenantTx OK, a11y ok (text-secondary, article/dl/aria-label, axe-core). Gates a11y publicos nao tocados. Testes: types 522/36 api-reports passed.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -408,7 +505,7 @@ Nenhuma sugestao para skills globais nesta execucao.
 
 ## 6. Licoes Aprendidas
 
-(Sera preenchido no relatorio final.)
+(Relatorio final invocado sem --licoes-aprendidas — operador deve preencher esta secao manualmente OU re-invocar com flag.)
 
 ---
 
