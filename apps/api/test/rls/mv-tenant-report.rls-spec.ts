@@ -12,8 +12,8 @@ async function ensureTenant(prisma: PrismaClient, tenantId: string, name: string
   await prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
     await tx.$executeRawUnsafe(
-      `INSERT INTO tenants (id, tenant_id, name)
-       VALUES ('${tenantId}'::uuid, '${tenantId}'::uuid, '${name}')
+      `INSERT INTO tenants (id, tenant_id, name, updated_at)
+       VALUES ('${tenantId}'::uuid, '${tenantId}'::uuid, '${name}', now())
        ON CONFLICT (id) DO NOTHING`,
     );
   });
@@ -28,8 +28,8 @@ async function seedGroup(
   await prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
     await tx.$executeRawUnsafe(`
-      INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence)
-      VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, '${groupName}', 'wed', '19:00', 'weekly')
+      INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence, updated_at)
+      VALUES ('${groupId}'::uuid, '${tenantId}'::uuid, '${groupName}', 'wed', '19:00', 'weekly', now())
       ON CONFLICT (id) DO NOTHING
     `);
   });
