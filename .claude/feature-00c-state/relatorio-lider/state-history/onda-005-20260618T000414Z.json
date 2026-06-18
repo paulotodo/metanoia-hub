@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Onda execute-task concluída. Todas 21 tarefas + 132 checkboxes done. Próxima onda: review-task. Ver /feature-00c-resume relatorio-lider.",
+  "current_stage": "execute-task",
+  "next_instruction": "execute-task: iniciar execucao da FASE 1 (Contrato & Tipos)",
   "waves": [
     {
       "id": "onda-001",
@@ -118,10 +118,10 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-17T23:55:38Z",
-      "finished_at": "2026-06-18T00:21:22Z",
+      "finished_at": "2026-06-17T23:59:45Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1544,
+      "wallclock_seconds": 247,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -129,11 +129,6 @@
           "skill": "create-tasks",
           "timestamp": "2026-06-17T23:59:29Z",
           "decision_id": "dec-022"
-        },
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-18T00:21:22Z",
-          "decision_id": "dec-execute-task-complete"
         }
       ]
     }
@@ -574,44 +569,6 @@
       "evidence": "validate-tasks-template.sh: RESULT|...|critical=0|warning=0; grep -c '- \\[ \\]': 132 checkboxes; 8 FASEs completas",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-18T00:04:14Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 5 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-18T00:21:22Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Todas as 21 tarefas (132 checkboxes) concluídas — FASE 1-8 done",
-      "options_considered": [
-        "concluir",
-        "continuar"
-      ],
-      "choice": "concluir",
-      "rationale": "builds OK (types+api+web), 863+ testes passando, a11y axe-core verde, commits 9672d6c+8b2fa54+90280c8",
-      "justification_score": 3,
-      "evidence": "git log: 90280c8 docs(relatorio-lider): marca 132 tasks; pnpm --filter @metanoia/web test: 852 passed; pnpm --filter @metanoia/types test: 522 passed",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -629,12 +586,12 @@
     "current_wave_start": "2026-06-17T23:55:38Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2838,
+    "wallclock_total_seconds": 1294,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 25,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
