@@ -116,6 +116,24 @@ export {
   type LeaderSummaryResponse,
 } from './reports/leader-summary';
 export {
+  TenantSummaryPeriodSchema,
+  TenantSummaryQuerySchema,
+  SemaforoSchema,
+  TenantGroupMetricsSchema,
+  TenantSummaryOverallSchema,
+  TenantSummaryMetaSchema,
+  TenantSummaryResponseSchema,
+  TenantRefreshResponseSchema,
+  type TenantSummaryPeriod,
+  type TenantSummaryQuery,
+  type Semaforo,
+  type TenantGroupMetrics,
+  type TenantSummaryOverall,
+  type TenantSummaryMeta,
+  type TenantSummaryResponse,
+  type TenantRefreshResponse,
+} from './reports/tenant-summary';
+export {
   RADAR_GREEN_THRESHOLD,
   RADAR_YELLOW_MIN,
   RADAR_RED_THRESHOLD,

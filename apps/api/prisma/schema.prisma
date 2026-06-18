@@ -945,3 +945,15 @@ model SubscriptionPlan {
 
   @@map("subscription_plans")
 }
+
+model MvRefreshLog {
+  id          String    @id @db.Uuid
+  tenantId    String?   @map("tenant_id") @db.Uuid
+  mvName      String    @map("mv_name") @db.VarChar(64)
+  refreshedAt DateTime  @default(now()) @map("refreshed_at") @db.Timestamptz
+  durationMs  Int       @map("duration_ms")
+  status      String    @db.VarChar(16)
+
+  @@index([mvName, refreshedAt])
+  @@map("mv_refresh_log")
+}

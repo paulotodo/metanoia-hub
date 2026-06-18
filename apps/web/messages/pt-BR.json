@@ -1629,5 +1629,65 @@
       "participants": "Participantes",
       "noMeetings": "Sem reuniões no período"
     }
+  },
+  "tenantReport": {
+    "title": "Relatório da Igreja",
+    "loading": "Carregando relatório consolidado…",
+    "subtitle": "Visão consolidada dos grupos: presença, progresso nas trilhas e sinais pastorais.",
+    "meta": {
+      "lastRefresh": "Última atualização: {when}",
+      "never": "ainda não atualizado",
+      "stale": "Dados podem estar desatualizados"
+    },
+    "filters": {
+      "heading": "Filtros do relatório",
+      "period": "Período",
+      "period7d": "Últimos 7 dias",
+      "period30d": "Últimos 30 dias",
+      "period90d": "Últimos 90 dias",
+      "group": "Grupo",
+      "allGroups": "Todos os grupos",
+      "status": "Sinal pastoral",
+      "allStatus": "Todos os sinais"
+    },
+    "semaforo": {
+      "verde": "Saudável",
+      "amarelo": "Atenção",
+      "vermelho": "Cuidado urgente"
+    },
+    "summary": {
+      "heading": "Panorama geral",
+      "totalGroups": "Grupos",
+      "totalLeaders": "Líderes",
+      "totalParticipants": "Participantes ativos",
+      "attendance": "Presença média",
+      "trailProgress": "Progresso nas trilhas",
+      "riskCount": "Em cuidado"
+    },
+    "table": {
+      "heading": "Grupos",
+      "caption": "Métricas consolidadas por grupo",
+      "group": "Grupo",
+      "leader": "Líder",
+      "attendance": "Presença média",
+      "trailProgress": "Progresso nas trilhas",
+      "participants": "Participantes ativos",
+      "status": "Sinal pastoral",
+      "noLeader": "Sem líder designado",
+      "notAvailable": "—",
+      "empty": "Nenhum grupo encontrado para os filtros selecionados."
+    },
+    "refresh": {
+      "label": "Atualizar agora",
+      "pending": "Atualizando…",
+      "ariaLabel": "Atualizar agora os dados do relatório",
+      "accepted": "Atualização solicitada. Os dados serão renovados em instantes.",
+      "rateLimited": "Aguarde {seconds} segundos antes de solicitar outra atualização.",
+      "error": "Não foi possível solicitar a atualização. Tente novamente."
+    },
+    "error": {
+      "loading": "Não foi possível carregar o relatório.",
+      "retry": "Tentar novamente"
+    }
   }
 }

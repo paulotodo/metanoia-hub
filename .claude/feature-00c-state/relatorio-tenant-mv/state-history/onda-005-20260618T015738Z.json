@@ -1,0 +1,825 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "relatorio-tenant-mv",
+  "execution": {
+    "id": "feat-relatorio-tenant-mv-20260618T005755Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 13.2b — Relatório por Tenant com Materialized Views (FR65): MV mv_tenant_report (UNIQUE INDEX p/ REFRESH CONCURRENTLY, last_refresh_at, tenant_id), endpoint GET /api/v1/reports/tenant-summary (admin_tenant), job BullMQ refresh-tenant-views (cron 15min, backoff, alerta >5min), refresh on-demand com rate-limit Redis, UI admin acessível. RLS em MV obrigatório (não-automático), multi-tenant, Zod, gate a11y.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-18T00:57:55Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "execute-task",
+  "next_instruction": "execute plan phase: generate plan.md, checklist.md for relatorio-tenant-mv",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-18T01:00:04Z",
+      "finished_at": "2026-06-18T01:05:09Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 305,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-18T01:04:27Z",
+          "decision_id": "dec-004"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-18T01:11:03Z",
+      "finished_at": "2026-06-18T01:14:40Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 217,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-18T01:12:10Z",
+          "decision_id": "dec-009"
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-18T01:19:52Z",
+      "finished_at": "2026-06-18T01:27:07Z",
+      "executed_stages": [
+        "plan"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 435,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-18T01:25:11Z",
+          "decision_id": null
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-18T01:26:48Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-18T01:34:07Z",
+      "finished_at": "2026-06-18T01:36:13Z",
+      "executed_stages": [
+        "checklist"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 126,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-18T01:35:50Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-18T01:40:39Z",
+      "finished_at": "2026-06-18T01:47:58Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 439,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-18T01:47:36Z",
+          "decision_id": "dec-030"
+        },
+        {
+          "skill": "validate-tasks-template",
+          "timestamp": "2026-06-18T01:47:36Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-18T00:57:55Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "init",
+      "timestamp": "2026-06-18T00:59:47Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=relatorio-tenant-mv)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story relatorio tenant materialized views fr65",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-18T01:00:29Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio de execucao da onda specify para feature relatorio-tenant-mv",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec autoritativa 13-2b disponivel, epic-13 lido, codigo referencia 13.1/13.2a disponivel. Insights de execucoes anteriores injetados (K=4): BOLA em getJobStatus sem bind tenant e padrao admin_tenant shortcut. Estado hash OK, 0 bloqueios, budget OK.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-18T01:04:27Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Spec gerada inline para feature relatorio-tenant-mv (Story 13.2b FR65)",
+      "options_considered": [
+        "gerar-spec-inline",
+        "invocar-skill-specify",
+        "abortar"
+      ],
+      "choice": "gerar-spec-inline",
+      "rationale": "Write nativo bloqueado por bgIsolation (worktree nao ativo); spec gerada via Bash cat. Spec cobre: US-01/02/03, FR-01..06, NFR-01..05, 5 decisoes pendentes para clarify incluindo risco critico RLS-em-MV. Padrao herdado de specs 13.1/13.2a entregues.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-18T01:04:39Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Risco critico RLS-em-MV identificado e sinalizado na spec para resolucao no clarify",
+      "options_considered": [
+        "sinalizar-como-risco-critico",
+        "bloquear-humano",
+        "ignorar"
+      ],
+      "choice": "sinalizar-como-risco-critico",
+      "rationale": "PostgreSQL nao aplica RLS automaticamente em MVs. MV e tabela fisica. Sem mitigacao Admin Tenant A pode ver dados do Tenant B. Opcoes A/B/D documentadas na spec. Gate: teste RLS isolation obrigatorio. Lição anterior (13.1): BOLA em getJobStatus sem bind tenant ja mitigado — padrao reforcado aqui.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-18T01:04:39Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "BOLA prevention pattern documentado na spec NFR-05 (licao da Story 13.1)",
+      "options_considered": [
+        "incluir-nfr-bola-prevention",
+        "ignorar-licao"
+      ],
+      "choice": "incluir-nfr-bola-prevention",
+      "rationale": "Read-back K=4 trouxe: block-001 Story 13.1 (BOLA em getJobStatus sem bind tenant). NFR-05 da spec explicita que endpoint GET nao aceita tenantId como query param — usa AsyncLocalStorage. Padrao preventivo alinhado com regra absoluta multi-tenancy CLAUDE.md.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-18T01:04:50Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation pos-specify: bgIsolation bloqueia tool Skill nativa",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Ambiente VPS com bgIsolation ativo (worktree nao disponivel neste contexto) bloqueia invocacoes de skill nativa. Spec gerada via Bash cat com 312 linhas cobrindo US/FR/NFR/Success Criteria/Decisoes Pendentes. Estrutura alinhada com specs 13.1/13.2a entregues e revisadas pelo operador. Gate sera executado pelo plan se necessario.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-18T01:08:14Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:11:22Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "RLS-em-MV: Opcao de mitigacao para isolamento de Materialized View",
+      "options_considered": [
+        "opcao-A-filtro-service",
+        "opcao-B-security-barrier-view",
+        "opcao-D-rls-na-mv"
+      ],
+      "choice": "opcao-A-filtro-service",
+      "rationale": "Constitution Principio I (NON-NEGOTIABLE): multi-tenancy absoluto. Spec autoritativa Dev Notes: 'All queries must include WHERE tenant_id'. Prisma extension nao cobre MVs. Opcao A e o padrao do projeto via AsyncLocalStorage. Opcao D exigiria SET LOCAL por request — complexidade DDL sem ganho. Opcao B DDL extra desnecessario.",
+      "justification_score": 3,
+      "evidence": "Constitution §I: 'Multi-tenancy Absoluto (NON-NEGOTIABLE)' + spec-autoritativa Dev Notes: 'Guardrails Arquiteturais: All queries must include WHERE tenant_id = <context_tenant_id>'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:11:30Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "last_refresh_at: armazenamento — tabela auxiliar mv_refresh_log vs coluna vs Redis",
+      "options_considered": [
+        "tabela-mv_refresh_log",
+        "coluna-config-tenant",
+        "chave-redis"
+      ],
+      "choice": "tabela-mv_refresh_log",
+      "rationale": "LGPD + auditoria: historico de refreshes relevante para diagnostico. Prisma entity garante tipagem e RLS padrao. Redis e volatil (perda de dados no restart). Tabela minimal: id UUIDv7, tenant_id, refreshed_at, duration_ms, status enum success|failed. Service le max(refreshed_at) WHERE tenant_id para meta.lastRefreshAt do endpoint.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:11:40Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Semaforo agregado por grupo na MV: logica de pior-condicao vs maioria",
+      "options_considered": [
+        "pior-condicao",
+        "maioria",
+        "maioria-com-floor-amarelo"
+      ],
+      "choice": "maioria-com-floor-amarelo",
+      "rationale": "Constitution Quality Standards: 'sinal pastoral prioriza padroes sobre eventos isolados, permite correcao humana e nunca penaliza por falha tecnica'. Maioria justa para grupos grandes. risk_count (campo adicional na MV) garante visibilidade. Floor amarelo quando risk_count > 0 impede ocultacao de problemas.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:11:50Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Stale threshold para banner de dados desatualizados: 20min fixo vs configuravel",
+      "options_considered": [
+        "20min-fixo",
+        "configuravel",
+        "outros-valores"
+      ],
+      "choice": "20min-fixo",
+      "rationale": "Threshold 20min matematicamente derivado: cron 15min + retry backoff maximo (30s+60s+120s=3.5min) = 18.5min stale no pior caso de 1 falha. 20min da margem de 1.5min. Configurabilidade seria scope creep para MVP. Spec autoritativa nao exige configurabilidade. YAGNI.",
+      "justification_score": 3,
+      "evidence": "Calculo: cron=15min + backoff_max=30+60+120s=3.5min = 18.5min. Threshold=20min => margem 1.5min. Com 3 falhas consecutivas: stale > 20min => banner ativo corretamente.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:12:03Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Filtro period na MV: MV com colunas por periodo fixo vs query ao vivo",
+      "options_considered": [
+        "mv-colunas-periodos-fixos",
+        "query-ao-vivo",
+        "hibrido"
+      ],
+      "choice": "mv-colunas-periodos-fixos",
+      "rationale": "NFR-02 (<2s com 500 tenants x 10 grupos x 50 participantes) so atingivel via MV. Query ao vivo sobre 250k registros com JOINs nao atinge <2s. MV com 6 colunas adicionais (avg_attendance_7d/30d/90d, avg_trail_7d/30d/90d). Periodo custom executa query ao vivo com aviso de performance na UI. Default 30d.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:14:23Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Preflight gate clarify->plan (FR-010A): verificacao de constitution e spec",
+      "options_considered": [
+        "avancar-para-plan",
+        "bloquear"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "feature-00c-preflight.sh check retornou ok=true, findings=[]. Todas as 5 clarifications resolvidas com score>=2. Nenhum bloqueio pendente.",
+      "justification_score": 3,
+      "evidence": "preflight.sh output: {\"ok\": true, \"findings\": []}",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-18T01:18:14Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:21:06Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=relatorio-tenant-mv) — reuso de padrao BOLA cross-tenant de relatorio-reuniao/onda-003 + campos de schema confirmados de relatorio-lider",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos: relatorio tenant materialized views fr65 rls multi-tenant report refresh",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:25:11Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "P-01 job repeatable: usar idiom BullMQ repeat (cron pattern */15) no queue:reports; nao ha @nestjs/schedule no projeto",
+      "options_considered": [
+        "bullmq-repeat",
+        "nestjs-schedule-cron"
+      ],
+      "choice": "bullmq-repeat",
+      "rationale": "REPORTS_QUEUE_NAME='reports'; ReportsProcessor.onModuleInit usa createWorker; presence-checkpoint usa repeat:{every}",
+      "justification_score": 3,
+      "evidence": "grep -rnE 'addRepeatable|repeat:|cron' apps/api/src -> presence-checkpoint.service.ts:58: repeat: { every: CHECKPOINT_EVERY_MS } (unico hit; sem @nestjs/schedule)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:25:11Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "P-02 campos reais confirmados contra schema.prisma; corrigido tabela Meeting=meetings, chaves userId/participantId",
+      "options_considered": [
+        "usar-campos-confirmados",
+        "usar-spec-de-memoria"
+      ],
+      "choice": "usar-campos-confirmados",
+      "rationale": "sondas sed em schema.prisma linhas 36-140,339-420,496-560,808-860",
+      "justification_score": 3,
+      "evidence": "schema.prisma: Meeting.scheduledFor/status @@map('meetings'); MeetingAttendance.presenceType/totalDurationSeconds @@unique([meetingId,userId]); TrailProgress.progressPercent(Int)/completedAt; GroupMember.role/deletedAt; ParticipantRadarStatus.participantId/status @@unique([tenantId,groupId,participantId])",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:25:11Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "P-03 RLS-em-MV (dec-009 Opcao A): MV sem RLS nativo; isolamento por filtro explicito tenant_id dentro de withTenantTx usando a form NULLIF canonica do projeto + coluna tenant_id na MV + teste RLS obrigatorio",
+      "options_considered": [
+        "filtro-explicito-no-service",
+        "view-wrapper-security-barrier",
+        "ler-mv-cru-sem-filtro"
+      ],
+      "choice": "filtro-explicito-no-service",
+      "rationale": "PostgreSQL nao aplica RLS em MV; form NULLIF closed-by-default; defesa em profundidade com teste mv-tenant-report.rls-spec.ts",
+      "justification_score": 3,
+      "evidence": "migration 20260510210000_consolidate_rls_nullif: USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid); with-tenant-tx.ts emite SET LOCAL app.current_tenant_id na mesma conexao; MV nao suporta CREATE POLICY -> filtro explicito no service",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:26:48Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security reportou 3 HIGH (cross-tenant MV read, refresh_log leak, SQL injection raw query) — constitution faz isolamento tenant um MUST",
+      "options_considered": [
+        "mitigar-no-escopo-como-AC",
+        "escalar-para-humano",
+        "aceitar-risco"
+      ],
+      "choice": "mitigar-no-escopo-como-AC",
+      "rationale": "vuln cross-tenant deve ser corrigida no escopo (regra multi-tenant absoluta); ja coberta por design + ACs AC-SEC-01..06; paridade relatorio-reuniao block-001",
+      "justification_score": 3,
+      "evidence": "owasp-security gate: 0 CRITICAL; F-01/F-02/F-03 HIGH (A01/API1 cross-tenant MV read, mv_refresh_log leak, A03 injection) cobertos por AC-SEC-01..03 no plan.md; MV sem RLS nativo compensada por filtro withTenantTx + teste mv-tenant-report.rls-spec.ts",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:26:48Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip do gate doc-quality (validate-documentation): skill nao instalada em ~/.claude/skills/ neste toolkit (apenas owasp-security disponivel); artefatos de plan revisados estruturalmente inline (headings completos, sem TBD, sem placeholders), cross-check sera coberto por analyze/checklist na proxima fase",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "validate-documentation indisponivel (ls ~/.claude/skills nao lista a skill); o gate de seguranca mandatorio (owasp-security) rodou; checklist/analyze cobrem consistencia na fase seguinte",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-18T01:31:14Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase checklist)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:34:15Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Execucao da onda de checklist — quality gate de requisitos FR65",
+      "options_considered": [
+        "executar-checklist",
+        "pausar-para-revisao-humana"
+      ],
+      "choice": "executar-checklist",
+      "rationale": "24 OK, 5 gaps identificados: 2 inconsistencias (RL-KEY-GAP, API-TENANTID) e 3 gaps menores. Todos corrigiveis inline sem bloqueio humano.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:35:43Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gap AC-SEC-06: limite range custom ausente do TenantSummaryQuerySchema",
+      "options_considered": [
+        "adicionar-refinement-365d",
+        "deixar-para-implementacao",
+        "bloqueio-humano"
+      ],
+      "choice": "adicionar-refinement-365d",
+      "rationale": "Gate F-06 menciona max 1 ano mas data-model.md nao refletia. Adicionado refinement explicito no schema Zod (range maximo 365 dias) para prevenir resource consumption (OWASP API4).",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-025",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:35:43Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gap RL-KEY-GAP: inconsistencia chave Redis entre spec US-02 e contract.md",
+      "options_considered": [
+        "unificar-para-contract",
+        "unificar-para-spec",
+        "bloqueio-humano"
+      ],
+      "choice": "unificar-para-contract",
+      "rationale": "contract.md usa rate:tenant-report-refresh:{tenantId} (conforme namespace Redis do projeto: rate:*). spec.md US-02 AC-02.3 e FR-04 atualizados para mesma chave. Fonte autoritativa: contract.md (mais recente, revisado por gate owasp).",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-026",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:35:43Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gap INF-CORRLOG: correlationId ausente no log mv_refresh_failed de FR-02",
+      "options_considered": [
+        "adicionar-correlationId-e-durationMs",
+        "manter-sem-correlationId",
+        "bloqueio-humano"
+      ],
+      "choice": "adicionar-correlationId-e-durationMs",
+      "rationale": "NFR-03 exige correlationId em toda operacao do job. Log de falha final (apos 3 tentativas) sem correlationId prejudica rastreabilidade. Adicionado durationMs tambem para paridade com mv_refresh_slow.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-027",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:35:43Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gap API-TENANTID: FR-03 descrevia tenantId em meta, mas Zod schema nao inclui (correto per AC-SEC)",
+      "options_considered": [
+        "remover-tenantId-da-descricao-FR-03",
+        "adicionar-tenantId-ao-Zod",
+        "bloqueio-humano"
+      ],
+      "choice": "remover-tenantId-da-descricao-FR-03",
+      "rationale": "AC-SEC-01 proibe tenant_id no payload. TenantSummaryMetaSchema correto sem tenantId. FR-03 descricao atualizada para {lastRefreshAt, period, stale, fromMaterializedView} — campos reais do Zod schema.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-028",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:35:43Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gap A11Y-KB: ausencia de AC de keyboard navigation para filtros em US-03",
+      "options_considered": [
+        "adicionar-AC-03-12-keyboard",
+        "deixar-implicito",
+        "bloqueio-humano"
+      ],
+      "choice": "adicionar-AC-03-12-keyboard",
+      "rationale": "WCAG 2.1 SC 2.1.1 (Level A): toda funcionalidade disponivel via teclado. Adicionado AC-03.12 com clausula de validacao de ausencia de armadilha de foco. Risco baixo pois herda FormField shadcn/ui mas necessario como AC testavel.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-029",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-18T01:39:13Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-030",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-18T01:47:31Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Backlog create-tasks gerado para FR65 (relatorio-tenant-mv): 7 fases, 17 tasks, 55 checkboxes",
+      "options_considered": [
+        "gerar-backlog",
+        "abortar"
+      ],
+      "choice": "gerar-backlog",
+      "rationale": "spec.md + plan.md + research.md + data-model.md + contracts lidos; gate validate-tasks-template RESULT critical=0 warning=0",
+      "justification_score": 3,
+      "evidence": "RESULT|tasks.md|critical=0|warning=0 — 17 tasks, 7 fases, 55 checkboxes, gate-fidelidade OK",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-031",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-18T01:52:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 5 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-032",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-18T01:55:39Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "FASE 1 concluida: migration SQL mv_tenant_report + schema MvRefreshLog + prisma generate",
+      "options_considered": [
+        "concluir-fase1",
+        "abortar"
+      ],
+      "choice": "concluir-fase1",
+      "rationale": "Migration criada com MV, UNIQUE INDEX, mv_refresh_log, RLS policy NULLIF. prisma generate OK.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-033",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-18T01:57:38Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "FASE 4 concluida: 7 schemas Zod + 19 testes + 7 snapshots. 540 tests passed.",
+      "options_considered": [
+        "concluir-fase4",
+        "abortar"
+      ],
+      "choice": "concluir-fase4",
+      "rationale": "tenant-summary.ts, tenant-summary.spec.ts, snapshots .snap, re-export index.ts. Todos os refinements AC-SEC-06 presentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-18T01:40:39Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 5,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1522,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 33,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "relat",
+    "rio",
+    "tenant",
+    "materialized",
+    "views",
+    "fr65"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-18T00:59:47Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-18T01:05:34Z",
+      "description": "onda-001 specify concluida; proxima onda=clarify"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-18T01:14:58Z",
+      "description": "clarify concluido, proxima fase: plan"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-18T01:21:06Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-18T01:27:07Z",
+      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-18T01:40:52Z",
+      "description": "etapa=create-tasks hits=0 (skip: nao e specify/plan)"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-18T01:48:15Z",
+      "description": "onda-005 create-tasks concluida; proxima: execute-task FASE 1 (migration)"
+    }
+  ]
+}
