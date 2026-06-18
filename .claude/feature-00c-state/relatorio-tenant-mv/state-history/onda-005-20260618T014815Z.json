@@ -759,11 +759,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-18T01:40:52Z",
       "description": "etapa=create-tasks hits=0 (skip: nao e specify/plan)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T01:48:15Z",
-      "description": "onda-005 create-tasks concluida; proxima: execute-task FASE 1 (migration)"
     }
   ]
 }
