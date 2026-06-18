@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.2b — Relatório por Tenant com Materialized Views (FR65): MV mv_tenant_report (UNIQUE INDEX p/ REFRESH CONCURRENTLY, last_refresh_at, tenant_id), endpoint GET /api/v1/reports/tenant-summary (admin_tenant), job BullMQ refresh-tenant-views (cron 15min, backoff, alerta >5min), refresh on-demand com rate-limit Redis, UI admin acessível. RLS em MV obrigatório (não-automático), multi-tenant, Zod, gate a11y.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "pipeline_completo",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-18T00:57:55Z",
-    "finished_at": "2026-06-18T02:25:58Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -130,19 +130,6 @@
           "decision_id": null
         }
       ]
-    },
-    {
-      "id": "onda-006",
-      "started_at": "2026-06-18T02:22:52Z",
-      "finished_at": "2026-06-18T02:25:50Z",
-      "executed_stages": [
-        "review-task"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 178,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -819,96 +806,6 @@
       "evidence": "pnpm web test: Test Files 133 passed, Tests 861 passed; web tsc --noEmit EXIT 0; git status confirmou a11y gate files NOT modified",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-037",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:24:59Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate lint: pnpm turbo lint 4/4 pacotes verde, 0 warnings",
-      "options_considered": [
-        "aprovar",
-        "rejeitar"
-      ],
-      "choice": "aprovar",
-      "rationale": "4 packages passed eslint --max-warnings 0: @metanoia/types, @metanoia/api, @metanoia/web, @metanoia/ui",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-038",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:25:06Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Bug fix: subquery active_members am2 sem filtro tenant_id na MV",
-      "options_considered": [
-        "corrigir-agora",
-        "aceitar-risco"
-      ],
-      "choice": "corrigir-agora",
-      "rationale": "Linha 61 migration.sql: SELECT COUNT(*) FROM active_members am2 WHERE am2.group_id = g.id faltava AND am2.tenant_id = g.tenant_id — corrigido in-place na branch",
-      "justification_score": 3,
-      "evidence": "grep -n am2 migration.sql => linha 61: am2.group_id = g.id sem tenant_id filter",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-039",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:25:18Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Auditoria AC-SEC-01/03: isolamento tenant na MV + service layer aprovado",
-      "options_considered": [
-        "aprovar",
-        "bloquear"
-      ],
-      "choice": "aprovar",
-      "rationale": "queryRaw tagged-template (Prisma.sql) parametrizado; WHERE tenant_id = NULLIF(current_setting...) inside withTenantTx; tenant_id nao aparece no payload de resposta; RLS em mv_refresh_log com policy NULLIF canonica; rate-limit SET NX EX 300 atomico",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-040",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:25:18Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Testes: @metanoia/types 540/540 + @metanoia/api reports 36/36 verde",
-      "options_considered": [
-        "aprovar",
-        "rejeitar"
-      ],
-      "choice": "aprovar",
-      "rationale": "types: 45 test files 540 tests passed; api reports: 5 test files 36 tests passed; RLS integration tests requerem Postgres real (esperado: falharia local)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-041",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:25:27Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Auditoria a11y: aria-busy/aria-live, SemaforoBadge icone+texto, sem text-muted, gate a11y publico intocado",
-      "options_considered": [
-        "aprovar",
-        "bloquear"
-      ],
-      "choice": "aprovar",
-      "rationale": "aria-live=polite + aria-busy em tabela e skeleton; SemaforoBadge usa icone aria-hidden + label texto (WCAG 1.4.1); text-muted ausente em relatorio/; git diff dev..HEAD nao toca a11y-pages.json nem a11y-checks.yml",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -923,15 +820,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-18T02:22:52Z"
+    "current_wave_start": "2026-06-18T01:40:39Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3895,
+    "wallclock_total_seconds": 3717,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 41,
+    "decisions_total": 36,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -982,11 +879,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-18T01:48:15Z",
       "description": "onda-005 create-tasks concluida; proxima: execute-task FASE 1 (migration)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T02:26:14Z",
-      "description": "review-task terminal: pipeline concluido"
     }
   ],
   "tasks": [

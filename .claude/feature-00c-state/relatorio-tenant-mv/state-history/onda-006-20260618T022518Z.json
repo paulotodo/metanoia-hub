@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.2b — Relatório por Tenant com Materialized Views (FR65): MV mv_tenant_report (UNIQUE INDEX p/ REFRESH CONCURRENTLY, last_refresh_at, tenant_id), endpoint GET /api/v1/reports/tenant-summary (admin_tenant), job BullMQ refresh-tenant-views (cron 15min, backoff, alerta >5min), refresh on-demand com rate-limit Redis, UI admin acessível. RLS em MV obrigatório (não-automático), multi-tenant, Zod, gate a11y.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "pipeline_completo",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-18T00:57:55Z",
-    "finished_at": "2026-06-18T02:25:58Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -134,13 +134,11 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-18T02:22:52Z",
-      "finished_at": "2026-06-18T02:25:50Z",
-      "executed_stages": [
-        "review-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 178,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": []
     }
@@ -873,42 +871,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-040",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:25:18Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Testes: @metanoia/types 540/540 + @metanoia/api reports 36/36 verde",
-      "options_considered": [
-        "aprovar",
-        "rejeitar"
-      ],
-      "choice": "aprovar",
-      "rationale": "types: 45 test files 540 tests passed; api reports: 5 test files 36 tests passed; RLS integration tests requerem Postgres real (esperado: falharia local)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-041",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-18T02:25:27Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Auditoria a11y: aria-busy/aria-live, SemaforoBadge icone+texto, sem text-muted, gate a11y publico intocado",
-      "options_considered": [
-        "aprovar",
-        "bloquear"
-      ],
-      "choice": "aprovar",
-      "rationale": "aria-live=polite + aria-busy em tabela e skeleton; SemaforoBadge usa icone aria-hidden + label texto (WCAG 1.4.1); text-muted ausente em relatorio/; git diff dev..HEAD nao toca a11y-pages.json nem a11y-checks.yml",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -926,12 +888,12 @@
     "current_wave_start": "2026-06-18T02:22:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3895,
+    "wallclock_total_seconds": 3717,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 41,
+    "decisions_total": 39,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -982,11 +944,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-18T01:48:15Z",
       "description": "onda-005 create-tasks concluida; proxima: execute-task FASE 1 (migration)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T02:26:14Z",
-      "description": "review-task terminal: pipeline concluido"
     }
   ],
   "tasks": [

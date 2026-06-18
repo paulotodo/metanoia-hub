@@ -9,7 +9,7 @@
     "status": "concluida",
     "termination_reason": "pipeline_completo",
     "started_at": "2026-06-18T00:57:55Z",
-    "finished_at": "2026-06-18T02:25:58Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -982,11 +982,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-18T01:48:15Z",
       "description": "onda-005 create-tasks concluida; proxima: execute-task FASE 1 (migration)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-18T02:26:14Z",
-      "description": "review-task terminal: pipeline concluido"
     }
   ],
   "tasks": [
