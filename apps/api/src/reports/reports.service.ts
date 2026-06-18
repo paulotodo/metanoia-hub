@@ -18,6 +18,11 @@ import {
   type ReportExportJobPayload,
   type MeetingReportParticipantFR63,
   computeParticipantEngagement,
+  type LeaderSummaryQuery,
+  type LeaderSummaryResponse,
+  type LeaderGroupMetrics,
+  type LeaderSummaryMeta,
+  type LeaderSummaryOverall,
 } from '@metanoia/types';
 import { generateId } from '@metanoia/types';
 import { BullMqService } from '../bullmq/bullmq.service';
@@ -696,4 +701,245 @@ export class ReportsService implements OnModuleInit {
     });
     await this.redis.set(key, value, 'EX', ttl);
   }
+
+  /**
+   * GET /api/v1/reports/leader-summary
+   *
+   * Consolidates metrics across all groups led by the authenticated user
+   * (or all groups for admin_tenant). Authz is horizontal (AC-SEC-01):
+   * groupId is a FILTER, never a selector — the universe is always derived
+   * from ctx.userId + role.
+   *
+   * Decision (BOLA cross-leader): if a requested groupId is not in the
+   * leader's universe, return groups:[] and a zeroed summary with HTTP 200.
+   */
+  async getLeaderSummary(
+    query: LeaderSummaryQuery,
+    user: AuthenticatedUser,
+  ): Promise<LeaderSummaryResponse> {
+    const ctx = getRequestContext();
+    const tenantId = ctx.tenantId;
+
+    const { startDate, endDate } = this.resolveLeaderPeriod(query);
+
+    return withTenantTx(this.prisma, async (tx) => {
+      // 1. Resolve group universe (authz horizontal)
+      const groupUniverse = await this.resolveLeaderGroupUniverse(tx, tenantId, user);
+
+      // 2. Apply optional groupId filter (BOLA: return empty if not in universe)
+      const filteredGroups = query.groupId
+        ? groupUniverse.filter((g) => g.id === query.groupId)
+        : groupUniverse;
+
+      // 3. Aggregate metrics per group in parallel
+      const groupMetrics = await Promise.all(
+        filteredGroups.map((g) =>
+          this.computeGroupMetrics(tx, g, tenantId, startDate, endDate),
+        ),
+      );
+
+      // 4. Compute overall summary with weighted attendance
+      const summary = this.computeLeaderSummary(groupMetrics, filteredGroups);
+
+      const meta: LeaderSummaryMeta = {
+        period: query.period,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      };
+
+      this.logger.log(
+        `leader-summary: userId=${user.userId} groups=${filteredGroups.length} period=${query.period}`,
+      );
+
+      return { data: { groups: groupMetrics, summary }, meta };
+    });
+  }
+
+  /** Resolves [start, end] Date for a given LeaderSummaryQuery. */
+  private resolveLeaderPeriod(query: LeaderSummaryQuery): { startDate: Date; endDate: Date } {
+    const now = new Date();
+    if (query.period === 'custom') {
+      return {
+        startDate: new Date(query.startDate!),
+        endDate: new Date(query.endDate!),
+      };
+    }
+    const days = query.period === '7d' ? 7 : query.period === '90d' ? 90 : 30;
+    const startDate = new Date(now);
+    startDate.setDate(startDate.getDate() - days);
+    return { startDate, endDate: now };
+  }
+
+  /**
+   * Resolves the group universe for the authenticated user.
+   * Admin: all groups in tenant. Lider: groups where user has role='lider' and is active member.
+   */
+  private async resolveLeaderGroupUniverse(
+    tx: TenantTx,
+    tenantId: string,
+    user: AuthenticatedUser,
+  ): Promise<Array<{ id: string; name: string }>> {
+    const isAdmin =
+      user.roles.includes(Role.ADMIN_TENANT) || user.roles.includes(Role.SUPER_ADMIN);
+
+    if (isAdmin) {
+      return tx.group.findMany({
+        where: { tenantId },
+        select: { id: true, name: true },
+      });
+    }
+
+    // Lider: only groups where the user has an active lider membership
+    const memberships = await tx.groupMember.findMany({
+      where: { tenantId, userId: user.userId, role: 'lider', deletedAt: null },
+      select: { groupId: true, group: { select: { id: true, name: true } } },
+    });
+
+    return memberships.map((m) => m.group);
+  }
+
+  /** Computes metrics for a single group within the time window. */
+  private async computeGroupMetrics(
+    tx: TenantTx,
+    group: { id: string; name: string },
+    tenantId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<LeaderGroupMetrics> {
+    const [activeMembers, radarStatuses, meetings, trailProgressRows] = await Promise.all([
+      // Active members (non-deleted)
+      tx.groupMember.findMany({
+        where: { tenantId, groupId: group.id, deletedAt: null },
+        select: { userId: true },
+      }),
+
+      // At-risk: amarelo or vermelho in ParticipantRadarStatus
+      tx.participantRadarStatus.findMany({
+        where: {
+          tenantId,
+          groupId: group.id,
+          status: { in: ['amarelo', 'vermelho'] },
+        },
+        select: { participantId: true },
+      }),
+
+      // Meetings in the period for attendance calculation
+      tx.meeting.findMany({
+        where: {
+          tenantId,
+          groupId: group.id,
+          scheduledFor: { gte: startDate, lte: endDate },
+          status: { in: ['ended'] },
+        },
+        select: { id: true },
+      }),
+
+      // Trail progress for members (scoped by tenantId)
+      tx.trailProgress.findMany({
+        where: {
+          tenantId,
+          deletedAt: null,
+        },
+        select: { userId: true, progressPercent: true, completedAt: true },
+      }),
+    ]);
+
+    const activeParticipantsCount = activeMembers.length;
+    const activeMemberIds = new Set(activeMembers.map((m) => m.userId));
+    const atRiskCount = radarStatuses.filter((r) =>
+      activeMemberIds.has(r.participantId),
+    ).length;
+
+    // Attendance: % of active members present in each meeting, then average
+    let avgAttendancePercent: number | null = null;
+    if (meetings.length > 0) {
+      const meetingIds = meetings.map((m) => m.id);
+      const attendanceRows = await tx.meetingAttendance.findMany({
+        where: { tenantId, meetingId: { in: meetingIds }, deletedAt: null },
+        select: { meetingId: true, userId: true },
+      });
+
+      if (activeParticipantsCount > 0) {
+        const attendanceByMeeting = new Map<string, Set<string>>();
+        for (const row of attendanceRows) {
+          if (!attendanceByMeeting.has(row.meetingId)) {
+            attendanceByMeeting.set(row.meetingId, new Set());
+          }
+          attendanceByMeeting.get(row.meetingId)!.add(row.userId);
+        }
+        const perMeetingPct = meetings.map((m) => {
+          const attended = attendanceByMeeting.get(m.id) ?? new Set<string>();
+          const activeAttended = [...attended].filter((uid) => activeMemberIds.has(uid)).length;
+          return (activeAttended / activeParticipantsCount) * 100;
+        });
+        avgAttendancePercent =
+          perMeetingPct.reduce((acc, v) => acc + v, 0) / perMeetingPct.length;
+      }
+    }
+
+    // Trail progress: avg over active members who have a progress row
+    const memberProgressRows = trailProgressRows.filter((p) => activeMemberIds.has(p.userId));
+    const avgTrailProgressPercent =
+      memberProgressRows.length > 0
+        ? memberProgressRows.reduce((acc, p) => acc + p.progressPercent, 0) /
+          memberProgressRows.length
+        : 0;
+
+    return {
+      groupId: group.id,
+      groupName: group.name,
+      avgAttendancePercent,
+      avgTrailProgressPercent,
+      atRiskCount,
+      activeParticipantsCount,
+    };
+  }
+
+  /**
+   * Computes weighted overall summary across groups.
+   * overallAttendancePercent is weighted by activeParticipantsCount.
+   * totalParticipants uses sum as approximation (spec allows for summary aggregation).
+   */
+  private computeLeaderSummary(
+    groupMetrics: LeaderGroupMetrics[],
+    groups: Array<{ id: string; name: string }>,
+  ): LeaderSummaryOverall {
+    const totalGroups = groups.length;
+    const totalParticipants = groupMetrics.reduce(
+      (acc, g) => acc + g.activeParticipantsCount,
+      0,
+    );
+
+    // Weighted attendance
+    const groupsWithAttendance = groupMetrics.filter(
+      (g) => g.avgAttendancePercent !== null && g.activeParticipantsCount > 0,
+    );
+    let overallAttendancePercent: number | null = null;
+    if (groupsWithAttendance.length > 0) {
+      const totalWeight = groupsWithAttendance.reduce(
+        (acc, g) => acc + g.activeParticipantsCount,
+        0,
+      );
+      const weightedSum = groupsWithAttendance.reduce(
+        (acc, g) => acc + (g.avgAttendancePercent! * g.activeParticipantsCount),
+        0,
+      );
+      overallAttendancePercent = totalWeight > 0 ? weightedSum / totalWeight : null;
+    }
+
+    // Trail completion: avg of group averages
+    const overallTrailCompletionPercent =
+      groupMetrics.length > 0
+        ? groupMetrics.reduce((acc, g) => acc + g.avgTrailProgressPercent, 0) /
+          groupMetrics.length
+        : 0;
+
+    return {
+      totalGroups,
+      totalParticipants,
+      overallAttendancePercent,
+      overallTrailCompletionPercent,
+    };
+  }
+
 }
