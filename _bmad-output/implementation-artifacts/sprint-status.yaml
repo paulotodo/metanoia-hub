@@ -203,7 +203,7 @@ development_status:
   # Sprint 18: 13-1, 13-2a, 13-2b, 13-3, 13-4, 13-5
   epic-13: in-progress
   13-1-relatorio-por-reuniao-fr63: done                              # PR #162 (CI+A11y verdes; gate OWASP S1 BOLA mitigado; fórmula FR-03 ratio simples)
-  13-2a-relatorio-consolidado-por-lider-fr79: ready-for-dev
+  13-2a-relatorio-consolidado-por-lider-fr79: done                  # PR #163 (CI+A11y verdes após rerun do flake demo-data Story 10-2; authz horizontal BOLA; 0 bloqueios)
   13-2b-relatorio-por-tenant-com-materialized-views-fr65: ready-for-dev
   13-3-deteccao-de-risco-de-evasao-fr66: ready-for-dev
   13-4-metricas-de-plataforma-super-admin-fr67: ready-for-dev
