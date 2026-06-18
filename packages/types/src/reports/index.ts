@@ -148,3 +148,19 @@ export type ReportExportJobPayload =
       /** Whether requester has full view (leader/admin) — used for CSV column scope */
       canSeeFull: boolean;
     };
+
+// ─── Leader summary (FR79, Story 13.2a) ──────────────────────────────────────
+export {
+  LeaderSummaryPeriodSchema,
+  LeaderSummaryQuerySchema,
+  LeaderGroupMetricsSchema,
+  LeaderSummaryOverallSchema,
+  LeaderSummaryMetaSchema,
+  LeaderSummaryResponseSchema,
+  type LeaderSummaryPeriod,
+  type LeaderSummaryQuery,
+  type LeaderGroupMetrics,
+  type LeaderSummaryOverall,
+  type LeaderSummaryMeta,
+  type LeaderSummaryResponse,
+} from './leader-summary';

@@ -16,10 +16,11 @@ import { TenantGuard } from '../auth/guards/tenant.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/enums/role.enum';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
-import { TrailReportQuerySchema, type TrailReportQuery } from '@metanoia/types';
+import { TrailReportQuerySchema, type TrailReportQuery, LeaderSummaryQuerySchema, type LeaderSummaryQuery } from '@metanoia/types';
 import { ReportsService } from './reports.service';
 import {
   ApiBearerAuth,
+  ApiBadRequestResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -119,4 +120,29 @@ export class ReportsController {
     }
     return { data: status };
   }
+  /**
+   * GET /api/v1/reports/leader-summary
+   * Consolidated metrics across groups led by the authenticated user (FR79).
+   * groupId is a filter within the leader universe (BOLA: out-of-universe group
+   * returns empty array, not 403).
+   */
+  @Get('leader-summary')
+  @Roles(Role.LIDER, Role.ADMIN_TENANT)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Consolidated leader summary (FR79)',
+    description:
+      'Returns aggregated metrics across all groups led by the authenticated user. ' +
+      'groupId is a filter within the leader universe (BOLA: out-of-universe group returns empty array, not 403).',
+  })
+  @ApiOkResponse({ description: 'Leader summary with groups array and overall metrics' })
+  @ApiBadRequestResponse({ description: 'Invalid query params (e.g. period=custom without dates)' })
+  @ApiForbiddenResponse({ description: 'Role LIDER or ADMIN_TENANT required' })
+  async getLeaderSummary(
+    @Query(new ZodValidationPipe(LeaderSummaryQuerySchema)) query: LeaderSummaryQuery,
+    @Request() req: { user: AuthenticatedUser },
+  ) {
+    return this.reportsService.getLeaderSummary(query, req.user);
+  }
+
 }

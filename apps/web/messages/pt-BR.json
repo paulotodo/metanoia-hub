@@ -1595,5 +1595,39 @@
     },
     "minutes": "{minutes} min",
     "noData": "—"
+  },
+  "leaderReport": {
+    "title": "Relatório Consolidado por Grupo",
+    "subtitle": "Veja as métricas de frequência, progresso e acompanhamento pastoral de cada grupo que você lidera.",
+    "loading": "Carregando relatório...",
+    "error": "Não foi possível carregar o relatório. Tente novamente.",
+    "empty": "Nenhum grupo encontrado para os filtros aplicados.",
+    "groupsLabel": "Grupos",
+    "filters": {
+      "filterLabel": "Filtros do relatório",
+      "period": "Período",
+      "period7d": "Últimos 7 dias",
+      "period30d": "Últimos 30 dias",
+      "period90d": "Últimos 90 dias",
+      "periodCustom": "Personalizado",
+      "allGroups": "Todos os grupos",
+      "startDate": "De",
+      "endDate": "Até"
+    },
+    "summary": {
+      "label": "Resumo geral",
+      "totalGroups": "Grupos",
+      "totalParticipants": "Participantes",
+      "attendance": "Frequência média",
+      "trailCompletion": "Progresso em trilha"
+    },
+    "card": {
+      "attendance": "Frequência",
+      "trailProgress": "Progresso",
+      "atRisk": "em acompanhamento",
+      "atRiskZero": "Todos bem",
+      "participants": "Participantes",
+      "noMeetings": "Sem reuniões no período"
+    }
   }
 }

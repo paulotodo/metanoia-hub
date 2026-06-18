@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`nullable avgAttendancePercent 1`] = `
+{
+  "data": {
+    "groups": [
+      {
+        "activeParticipantsCount": 0,
+        "atRiskCount": 0,
+        "avgAttendancePercent": null,
+        "avgTrailProgressPercent": 0,
+        "groupId": "018e3a00-0000-7000-8000-000000000001",
+        "groupName": "Grupo A",
+      },
+    ],
+    "summary": {
+      "overallAttendancePercent": null,
+      "overallTrailCompletionPercent": 0,
+      "totalGroups": 1,
+      "totalParticipants": 0,
+    },
+  },
+  "meta": {
+    "endDate": "2026-06-17T23:59:59.999Z",
+    "period": "7d",
+    "startDate": "2026-06-10T00:00:00.000Z",
+  },
+}
+`;
+
+exports[`snapshot: LeaderSummaryResponseSchema 1`] = `
+{
+  "data": {
+    "groups": [
+      {
+        "activeParticipantsCount": 10,
+        "atRiskCount": 2,
+        "avgAttendancePercent": 75.5,
+        "avgTrailProgressPercent": 60,
+        "groupId": "018e3a00-0000-7000-8000-000000000001",
+        "groupName": "Células Norte",
+      },
+    ],
+    "summary": {
+      "overallAttendancePercent": 75.5,
+      "overallTrailCompletionPercent": 60,
+      "totalGroups": 1,
+      "totalParticipants": 10,
+    },
+  },
+  "meta": {
+    "endDate": "2026-06-17T23:59:59.999Z",
+    "period": "30d",
+    "startDate": "2026-05-18T00:00:00.000Z",
+  },
+}
+`;

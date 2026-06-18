@@ -1,0 +1,377 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "relatorio-lider",
+  "execution": {
+    "id": "feat-relatorio-lider-20260617T231603Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 13.2a — Relatório Consolidado por Líder (FR79): endpoint GET /api/v1/reports/leader-summary?period com agregação por grupo (presença média, progresso de trilha, contagem em risco/semáforo, ativos) e sumário geral; UI acessível /app/gestao/reports com filtros (período/grupo/semáforo) e cards drill-down. Analytics supporting subdomain, estende ReportService da 13.1, agrega Epic 5/7/8, multi-tenant RLS, Zod packages/types, gate a11y.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-17T23:16:03Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-17T23:17:50Z",
+      "finished_at": "2026-06-17T23:20:50Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 180,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T23:20:25Z",
+          "decision_id": "dec-003"
+        },
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-17T23:20:50Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-17T23:25:25Z",
+      "finished_at": "2026-06-17T23:29:46Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 261,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T23:26:10Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-17T23:27:30Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-17T23:29:46Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-17T23:16:03Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T23:18:12Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=relatorio-lider)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story relatorio consolidado lider fr79 endpoint",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T23:20:13Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "spec.md criada para story 13.2a relatorio-lider",
+      "options_considered": [
+        "criar-spec",
+        "aguardar-mais-contexto"
+      ],
+      "choice": "criar-spec",
+      "rationale": "Spec autoritativa 13-2a completa; schema Prisma confirmado (Meeting/MeetingAttendance/ParticipantRadarStatus/TrailProgress/RadarStatus); estrutura real de reports confirmada em apps/api/src/reports/; Story 13.1 PR #162 merged",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T23:20:25Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Resolucao de ambiguidade de caminho: spec 13-2a menciona apps/api/src/modules/reports/ inexistente",
+      "options_considered": [
+        "usar-caminho-real-apps/api/src/reports/",
+        "aguardar-clarify"
+      ],
+      "choice": "usar-caminho-real-apps/api/src/reports/",
+      "rationale": "find confirma existencia de apps/api/src/reports/reports.service.ts e reports.controller.ts; apps/api/src/modules/ nao existe no repositorio",
+      "justification_score": 2,
+      "evidence": "find output: /var/lib/metanoia-hub/apps/api/src/reports/reports.service.ts, reports.controller.ts, reports.module.ts confirmados",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-17T23:24:14Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:26:10Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:27:30Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:28:06Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-Q1: grupo sem reunioes no periodo — avgAttendancePercent null ou 0 ou omitir",
+      "options_considered": [
+        "null-explicito",
+        "zero-sentinela",
+        "omitir-grupo"
+      ],
+      "choice": "null-explicito",
+      "rationale": "FR-06 especifica: campos ausentes retornam null explicito (nunca undefined). Constitution: sem undefined em JSON responses.",
+      "justification_score": 3,
+      "evidence": "campos ausentes retornam null explicito ou valor padrao 0 — FR-06 spec literal",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:28:06Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-Q2: ponderacao overallAttendancePercent — por reunioes, por membros ou media simples",
+      "options_considered": [
+        "ponderar-por-reunioes",
+        "ponderar-por-activeParticipants",
+        "media-simples"
+      ],
+      "choice": "ponderar-por-activeParticipants",
+      "rationale": "Grupos maiores impactam mais a media pastoral. DEC-INF-04 ja menciona deduplicacao por userId. activeParticipantsCount e o peso semanticamente correto para visao holistica do lider.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:28:06Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-Q3: filtro semaforo client-side — filtrar cards inteiros ou adicionar breakdown greenCount/yellowCount/redCount",
+      "options_considered": [
+        "filtrar-cards-inteiros",
+        "adicionar-breakdown-por-status"
+      ],
+      "choice": "filtrar-cards-inteiros",
+      "rationale": "DEC-INF-03: filtros client-side evitam round-trips; payload e pequeno. FR-06 nao inclui breakdown. Manter contrato existente — selecionar vermelho mostra grupos com atRiskCount > 0.",
+      "justification_score": 3,
+      "evidence": "DEC-INF-03: payload de todos os grupos de um lider e pequeno (< 10 entradas tipicamente). Filtros client-side evitam round-trips desnecessarios",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:28:06Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-Q4: formato resposta quando groupId fornecido — array com 1 item ou objeto singular",
+      "options_considered": [
+        "array-com-1-item",
+        "objeto-singular",
+        "remover-groupId-server-side"
+      ],
+      "choice": "array-com-1-item",
+      "rationale": "Consistencia de contrato: FR-06 define estrutura unica. Constitution: nao criar endpoints ad-hoc com formato diferente. Array de 1 elemento preserva compatibilidade do consumidor.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:28:06Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-Q5: logging estruturado no getLeaderSummary para monitorar SLA SC-03",
+      "options_considered": [
+        "sem-logging-adicional",
+        "logar-duration-ms-groupCount-participantCount"
+      ],
+      "choice": "logar-duration-ms-groupCount-participantCount",
+      "rationale": "SC-03 define SLA < 1s. Logging estruturado (duration_ms, groupCount) e boa pratica de apoio ao SLA e rastreabilidade. CLAUDE.md nao proibe; padroes NestJS recomendam.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-17T23:32:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 1,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-17T23:25:25Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 2,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 441,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 13,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "relat",
+    "rio",
+    "consolidado",
+    "der",
+    "fr79",
+    "endpoint"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-17T23:18:05Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-17T23:21:03Z",
+      "description": "onda-001 specify concluida; proxima=clarify"
+    }
+  ]
+}
