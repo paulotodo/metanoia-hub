@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReportsController } from './reports.controller';
-import { ReportsService } from './reports.service';
 import { Role } from '../auth/enums/role.enum';
 import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { LeaderSummaryQuerySchema } from '@metanoia/types';
+
+// ─── Mocks ────────────────────────────────────────────────────────────────────
 
 const mockLeaderSummaryResponse = {
   data: {
@@ -25,47 +25,70 @@ const mockLeaderSummaryResponse = {
 };
 
 const mockReportsService = {
-  getLeaderSummary: jest.fn().mockResolvedValue(mockLeaderSummaryResponse),
+  getLeaderSummary: vi.fn().mockResolvedValue(mockLeaderSummaryResponse),
 };
 
+// ─── Users ────────────────────────────────────────────────────────────────────
+
 const liderUser: AuthenticatedUser = {
-  userId: 'lider-001',
+  userId: 'user-lider-01',
   tenantId: 'tenant-001',
-  email: 'lider@test.com',
   roles: [Role.LIDER],
-  name: 'Lider',
+  email: 'lider@church.com',
 };
+
+// ─── Controller factory ───────────────────────────────────────────────────────
+
+function makeController(): ReportsController {
+  return new ReportsController(mockReportsService as never);
+}
+
+// ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe('ReportsController.getLeaderSummary', () => {
   let controller: ReportsController;
+  let pipe: ZodValidationPipe;
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [ReportsController],
-      providers: [{ provide: ReportsService, useValue: mockReportsService }],
-    }).compile();
-    controller = module.get<ReportsController>(ReportsController);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    controller = makeController();
+    pipe = new ZodValidationPipe(LeaderSummaryQuerySchema);
   });
 
-  it('200 com payload válido (period=30d)', async () => {
-    const query = { period: '30d' as const };
-    const req = { user: liderUser };
-
-    const result = await controller.getLeaderSummary(query, req);
-
-    expect(mockReportsService.getLeaderSummary).toHaveBeenCalledWith(query, liderUser);
+  it('returns payload from service with valid query', async () => {
+    const result = await controller.getLeaderSummary(
+      { period: '30d' },
+      { user: liderUser },
+    );
     expect(result).toEqual(mockLeaderSummaryResponse);
+    expect(mockReportsService.getLeaderSummary).toHaveBeenCalledWith({ period: '30d' }, liderUser);
   });
 
-  it('ZodValidationPipe rejeita period=custom sem startDate (400)', () => {
-    const pipe = new ZodValidationPipe(LeaderSummaryQuerySchema);
-    expect(() => pipe.transform({ period: 'custom' }, { type: 'query' })).toThrow();
+  it('ZodValidationPipe rejects period=custom without startDate → 400', () => {
+    expect(() => pipe.transform({ period: 'custom' })).toThrow();
   });
 
-  it('ZodValidationPipe aceita period=7d', () => {
-    const pipe = new ZodValidationPipe(LeaderSummaryQuerySchema);
-    const result = pipe.transform({ period: '7d' }, { type: 'query' });
-    expect(result).toMatchObject({ period: '7d' });
+  it('ZodValidationPipe accepts period=30d without dates', () => {
+    const result = pipe.transform({ period: '30d' });
+    expect((result as { period: string }).period).toBe('30d');
+  });
+
+  it('ZodValidationPipe rejects startDate >= endDate for custom period', () => {
+    expect(() =>
+      pipe.transform({
+        period: 'custom',
+        startDate: '2026-06-17T00:00:00Z',
+        endDate: '2026-06-16T00:00:00Z',
+      }),
+    ).toThrow();
+  });
+
+  it('ZodValidationPipe accepts valid custom period with startDate < endDate', () => {
+    const result = pipe.transform({
+      period: 'custom',
+      startDate: '2026-01-01T00:00:00Z',
+      endDate: '2026-06-17T00:00:00Z',
+    });
+    expect((result as { period: string }).period).toBe('custom');
   });
 });
