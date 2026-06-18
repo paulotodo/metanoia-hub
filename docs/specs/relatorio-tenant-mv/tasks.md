@@ -365,7 +365,7 @@ export default function TenantSummaryPage() {
 }
 ```
 
-- [ ] `page.tsx` Server Component no path correto `(authenticated)/admin/reports/tenant-summary/`
+- [x] `page.tsx` Server Component no path correto `(authenticated)/admin/reports/tenant-summary/`
 
 ### 5.2 Criar `TenantSummaryDashboard` (Client Component principal) `[A]`
 
@@ -381,10 +381,10 @@ export default function TenantSummaryPage() {
 - Toasts com `aria-live="polite"` (AC-03.9)
 - **NÃO adicionar** ao `a11y-pages.json` ou `a11y-checks.yml` — página autenticada
 
-- [ ] `'use client'` + `useQuery` com `refetchInterval: 30_000` (AC-03.7)
-- [ ] Label `lastRefreshAt` via `pt-BR.json` (AC-03.1)
-- [ ] Banner stale com `role="alert"` e `aria-live="assertive"` (AC-03.5, AC-03.9)
-- [ ] Estado local React para botão (sem Zustand)
+- [x] `'use client'` + `useQuery` com `refetchInterval: 30_000` (AC-03.7)
+- [x] Label `lastRefreshAt` via `pt-BR.json` (AC-03.1)
+- [x] Banner stale com `role="alert"` e `aria-live="assertive"` (AC-03.5, AC-03.9)
+- [x] Estado local React para botão (sem Zustand)
 
 ### 5.3 Botão "Atualizar agora" com acessibilidade `[A]`
 
@@ -398,9 +398,9 @@ export default function TenantSummaryPage() {
 - Toast com `aria-live="polite"` (AC-03.9)
 - Mensagens em `apps/web/messages/pt-BR.json` — sem string hardcoded
 
-- [ ] `aria-busy` no botão durante loading (AC-03.10)
-- [ ] Toast 202 com mensagem PT-BR (AC-03.4)
-- [ ] Toast 429 com `retryAfter` em PT-BR (AC-03.3)
+- [x] `aria-busy` no botão durante loading (AC-03.10)
+- [x] Toast 202 com mensagem PT-BR (AC-03.4)
+- [x] Toast 429 com `retryAfter` em PT-BR (AC-03.3)
 
 ### 5.4 Filtros com navegação por teclado `[A]`
 
@@ -412,9 +412,9 @@ export default function TenantSummaryPage() {
 - Validação client-side via `TenantSummaryQuerySchema` antes de disparar query
 - `text-secondary` para labels de contraste (AC-03.11)
 
-- [ ] `FormField` shadcn/ui em todos os filtros (AC-03.12)
-- [ ] Campos custom date visíveis apenas com `period=custom`
-- [ ] Sem armadilha de foco (Tab navega para fora do filtro)
+- [x] `FormField` shadcn/ui em todos os filtros (AC-03.12)
+- [x] Campos custom date visíveis apenas com `period=custom`
+- [x] Sem armadilha de foco (Tab navega para fora do filtro)
 
 ### 5.5 Badges de semáforo acessíveis `[M]`
 
@@ -424,8 +424,8 @@ export default function TenantSummaryPage() {
 - `aria-label="Status: Verde"` / `"Amarelo"` / `"Vermelho"` (AC-03.8)
 - Contraste mínimo 4.5:1: verde `#16a34a`, amarelo `#ca8a04`, vermelho `#dc2626`
 
-- [ ] Badge com ícone + texto + `aria-label` (AC-03.8)
-- [ ] Contraste WCAG AA verificado (não apenas cor)
+- [x] Badge com ícone + texto + `aria-label` (AC-03.8)
+- [x] Contraste WCAG AA verificado (não apenas cor)
 
 ### 5.6 Mensagens PT-BR em `pt-BR.json` `[M]`
 
@@ -447,7 +447,7 @@ Adicionar chaves para todas as mensagens user-facing:
 }
 ```
 
-- [ ] Todas as mensagens user-facing centralizadas em `pt-BR.json` — sem string hardcoded
+- [x] Todas as mensagens user-facing centralizadas em `pt-BR.json` — sem string hardcoded
 
 ### 5.7 Testes axe-core nos componentes UI `[A]`
 
@@ -459,10 +459,10 @@ Adicionar chaves para todas as mensagens user-facing:
 - Testar botão Atualizar: `aria-busy` durante loading
 - Testar filtros: ausência de armadilha de foco
 
-- [ ] axe-core no `TenantSummaryDashboard` (sem violações)
-- [ ] Teste `aria-live` no banner stale
-- [ ] Teste `aria-busy` no botão
-- [ ] Teste ausência de armadilha de foco nos filtros
+- [x] axe-core no `TenantSummaryDashboard` (sem violações)
+- [x] Teste `aria-live` no banner stale
+- [x] Teste `aria-busy` no botão
+- [x] Teste ausência de armadilha de foco nos filtros
 
 ---
 
