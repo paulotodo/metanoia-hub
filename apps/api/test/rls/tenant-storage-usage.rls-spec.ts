@@ -18,7 +18,7 @@ const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://metanoia_app:meta
 const TENANT_A = '018e5b3c-0000-7000-8000-000000000a01';
 const TENANT_B = '018e5b3c-0000-7000-8000-000000000b02';
 
-function createClient(tenantId: string | null): PrismaClient {
+function createClient(_tenantId: string | null): PrismaClient {
   const adapter = new PrismaPg({ connectionString: DATABASE_URL });
   return new PrismaClient({ adapter });
 }
