@@ -58,8 +58,8 @@ describe('detect-evasion-risk: multi-tenant isolation (Task 10.1)', () => {
     await privileged.$executeRawUnsafe(
       `INSERT INTO tenants (id, tenant_id, name, slug, status, created_at, updated_at)
        VALUES
-         ($1::uuid, $1::uuid, 'Tenant A (evasion-test)', 'tenant-a-evasion', 'active', now(), now()),
-         ($2::uuid, $2::uuid, 'Tenant B (evasion-test)', 'tenant-b-evasion', 'active', now(), now())
+         ($1::uuid, $1::uuid, 'Tenant A (evasion-test)', 'tenant-a-evasion-' || $1::text, 'active', now(), now()),
+         ($2::uuid, $2::uuid, 'Tenant B (evasion-test)', 'tenant-b-evasion-' || $2::text, 'active', now(), now())
        ON CONFLICT (id) DO NOTHING`,
       tenantA, tenantB,
     );
