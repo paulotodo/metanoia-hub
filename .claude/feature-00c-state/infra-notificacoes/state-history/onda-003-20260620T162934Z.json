@@ -1,0 +1,573 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "infra-notificacoes",
+  "execution": {
+    "id": "feat-infra-notificacoes-20260620T155021Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Infraestrutura de Notificacoes & Channel Router (FR77) — modulo modules/notifications/ com tabela Notification (RLS tenant-scoped), NotificationService.dispatch() lendo tenant_id do RequestContext (AsyncLocalStorage, nunca como parametro), fila BullMQ queue:notifications, Channel Router com interface NotificationChannel extensivel (InAppChannel/EmailChannel), batching com digest de 5min (configuravel via NOTIFICATION_DIGEST_WINDOW_MS, pastoral_alert nunca agrupado), retries com backoff exponencial (3 tentativas) e failed set retido.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-20T15:50:21Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-20T15:52:04Z",
+      "finished_at": "2026-06-20T15:55:56Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 232,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-20T15:53:08Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-20T16:00:41Z",
+      "finished_at": "2026-06-20T16:21:13Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 1232,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-20T16:01:41Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "feature-00c-clarify-asker",
+          "timestamp": "2026-06-20T16:03:13Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-20T16:03:51Z",
+          "decision_id": "dec-008"
+        },
+        {
+          "skill": "feature-00c-clarify-answerer",
+          "timestamp": "2026-06-20T16:06:04Z",
+          "decision_id": "dec-011"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-20T16:07:31Z",
+          "decision_id": null
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-20T16:19:58Z",
+          "decision_id": "dec-017"
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-20T16:20:43Z",
+          "decision_id": "dec-018"
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-20T16:20:59Z",
+          "decision_id": "dec-016"
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-20T16:26:39Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-20T16:28:54Z",
+          "decision_id": "dec-020"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-20T15:50:34Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:52:32Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=infra-notificacoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: infraestrutura notificacoes channel router fr77 modulo modules",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:53:00Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: iniciando execucao da feature infra-notificacoes",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 14-1 com ACs detalhados disponivel como fonte primaria. Briefing e constitution validados. Sem bloqueios pendentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:55:16Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation: skill nao disponivel no ambiente (skill desconhecida pelo harness)",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "validate-documentation retornou 'Unknown skill' ao ser invocada via tool Skill. Gate pulado com validacao manual inline (spec.md verificada: 5 US independentes com Given/When/Then, 14 FRs, 7 SCs mensuraveis, zero TBD, zero detalhes de implementacao). ",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:55:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Validacao qualidade spec.md: aceitar mencao tecnica em secao de infraestrutura e edge cases",
+      "options_considered": [
+        "aceitar-spec",
+        "corrigir-remover-tecnico",
+        "reescrever-spec"
+      ],
+      "choice": "aceitar-spec",
+      "rationale": "Spec tem 5 US independentes, 14 FRs, 7 SCs mensuraveis, 0 NEEDS_CLARIFICATION, 13 Given/When/Then. Mencoes tecnologicas (Redis/BullMQ/SSE) aparecem SOMENTE na tabela de Decisoes de Infraestrutura e edge cases — seccao intencional para features developer-facing com AC tecnico. FRs principais sao technology-agnostic. Pattern aceito para story de infraestrutura.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:59:36Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:01:41Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:03:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:05:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q1: shape de payload e result na interface NotificationChannel.send()",
+      "options_considered": [
+        "payload-nomeado-result-tipado",
+        "payload-entidade-completa-result-void"
+      ],
+      "choice": "payload-nomeado-result-tipado",
+      "rationale": "Constitution IV exige contratos Zod compartilhados. FR-005 requer extensibilidade sem modificar router. Result tipado { success: boolean; error?: string } permite retry handler distinguir falha sem try/catch; payload { notificationId, userId, tenantId, type, title, body, channel, metadata? } é o contrato mínimo para InAppChannel e EmailChannel.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:05:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q2: namespace canal Redis e payload publicado pelo InAppChannel para SSE (FR-014)",
+      "options_considered": [
+        "rt:notifications:{tenantId}:{userId}-payload-minimo",
+        "rt:notifications:{userId}-payload-completo"
+      ],
+      "choice": "rt:notifications:{tenantId}:{userId}-payload-minimo",
+      "rationale": "CLAUDE.md define literalmente rt:* para real-time. Constitution I (Multi-tenancy Absoluto) exige tenantId no canal para prevenir cross-tenant. Payload mínimo { notificationId, type, title, body, createdAt } — cliente busca detalhes via API.",
+      "justification_score": 3,
+      "evidence": "Redis namespaces: cache:*, rt:*, queue:*, rate:*, session:*",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:06:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q3: formato job key BullMQ para idempotencia do digest",
+      "options_considered": [
+        "digest:{userId}:{type}:{windowEpoch}",
+        "digest:{tenantId}:{userId}:{type}:{windowEpoch}"
+      ],
+      "choice": "digest:{userId}:{type}:{Math.floor(Date.now()/WINDOW_MS)}",
+      "rationale": "Spec define 'job key único por (user_id, type, window)' sem tenantId. UUID v7 é globalmente único, portanto userId sozinho isola cross-tenant na chave.",
+      "justification_score": 2,
+      "evidence": "spec Decisoes de Infraestrutura: 'idempotência do digest via job key único por (user_id, type, window)'; constitution II: 'UUID v7 via uuidv7()' garante unicidade global dos userId",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:06:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q4: campos e casing do payload do job BullMQ para rebuild de RequestContext",
+      "options_considered": [
+        "camelCase-flat-primeiro-nivel",
+        "sub-objeto-context-notification"
+      ],
+      "choice": "camelCase-flat: { tenantId, userId, channel, correlationId, notificationId }",
+      "rationale": "Spec define RequestContext.run({ tenantId, userId }, cb) em forma flat. CLAUDE.md impõe camelCase. project-context: JSON fields em camelCase.",
+      "justification_score": 3,
+      "evidence": "spec Key Entities: 'Job de Notificação: Unidade de trabalho na fila queue:notifications com payload do canal, tenant_id, correlation_id'; spec Decisoes: 'RequestContext.run({ tenantId, userId }, cb) com tenant_id do payload do job'; CLAUDE.md: 'Functions/variables: camelCase'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:06:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q5: tipo Postgres do campo metadata na tabela notifications",
+      "options_considered": [
+        "JSONB-via-Json-Prisma",
+        "TEXT-serializado"
+      ],
+      "choice": "Json-no-schema-Prisma-mapeado-para-JSONB-no-Postgres",
+      "rationale": "Prisma v7 usa tipo Json que mapeia para JSONB no PostgreSQL por default (v5+). Estrutura flexível com actionUrl beneficia de JSONB para queries e índices GIN.",
+      "justification_score": 3,
+      "evidence": "spec FR-002: 'O campo metadata é estrutura flexível que inclui actionUrl e dados adicionais por tipo'; project-context: 'Prisma v7' (Json type = JSONB no Postgres desde v5+); spec FR-012: 'garantindo performance para o notification center'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:12:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:15:11Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=infra-notificacoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados: infraestrutura notificacoes channel router fr77; achado templates-conteudo confirma metadata JSONB pattern no mesmo projeto",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:19:32Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Plano técnico gerado: 5 artefatos (plan/research/data-model/quickstart/2 contracts) ancorados em padrões reais do projeto",
+      "options_considered": [
+        "gerar-plano",
+        "abortar"
+      ],
+      "choice": "gerar-plano",
+      "rationale": "Migration timestamp 20260629000000 > ultima existente 20260628000000_13-5-content-templates verificado empiricamente; RequestContext.run, BullMqService, withTenantTx, RLS tenant_isolation replicados de codigo existente",
+      "justification_score": 3,
+      "evidence": "ultima migration no disco: 20260628000000_13-5-content-templates; nova proposta 20260629000000 e estritamente posterior",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:19:58Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality: skill validate-documentation indisponivel neste ambiente; executada checagem deterministica via grep (TBD/TODO/NEEDS CLARIFICATION/placeholders)",
+      "options_considered": [
+        "rodar-skill-llm",
+        "checagem-deterministica",
+        "skip"
+      ],
+      "choice": "checagem-deterministica",
+      "rationale": "grep nao encontrou marcadores nao-resolvidos nem placeholders de template; headings completos nos 5 artefatos",
+      "justification_score": 3,
+      "evidence": "grep TBD|TODO|FIXME|placeholders => NONE_FOUND (so prosa confirmando resolucao); bracket placeholders => NONE",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:20:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security executado sobre o desenho: BOLA/IDOR, metadata injection, SSE auth, job context-rebuild. Findings: 1 medium (actionUrl/metadata), 1 low (rate-limit read endpoints). Zero critical/high",
+      "options_considered": [
+        "aceitar-risco-com-justificativa",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "aceitar-risco-com-justificativa",
+      "rationale": "BOLA mitigado por defesa em profundidade (userId=ctx.userId + RLS WITH CHECK + 404-not-403 literal nos contratos); RLS sem ramo IS NULL fecha cross-tenant; SSE payload minimo+canal tenant/user. Medium/low sao notas de implementacao, nao bloqueiam o plano",
+      "justification_score": 3,
+      "evidence": "contracts/notifications-api.md L28-38 literal: 'a query SEMPRE filtra por userId = ctx.userId E depende da RLS'; 'WHERE inclui id = :id AND user_id = ctx.userId. Notificacao de outro usuario/tenant -> 404'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:20:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Finding owasp MEDIUM: metadata jsonb usa z.record(z.string(), z.unknown()) (notification-channel.md L31/L51); actionUrl consumido por FE futuro = vetor stored-XSS/open-redirect",
+      "options_considered": [
+        "registrar-nota-para-implementacao",
+        "ignorar"
+      ],
+      "choice": "registrar-nota-para-implementacao",
+      "rationale": "jsonb e injection-safe via Prisma parametrizado; risco e no consumo de actionUrl no FE (Story 14.2x). Nota: validar/allowlist actionUrl (https same-origin) na borda de render + considerar schema mais restrito para metadata por tipo",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T16:28:54Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Quality gate de requisitos gerado em docs/specs/infra-notificacoes/checklists/requirements.md (42 itens CHK, foco api/security/performance/data-model+RLS multi-tenancy)",
+      "options_considered": [
+        "gerar-checklist",
+        "pular-gate"
+      ],
+      "choice": "gerar-checklist",
+      "rationale": "Checklist cobre os 14 FRs, 7 SC, 5 clarifications, contratos e RLS; 36/42 itens auto-resolvidos com citacao, 100% rastreabilidade",
+      "justification_score": 3,
+      "evidence": "grep -c sobre requirements.md: resolvidos [x]=36, abertos [ ]=6, total CHK=42, itens com ref de rastreabilidade=42 (100%)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T16:28:54Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "6 itens abertos no gate (3 ambiguidades auto CHK007/CHK016/CHK039; 3 julgamentos de produto CHK024/CHK041/CHK042). Avaliada materialidade: todos tem default fiel a spec/constitution",
+      "options_considered": [
+        "avancar-com-defaults",
+        "bloqueio-humano",
+        "reabrir-clarify"
+      ],
+      "choice": "avancar-com-defaults",
+      "rationale": "Nenhum gap e material-sem-default: Edge Case item 5 cobre CHK007; dispatch interno void cobre CHK016; vocabulario pastoral cobre CHK039; CHK024/041/042 sao valores default ja na spec, decisao de produto nao-bloqueante. Gaps viram tarefas de refinamento em create-tasks",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-20T16:26:39Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 3,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1874,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 21,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0,
+    "cache": {
+      "tokens_cache_misses_disabled": 2
+    }
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "infraestrutura",
+    "notificacoes",
+    "channel",
+    "router",
+    "fr77",
+    "modulo",
+    "modules"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T15:52:24Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T15:56:28Z",
+      "description": "onda-001 concluida: specify done, clarify pending"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T16:15:00Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T16:21:13Z",
+      "description": "onda plan encerrada; aguardando wakeup para checklist"
+    }
+  ],
+  "current_wave_id": "onda-002"
+}

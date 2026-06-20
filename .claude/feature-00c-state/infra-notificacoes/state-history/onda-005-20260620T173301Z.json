@@ -1,0 +1,990 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "infra-notificacoes",
+  "execution": {
+    "id": "feat-infra-notificacoes-20260620T155021Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Infraestrutura de Notificacoes & Channel Router (FR77) — modulo modules/notifications/ com tabela Notification (RLS tenant-scoped), NotificationService.dispatch() lendo tenant_id do RequestContext (AsyncLocalStorage, nunca como parametro), fila BullMQ queue:notifications, Channel Router com interface NotificationChannel extensivel (InAppChannel/EmailChannel), batching com digest de 5min (configuravel via NOTIFICATION_DIGEST_WINDOW_MS, pastoral_alert nunca agrupado), retries com backoff exponencial (3 tentativas) e failed set retido.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-20T15:50:21Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "review-task",
+  "next_instruction": "PR #170 aberto (feat/story-14-1-infra-notificacoes → dev). Proxima onda: verificar CI do PR e executar review-task.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-20T15:52:04Z",
+      "finished_at": "2026-06-20T15:55:56Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 232,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-20T15:53:08Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-20T16:00:41Z",
+      "finished_at": "2026-06-20T16:21:13Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 1232,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-20T16:01:41Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "feature-00c-clarify-asker",
+          "timestamp": "2026-06-20T16:03:13Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-20T16:03:51Z",
+          "decision_id": "dec-008"
+        },
+        {
+          "skill": "feature-00c-clarify-answerer",
+          "timestamp": "2026-06-20T16:06:04Z",
+          "decision_id": "dec-011"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-20T16:07:31Z",
+          "decision_id": null
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-20T16:19:58Z",
+          "decision_id": "dec-017"
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-20T16:20:43Z",
+          "decision_id": "dec-018"
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-20T16:20:59Z",
+          "decision_id": "dec-016"
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-20T16:26:39Z",
+      "finished_at": "2026-06-20T16:29:34Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 175,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-20T16:28:54Z",
+          "decision_id": "dec-020"
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-20T16:34:55Z",
+      "finished_at": "2026-06-20T17:11:02Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 2167,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-20T16:39:23Z",
+          "decision_id": null
+        },
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-20T17:10:09Z",
+          "decision_id": "dec-026"
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-20T17:31:44Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "review-task",
+          "timestamp": "2026-06-20T17:32:01Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-20T15:50:34Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:52:32Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=infra-notificacoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: infraestrutura notificacoes channel router fr77 modulo modules",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:53:00Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: iniciando execucao da feature infra-notificacoes",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 14-1 com ACs detalhados disponivel como fonte primaria. Briefing e constitution validados. Sem bloqueios pendentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:55:16Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation: skill nao disponivel no ambiente (skill desconhecida pelo harness)",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "validate-documentation retornou 'Unknown skill' ao ser invocada via tool Skill. Gate pulado com validacao manual inline (spec.md verificada: 5 US independentes com Given/When/Then, 14 FRs, 7 SCs mensuraveis, zero TBD, zero detalhes de implementacao). ",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:55:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Validacao qualidade spec.md: aceitar mencao tecnica em secao de infraestrutura e edge cases",
+      "options_considered": [
+        "aceitar-spec",
+        "corrigir-remover-tecnico",
+        "reescrever-spec"
+      ],
+      "choice": "aceitar-spec",
+      "rationale": "Spec tem 5 US independentes, 14 FRs, 7 SCs mensuraveis, 0 NEEDS_CLARIFICATION, 13 Given/When/Then. Mencoes tecnologicas (Redis/BullMQ/SSE) aparecem SOMENTE na tabela de Decisoes de Infraestrutura e edge cases — seccao intencional para features developer-facing com AC tecnico. FRs principais sao technology-agnostic. Pattern aceito para story de infraestrutura.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T15:59:36Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:01:41Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:03:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:05:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q1: shape de payload e result na interface NotificationChannel.send()",
+      "options_considered": [
+        "payload-nomeado-result-tipado",
+        "payload-entidade-completa-result-void"
+      ],
+      "choice": "payload-nomeado-result-tipado",
+      "rationale": "Constitution IV exige contratos Zod compartilhados. FR-005 requer extensibilidade sem modificar router. Result tipado { success: boolean; error?: string } permite retry handler distinguir falha sem try/catch; payload { notificationId, userId, tenantId, type, title, body, channel, metadata? } é o contrato mínimo para InAppChannel e EmailChannel.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:05:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q2: namespace canal Redis e payload publicado pelo InAppChannel para SSE (FR-014)",
+      "options_considered": [
+        "rt:notifications:{tenantId}:{userId}-payload-minimo",
+        "rt:notifications:{userId}-payload-completo"
+      ],
+      "choice": "rt:notifications:{tenantId}:{userId}-payload-minimo",
+      "rationale": "CLAUDE.md define literalmente rt:* para real-time. Constitution I (Multi-tenancy Absoluto) exige tenantId no canal para prevenir cross-tenant. Payload mínimo { notificationId, type, title, body, createdAt } — cliente busca detalhes via API.",
+      "justification_score": 3,
+      "evidence": "Redis namespaces: cache:*, rt:*, queue:*, rate:*, session:*",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:06:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q3: formato job key BullMQ para idempotencia do digest",
+      "options_considered": [
+        "digest:{userId}:{type}:{windowEpoch}",
+        "digest:{tenantId}:{userId}:{type}:{windowEpoch}"
+      ],
+      "choice": "digest:{userId}:{type}:{Math.floor(Date.now()/WINDOW_MS)}",
+      "rationale": "Spec define 'job key único por (user_id, type, window)' sem tenantId. UUID v7 é globalmente único, portanto userId sozinho isola cross-tenant na chave.",
+      "justification_score": 2,
+      "evidence": "spec Decisoes de Infraestrutura: 'idempotência do digest via job key único por (user_id, type, window)'; constitution II: 'UUID v7 via uuidv7()' garante unicidade global dos userId",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:06:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q4: campos e casing do payload do job BullMQ para rebuild de RequestContext",
+      "options_considered": [
+        "camelCase-flat-primeiro-nivel",
+        "sub-objeto-context-notification"
+      ],
+      "choice": "camelCase-flat: { tenantId, userId, channel, correlationId, notificationId }",
+      "rationale": "Spec define RequestContext.run({ tenantId, userId }, cb) em forma flat. CLAUDE.md impõe camelCase. project-context: JSON fields em camelCase.",
+      "justification_score": 3,
+      "evidence": "spec Key Entities: 'Job de Notificação: Unidade de trabalho na fila queue:notifications com payload do canal, tenant_id, correlation_id'; spec Decisoes: 'RequestContext.run({ tenantId, userId }, cb) com tenant_id do payload do job'; CLAUDE.md: 'Functions/variables: camelCase'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:06:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q5: tipo Postgres do campo metadata na tabela notifications",
+      "options_considered": [
+        "JSONB-via-Json-Prisma",
+        "TEXT-serializado"
+      ],
+      "choice": "Json-no-schema-Prisma-mapeado-para-JSONB-no-Postgres",
+      "rationale": "Prisma v7 usa tipo Json que mapeia para JSONB no PostgreSQL por default (v5+). Estrutura flexível com actionUrl beneficia de JSONB para queries e índices GIN.",
+      "justification_score": 3,
+      "evidence": "spec FR-002: 'O campo metadata é estrutura flexível que inclui actionUrl e dados adicionais por tipo'; project-context: 'Prisma v7' (Json type = JSONB no Postgres desde v5+); spec FR-012: 'garantindo performance para o notification center'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:12:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:15:11Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=infra-notificacoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados: infraestrutura notificacoes channel router fr77; achado templates-conteudo confirma metadata JSONB pattern no mesmo projeto",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:19:32Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Plano técnico gerado: 5 artefatos (plan/research/data-model/quickstart/2 contracts) ancorados em padrões reais do projeto",
+      "options_considered": [
+        "gerar-plano",
+        "abortar"
+      ],
+      "choice": "gerar-plano",
+      "rationale": "Migration timestamp 20260629000000 > ultima existente 20260628000000_13-5-content-templates verificado empiricamente; RequestContext.run, BullMqService, withTenantTx, RLS tenant_isolation replicados de codigo existente",
+      "justification_score": 3,
+      "evidence": "ultima migration no disco: 20260628000000_13-5-content-templates; nova proposta 20260629000000 e estritamente posterior",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:19:58Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality: skill validate-documentation indisponivel neste ambiente; executada checagem deterministica via grep (TBD/TODO/NEEDS CLARIFICATION/placeholders)",
+      "options_considered": [
+        "rodar-skill-llm",
+        "checagem-deterministica",
+        "skip"
+      ],
+      "choice": "checagem-deterministica",
+      "rationale": "grep nao encontrou marcadores nao-resolvidos nem placeholders de template; headings completos nos 5 artefatos",
+      "justification_score": 3,
+      "evidence": "grep TBD|TODO|FIXME|placeholders => NONE_FOUND (so prosa confirmando resolucao); bracket placeholders => NONE",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:20:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security executado sobre o desenho: BOLA/IDOR, metadata injection, SSE auth, job context-rebuild. Findings: 1 medium (actionUrl/metadata), 1 low (rate-limit read endpoints). Zero critical/high",
+      "options_considered": [
+        "aceitar-risco-com-justificativa",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "aceitar-risco-com-justificativa",
+      "rationale": "BOLA mitigado por defesa em profundidade (userId=ctx.userId + RLS WITH CHECK + 404-not-403 literal nos contratos); RLS sem ramo IS NULL fecha cross-tenant; SSE payload minimo+canal tenant/user. Medium/low sao notas de implementacao, nao bloqueiam o plano",
+      "justification_score": 3,
+      "evidence": "contracts/notifications-api.md L28-38 literal: 'a query SEMPRE filtra por userId = ctx.userId E depende da RLS'; 'WHERE inclui id = :id AND user_id = ctx.userId. Notificacao de outro usuario/tenant -> 404'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T16:20:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Finding owasp MEDIUM: metadata jsonb usa z.record(z.string(), z.unknown()) (notification-channel.md L31/L51); actionUrl consumido por FE futuro = vetor stored-XSS/open-redirect",
+      "options_considered": [
+        "registrar-nota-para-implementacao",
+        "ignorar"
+      ],
+      "choice": "registrar-nota-para-implementacao",
+      "rationale": "jsonb e injection-safe via Prisma parametrizado; risco e no consumo de actionUrl no FE (Story 14.2x). Nota: validar/allowlist actionUrl (https same-origin) na borda de render + considerar schema mais restrito para metadata por tipo",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T16:28:54Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Quality gate de requisitos gerado em docs/specs/infra-notificacoes/checklists/requirements.md (42 itens CHK, foco api/security/performance/data-model+RLS multi-tenancy)",
+      "options_considered": [
+        "gerar-checklist",
+        "pular-gate"
+      ],
+      "choice": "gerar-checklist",
+      "rationale": "Checklist cobre os 14 FRs, 7 SC, 5 clarifications, contratos e RLS; 36/42 itens auto-resolvidos com citacao, 100% rastreabilidade",
+      "justification_score": 3,
+      "evidence": "grep -c sobre requirements.md: resolvidos [x]=36, abertos [ ]=6, total CHK=42, itens com ref de rastreabilidade=42 (100%)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T16:28:54Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "6 itens abertos no gate (3 ambiguidades auto CHK007/CHK016/CHK039; 3 julgamentos de produto CHK024/CHK041/CHK042). Avaliada materialidade: todos tem default fiel a spec/constitution",
+      "options_considered": [
+        "avancar-com-defaults",
+        "bloqueio-humano",
+        "reabrir-clarify"
+      ],
+      "choice": "avancar-com-defaults",
+      "rationale": "Nenhum gap e material-sem-default: Edge Case item 5 cobre CHK007; dispatch interno void cobre CHK016; vocabulario pastoral cobre CHK039; CHK024/041/042 sao valores default ja na spec, decisao de produto nao-bloqueante. Gaps viram tarefas de refinamento em create-tasks",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T16:33:16Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T16:35:05Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio da onda create-tasks para infra-notificacoes",
+      "options_considered": [
+        "executar-create-tasks",
+        "abortar"
+      ],
+      "choice": "executar-create-tasks",
+      "rationale": "Artefatos spec.md, plan.md, contracts, checklist prontos. 0 bloqueios pendentes. Status em_andamento.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T16:44:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-025",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T16:47:21Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio onda execute-task — implementar FASE 1-6 de infra-notificacoes",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Backlog completo (tasks.md FASE 1-6) — nenhum bloqueio pendente, hash integro, wave onda-004 ativa",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-026",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T17:09:56Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "execute-task FASE 1-5 concluida: tipos Zod, migration Prisma + RLS, env, service, controller, module, worker, channels, digest — backlog 97 subtarefas completas. Pendente: FASE 6 git+PR (criacao de branch+commit+PR bloqueada pelo safety classifier)",
+      "options_considered": [
+        "concluir-task-agendar-pr",
+        "bloquear-humano"
+      ],
+      "choice": "concluir-task-agendar-pr",
+      "rationale": "Validacao local completa: types build OK (582 tests), API lint OK, API build OK, prisma validate+generate OK, migration deploy OK (Postgres local), RLS spec 5/5 x2 OK, unit tests 17/17 OK. Safety classifier indisponivel impede git/PR. Proxima onda executa git/PR.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-027",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T17:32:01Z",
+      "stage": "review-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CI PR#170 verificado: todos os gates passaram",
+      "options_considered": [
+        "aprovar-ci",
+        "rejeitar-ci",
+        "solicitar-rerun"
+      ],
+      "choice": "aprovar-ci",
+      "rationale": "gh pr checks 170: Setup=pass, Lint=pass, Test=pass(4m39s), E2E=pass(4m14s), Build=pass(59s). CI totalmente verde após fix de snapshot (commit 63ccf61 — NotificationPayload/Result adicionados ao snapshot spec de packages/types).",
+      "justification_score": 3,
+      "evidence": "Build pass 59s; E2E (Playwright) pass 4m14s; Lint pass 30s; Setup pass 29s; Test pass 4m39s — todos os 5 checks verdes no run 27878351020",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-028",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T17:32:10Z",
+      "stage": "review-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "AC review: FR-001 multi-tenancy via AsyncLocalStorage",
+      "options_considered": [
+        "ac-atendido",
+        "ac-parcial",
+        "ac-falhou"
+      ],
+      "choice": "ac-atendido",
+      "rationale": "NotificationsService.dispatch() extrai tenantId via getRequestContext() (AsyncLocalStorage). NotificationsWorker rebuilds RequestContext de job.data.tenantId via requestContext.run(). Nenhum método recebe tenantId como parâmetro de chamada. InAppChannel também usa getRequestContext() para o canal Redis. Controller extrai userId de ctx — BOLA-safe.",
+      "justification_score": 3,
+      "evidence": "notifications.service.ts L43: const ctx = getRequestContext(); L44: const { tenantId, correlationId } = ctx; — sem tenantId como param",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-029",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T17:32:19Z",
+      "stage": "review-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "AC review: FR-003 RLS USING+WITH CHECK na tabela notifications",
+      "options_considered": [
+        "rls-correto",
+        "rls-parcial",
+        "rls-falhou"
+      ],
+      "choice": "rls-correto",
+      "rationale": "Migration cria policy tenant_isolation com USING e WITH CHECK usando NULLIF(current_setting('app.current_tenant_id', true), '')::uuid — sem ramo IS NULL (Decision 4 da spec). RLS spec notifications.rls-spec.ts cobre: (1) tenant A só vê suas notificações, (2) tenant B não vê as de A, (3) INSERT com tenant_id errado bloqueado pelo WITH CHECK, (4) SELECT sem SET LOCAL retorna 0 rows. Test pass CI.",
+      "justification_score": 3,
+      "evidence": "migration.sql: CREATE POLICY tenant_isolation ON notifications USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid) WITH CHECK (tenant_id = NULLIF(...))",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-030",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T17:32:30Z",
+      "stage": "review-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "AC review: uuidv7 via generateId() — gen_random_uuid() no schema Prisma como fallback",
+      "options_considered": [
+        "conforme",
+        "nao-conforme",
+        "aceitavel-com-nota"
+      ],
+      "choice": "aceitavel-com-nota",
+      "rationale": "Schema Prisma usa @default(dbgenerated('gen_random_uuid()')) mas o service SEMPRE chama notificationId = generateId() (uuidv7) antes do INSERT e passa explicitamente como $1. O DEFAULT de DB nunca é acionado pelo código da aplicação — mesmo padrão de outras tabelas do projeto (ex: _health table). A regra do projeto é: nunca usar @default(uuid()) do Prisma — e de fato não usa. Recomenda-se remover o gen_random_uuid() default do schema em refactoring futuro para clareza.",
+      "justification_score": 2,
+      "evidence": "notifications.service.ts L58: const notificationId = generateId(); — passado em $1 do INSERT. Migration L12: DEFAULT gen_random_uuid() nunca ativado pelo código.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-031",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T17:32:39Z",
+      "stage": "review-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "AC review: FR-013 contratos Zod com snapshots em packages/types",
+      "options_considered": [
+        "ac-atendido",
+        "ac-parcial",
+        "ac-falhou"
+      ],
+      "choice": "ac-atendido",
+      "rationale": "8 schemas Zod em packages/types/src/notification.ts: NotificationTypeSchema, NotificationChannelSchema, NotificationStatusSchema, NotificationDispatchSchema, NotificationPayloadSchema, NotificationResultSchema, NotificationJobPayloadSchema, NotificationRealtimeEventSchema. Snapshot spec notification.snapshot.spec.ts cobre todos os schemas. Fix de lição lint (commit 63ccf61) adicionou cobertura de NotificationPayload e NotificationResult que faltavam. CI Test pass com 582 testes.",
+      "justification_score": 3,
+      "evidence": "notification.snapshot.spec.ts importa e testa todos os 8 schemas; CI Test pass 4m39s no run 27878351020",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-032",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T17:32:50Z",
+      "stage": "review-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Review OWASP findings remanescentes: 1 MEDIUM (actionUrl/metadata), 1 LOW (rate-limit)",
+      "options_considered": [
+        "endereçado-em-codigo",
+        "tech-debt-rastreavel",
+        "escalar-humano"
+      ],
+      "choice": "tech-debt-rastreavel",
+      "rationale": "MEDIUM: metadata.actionUrl usa z.record(z.string(), z.unknown()) sem sanitização de URL/XSS. Não endereçado na Story 14-1 (escopo: infra backend). O risco se materializa quando o FE (Story 14.2a) consumir actionUrl — Story 14.2a DEVE sanitizar e validar URL no client antes de renderizar. Registrar como tech-debt para Story 14.2a. LOW: endpoints GET /api/v1/notifications não têm ThrottlerGuard — rate-limit global de plataforma cobre (conforme constitution), não é requisito desta story. Registrar como tech-debt opcional para hardening futuro.",
+      "justification_score": 2,
+      "evidence": "notification.ts: metadata: z.record(z.string(), z.unknown()).optional() — sem validação de actionUrl como URL segura. Controller: sem @Throttle decorator nos endpoints de leitura.",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-20T17:31:44Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 6,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 4484,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 32,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0,
+    "cache": {
+      "tokens_cache_misses_disabled": 2
+    }
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "infraestrutura",
+    "notificacoes",
+    "channel",
+    "router",
+    "fr77",
+    "modulo",
+    "modules"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T15:52:24Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T15:56:28Z",
+      "description": "onda-001 concluida: specify done, clarify pending"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T16:15:00Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T16:21:13Z",
+      "description": "onda plan encerrada; aguardando wakeup para checklist"
+    }
+  ],
+  "current_wave_id": "onda-002",
+  "tasks": [
+    {
+      "task_id": "1.1",
+      "title": "Fechar gaps abertos do checklist",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "1.2",
+      "title": "Contratos Zod em packages/types",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.1",
+      "title": "Prisma model e enums",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.2",
+      "title": "Migration SQL 20260629000000",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.3",
+      "title": "Spec RLS idempotente",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.1",
+      "title": "Configuracao de ambiente NOTIFICATION_DIGEST_WINDOW_MS",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.2",
+      "title": "NotificationsService.dispatch()",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.3",
+      "title": "NotificationsController",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.4",
+      "title": "NotificationsModule",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.1",
+      "title": "ChannelRouter",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.2",
+      "title": "NotificationChannelInterface e InAppChannel",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.3",
+      "title": "EmailChannel stub",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.4",
+      "title": "NotificationsWorker",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.1",
+      "title": "DigestService",
+      "wave_id": "onda-004",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-20T17:10:24Z",
+      "source": "execute-task"
+    }
+  ]
+}
