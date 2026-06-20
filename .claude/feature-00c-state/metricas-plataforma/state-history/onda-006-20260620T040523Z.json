@@ -9,7 +9,7 @@
     "status": "concluida",
     "termination_reason": "concluido",
     "started_at": "2026-06-20T02:41:58Z",
-    "finished_at": "2026-06-20T04:05:23Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {

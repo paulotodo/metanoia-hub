@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.4 — Métricas de Plataforma Super Admin (FR67): materialized view mv_platform_metrics cross-tenant (totais, churn, growth, storage) + UNIQUE INDEX, job child refresh-platform-views (BullMQ parent/child do refresh-tenant-views da 13.2b), endpoints GET /api/v1/admin/platform-metrics/{summary,tenants} (@Roles super_admin, sem RLS, cache Redis 5min), sub-dependência tenant_storage_usage. Refresh via conexão privilegiada (lição 13-2b). Zod, validar Postgres local.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T02:41:58Z",
-    "finished_at": "2026-06-20T04:05:23Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -134,11 +134,11 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-20T04:04:35Z",
-      "finished_at": "2026-06-20T04:05:17Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 42,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -714,9 +714,9 @@
     "current_wave_start": "2026-06-20T04:04:35Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2726,
+    "wallclock_total_seconds": 2684,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 29,

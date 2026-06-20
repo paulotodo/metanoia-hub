@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.4 — Métricas de Plataforma Super Admin (FR67): materialized view mv_platform_metrics cross-tenant (totais, churn, growth, storage) + UNIQUE INDEX, job child refresh-platform-views (BullMQ parent/child do refresh-tenant-views da 13.2b), endpoints GET /api/v1/admin/platform-metrics/{summary,tenants} (@Roles super_admin, sem RLS, cache Redis 5min), sub-dependência tenant_storage_usage. Refresh via conexão privilegiada (lição 13-2b). Zod, validar Postgres local.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T02:41:58Z",
-    "finished_at": "2026-06-20T04:05:23Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -130,23 +130,6 @@
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": []
-    },
-    {
-      "id": "onda-006",
-      "started_at": "2026-06-20T04:04:35Z",
-      "finished_at": "2026-06-20T04:05:17Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 42,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "review-task",
-          "timestamp": "2026-06-20T04:05:02Z",
-          "decision_id": "dec-029"
-        }
-      ]
     }
   ],
   "decisions": [
@@ -659,44 +642,6 @@
       "evidence": "antes: Tests 9 failed; depois: Tests 9 passed; tsc 0 errors apos edits",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T03:59:14Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 5 (fase review-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:haiku",
-      "rationale": "sugerido=haiku aplicado=haiku origem=mapa | faixa=rasa fase=review-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-20T04:04:55Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Auditoria completa Story 13.4 (FR67) — lint, build, testes, corretude",
-      "options_considered": [
-        "aprovar",
-        "rejeitar-com-findings"
-      ],
-      "choice": "aprovar",
-      "rationale": "Lint verde (1 fix: _tenantId param); build 3/3; tipos 558/558; web 875/875; api 71/71. 48/49 checks PASS; SVC-02 FAIL era falso positivo (sortCol vem de whitelist fechado). Todas constraintss de segurança atendidas: @UseGuards nível classe, SORT_COLUMN_MAP, UPSERT non-fatal, REFRESH CONCURRENTLY via privileged client, RLS policy nullif OK.",
-      "justification_score": 3,
-      "evidence": "Test Files 10 passed (10), Tests 71 passed (71) — apps/api; 558 passed (558) — types; 875 passed (875) — web; build Tasks 3 successful; lint Tasks 4 successful",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -711,15 +656,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-20T04:04:35Z"
+    "current_wave_start": "2026-06-20T03:37:57Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2726,
+    "wallclock_total_seconds": 2684,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 29,
+    "decisions_total": 27,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -918,20 +863,6 @@
       "touched_files": [],
       "recorded_at": "2026-06-20T03:56:15Z",
       "source": "reconcile"
-    },
-    {
-      "task_id": "review-task",
-      "title": "Review e Gate de Qualidade — Story 13.4",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1504,
-      "tests_passed": 1504,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/test/rls/tenant-storage-usage.rls-spec.ts"
-      ],
-      "recorded_at": "2026-06-20T04:05:02Z",
-      "source": "review-task"
     }
   ]
 }
