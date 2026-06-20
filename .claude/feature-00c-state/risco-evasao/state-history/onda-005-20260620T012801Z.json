@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Onda parcial: backend FASES 1-7 + FASE 10 (RLS/unit) commitado em feat/13-3-risco-evasao (commits 100fbba, 0c64833). Build typecheck 0 erros. PENDENTE: FASE 8 (PastoralRiskEventPublisher — emitir risk-detected no job + risk-resolved na resolução via EventEmitter2, envelope sem PII); FASE 9 (UI web: Radar exibe riskReason, CelebrationBanner aria-live, Care Timeline via PastoralNote FR66-09 — pagina autenticada, NAO tocar gate axe publico); FASE 10 restante (10.1 isolamento multi-tenant do job, 10.4 cliente privilegiado confinado AC-SEC-01). Manter current_stage=execute-task ate FASE 8+9 completas.",
+  "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -127,10 +127,10 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T01:01:33Z",
-      "finished_at": "2026-06-20T01:28:09Z",
+      "finished_at": "2026-06-20T01:05:20Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1596,
+      "wallclock_seconds": 227,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -670,9 +670,9 @@
     "current_wave_start": "2026-06-20T01:01:33Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2914,
+    "wallclock_total_seconds": 1318,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 27,

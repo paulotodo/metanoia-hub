@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Onda parcial: backend FASES 1-7 + FASE 10 (RLS/unit) commitado em feat/13-3-risco-evasao (commits 100fbba, 0c64833). Build typecheck 0 erros. PENDENTE: FASE 8 (PastoralRiskEventPublisher — emitir risk-detected no job + risk-resolved na resolução via EventEmitter2, envelope sem PII); FASE 9 (UI web: Radar exibe riskReason, CelebrationBanner aria-live, Care Timeline via PastoralNote FR66-09 — pagina autenticada, NAO tocar gate axe publico); FASE 10 restante (10.1 isolamento multi-tenant do job, 10.4 cliente privilegiado confinado AC-SEC-01). Manter current_stage=execute-task ate FASE 8+9 completas.",
+  "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -127,10 +127,10 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T01:01:33Z",
-      "finished_at": "2026-06-20T01:28:09Z",
+      "finished_at": "2026-06-20T01:05:20Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1596,
+      "wallclock_seconds": 227,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -635,24 +635,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T01:27:31Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execução backend Story 13.3: FASES 1-7 (migrations, Zod, contratos, interceptor, detection service, job BullMQ, recesso) + FASE 10 parcial (RLS + unit SC-04). Build typecheck limpo (0 erros), 543 tests types + 6 detection + 5 interceptor + 10 groups passando.",
-      "options_considered": [
-        "executar-backend-completo-1onda",
-        "fatiar-backend-frontend"
-      ],
-      "choice": "fatiar-backend-frontend",
-      "rationale": "Backend (FASES 1-7,10) é subconjunto coerente e testável local; FASE 8 (publisher) + FASE 9 (UI web) ficam para próxima onda. tsc --noEmit retornou 0 erros nos arquivos da feature; vitest: 543 types + 6 EvasionDetection + 5 interceptor + 10 groups verdes.",
-      "justification_score": 3,
-      "evidence": "tsc --noEmit grep 'error TS' (excl. 3 specs pré-existentes) = vazio (exit 0); vitest evasion-detection.service.spec.ts: Tests 6 passed; last-seen.interceptor.spec.ts: Tests 5 passed; groups.service.spec.ts: Tests 10 passed",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -670,12 +652,12 @@
     "current_wave_start": "2026-06-20T01:01:33Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2914,
+    "wallclock_total_seconds": 1318,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 27,
+    "decisions_total": 26,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -721,68 +703,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T01:05:20Z",
       "description": "onda-005 create-tasks concluido; aguardando wakeup para execute-task"
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "1.1",
-      "title": "Migration M1 users.last_seen_at",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T01:27:41Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.2",
-      "title": "EvasionDetectionService detecção",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T01:27:41Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "6.1",
-      "title": "DetectEvasionRiskProcessor BullMQ",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T01:27:41Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.1",
-      "title": "LastSeenInterceptor",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T01:27:41Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "10.5",
-      "title": "Cenário manualOverrideAt guarda 24h",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T01:27:41Z",
-      "source": "execute-task"
     }
   ]
 }
