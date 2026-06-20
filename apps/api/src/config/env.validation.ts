@@ -36,6 +36,7 @@ export const envSchema = z.object({
     z.string().url().optional(),
   ),
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).optional(),
+  NOTIFICATION_DIGEST_WINDOW_MS: z.coerce.number().int().positive().default(300000),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

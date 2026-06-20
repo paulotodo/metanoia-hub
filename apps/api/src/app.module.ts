@@ -33,6 +33,7 @@ import { ReportsModule } from './reports/reports.module';
 import { SearchModule } from './search/search.module';
 import { AuditModule } from './audit/audit.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
+import { NotificationsModule } from './notifications/notifications.module';
 import { LastSeenInterceptor } from './common/interceptors/last-seen.interceptor';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -81,6 +82,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     ReportsModule,
     SearchModule,
     AuditModule,
+    NotificationsModule,
   ],
   providers: [
     {

@@ -1,0 +1,77 @@
+import { z } from 'zod';
+
+// --- Enums ---
+
+export const NotificationTypeSchema = z.enum([
+  'pastoral_alert',
+  'group_message',
+  'content_update',
+  'meeting_reminder',
+  'system',
+]);
+export type NotificationType = z.infer<typeof NotificationTypeSchema>;
+
+export const NotificationChannelSchema = z.enum(['in_app', 'email']);
+export type NotificationChannel = z.infer<typeof NotificationChannelSchema>;
+
+export const NotificationStatusSchema = z.enum(['pending', 'sent', 'failed', 'read']);
+export type NotificationStatus = z.infer<typeof NotificationStatusSchema>;
+
+// --- Dispatch DTO ---
+
+export const NotificationDispatchSchema = z.object({
+  userId: z.string().uuid(),
+  type: NotificationTypeSchema,
+  title: z.string().min(1).max(200),
+  body: z.string().min(1),
+  channels: z.array(NotificationChannelSchema).min(1),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+export type NotificationDispatch = z.infer<typeof NotificationDispatchSchema>;
+
+// --- Channel payload / result ---
+
+export const NotificationPayloadSchema = z.object({
+  notificationId: z.string().uuid(),
+  tenantId: z.string().uuid(),
+  userId: z.string().uuid(),
+  channel: NotificationChannelSchema,
+  type: NotificationTypeSchema,
+  title: z.string(),
+  body: z.string(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+export type NotificationPayload = z.infer<typeof NotificationPayloadSchema>;
+
+export const NotificationResultSchema = z.object({
+  success: z.boolean(),
+  error: z.string().optional(),
+});
+export type NotificationResult = z.infer<typeof NotificationResultSchema>;
+
+// --- Job payload (BullMQ) ---
+
+export const NotificationJobPayloadSchema = z.object({
+  notificationId: z.string().uuid(),
+  tenantId: z.string().uuid(),
+  userId: z.string().uuid(),
+  channel: NotificationChannelSchema,
+  correlationId: z.string(),
+});
+export type NotificationJobPayload = z.infer<typeof NotificationJobPayloadSchema>;
+
+// --- Realtime event (Redis pub/sub) ---
+
+export const NotificationRealtimeEventSchema = z.object({
+  notificationId: z.string().uuid(),
+  type: NotificationTypeSchema,
+  title: z.string(),
+  body: z.string(),
+  createdAt: z.string().datetime(),
+});
+export type NotificationRealtimeEvent = z.infer<typeof NotificationRealtimeEventSchema>;
+
+// --- Constants ---
+
+export const NOTIFICATIONS_QUEUE_NAME = 'notifications' as const;
+export const NOTIFICATION_DIGEST_DEFAULT_WINDOW_MS = 300000 as const;

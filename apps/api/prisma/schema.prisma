@@ -1025,3 +1025,49 @@ model ContentTemplate {
   @@index([sourceTrailId])
   @@map("content_templates")
 }
+
+enum NotificationType {
+  pastoral_alert
+  group_message
+  content_update
+  meeting_reminder
+  system
+
+  @@map("notification_type")
+}
+
+enum NotificationChannel {
+  in_app
+  email
+
+  @@map("notification_channel")
+}
+
+enum NotificationStatus {
+  pending
+  sent
+  failed
+  read
+
+  @@map("notification_status")
+}
+
+/// Notification — infra-notificacoes Story 14-1 (FR77)
+model Notification {
+  id        String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String              @map("tenant_id") @db.Uuid
+  userId    String              @map("user_id") @db.Uuid
+  type      NotificationType
+  channel   NotificationChannel
+  status    NotificationStatus  @default(pending)
+  title     String              @db.VarChar(200)
+  body      String              @db.Text
+  metadata  Json                @default("{}") @db.JsonB
+  readAt    DateTime?           @map("read_at") @db.Timestamptz
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([userId, status, createdAt(sort: Desc)], name: "notifications_user_status_created_idx")
+  @@index([tenantId], name: "notifications_tenant_idx")
+  @@map("notifications")
+}
