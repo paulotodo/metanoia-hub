@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -45,11 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T16:00:41Z",
-      "finished_at": "2026-06-20T16:21:13Z",
+      "finished_at": "2026-06-20T16:07:31Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1232,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 410,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -76,21 +76,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-20T16:07:31Z",
           "decision_id": null
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-20T16:19:58Z",
-          "decision_id": "dec-017"
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-20T16:20:43Z",
-          "decision_id": "dec-018"
-        },
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-20T16:20:59Z",
-          "decision_id": "dec-016"
         }
       ]
     }
@@ -360,98 +345,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:15:11Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=infra-notificacoes)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados: infraestrutura notificacoes channel router fr77; achado templates-conteudo confirma metadata JSONB pattern no mesmo projeto",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:19:32Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Plano técnico gerado: 5 artefatos (plan/research/data-model/quickstart/2 contracts) ancorados em padrões reais do projeto",
-      "options_considered": [
-        "gerar-plano",
-        "abortar"
-      ],
-      "choice": "gerar-plano",
-      "rationale": "Migration timestamp 20260629000000 > ultima existente 20260628000000_13-5-content-templates verificado empiricamente; RequestContext.run, BullMqService, withTenantTx, RLS tenant_isolation replicados de codigo existente",
-      "justification_score": 3,
-      "evidence": "ultima migration no disco: 20260628000000_13-5-content-templates; nova proposta 20260629000000 e estritamente posterior",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:19:58Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality: skill validate-documentation indisponivel neste ambiente; executada checagem deterministica via grep (TBD/TODO/NEEDS CLARIFICATION/placeholders)",
-      "options_considered": [
-        "rodar-skill-llm",
-        "checagem-deterministica",
-        "skip"
-      ],
-      "choice": "checagem-deterministica",
-      "rationale": "grep nao encontrou marcadores nao-resolvidos nem placeholders de template; headings completos nos 5 artefatos",
-      "justification_score": 3,
-      "evidence": "grep TBD|TODO|FIXME|placeholders => NONE_FOUND (so prosa confirmando resolucao); bracket placeholders => NONE",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:20:43Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security executado sobre o desenho: BOLA/IDOR, metadata injection, SSE auth, job context-rebuild. Findings: 1 medium (actionUrl/metadata), 1 low (rate-limit read endpoints). Zero critical/high",
-      "options_considered": [
-        "aceitar-risco-com-justificativa",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-risco-com-justificativa",
-      "rationale": "BOLA mitigado por defesa em profundidade (userId=ctx.userId + RLS WITH CHECK + 404-not-403 literal nos contratos); RLS sem ramo IS NULL fecha cross-tenant; SSE payload minimo+canal tenant/user. Medium/low sao notas de implementacao, nao bloqueiam o plano",
-      "justification_score": 3,
-      "evidence": "contracts/notifications-api.md L28-38 literal: 'a query SEMPRE filtra por userId = ctx.userId E depende da RLS'; 'WHERE inclui id = :id AND user_id = ctx.userId. Notificacao de outro usuario/tenant -> 404'",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:20:43Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Finding owasp MEDIUM: metadata jsonb usa z.record(z.string(), z.unknown()) (notification-channel.md L31/L51); actionUrl consumido por FE futuro = vetor stored-XSS/open-redirect",
-      "options_considered": [
-        "registrar-nota-para-implementacao",
-        "ignorar"
-      ],
-      "choice": "registrar-nota-para-implementacao",
-      "rationale": "jsonb e injection-safe via Prisma parametrizado; risco e no consumo de actionUrl no FE (Story 14.2x). Nota: validar/allowlist actionUrl (https same-origin) na borda de render + considerar schema mais restrito para metadata por tipo",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -469,12 +362,12 @@
     "current_wave_start": "2026-06-20T16:00:41Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1874,
+    "wallclock_total_seconds": 642,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 19,
+    "decisions_total": 14,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -503,16 +396,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T15:56:28Z",
       "description": "onda-001 concluida: specify done, clarify pending"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-20T16:15:00Z",
-      "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T16:21:13Z",
-      "description": "onda plan encerrada; aguardando wakeup para checklist"
     }
   ],
   "current_wave_id": "onda-002"

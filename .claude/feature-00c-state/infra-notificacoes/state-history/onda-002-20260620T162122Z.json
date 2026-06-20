@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",

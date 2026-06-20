@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -45,11 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T16:00:41Z",
-      "finished_at": "2026-06-20T16:21:13Z",
+      "finished_at": "2026-06-20T16:07:31Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1232,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 410,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -86,11 +86,6 @@
           "skill": "owasp-security",
           "timestamp": "2026-06-20T16:20:43Z",
           "decision_id": "dec-018"
-        },
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-20T16:20:59Z",
-          "decision_id": "dec-016"
         }
       ]
     }
@@ -434,24 +429,6 @@
       "evidence": "contracts/notifications-api.md L28-38 literal: 'a query SEMPRE filtra por userId = ctx.userId E depende da RLS'; 'WHERE inclui id = :id AND user_id = ctx.userId. Notificacao de outro usuario/tenant -> 404'",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:20:43Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Finding owasp MEDIUM: metadata jsonb usa z.record(z.string(), z.unknown()) (notification-channel.md L31/L51); actionUrl consumido por FE futuro = vetor stored-XSS/open-redirect",
-      "options_considered": [
-        "registrar-nota-para-implementacao",
-        "ignorar"
-      ],
-      "choice": "registrar-nota-para-implementacao",
-      "rationale": "jsonb e injection-safe via Prisma parametrizado; risco e no consumo de actionUrl no FE (Story 14.2x). Nota: validar/allowlist actionUrl (https same-origin) na borda de render + considerar schema mais restrito para metadata por tipo",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -469,12 +446,12 @@
     "current_wave_start": "2026-06-20T16:00:41Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1874,
+    "wallclock_total_seconds": 642,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 19,
+    "decisions_total": 18,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -508,11 +485,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T16:15:00Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T16:21:13Z",
-      "description": "onda plan encerrada; aguardando wakeup para checklist"
     }
   ],
   "current_wave_id": "onda-002"

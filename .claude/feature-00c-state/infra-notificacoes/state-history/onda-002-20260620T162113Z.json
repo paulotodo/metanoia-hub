@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -45,11 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T16:00:41Z",
-      "finished_at": "2026-06-20T16:21:13Z",
+      "finished_at": "2026-06-20T16:07:31Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1232,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 410,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -469,9 +469,9 @@
     "current_wave_start": "2026-06-20T16:00:41Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1874,
+    "wallclock_total_seconds": 642,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 19,
