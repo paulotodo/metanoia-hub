@@ -6,7 +6,7 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "SSE Endpoint & Redis Pub/Sub Backend (FR77) — endpoint GET /api/v1/sse/notifications tenant-scoped (guard Keycloak extrai tenant_id/user_id), heartbeat a cada 30s, limite 1000 conexoes/instancia (SSE_MAX_CONNECTIONS, 503+Retry-After:30) e 5/usuario via Redis SET sse:connections:{tenantId}:{userId} (SSE_MAX_PER_USER, fecha a mais antiga). InAppChannel publica em rt:notifications:{tenantId}:{userId} (criado na 14-1); SseController assina o canal e faz push event:notification. Cleanup remove do SET e desfaz subscription. Teste de isolamento cross-tenant obrigatorio.",
     "suggested_stack": null,
-    "status": "aguardando_humano",
+    "status": "em_andamento",
     "termination_reason": null,
     "started_at": "2026-06-20T21:16:29Z",
     "finished_at": null
@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "AGUARDANDO HUMANO: 2 bloqueios pendentes (block-001 estrutura Redis ZSET vs SET para conexao mais antiga; block-002 escopo de conexoes afetadas em EC-02). Apos /feature-00c-resume com respostas, aplicar decisoes na spec (FR-05/FR-06/EC-02) e avancar clarify->plan via feature-00c-preflight.sh check.",
+  "next_instruction": "Iniciar etapa clarify: spawn feature-00c-clarify-asker para verificar ambiguidades na spec.md gerada.",
   "waves": [
     {
       "id": "onda-001",
@@ -52,13 +52,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T21:24:14Z",
-      "finished_at": "2026-06-20T21:29:35Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 321,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -70,11 +68,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-20T21:26:07Z",
           "decision_id": "dec-007"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-20T21:29:05Z",
-          "decision_id": "dec-008"
         }
       ]
     }
@@ -217,68 +210,9 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T21:27:46Z",
-      "stage": "clarify",
-      "agent": "feature-00c-clarify-answerer",
-      "context": "Clarify Q3: SSE dentro de NotificationsModule ou SseModule separado?",
-      "options_considered": [
-        "dentro-de-NotificationsModule",
-        "SseModule-separado"
-      ],
-      "choice": "dentro-de-NotificationsModule",
-      "rationale": "Constitution lista notifications como bounded context autonomo; SSE e adapter de entrega, nao bounded context proprio. Spec secao 8 especifica sse/ dentro de apps/api/src/notifications/ e registrar em notifications.module.ts.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T21:29:05Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify gerou 2 bloqueios humanos (Q1 estrutura Redis, Q2 escopo EC-02); Q3 resolvida (dec-008). Encerrar onda aguardando humano.",
-      "options_considered": [
-        "encerrar-com-bloqueio",
-        "forcar-default-sem-fonte"
-      ],
-      "choice": "encerrar-com-bloqueio",
-      "rationale": "Score 0 em Q1/Q2: nenhuma fonte (briefing/constitution/spec) prescreve default fiel. Forcar default violaria Pause-or-Decide (Principio II). Spec atualizada com seccao Clarifications documentando estado.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
-  "human_blocks": [
-    {
-      "id": "block-001",
-      "decision_id": "dec-008",
-      "question": "Clarify Q1: Como identificar a 'conexao mais antiga' ao atingir SSE_MAX_PER_USER? A spec (FR-05/US3) usa Redis SET sse:connections:{tenantId}:{userId}, mas SET nao tem ordem. Opcoes: (A) ZSET com score=timestamp de criacao (ZRANGE para a mais antiga, atomico via ZADD/ZRANGEBYSCORE/ZREM, mas muda a estrutura 'SET' da spec); (B) SET de connection IDs + chave auxiliar (ZSET/LIST) por usuario so para ordem. Qual estrutura?",
-      "context_for_answer": "FR-05/FR-06/US3/EC-04 definem o comportamento 'fechar a mais antiga' mas usam Redis SET sem ordenacao temporal. Nenhuma das 3 fontes (briefing, constitution, spec) prescreve a estrutura. Recomendacao tecnica de partida: (A) ZSET com score=timestamp e mais simples e atomico (um unico ZADD/ZRANGEBYSCORE/ZREM por operacao), evitando a nao-atomicidade de LINDEX+LREM. Trade-off: a spec fala 'SET' (FR-05) — adotar ZSET requer atualizar a spec. Impacta SseConnectionManager significativamente.",
-      "recommended_options": null,
-      "status": "aguardando",
-      "human_answer": null,
-      "answered_at": null,
-      "triggered_at": "2026-06-20T21:27:59Z"
-    },
-    {
-      "id": "block-002",
-      "decision_id": "dec-008",
-      "question": "Clarify Q2: Em EC-02 (Redis cai com conexoes ativas), o que sao 'conexoes afetadas' a encerrar? (a) TODAS as conexoes da instancia NestJS quando Redis cai totalmente; ou (b) APENAS as conexoes cujo subscriber Redis especifico foi perdido. Em ambos os casos, enviar event:error antes de fechar (conforme EC-02)?",
-      "context_for_answer": "EC-02 ordena: emitir event:error, encerrar 'conexoes afetadas', nao vazar subscriptions. 'Afetadas' e ambiguo. Constitution (Principio I, menor blast radius) favorece (b) — escopo minimo. A spec exige event:error antes de fechar. Recomendacao de partida: (b) + event:error — encerrar apenas as conexoes com subscriber perdido, enviando event:error antes de cada fechamento. Como Redis e single-instance no MVP (constitution), na pratica uma queda total derruba todas; mas a logica deve confinar o encerramento as conexoes cujo subscriber falhou. Confirme se (b) e aceitavel ou se prefere (a) por simplicidade.",
-      "recommended_options": null,
-      "status": "aguardando",
-      "human_answer": null,
-      "answered_at": null,
-      "triggered_at": "2026-06-20T21:28:13Z"
-    }
-  ],
+  "human_blocks": [],
   "budgets": {
     "max_recursion": 3,
     "current_subagent_depth": 1,
@@ -293,13 +227,13 @@
     "current_wave_start": "2026-06-20T21:24:14Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 522,
+    "wallclock_total_seconds": 201,
     "max_depth_reached": 2,
-    "subagents_spawned": 2,
-    "decisions_total": 9,
-    "human_blocks_total": 2,
+    "subagents_spawned": 1,
+    "decisions_total": 7,
+    "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
   },

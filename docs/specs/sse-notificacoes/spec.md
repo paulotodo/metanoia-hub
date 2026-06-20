@@ -9,6 +9,49 @@
 
 ---
 
+## Clarifications
+
+> Sessão de clarify (feature-00c, 2026-06-20). Asker gerou 3 perguntas
+> materiais; answerer aplicou heurística score 0..3 sobre briefing +
+> constitution + spec. Q3 resolvida autonomamente (score 2); Q1 e Q2
+> escaladas a bloqueio humano (score 0 — nenhuma fonte prescreve default fiel).
+
+### Q3 — Organização do módulo SSE (RESOLVIDA, score 2 — dec-008)
+
+**Pergunta**: O endpoint SSE deve ser parte do NotificationsModule existente
+ou de um SseModule separado?
+
+**Decisão**: SSE fica **dentro do NotificationsModule** existente. O
+`SseController`, `SseConnectionManager` e `SseRedisService` são providers
+registrados em `notifications.module.ts`. NÃO criar `SseModule` separado.
+
+**Justificativa**: A constitution lista `notifications` como bounded context
+NestJS autônomo; SSE é adapter de entrega dentro desse contexto, não um
+bounded context próprio. A seção 8 (Estrutura de Arquivos) já especifica
+`apps/api/src/notifications/sse/` e "registrar em `notifications.module.ts`".
+
+### Q1 — Estrutura Redis para "conexão mais antiga" (PENDENTE — bloqueio humano block-001)
+
+**Pergunta**: FR-05/US3 usam Redis SET `sse:connections:{tenantId}:{userId}`,
+mas SET não tem ordenação. Como identificar a "conexão mais antiga"
+(FR-06/EC-04) ao atingir `SSE_MAX_PER_USER`?
+
+**Status**: Aguardando decisão humana. Opções:
+(A) ZSET com `score=timestamp` de criação — `ZRANGE` para a mais antiga,
+atômico via `ZADD`/`ZRANGEBYSCORE`/`ZREM`, mas substitui o "SET" da spec;
+(B) SET de connection IDs + chave auxiliar (ZSET/LIST) por usuário só para ordem.
+Recomendação técnica de partida: (A). Impacta `SseConnectionManager`.
+
+### Q2 — Escopo de "conexões afetadas" em EC-02 (PENDENTE — bloqueio humano block-002)
+
+**Pergunta**: Em EC-02 (Redis cai com conexões ativas), "encerrar conexões
+afetadas" significa (a) todas as conexões da instância, ou (b) apenas as
+conexões cujo subscriber Redis foi perdido?
+
+**Status**: Aguardando decisão humana. Constitution (menor blast radius)
+favorece (b). Em ambos os casos, emitir `event: error` antes de fechar
+(conforme EC-02). Recomendação de partida: (b) + `event: error`.
+
 ## 1. Contexto e Problema
 
 O módulo `notifications` (Story 14-1) entrega a infraestrutura de disparo:

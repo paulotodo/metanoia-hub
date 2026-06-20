@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "clarify",
-  "next_instruction": "AGUARDANDO HUMANO: 2 bloqueios pendentes (block-001 estrutura Redis ZSET vs SET para conexao mais antiga; block-002 escopo de conexoes afetadas em EC-02). Apos /feature-00c-resume com respostas, aplicar decisoes na spec (FR-05/FR-06/EC-02) e avancar clarify->plan via feature-00c-preflight.sh check.",
+  "next_instruction": "Iniciar etapa clarify: spawn feature-00c-clarify-asker para verificar ambiguidades na spec.md gerada.",
   "waves": [
     {
       "id": "onda-001",
@@ -52,13 +52,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T21:24:14Z",
-      "finished_at": "2026-06-20T21:29:35Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 321,
-      "termination_reason": "bloqueio_humano",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -235,24 +233,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T21:29:05Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify gerou 2 bloqueios humanos (Q1 estrutura Redis, Q2 escopo EC-02); Q3 resolvida (dec-008). Encerrar onda aguardando humano.",
-      "options_considered": [
-        "encerrar-com-bloqueio",
-        "forcar-default-sem-fonte"
-      ],
-      "choice": "encerrar-com-bloqueio",
-      "rationale": "Score 0 em Q1/Q2: nenhuma fonte (briefing/constitution/spec) prescreve default fiel. Forcar default violaria Pause-or-Decide (Principio II). Spec atualizada com seccao Clarifications documentando estado.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -293,12 +273,12 @@
     "current_wave_start": "2026-06-20T21:24:14Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 522,
+    "wallclock_total_seconds": 201,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 9,
+    "decisions_total": 8,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
