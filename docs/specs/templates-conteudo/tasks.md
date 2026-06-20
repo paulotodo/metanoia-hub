@@ -78,19 +78,19 @@ FASE 5 (Revisão + Gate)
 - `apps/api/prisma/migrations/20260628000000_13-5-content-templates/migration.sql` (criar)
 
 **Critérios de aceite**:
-- [ ] Enum `CREATE TYPE "TemplateScope" AS ENUM ('platform', 'tenant')` criado antes da tabela
-- [ ] Tabela `content_templates` com colunas exatas: `id UUID NOT NULL PRIMARY KEY`, `tenant_id UUID` (NULLABLE — NULL = platform), `scope "TemplateScope" NOT NULL`, `source_trail_id UUID REFERENCES trails(id) ON DELETE SET NULL ON UPDATE CASCADE`, `name VARCHAR(500) NOT NULL`, `description VARCHAR(1000)`, `version INTEGER NOT NULL DEFAULT 1`, `structure JSONB NOT NULL`, `created_by UUID NOT NULL`, `created_at TIMESTAMPTZ NOT NULL DEFAULT now()`, `deleted_at TIMESTAMPTZ`
-- [ ] `UNIQUE INDEX content_templates_source_trail_version_idx ON content_templates (source_trail_id, version)`
-- [ ] Índices de query: `(tenant_id)`, `(tenant_id, scope)`, `(tenant_id, deleted_at)`, `(source_trail_id)`
-- [ ] `ALTER TABLE content_templates ENABLE ROW LEVEL SECURITY` + `FORCE ROW LEVEL SECURITY`
-- [ ] **Policy READ** (`content_templates_read`): `FOR SELECT USING (tenant_id IS NULL OR tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid)` — única policy que permite NULL (platform visível a todos)
-- [ ] **Policy INSERT** (`content_templates_insert`): `FOR INSERT WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid)` — NUNCA permite NULL via app
-- [ ] **Policy UPDATE** (`content_templates_update`): `FOR UPDATE USING (tenant_id = NULLIF(...)) WITH CHECK (tenant_id = NULLIF(...))` — AMBAS cláusulas presentes, impede re-associação cross-tenant
-- [ ] **Policy DELETE** (`content_templates_delete`): `FOR DELETE USING (tenant_id = NULLIF(...))` — apenas linhas do próprio tenant
-- [ ] `GRANT SELECT, INSERT, UPDATE, DELETE ON content_templates TO metanoia_app`
-- [ ] Comentário SQL explicando risco A01/API3 BOPLA (dec-015) nas policies de escrita
-- [ ] Migration usa `--create-only` (não executada automaticamente pelo Prisma em dev — seed separado)
-- [ ] Timestamp `20260628000000` (posterior à última migration `20260627*` confirmada)
+- [x] Enum `CREATE TYPE "TemplateScope" AS ENUM ('platform', 'tenant')` criado antes da tabela
+- [x] Tabela `content_templates` com colunas exatas: `id UUID NOT NULL PRIMARY KEY`, `tenant_id UUID` (NULLABLE — NULL = platform), `scope "TemplateScope" NOT NULL`, `source_trail_id UUID REFERENCES trails(id) ON DELETE SET NULL ON UPDATE CASCADE`, `name VARCHAR(500) NOT NULL`, `description VARCHAR(1000)`, `version INTEGER NOT NULL DEFAULT 1`, `structure JSONB NOT NULL`, `created_by UUID NOT NULL`, `created_at TIMESTAMPTZ NOT NULL DEFAULT now()`, `deleted_at TIMESTAMPTZ`
+- [x] `UNIQUE INDEX content_templates_source_trail_version_idx ON content_templates (source_trail_id, version)`
+- [x] Índices de query: `(tenant_id)`, `(tenant_id, scope)`, `(tenant_id, deleted_at)`, `(source_trail_id)`
+- [x] `ALTER TABLE content_templates ENABLE ROW LEVEL SECURITY` + `FORCE ROW LEVEL SECURITY`
+- [x] **Policy READ** (`content_templates_read`): `FOR SELECT USING (tenant_id IS NULL OR tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid)` — única policy que permite NULL (platform visível a todos)
+- [x] **Policy INSERT** (`content_templates_insert`): `FOR INSERT WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid)` — NUNCA permite NULL via app
+- [x] **Policy UPDATE** (`content_templates_update`): `FOR UPDATE USING (tenant_id = NULLIF(...)) WITH CHECK (tenant_id = NULLIF(...))` — AMBAS cláusulas presentes, impede re-associação cross-tenant
+- [x] **Policy DELETE** (`content_templates_delete`): `FOR DELETE USING (tenant_id = NULLIF(...))` — apenas linhas do próprio tenant
+- [x] `GRANT SELECT, INSERT, UPDATE, DELETE ON content_templates TO metanoia_app`
+- [x] Comentário SQL explicando risco A01/API3 BOPLA (dec-015) nas policies de escrita
+- [x] Migration usa `--create-only` (não executada automaticamente pelo Prisma em dev — seed separado)
+- [x] Timestamp `20260628000000` (posterior à última migration `20260627*` confirmada)
 
 **Referências**: data-model.md §2, security-rls.md CHK001-CHK009, plan §A2
 
@@ -104,22 +104,22 @@ FASE 5 (Revisão + Gate)
 - `apps/api/prisma/schema.prisma` (editar — adicionar model + enum)
 
 **Critérios de aceite**:
-- [ ] Enum `TemplateScope { platform tenant }` adicionado ao schema
-- [ ] Model `ContentTemplate` com campo `id` sem `@default(uuid())` — ID gerado via `uuidv7()` no service (regra absoluta CLAUDE.md)
-- [ ] `tenantId String? @map("tenant_id") @db.Uuid` (nullable, plataforma = null)
-- [ ] `scope TemplateScope`
-- [ ] `sourceTrailId String? @map("source_trail_id") @db.Uuid` (nullable)
-- [ ] Relação `trail Trail? @relation(fields: [sourceTrailId], references: [id])` com `onDelete: SetNull`
-- [ ] `name String @db.VarChar(500)`
-- [ ] `description String? @db.VarChar(1000)`
-- [ ] `version Int @default(1)`
-- [ ] `structure Json`
-- [ ] `createdBy String @map("created_by") @db.Uuid`
-- [ ] `createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)`
-- [ ] `deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)`
-- [ ] `@@map("content_templates")`
-- [ ] Relação inversa `contentTemplates ContentTemplate[]` em `Trail` somente se necessária para queries
-- [ ] `pnpm --filter @metanoia/api exec prisma generate` executado sem erros de tipo
+- [x] Enum `TemplateScope { platform tenant }` adicionado ao schema
+- [x] Model `ContentTemplate` com campo `id` sem `@default(uuid())` — ID gerado via `uuidv7()` no service (regra absoluta CLAUDE.md)
+- [x] `tenantId String? @map("tenant_id") @db.Uuid` (nullable, plataforma = null)
+- [x] `scope TemplateScope`
+- [x] `sourceTrailId String? @map("source_trail_id") @db.Uuid` (nullable)
+- [x] Relação `trail Trail? @relation(fields: [sourceTrailId], references: [id])` com `onDelete: SetNull`
+- [x] `name String @db.VarChar(500)`
+- [x] `description String? @db.VarChar(1000)`
+- [x] `version Int @default(1)`
+- [x] `structure Json`
+- [x] `createdBy String @map("created_by") @db.Uuid`
+- [x] `createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)`
+- [x] `deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)`
+- [x] `@@map("content_templates")`
+- [x] Relação inversa `contentTemplates ContentTemplate[]` em `Trail` somente se necessária para queries
+- [x] `pnpm --filter @metanoia/api exec prisma generate` executado sem erros de tipo
 
 **Referências**: data-model.md §1, plan §A1, CLAUDE.md (UUID v7)
 
@@ -137,19 +137,19 @@ FASE 5 (Revisão + Gate)
 - `packages/types/src/trail/trail.schema.ts` (editar — estender CreateTrailRequestSchema com templateId? e groupId?)
 
 **Critérios de aceite**:
-- [ ] `TemplateScopeSchema = z.enum(['platform', 'tenant'])`
-- [ ] `TemplateStructureLessonSchema`: campos name, order, contentType, estimatedDurationMinutes — sem campos de conteúdo (snapshot estrutural apenas)
-- [ ] `TemplateStructureModuleSchema`: name, order, lessonAccessMode, lessons
-- [ ] `TemplateStructureSchema`: `{ modules: z.array(...).min(1) }`
-- [ ] `ContentTemplateSchema` (response): todos os campos com nulls explícitos (tenantId, sourceTrailId, description nullable — CLAUDE.md)
-- [ ] `CreateTemplateRequestSchema`: sourceTrailId UUID, name (min 1, max 500), description opcional
-- [ ] `UpdateTemplateRequestSchema`: name e/ou description opcionais, refine que ao menos um presente
-- [ ] `UseTemplateRequestSchema`: templateId UUID, groupId UUID opcional
-- [ ] `TemplateListQuerySchema`: scope default 'all', sort enum('name','-name','createdAt','-createdAt'), page e pageSize com coerce
-- [ ] `TemplateVersionItemSchema`: id, version, sourceTrailId, name, createdAt, createdBy
-- [ ] `CreateTrailRequestSchema` estendido com `templateId?: z.string().uuid().optional()` e `groupId?: z.string().uuid().optional()`
-- [ ] Snapshot tests para cada schema exportado
-- [ ] `pnpm --filter @metanoia/types build` sem erros
+- [x] `TemplateScopeSchema = z.enum(['platform', 'tenant'])`
+- [x] `TemplateStructureLessonSchema`: campos name, order, contentType, estimatedDurationMinutes — sem campos de conteúdo (snapshot estrutural apenas)
+- [x] `TemplateStructureModuleSchema`: name, order, lessonAccessMode, lessons
+- [x] `TemplateStructureSchema`: `{ modules: z.array(...).min(1) }`
+- [x] `ContentTemplateSchema` (response): todos os campos com nulls explícitos (tenantId, sourceTrailId, description nullable — CLAUDE.md)
+- [x] `CreateTemplateRequestSchema`: sourceTrailId UUID, name (min 1, max 500), description opcional
+- [x] `UpdateTemplateRequestSchema`: name e/ou description opcionais, refine que ao menos um presente
+- [x] `UseTemplateRequestSchema`: templateId UUID, groupId UUID opcional
+- [x] `TemplateListQuerySchema`: scope default 'all', sort enum('name','-name','createdAt','-createdAt'), page e pageSize com coerce
+- [x] `TemplateVersionItemSchema`: id, version, sourceTrailId, name, createdAt, createdBy
+- [x] `CreateTrailRequestSchema` estendido com `templateId?: z.string().uuid().optional()` e `groupId?: z.string().uuid().optional()`
+- [x] Snapshot tests para cada schema exportado
+- [x] `pnpm --filter @metanoia/types build` sem erros
 
 **Referências**: security-rls.md CHK035-CHK038, contracts/template-schemas.md, plan §4.2
 
@@ -164,18 +164,18 @@ FASE 5 (Revisão + Gate)
 - `apps/api/prisma/seed.ts` (editar — importar e chamar `seedContentTemplates()`)
 
 **Critérios de aceite**:
-- [ ] 3 templates com dados exatos:
+- [x] 3 templates com dados exatos:
   - `Discipulado Básico`: 4 módulos / 12 lições, scope=platform, tenant_id=null
   - `Estudo Bíblico Temático`: 3 módulos / 9 lições, scope=platform, tenant_id=null
   - `Acolhimento de Novos Membros`: 2 módulos / 6 lições, scope=platform, tenant_id=null
-- [ ] IDs UUIDv7 determinísticos fixos (idempotência reproduzível)
-- [ ] Seed usa `prisma.$executeRaw('SET LOCAL row_security = off')` dentro de `$transaction` OU conecta via DATABASE_URL com role owner/superuser — mecanismo documentado em comentário
-- [ ] Lógica de upsert por id fixo: `upsert({ where: { id: FIXED_UUID }, create: {...}, update: {} })` — idempotente
-- [ ] `structure` JSONB preenchido com estrutura real de módulos e lições (sem contentUrl/contentBody)
-- [ ] `createdBy` usa UUID de sistema (constante SYSTEM_USER_ID)
-- [ ] `version = 1`, `sourceTrailId = null`
-- [ ] Seed roda 2x sem erro nem duplicata
-- [ ] Padrão segue `subscription-plans-seed.ts` (convenção do projeto)
+- [x] IDs UUIDv7 determinísticos fixos (idempotência reproduzível)
+- [x] Seed usa `prisma.$executeRaw('SET LOCAL row_security = off')` dentro de `$transaction` OU conecta via DATABASE_URL com role owner/superuser — mecanismo documentado em comentário
+- [x] Lógica de upsert por id fixo: `upsert({ where: { id: FIXED_UUID }, create: {...}, update: {} })` — idempotente
+- [x] `structure` JSONB preenchido com estrutura real de módulos e lições (sem contentUrl/contentBody)
+- [x] `createdBy` usa UUID de sistema (constante SYSTEM_USER_ID)
+- [x] `version = 1`, `sourceTrailId = null`
+- [x] Seed roda 2x sem erro nem duplicata
+- [x] Padrão segue `subscription-plans-seed.ts` (convenção do projeto)
 
 **Referências**: security-rls.md CHK008-CHK009, spec FR-21, plan §A10, §4.4
 
@@ -192,18 +192,18 @@ FASE 5 (Revisão + Gate)
 - `apps/api/src/content/content.module.ts` (editar — registrar provider)
 
 **Critérios de aceite**:
-- [ ] Classe `TemplateRepository` com `@Injectable()`
-- [ ] Injeção de `PrismaService` (não PrismaClient direto)
-- [ ] Usa `getRequestContext()` para tenantId — NUNCA passa tenantId como parâmetro
-- [ ] Método `findAll(query)` — filtra deletedAt IS NULL, aplica scope, search (ILIKE), sort, paginação
-- [ ] Método `findById(id)` — filtra deletedAt IS NULL; null se não encontrado
-- [ ] Método `findByIdForMaterialization(id)` — sem filtro de deletedAt (detecta deletado para 404)
-- [ ] Método `findVersionsBySourceTrailId(sourceTrailId)` — ordenado version ASC
-- [ ] Método `create(data)` — calcula version = MAX(version)+1 dentro de transação; id = uuidv7(); createdBy = ctx.userId
-- [ ] Método `update(id, data)` — apenas name/description
-- [ ] Método `softDelete(id)` — deletedAt = now()
-- [ ] Transação atômica no create para MAX(version)+1 sem race condition
-- [ ] findAll para scope=all inclui tenantId IS NULL (platform) e tenantId = currentTenant
+- [x] Classe `TemplateRepository` com `@Injectable()`
+- [x] Injeção de `PrismaService` (não PrismaClient direto)
+- [x] Usa `getRequestContext()` para tenantId — NUNCA passa tenantId como parâmetro
+- [x] Método `findAll(query)` — filtra deletedAt IS NULL, aplica scope, search (ILIKE), sort, paginação
+- [x] Método `findById(id)` — filtra deletedAt IS NULL; null se não encontrado
+- [x] Método `findByIdForMaterialization(id)` — sem filtro de deletedAt (detecta deletado para 404)
+- [x] Método `findVersionsBySourceTrailId(sourceTrailId)` — ordenado version ASC
+- [x] Método `create(data)` — calcula version = MAX(version)+1 dentro de transação; id = uuidv7(); createdBy = ctx.userId
+- [x] Método `update(id, data)` — apenas name/description
+- [x] Método `softDelete(id)` — deletedAt = now()
+- [x] Transação atômica no create para MAX(version)+1 sem race condition
+- [x] findAll para scope=all inclui tenantId IS NULL (platform) e tenantId = currentTenant
 
 **Referências**: plan §A3, §A6, §A7, §A8, CLAUDE.md (multi-tenancy, repository pattern)
 
@@ -218,15 +218,15 @@ FASE 5 (Revisão + Gate)
 - `apps/api/src/content/templates/template.service.spec.ts` (criar — testes unitários)
 
 **Critérios de aceite**:
-- [ ] `createTemplate(dto)`: busca trail-fonte, gera snapshot JSONB sem conteúdo, chama repository.create
-- [ ] Snapshot JSONB: remove contentUrl, contentBody, videoUrl, audioUrl, attachments da estrutura
-- [ ] `getTemplates(query)`: delega ao repository com paginação
-- [ ] `getTemplateById(id)`: lança NotFoundException se null; 404 para deletado
-- [ ] `getVersionsBySourceTrail(sourceTrailId)`: para platform retorna { data: [] }
-- [ ] `updateTemplate(id, dto)`: 404 se inexistente/deletado; 403 ForbiddenException se scope=platform (FR-11)
-- [ ] `deleteTemplate(id)`: 404 se inexistente/já deletado; 403 ForbiddenException se scope=platform (FR-12)
-- [ ] `materializeFromTemplate(templateId, dto)`: busca com findByIdForMaterialization; deletedAt NOT NULL → NotFoundException; cria Trail+Module+Lesson com conteúdo null; cópia independente (sem FK trail→template)
-- [ ] Unit tests: snapshot-sem-conteúdo, versionamento v2, 403 platform, 404 deletado, materialização independente, 404 templateId deletado
+- [x] `createTemplate(dto)`: busca trail-fonte, gera snapshot JSONB sem conteúdo, chama repository.create
+- [x] Snapshot JSONB: remove contentUrl, contentBody, videoUrl, audioUrl, attachments da estrutura
+- [x] `getTemplates(query)`: delega ao repository com paginação
+- [x] `getTemplateById(id)`: lança NotFoundException se null; 404 para deletado
+- [x] `getVersionsBySourceTrail(sourceTrailId)`: para platform retorna { data: [] }
+- [x] `updateTemplate(id, dto)`: 404 se inexistente/deletado; 403 ForbiddenException se scope=platform (FR-11)
+- [x] `deleteTemplate(id)`: 404 se inexistente/já deletado; 403 ForbiddenException se scope=platform (FR-12)
+- [x] `materializeFromTemplate(templateId, dto)`: busca com findByIdForMaterialization; deletedAt NOT NULL → NotFoundException; cria Trail+Module+Lesson com conteúdo null; cópia independente (sem FK trail→template)
+- [x] Unit tests: snapshot-sem-conteúdo, versionamento v2, 403 platform, 404 deletado, materialização independente, 404 templateId deletado
 
 **Referências**: plan §A4, §A6, §A9, data-model.md §4 §5, security-rls.md CHK020-CHK027
 
@@ -242,16 +242,16 @@ FASE 5 (Revisão + Gate)
 - `apps/api/src/content/content.module.ts` (editar — registrar controller)
 
 **Critérios de aceite**:
-- [ ] `@Controller('api/v1/templates')` com `@Roles('admin_tenant')` na classe inteira
-- [ ] `POST /api/v1/templates` → 201 com `{ data: ContentTemplateResponseDto }`, body validado por ZodValidationPipe
-- [ ] `GET /api/v1/templates` → `{ data: ContentTemplate[], meta: { total, page, pageSize } }`, filtra deletedAt IS NULL (FR-22)
-- [ ] `GET /api/v1/templates/:id` → `{ data }` com structure completo; 404 se deletado (FR-22)
-- [ ] `GET /api/v1/templates/:id/versions` → `{ data: TemplateVersionItem[] }` ASC; platform retorna `{ data: [] }`
-- [ ] `PATCH /api/v1/templates/:id` → 403 se platform; 404 se inexistente/deletado; `{ data }` atualizado
-- [ ] `DELETE /api/v1/templates/:id` → 403 se platform; 404 se inexistente/deletado; 204 No Content
-- [ ] ZodValidationPipe customizado do projeto (sem nestjs-zod)
-- [ ] Swagger @ApiTags('templates') com descrições em inglês
-- [ ] Nenhum stack trace em respostas de erro
+- [x] `@Controller('api/v1/templates')` com `@Roles('admin_tenant')` na classe inteira
+- [x] `POST /api/v1/templates` → 201 com `{ data: ContentTemplateResponseDto }`, body validado por ZodValidationPipe
+- [x] `GET /api/v1/templates` → `{ data: ContentTemplate[], meta: { total, page, pageSize } }`, filtra deletedAt IS NULL (FR-22)
+- [x] `GET /api/v1/templates/:id` → `{ data }` com structure completo; 404 se deletado (FR-22)
+- [x] `GET /api/v1/templates/:id/versions` → `{ data: TemplateVersionItem[] }` ASC; platform retorna `{ data: [] }`
+- [x] `PATCH /api/v1/templates/:id` → 403 se platform; 404 se inexistente/deletado; `{ data }` atualizado
+- [x] `DELETE /api/v1/templates/:id` → 403 se platform; 404 se inexistente/deletado; 204 No Content
+- [x] ZodValidationPipe customizado do projeto (sem nestjs-zod)
+- [x] Swagger @ApiTags('templates') com descrições em inglês
+- [x] Nenhum stack trace em respostas de erro
 
 **Referências**: plan §A5, security-rls.md CHK028-CHK034, CLAUDE.md
 
@@ -267,15 +267,15 @@ FASE 5 (Revisão + Gate)
 - `apps/api/src/content/dto/create-trail.dto.ts` (editar — adicionar templateId? e groupId?)
 
 **Critérios de aceite**:
-- [ ] `CreateTrailRequestDto` estendido com `templateId?: string (UUID)` e `groupId?: string (UUID)`
-- [ ] Se templateId presente: chama templateService.materializeFromTemplate(templateId, dto)
-  - [ ] Template deletedAt NOT NULL → 404 NotFoundException (CHK041)
-  - [ ] Cria Trail+Modules+Lessons com contentUrl=null, contentBody=null
-  - [ ] Trilha independente: sem FK trilha→template
-  - [ ] createdBy = ctx.userId, tenantId via RequestContext
-- [ ] Se templateId ausente: fluxo existente inalterado (backward compatible)
-- [ ] Retorna 201 com `{ data: TrailResponseDto }` no formato padrão
-- [ ] `@Roles(ADMIN_TENANT, LIDER)` mantido no TrailsController
+- [x] `CreateTrailRequestDto` estendido com `templateId?: string (UUID)` e `groupId?: string (UUID)`
+- [x] Se templateId presente: chama templateService.materializeFromTemplate(templateId, dto)
+  - [x] Template deletedAt NOT NULL → 404 NotFoundException (CHK041)
+  - [x] Cria Trail+Modules+Lessons com contentUrl=null, contentBody=null
+  - [x] Trilha independente: sem FK trilha→template
+  - [x] createdBy = ctx.userId, tenantId via RequestContext
+- [x] Se templateId ausente: fluxo existente inalterado (backward compatible)
+- [x] Retorna 201 com `{ data: TrailResponseDto }` no formato padrão
+- [x] `@Roles(ADMIN_TENANT, LIDER)` mantido no TrailsController
 
 **Referências**: plan §A5, data-model.md §4, security-rls.md CHK038-CHK042, spec FR-14
 
@@ -291,17 +291,17 @@ FASE 5 (Revisão + Gate)
 - `apps/api/test/rls/content-templates.rls-spec.ts` (criar)
 
 **Critérios de aceite**:
-- [ ] Setup com UUIDs determinísticos e únicos para TENANT_A, TENANT_B, USER_A, USER_B (sem Math.random())
-- [ ] Slugs únicos com sufixo fixo nos inserts raw (não conflita com outros testes)
-- [ ] Inclui `updated_at = now()` nos inserts raw de tabelas que têm esse campo (lição 13-2b)
-- [ ] Cenário 1 — READ isolation: TENANT_A vê platform + seus; não vê de TENANT_B; TENANT_B vê platform; não vê de TENANT_A
-- [ ] Cenário 2 — WRITE isolation: INSERT tenant_id=NULL sob TENANT_A → rejeitado; INSERT tenant_id=TENANT_B sob TENANT_A → rejeitado; INSERT tenant_id=TENANT_A sob TENANT_A → aceito
-- [ ] Cenário 3 — Platform read-only: UPDATE/DELETE de template platform sob TENANT_A → 0 rows affected
-- [ ] Cenário 4 — Soft-delete isolation: template deletedAt NOT NULL invisível no findAll (filtragem na camada de aplicação, não RLS)
-- [ ] Cenário 5 — Seed idempotência: seed roda 2x; contagem platform = 3 após 2x
-- [ ] Spec roda 2x no CI sem erro
-- [ ] Cleanup em afterAll remove apenas dados deste spec (por UUID determinístico)
-- [ ] Usa $executeRawUnsafe ou $queryRaw com parâmetros para inserts diretos (sem ORM)
+- [x] Setup com UUIDs determinísticos e únicos para TENANT_A, TENANT_B, USER_A, USER_B (sem Math.random())
+- [x] Slugs únicos com sufixo fixo nos inserts raw (não conflita com outros testes)
+- [x] Inclui `updated_at = now()` nos inserts raw de tabelas que têm esse campo (lição 13-2b)
+- [x] Cenário 1 — READ isolation: TENANT_A vê platform + seus; não vê de TENANT_B; TENANT_B vê platform; não vê de TENANT_A
+- [x] Cenário 2 — WRITE isolation: INSERT tenant_id=NULL sob TENANT_A → rejeitado; INSERT tenant_id=TENANT_B sob TENANT_A → rejeitado; INSERT tenant_id=TENANT_A sob TENANT_A → aceito
+- [x] Cenário 3 — Platform read-only: UPDATE/DELETE de template platform sob TENANT_A → 0 rows affected
+- [x] Cenário 4 — Soft-delete isolation: template deletedAt NOT NULL invisível no findAll (filtragem na camada de aplicação, não RLS)
+- [x] Cenário 5 — Seed idempotência: seed roda 2x; contagem platform = 3 após 2x
+- [x] Spec roda 2x no CI sem erro
+- [x] Cleanup em afterAll remove apenas dados deste spec (por UUID determinístico)
+- [x] Usa $executeRawUnsafe ou $queryRaw com parâmetros para inserts diretos (sem ORM)
 
 **Referências**: security-rls.md §1, plan §7 Riscos, lição 13-3
 
@@ -315,14 +315,14 @@ FASE 5 (Revisão + Gate)
 - `apps/api/src/content/templates/template.service.spec.ts` (criar — co-localizado com 2.2)
 
 **Critérios de aceite**:
-- [ ] Snapshot sem conteúdo: createTemplate com trail tendo lições com contentUrl → template gerado sem contentUrl no JSONB
-- [ ] Versionamento v2: criar template da mesma trail-fonte → version = 2
-- [ ] 403 platform PATCH: updateTemplate em scope=platform → ForbiddenException
-- [ ] 403 platform DELETE: deleteTemplate em scope=platform → ForbiddenException
-- [ ] 404 deletado GET: getTemplateById com deletedAt NOT NULL → NotFoundException
-- [ ] Materialização independente: Trail criada sem FK para template; deletar template não afeta Trail
-- [ ] 404 templateId deletado: materializeFromTemplate com deletedAt NOT NULL → NotFoundException
-- [ ] Mocks via Jest; uuidv7() mocado para output determinístico
+- [x] Snapshot sem conteúdo: createTemplate com trail tendo lições com contentUrl → template gerado sem contentUrl no JSONB
+- [x] Versionamento v2: criar template da mesma trail-fonte → version = 2
+- [x] 403 platform PATCH: updateTemplate em scope=platform → ForbiddenException
+- [x] 403 platform DELETE: deleteTemplate em scope=platform → ForbiddenException
+- [x] 404 deletado GET: getTemplateById com deletedAt NOT NULL → NotFoundException
+- [x] Materialização independente: Trail criada sem FK para template; deletar template não afeta Trail
+- [x] 404 templateId deletado: materializeFromTemplate com deletedAt NOT NULL → NotFoundException
+- [x] Mocks via Jest; uuidv7() mocado para output determinístico
 
 **Referências**: spec US1-US4, plan §A7, §A9
 
@@ -336,11 +336,11 @@ FASE 5 (Revisão + Gate)
 - `packages/types/src/content/template.schema.spec.ts` (criar — co-localizado com 1.3)
 
 **Critérios de aceite**:
-- [ ] `expect(ContentTemplateSchema.shape).toMatchSnapshot()` para cada schema exportado
-- [ ] Parse de fixture válida → safeParse retorna success: true
-- [ ] Parse de fixture com contentUrl na structure → safeParse falha (valida ausência de campos de conteúdo)
-- [ ] Snapshot em `__snapshots__/template.schema.spec.ts.snap`
-- [ ] CI falha se snapshot divergir
+- [x] `expect(ContentTemplateSchema.shape).toMatchSnapshot()` para cada schema exportado
+- [x] Parse de fixture válida → safeParse retorna success: true
+- [x] Parse de fixture com contentUrl na structure → safeParse falha (valida ausência de campos de conteúdo)
+- [x] Snapshot em `__snapshots__/template.schema.spec.ts.snap`
+- [x] CI falha se snapshot divergir
 
 **Referências**: security-rls.md CHK035-CHK038
 

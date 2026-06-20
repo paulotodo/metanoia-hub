@@ -115,10 +115,10 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T05:27:12Z",
-      "finished_at": "2026-06-20T05:56:22Z",
+      "finished_at": "2026-06-20T05:35:05Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1750,
+      "wallclock_seconds": 473,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -674,9 +674,9 @@
     "current_wave_start": "2026-06-20T05:27:12Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3595,
+    "wallclock_total_seconds": 1845,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 28,
@@ -725,11 +725,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T05:35:19Z",
       "description": "create-tasks concluido, aguardando wakeup para execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T05:57:04Z",
-      "description": "onda-005 encerrada; FASE 1+2+3.1-3.3 done; aguardando wakeup para FASE 3.4+4+5"
     }
   ],
   "tasks": [

@@ -26,15 +26,31 @@ import {
 import type { Lesson, Module, Trail } from '@prisma/client';
 import { getRequestContext } from '../common/context/request-context';
 import { ContentRepository } from './content.repository';
+import { TemplateService } from './templates/template.service';
 
 @Injectable()
 export class ContentService {
-  constructor(private readonly repository: ContentRepository) {}
+  constructor(
+    private readonly repository: ContentRepository,
+    private readonly templateService: TemplateService,
+  ) {}
 
   // ---- Trails ----
 
-  async createTrail(body: CreateTrailRequest): Promise<TrailResponse> {
+  async createTrail(body: CreateTrailRequest): Promise<TrailResponse | { trailId: string }> {
     const ctx = getRequestContext();
+
+    // If templateId provided, materialize trail from template (FR42).
+    // Returns the raw object; the controller applies the single { data } wrap.
+    if (body.templateId) {
+      return this.templateService.materializeTrail(
+        body.templateId,
+        body.name,
+        body.groupId,
+        ctx.userId as string,
+      );
+    }
+
     const trail = await this.repository.createTrail({
       id: uuidv7(),
       name: body.name,
