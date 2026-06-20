@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "Iniciar etapa checklist — invocar skill checklist sobre spec.md + plan.md (gate de qualidade de requisitos antes de create-tasks).",
   "waves": [
     {
@@ -91,10 +91,10 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-20T03:19:47Z",
-      "finished_at": "2026-06-20T03:31:15Z",
+      "finished_at": "2026-06-20T03:21:11Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 688,
+      "wallclock_seconds": 84,
       "termination_reason": "concluido",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
@@ -107,16 +107,6 @@
           "skill": "create-tasks",
           "timestamp": "2026-06-20T03:29:53Z",
           "decision_id": null
-        },
-        {
-          "skill": "validate-tasks-template",
-          "timestamp": "2026-06-20T03:31:05Z",
-          "decision_id": "dec-024"
-        },
-        {
-          "skill": "validate-docs-rendered",
-          "timestamp": "2026-06-20T03:31:05Z",
-          "decision_id": "dec-025"
         }
       ]
     }
@@ -499,100 +489,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T03:30:04Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Decomposição de spec/plan FR67 em backlog tasks.md com 6 fases e 15 tasks",
-      "options_considered": [
-        "gerar-tasks-6-fases",
-        "gerar-tasks-planas-sem-fases",
-        "abortar"
-      ],
-      "choice": "gerar-tasks-6-fases",
-      "rationale": "6 fases (Migration, Prisma+Zod, BullMQ, StorageHook, Endpoints, Testes) refletem dependências reais — migration é pré-requisito de tudo; Zod em packages/types é independente da API; BullMQ e Storage são independentes entre si",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T03:30:17Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "INF-02: árvore BullMQ FlowProducer invertida — platform=PARENT, tenant=CHILD",
-      "options_considered": [
-        "platform-parent-tenant-child",
-        "tenant-parent-platform-child",
-        "dois-schedulers-independentes"
-      ],
-      "choice": "platform-parent-tenant-child",
-      "rationale": "Semântica BullMQ: children rodam ANTES do parent. Para platform-refresh APÓS tenant-refresh, inverter a árvore (opção A de dec-008). failParentOnFailure:false no child: falha do tenant NÃO bloqueia platform.",
-      "justification_score": 3,
-      "evidence": "research.md dec-008: 'NOTA SEMÂNTICA BullMQ: em um flow, os children rodam ANTES do parent (o parent aguarda os children)... Recomendado: (A) inverter a árvore — refresh-platform-views é o PARENT e refresh-tenant-views é o CHILD'. Checklist INF-02: 'refresh-platform-views como PARENT, refresh-tenant-views como CHILD'",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T03:30:27Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "MIG-02: SQL usa t.id (Tenant.id PK) como chave dos JOINs na MV, nunca t.tenant_id",
-      "options_considered": [
-        "usar-t-id-pk",
-        "usar-t-tenant_id"
-      ],
-      "choice": "usar-t-id-pk",
-      "rationale": "Tenant.id é o @id (PK real). Tenant.tenantId (tenant_id) é campo auto-referencial para RLS universal — diferente do PK. Usar t.tenant_id nos JOINs causaria erro de cardinalidade ou JOIN errado.",
-      "justification_score": 3,
-      "evidence": "schema.prisma linha 266: 'model Tenant { id String @id @db.Uuid' e linha 267: 'tenantId String @map(\"tenant_id\") @db.Uuid' — são dois campos distintos. SQL na MV usa t.id (PK) nos JOINs, confirmado em research.md: 'SELECT t.id AS tenant_id ... FROM tenants t LEFT JOIN ... ON tu.tenant_id = t.id'",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T03:31:05Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: 6 FASE headings, 80 checkboxes, 34 tags criticidade, todas seções obrigatórias presentes",
-      "options_considered": [
-        "aceitar",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar",
-      "rationale": "Todos os 11 requisitos de garantia verificados OK. Sem findings.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T03:31:05Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate docs-render: 23 code blocks com linguagem, 0 links quebrados, 0 Mermaid inválido",
-      "options_considered": [
-        "aceitar",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar",
-      "rationale": "Sem findings críticos no gate docs-render.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -610,12 +506,12 @@
     "current_wave_start": "2026-06-20T03:19:47Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1575,
+    "wallclock_total_seconds": 887,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 25,
+    "decisions_total": 20,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
