@@ -10,6 +10,9 @@ import { SuperAdminTenantsRepository } from './super-admin-tenants.repository';
 import { SuperAdminPlansController } from './super-admin-plans.controller';
 import { SuperAdminPlansService } from './super-admin-plans.service';
 import { SuperAdminPlansRepository } from './super-admin-plans.repository';
+import { PlatformMetricsService } from './platform-metrics.service';
+import { PlatformMetricsController } from './platform-metrics.controller';
+import { BullMqModule } from '../bullmq/bullmq.module';
 
 @Module({
   imports: [
@@ -22,13 +25,15 @@ import { SuperAdminPlansRepository } from './super-admin-plans.repository';
     PlanLimitsModule,
     RedisModule,
     AuditModule,
+    BullMqModule,
   ],
-  controllers: [SuperAdminTenantsController, SuperAdminPlansController],
+  controllers: [SuperAdminTenantsController, SuperAdminPlansController, PlatformMetricsController],
   providers: [
     SuperAdminTenantsService,
     SuperAdminTenantsRepository,
     SuperAdminPlansService,
     SuperAdminPlansRepository,
+    PlatformMetricsService,
   ],
   exports: [SuperAdminTenantsService],
 })

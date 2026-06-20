@@ -962,3 +962,20 @@ export {
   checkEmailsResponseSchema,
   type CheckEmailsResponse,
 } from './onboarding/csv-import';
+
+export {
+  PlatformMetricsTenantsSortFieldSchema,
+  type PlatformMetricsTenantsSortField,
+  PlatformTenantsQuerySchema,
+  type PlatformTenantsQuery,
+  PlatformMetricsTenantRowSchema,
+  type PlatformMetricsTenantRow,
+  PlatformMetricsSummarySchema,
+  type PlatformMetricsSummary,
+  PlatformMetricsSummaryResponseSchema,
+  type PlatformMetricsSummaryResponse,
+  PlatformMetricsTenantListMetaSchema,
+  type PlatformMetricsTenantListMeta,
+  PlatformMetricsTenantListResponseSchema,
+  type PlatformMetricsTenantListResponse,
+} from './platform-metrics';

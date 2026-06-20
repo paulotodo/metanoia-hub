@@ -1,0 +1,56 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PlatformMetrics schemas > PlatformMetricsSummarySchema snapshot 1`] = `
+{
+  "activeUsers": 300,
+  "churnedTenants": 2,
+  "meetingsHeld": 200,
+  "netGrowth": 3,
+  "newTenants": 5,
+  "storageBytesUsed": "1073741824",
+  "totalGroups": 50,
+  "totalTenants": 10,
+  "totalUsers": 500,
+}
+`;
+
+exports[`PlatformMetrics schemas > PlatformMetricsTenantListResponseSchema snapshot 1`] = `
+{
+  "data": [],
+  "meta": {
+    "limit": 20,
+    "page": 1,
+    "sortBy": "tenantName",
+    "sortOrder": "asc",
+    "total": 0,
+    "totalPages": 0,
+  },
+}
+`;
+
+exports[`PlatformMetrics schemas > PlatformMetricsTenantRowSchema snapshot 1`] = `
+{
+  "activeCurrentMonth": true,
+  "activePrevMonth": true,
+  "activeUsers": 30,
+  "meetingsHeld": 20,
+  "refreshedAt": "2026-06-20T00:00:00.000Z",
+  "storageBytesUsed": "10485760",
+  "tenantCreatedAt": "2026-01-01T00:00:00.000Z",
+  "tenantId": "018e5b3c-0000-7000-8000-000000000001",
+  "tenantName": "Igreja Teste",
+  "tenantPlan": "pro",
+  "tenantStatus": "active",
+  "totalGroups": 5,
+  "totalUsers": 50,
+}
+`;
+
+exports[`PlatformMetrics schemas > PlatformTenantsQuerySchema defaults 1`] = `
+{
+  "limit": 20,
+  "page": 1,
+  "sortBy": "tenantName",
+  "sortOrder": "asc",
+}
+`;

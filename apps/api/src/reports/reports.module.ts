@@ -4,6 +4,7 @@ import { ReportsService } from './reports.service';
 import { ReportsProcessor } from './reports.processor';
 import { RefreshTenantViewsProcessor } from './jobs/refresh-tenant-views.processor';
 import { DetectEvasionRiskProcessor } from './jobs/detect-evasion-risk.processor';
+import { RefreshPlatformViewsProcessor } from './jobs/refresh-platform-views.processor';
 import { TenantReportService } from './tenant-report.service';
 import { TenantReportRefreshService } from './tenant-report-refresh.service';
 import { BullMqModule } from '../bullmq/bullmq.module';
@@ -22,6 +23,7 @@ import { PastoralRiskEventPublisher } from '../pastoral/pastoral-risk-event-publ
     ReportsService,
     ReportsProcessor,
     RefreshTenantViewsProcessor,
+    RefreshPlatformViewsProcessor,
     DetectEvasionRiskProcessor,
     TenantReportService,
     TenantReportRefreshService,

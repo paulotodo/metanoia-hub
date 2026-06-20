@@ -983,3 +983,14 @@ model EvasionJobLog {
   @@index([tenantId, createdAt])
   @@map("evasion_job_log")
 }
+
+/// TenantStorageUsage — contagem de bytes usados por tenant (hook de upload SEC-03).
+/// Alimentada por StorageService.upload(); lida pela mv_platform_metrics.
+/// RLS: política permissiva para super-admin cross-tenant (nullif).
+model TenantStorageUsage {
+  tenantId  String   @id @map("tenant_id") @db.Uuid
+  bytesUsed BigInt   @default(0) @map("bytes_used")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("tenant_storage_usage")
+}
