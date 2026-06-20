@@ -150,3 +150,13 @@ para que problemas transitórios não resultem em perda silenciosa de notificaç
 - **SC-005**: Após 3 falhas de entrega, o status da notificação no banco é `failed` e o job está disponível no failed set com todos os dados intactos para análise.
 - **SC-006**: Adição de um novo canal (ex: WhatsApp stub) não requer modificação do serviço de dispatch nem do Channel Router — apenas registro de nova implementação de `NotificationChannel`.
 - **SC-007**: A janela de digest é alterada via `NOTIFICATION_DIGEST_WINDOW_MS` sem necessidade de redeploy — verificado por teste com valores distintos.
+
+## Clarifications
+
+### Session 2026-06-20
+
+- Q: Qual é o shape exato do `payload` e do `result` da interface `NotificationChannel.send()`? → A: `payload: { notificationId: string; userId: string; tenantId: string; type: string; title: string; body: string; channel: 'in_app' | 'email'; metadata?: Record<string, unknown> }` / `result: { success: boolean; error?: string }`. Falhas comunicadas via result tipado (não via exceção propagada) para permitir que o retry handler distinga sucesso de falha sem try/catch. Contrato compartilhado via Zod em `packages/types` (FR-013). Score 2.
+- Q: Qual o namespace do canal Redis e o formato do payload publicado pelo InAppChannel para SSE (FR-014)? → A: Canal `rt:notifications:{tenantId}:{userId}`; payload mínimo `{ notificationId: string; type: string; title: string; body: string; createdAt: string }`. Namespace `rt:` alinhado ao CLAUDE.md; tenantId no canal garante isolamento de subscriber (Princípio I da constitution). Cliente busca detalhes completos via API após receber o evento. Score 3.
+- Q: Qual o formato exato da job key BullMQ para idempotência do digest em ambiente multi-pod? → A: `digest:{userId}:{type}:{Math.floor(Date.now() / NOTIFICATION_DIGEST_WINDOW_MS)}` — janela por epoch dividida. Sem tenantId na chave: UUID v7 é globalmente único por design (constitution II), portanto userId já isola cross-tenant. Score 2.
+- Q: Quais campos exatos o payload do job BullMQ deve carregar para rebuild de RequestContext, e em qual convenção de casing? → A: Campos de primeiro nível em camelCase: `{ tenantId: string; userId: string; channel: string; correlationId: string; notificationId: string }`. Alinhado ao `RequestContext.run({ tenantId, userId }, cb)` definido nas Decisões de Infraestrutura e às convenções de naming do projeto (camelCase em JSON/TS). Score 3.
+- Q: Qual o tipo Postgres do campo `metadata` na tabela `notifications`? → A: Tipo `Json` no schema Prisma (mapeado para JSONB no PostgreSQL por default no Prisma v5+). Permite queries estruturadas e índices GIN; alinha com FR-002 ("estrutura flexível") e com a diretriz de type-safety da constitution. Score 3.

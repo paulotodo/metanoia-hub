@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — spec.md gerada em docs/specs/infra-notificacoes/spec.md (5 US, 14 FRs, 7 SCs, 0 NEEDS_CLARIFICATION). Spawn clarify-asker para verificar se ha ambiguidades.",
   "waves": [
     {
       "id": "onda-001",
@@ -45,11 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T16:00:41Z",
-      "finished_at": "2026-06-20T16:07:31Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 410,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -66,16 +66,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-20T16:03:51Z",
           "decision_id": "dec-008"
-        },
-        {
-          "skill": "feature-00c-clarify-answerer",
-          "timestamp": "2026-06-20T16:06:04Z",
-          "decision_id": "dec-011"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-20T16:07:31Z",
-          "decision_id": null
         }
       ]
     }
@@ -253,78 +243,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:05:43Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q2: namespace canal Redis e payload publicado pelo InAppChannel para SSE (FR-014)",
-      "options_considered": [
-        "rt:notifications:{tenantId}:{userId}-payload-minimo",
-        "rt:notifications:{userId}-payload-completo"
-      ],
-      "choice": "rt:notifications:{tenantId}:{userId}-payload-minimo",
-      "rationale": "CLAUDE.md define literalmente rt:* para real-time. Constitution I (Multi-tenancy Absoluto) exige tenantId no canal para prevenir cross-tenant. Payload mínimo { notificationId, type, title, body, createdAt } — cliente busca detalhes via API.",
-      "justification_score": 3,
-      "evidence": "Redis namespaces: cache:*, rt:*, queue:*, rate:*, session:*",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:06:04Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q3: formato job key BullMQ para idempotencia do digest",
-      "options_considered": [
-        "digest:{userId}:{type}:{windowEpoch}",
-        "digest:{tenantId}:{userId}:{type}:{windowEpoch}"
-      ],
-      "choice": "digest:{userId}:{type}:{Math.floor(Date.now()/WINDOW_MS)}",
-      "rationale": "Spec define 'job key único por (user_id, type, window)' sem tenantId. UUID v7 é globalmente único, portanto userId sozinho isola cross-tenant na chave.",
-      "justification_score": 2,
-      "evidence": "spec Decisoes de Infraestrutura: 'idempotência do digest via job key único por (user_id, type, window)'; constitution II: 'UUID v7 via uuidv7()' garante unicidade global dos userId",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:06:04Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q4: campos e casing do payload do job BullMQ para rebuild de RequestContext",
-      "options_considered": [
-        "camelCase-flat-primeiro-nivel",
-        "sub-objeto-context-notification"
-      ],
-      "choice": "camelCase-flat: { tenantId, userId, channel, correlationId, notificationId }",
-      "rationale": "Spec define RequestContext.run({ tenantId, userId }, cb) em forma flat. CLAUDE.md impõe camelCase. project-context: JSON fields em camelCase.",
-      "justification_score": 3,
-      "evidence": "spec Key Entities: 'Job de Notificação: Unidade de trabalho na fila queue:notifications com payload do canal, tenant_id, correlation_id'; spec Decisoes: 'RequestContext.run({ tenantId, userId }, cb) com tenant_id do payload do job'; CLAUDE.md: 'Functions/variables: camelCase'",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T16:06:04Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q5: tipo Postgres do campo metadata na tabela notifications",
-      "options_considered": [
-        "JSONB-via-Json-Prisma",
-        "TEXT-serializado"
-      ],
-      "choice": "Json-no-schema-Prisma-mapeado-para-JSONB-no-Postgres",
-      "rationale": "Prisma v7 usa tipo Json que mapeia para JSONB no PostgreSQL por default (v5+). Estrutura flexível com actionUrl beneficia de JSONB para queries e índices GIN.",
-      "justification_score": 3,
-      "evidence": "spec FR-002: 'O campo metadata é estrutura flexível que inclui actionUrl e dados adicionais por tipo'; project-context: 'Prisma v7' (Json type = JSONB no Postgres desde v5+); spec FR-012: 'garantindo performance para o notification center'",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -342,18 +260,15 @@
     "current_wave_start": "2026-06-20T16:00:41Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 642,
+    "wallclock_total_seconds": 232,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 13,
+    "decisions_total": 9,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
-    "toolkit_issues_opened": 0,
-    "cache": {
-      "tokens_cache_misses_disabled": 2
-    }
+    "toolkit_issues_opened": 0
   },
   "external_urls_whitelist": [],
   "circular_movement_history": [],

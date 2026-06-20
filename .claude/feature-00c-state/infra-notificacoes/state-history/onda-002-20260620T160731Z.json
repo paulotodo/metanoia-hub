@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "next_instruction": "Iniciar etapa clarify — spec.md gerada em docs/specs/infra-notificacoes/spec.md (5 US, 14 FRs, 7 SCs, 0 NEEDS_CLARIFICATION). Spawn clarify-asker para verificar se ha ambiguidades.",
   "waves": [
     {
       "id": "onda-001",
