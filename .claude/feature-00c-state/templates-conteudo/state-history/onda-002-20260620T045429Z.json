@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -52,13 +52,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T04:51:53Z",
-      "finished_at": "2026-06-20T04:54:47Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 174,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -277,25 +275,6 @@
       "evidence": "content.service.ts createTrail: body.name, body.description, body.status, body.accessMode — sem groupId ou templateId",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:54:29Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify C3: Default do parametro scope em GET /api/v1/templates",
-      "options_considered": [
-        "all-plataforma-e-tenant",
-        "apenas-tenant",
-        "apenas-platform"
-      ],
-      "choice": "all-plataforma-e-tenant",
-      "rationale": "AC US3 define GET /api/v1/templates?scope=all como padrao de visibilidade. UI Biblioteca (US5) deve mostrar ambos por padrao. Admin filtra se quiser ver so tenant. Alinhado com premissa de que plataforma fornece templates uteis a todos.",
-      "justification_score": 3,
-      "evidence": "spec US3 AC: GET /api/v1/templates?scope=all retorna templates de plataforma + templates do tenant; spec US5: Lista exibe plataforma e tenant",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -313,12 +292,12 @@
     "current_wave_start": "2026-06-20T04:51:53Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 404,
+    "wallclock_total_seconds": 230,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 12,
+    "decisions_total": 11,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

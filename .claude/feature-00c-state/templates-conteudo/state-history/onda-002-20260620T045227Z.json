@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
+  "current_stage": "clarify",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -52,21 +52,13 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T04:51:53Z",
-      "finished_at": "2026-06-20T04:54:47Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 174,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-20T04:52:58Z",
-          "decision_id": "dec-006"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -182,120 +174,6 @@
       "evidence": "spec.md linha: module.name/order/lessonAccessMode, lesson.name/order/contentType; contentUrl=null, contentBody=null na tabela de mapeamento",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-007",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:52:27Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify Q2: Fluxo Usar Template (POST /api/v1/trails com templateId)",
-      "options_considered": [
-        "estender-createTrail-com-templateId",
-        "endpoint-separado-POST-trails-from-template",
-        "endpoint-proprio-POST-templates-id-use"
-      ],
-      "choice": "estender-createTrail-com-templateId",
-      "rationale": "spec US4 define: POST /api/v1/trails aceita body alternativo { templateId, name, groupId } extends fluxo existente. FR-14 confirma. Instancia Trail+Modules+Lessons com campos de conteudo null. Sem back-link. tenant_id via RequestContext. IDs via uuidv7().",
-      "justification_score": 3,
-      "evidence": "spec US4: POST /api/v1/trails aceita body alternativo { templateId, name, groupId } (extends fluxo existente); FR-14: POST /api/v1/trails com templateId instancia Trail + Modules + Lessons com conteudo vazio",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:52:38Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify Q3: Versionamento de templates (source_trail_id+version UNIQUE)",
-      "options_considered": [
-        "version-auto-por-sourceTrailId-UNIQUE-INDEX",
-        "sobrescrever-unico-registro",
-        "campo-updated_at-sem-versao"
-      ],
-      "choice": "version-auto-por-sourceTrailId-UNIQUE-INDEX",
-      "rationale": "FR-04 define UNIQUE INDEX (source_trail_id, version). FR-08 define MAX(version)+1 por source_trail_id. FR-09 define GET lista versao mais recente por padrao. FR-13 define endpoint /versions para historico. spec US2 confirma: 1a chamada version=1; subsequentes MAX+1. spec 13-5 AC#2 confirma versionamento.",
-      "justification_score": 3,
-      "evidence": "FR-04: UNIQUE INDEX em (source_trail_id, version) como chave logica; FR-08: Versionamento automatico MAX(version)+1 por source_trail_id; FR-09: padrao mostra versao mais recente por source_trail_id",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:52:51Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify Q4: created_by — origem do userId para o template",
-      "options_considered": [
-        "RequestContext-AsyncLocalStorage",
-        "parametro-de-rota",
-        "header-X-User-Id"
-      ],
-      "choice": "RequestContext-AsyncLocalStorage",
-      "rationale": "CLAUDE.md constitution: Never pass tenant_id as function parameter, use AsyncLocalStorage. Mesmo padrao aplica a created_by (userId). spec FR-01 define created_by como UUID NOT NULL. spec US2: tenant_id = tenant atual via RequestContext/AsyncLocalStorage. created_by segue o mesmo padrao de injecao via RequestContext.",
-      "justification_score": 3,
-      "evidence": "CLAUDE.md: Never pass tenant_id as function parameter — use AsyncLocalStorage (RequestContext). spec US2: tenant_id = <tenant atual> via RequestContext/AsyncLocalStorage",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:54:29Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify C1: estimatedDurationMinutes no snapshot JSONB",
-      "options_considered": [
-        "incluir-no-snapshot",
-        "omitir-informacao-opcional",
-        "incluir-apenas-se-nao-null"
-      ],
-      "choice": "incluir-no-snapshot",
-      "rationale": "Campo existe em Lesson (Int? estimatedDurationMinutes). Informacao estrutural nao-conteudo. Melhora UX de preview (~X min). Nullable no snapshot (null se ausente na licao de origem). Adicionado ao JSONB e ao schema Zod.",
-      "justification_score": 3,
-      "evidence": "prisma schema: estimatedDurationMinutes Int? @map(estimated_duration_minutes) no model Lesson",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:54:29Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify C2: groupId em CreateTrailRequest — adicionar ou ja existe?",
-      "options_considered": [
-        "adicionar-groupId-e-templateId-ao-CreateTrailRequest",
-        "criar-novo-endpoint",
-        "groupId-ja-existe-sem-alteracao"
-      ],
-      "choice": "adicionar-groupId-e-templateId-ao-CreateTrailRequest",
-      "rationale": "createTrail atual (content.service.ts:36) recebe name/description/status/accessMode — sem groupId nem templateId. Ambos devem ser adicionados como campos opcionais ao CreateTrailRequestSchema em packages/types. Extensao de tipo existente, nao novo endpoint.",
-      "justification_score": 2,
-      "evidence": "content.service.ts createTrail: body.name, body.description, body.status, body.accessMode — sem groupId ou templateId",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T04:54:29Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Clarify C3: Default do parametro scope em GET /api/v1/templates",
-      "options_considered": [
-        "all-plataforma-e-tenant",
-        "apenas-tenant",
-        "apenas-platform"
-      ],
-      "choice": "all-plataforma-e-tenant",
-      "rationale": "AC US3 define GET /api/v1/templates?scope=all como padrao de visibilidade. UI Biblioteca (US5) deve mostrar ambos por padrao. Admin filtra se quiser ver so tenant. Alinhado com premissa de que plataforma fornece templates uteis a todos.",
-      "justification_score": 3,
-      "evidence": "spec US3 AC: GET /api/v1/templates?scope=all retorna templates de plataforma + templates do tenant; spec US5: Lista exibe plataforma e tenant",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -313,12 +191,12 @@
     "current_wave_start": "2026-06-20T04:51:53Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 404,
+    "wallclock_total_seconds": 230,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 12,
+    "decisions_total": 6,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

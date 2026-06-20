@@ -3,7 +3,7 @@
 **Feature:** templates-conteudo  
 **Epic:** 13 — Relatórios Avançados & Analytics (Story 13.5)  
 **Prioridade:** Release 2 — implementável independentemente de 13.1–13.4  
-**Status:** specify  
+**Status:** clarify  
 **Authored:** 2026-06-20  
 
 ---
@@ -121,9 +121,9 @@ Permitir que admins de tenant criem, gerenciem e reutilizem templates de estrutu
 | FR-04 | UNIQUE INDEX em `(source_trail_id, version)` como chave lógica de versionamento |
 | FR-05 | `@@map("content_templates")` no schema Prisma |
 | FR-06 | Seed idempotente de 3 templates de plataforma (estrutura apenas) |
-| FR-07 | `POST /api/v1/templates` snapshot da estrutura: módulos+lições com `name`, `order`, `contentType`; campos de conteúdo `null` |
+| FR-07 | `POST /api/v1/templates` snapshot da estrutura: módulos+lições com `name`, `order`, `contentType`, `estimatedDurationMinutes`; campos de conteúdo `null` |
 | FR-08 | Versionamento automático: `MAX(version) + 1` por `source_trail_id` |
-| FR-09 | `GET /api/v1/templates` com filtros `scope`, `search`, `sort`; padrão mostra versão mais recente por `source_trail_id` |
+| FR-09 | `GET /api/v1/templates` com filtros `scope`, `search`, `sort`; default `scope=all` (plataforma + tenant); padrão mostra versão mais recente por `source_trail_id` |
 | FR-10 | `GET /api/v1/templates/:id` retorna estrutura completa |
 | FR-11 | `PATCH /api/v1/templates/:id` — apenas `name`/`description`; bloqueado para templates de plataforma (403) |
 | FR-12 | `DELETE /api/v1/templates/:id` — soft delete; bloqueado para plataforma (403); sem cascade |
@@ -174,7 +174,8 @@ INDEX: (source_trail_id)
         {
           "name": "string (Lesson.name)",
           "order": 1,
-          "contentType": "LessonContentType enum value"
+          "contentType": "LessonContentType enum value",
+          "estimatedDurationMinutes": null
         }
       ]
     }
@@ -199,6 +200,7 @@ INDEX: (source_trail_id)
 | — | `Lesson.sizeBytes` | **null** no snapshot |
 | — | `Lesson.uploadedBy` | **null** no snapshot |
 | — | `Lesson.uploadedAt` | **null** no snapshot |
+| `lesson.estimatedDurationMinutes` | `Lesson.estimatedDurationMinutes` | copiado do snapshot (null se ausente) |
 | — | `Lesson.tags` | `[]` (array vazio) ao instanciar |
 
 **Nota de design:** `contentType` é obrigatório em `Lesson` (enum não-nullable). O template preserva esse campo para garantir consistência tipológica ao instanciar a trilha. Admins preencherão o conteúdo real depois, mas o tipo já estará definido.
@@ -215,7 +217,7 @@ INDEX: (source_trail_id)
 | Seed | `apps/api/prisma/seed/platform-templates.ts` |
 | Shared types | `packages/types/src/content/template.ts` |
 | Frontend page | `apps/web/app/(authenticated)/admin/templates/page.tsx` |
-| Trail creation extension | `apps/api/src/content/content.service.ts` — estender `createTrail` |
+| Trail creation extension | `apps/api/src/content/content.service.ts` — estender `createTrail`; adicionar `groupId?: string` e `templateId?: string` ao `CreateTrailRequest` em `packages/types` |
 | Trail controller | `apps/api/src/content/content.controller.ts` — `POST /api/v1/trails` |
 
 **Padrão arquitetural:** content é core domain. Templates ficam em `apps/api/src/content/templates/` como subdiretório do bounded context existente. Service direto com Prisma (sem repositório separado) é suficiente dado escopo. O `ContentModule` já existente deve importar o novo `TemplatesModule`.
@@ -255,15 +257,14 @@ CREATE POLICY tenant_isolation ON "content_templates"
 
 ---
 
-## Clarificações para Fase Clarify
+## Clarifications
 
-As seguintes questões necessitam resolução antes do plano:
+### Session 2026-06-20
 
-**C1 — `estimatedDurationMinutes` no snapshot**  
-`Lesson.estimatedDurationMinutes` é informação estrutural (duração estimada) — não conteúdo real. Deve ser capturado no snapshot? Favorece UX de preview (exibe "~X min"). Impacto: adicionar campo ao JSONB e ao schema Zod.
-
-**C2 — `groupId` já existe em `CreateTrailRequest`?**  
-A extensão `POST /api/v1/trails { templateId, name, groupId }` precisa saber se `groupId` já está no tipo `CreateTrailRequest` atual ou se precisa ser adicionado. Isso determina se é uma extensão do tipo ou uma adição de campo.
-
-**C3 — Default do parâmetro `scope` em `GET /api/v1/templates`**  
-Se `?scope` for omitido, qual é o default: `all` (plataforma + tenant) ou apenas `tenant`? A AC diz que `?scope=all` é possível, mas a UI "Biblioteca" provavelmente quer exibir ambos por padrão.
+- Q: Formato do campo `structure` (JSONB) — quais campos de Module/Lesson são capturados no snapshot? → A: Árvore `{ modules: [{ name, order, lessonAccessMode, lessons: [{ name, order, contentType, estimatedDurationMinutes }] }] }`. Campos de conteúdo (contentUrl, contentBody, originalName, mimeType, sizeBytes, uploadedBy, uploadedAt) explicitamente `null` no snapshot. (dec-006, score 3)
+- Q: Fluxo "Usar Template" — como integrar `templateId` no endpoint `POST /api/v1/trails`? → A: Estender `createTrail` existente: quando `templateId` presente, materializa Trail + Module + Lesson a partir do `structure` JSONB; `groupId` adicionado como campo opcional ao `CreateTrailRequest`; campos de conteúdo `null`; sem back-link; versão da trilha nova. (dec-007, score 3)
+- Q: Versionamento — como funciona `version` por `sourceTrailId`? → A: `version = MAX(version existente por sourceTrailId) + 1`; UNIQUE INDEX `(source_trail_id, version)` garante unicidade; `GET /api/v1/templates` lista versão mais recente por padrão; endpoint `/versions` expõe histórico completo. (dec-008, score 3)
+- Q: `created_by` — de onde vem o `userId` ao criar um template? → A: Via `RequestContext`/`AsyncLocalStorage` (mesmo padrão de `tenant_id`), nunca como parâmetro. `ctx.userId` injetado por `KeycloakAuthGuard`. (dec-009, score 3)
+- Q: C1 — `estimatedDurationMinutes` deve entrar no snapshot? → A: **Sim** — campo existe em `Lesson` (`Int?`), é informação estrutural (não conteúdo), melhora UX de preview. Adicionado ao JSONB e ao schema Zod (campo nullable/optional no snapshot). (score 3 — campo confirmado no schema Prisma)
+- Q: C2 — `groupId` já existe em `CreateTrailRequest`? → A: **Não existe ainda** — `createTrail` atual recebe `name`, `description`, `status`, `accessMode`. `groupId?: string (uuid, optional)` e `templateId?: string (uuid, optional)` devem ser adicionados ao `CreateTrailRequestSchema` em `packages/types`. Isso é uma **extensão do tipo existente**, não um novo endpoint. (score 2 — verificado em content.service.ts e packages/types)
+- Q: C3 — Default do parâmetro `scope` em `GET /api/v1/templates` quando omitido? → A: **`all`** (plataforma + tenant do contexto) — UI "Biblioteca" deve mostrar ambos por padrão; admin filtra se quiser ver só tenant. (score 3 — alinhado com AC US3 e UX US5)
