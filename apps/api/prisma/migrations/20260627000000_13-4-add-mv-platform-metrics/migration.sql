@@ -15,8 +15,7 @@ CREATE TABLE IF NOT EXISTS tenant_storage_usage (
 -- RLS: habilitar mas política permissiva (super-admin cross-tenant)
 ALTER TABLE tenant_storage_usage ENABLE ROW LEVEL SECURITY;
 CREATE POLICY tenant_storage_usage_nullif ON tenant_storage_usage
-  USING (nullif(current_setting('app.current_tenant_id', true), '') IS NULL
-         OR tenant_id::text = current_setting('app.current_tenant_id', true));
+  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid);
 
 GRANT SELECT, INSERT, UPDATE ON tenant_storage_usage TO metanoia_app;
 

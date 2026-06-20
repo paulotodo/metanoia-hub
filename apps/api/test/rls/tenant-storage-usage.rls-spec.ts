@@ -12,14 +12,15 @@ import { PrismaPg } from '@prisma/adapter-pg';
  * Executar: pnpm --filter @metanoia/api test apps/api/test/rls/tenant-storage-usage.rls-spec.ts
  */
 
-const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://metanoia_app:metanoia_pass@localhost:5432/metanoia_test';
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://metanoia:metanoia_dev_pass@localhost:5433/metanoia_test';
+const APP_URL = process.env.DATABASE_APP_URL ?? 'postgresql://metanoia_app:metanoia_app_pass@localhost:5433/metanoia_test';
 
 // Two test tenant IDs
 const TENANT_A = '018e5b3c-0000-7000-8000-000000000a01';
 const TENANT_B = '018e5b3c-0000-7000-8000-000000000b02';
 
 function createClient(_tenantId: string | null): PrismaClient {
-  const adapter = new PrismaPg({ connectionString: DATABASE_URL });
+  const adapter = new PrismaPg({ connectionString: APP_URL });
   return new PrismaClient({ adapter });
 }
 
@@ -54,7 +55,16 @@ describe('tenant_storage_usage RLS isolation', () => {
     await privileged.$disconnect();
   });
 
-  it('super-admin (no tenant context) sees all rows', async () => {
+  it('super-admin (privileged, bypass RLS) sees all rows cross-tenant', async () => {
+    // Super-admin reads cross-tenant via privileged connection (DATABASE_URL superuser, bypasses RLS)
+    const rows = await privileged.$queryRaw<Array<{ tenant_id: string }>>`
+      SELECT tenant_id FROM tenant_storage_usage
+      WHERE tenant_id IN (${TENANT_A}::uuid, ${TENANT_B}::uuid)
+    `;
+    expect(rows.length).toBe(2);
+  });
+
+  it('app role without tenant context sees 0 rows (closed-by-default)', async () => {
     const client = createClient(null);
     await client.$connect();
     try {
@@ -63,7 +73,7 @@ describe('tenant_storage_usage RLS isolation', () => {
         SELECT tenant_id FROM tenant_storage_usage
         WHERE tenant_id IN (${TENANT_A}::uuid, ${TENANT_B}::uuid)
       `;
-      expect(rows.length).toBe(2);
+      expect(rows.length).toBe(0);
     } finally {
       await client.$disconnect();
     }
