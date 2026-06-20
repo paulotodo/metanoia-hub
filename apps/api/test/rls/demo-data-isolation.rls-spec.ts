@@ -20,7 +20,16 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { TENANT_A_ID, TENANT_B_ID } from './rls-test.helper';
+
+// ─── Dedicated tenant pair (flake fix, Story 10-2) ─────────────────────────────
+// This spec seeds demo rows (isDemoData=true) and reads them back. The cleanup
+// spec (demo-data-cleanup.rls-spec.ts) wholesale-deletes ALL isDemoData rows for
+// its tenants. Vitest runs spec files in parallel on the same DB, so sharing the
+// helper's TENANT_A_ID/TENANT_B_ID let the cleanup spec wipe this spec's rows
+// mid-read → intermittent "expected 0 to be 1". Owning a unique tenant pair (not
+// shared with the helper nor the cleanup spec) removes the overlap entirely.
+const TENANT_A_ID = '01912345-6789-7000-8000-0000000a0001';
+const TENANT_B_ID = '01912345-6789-7000-8000-0000000a0002';
 
 // ─── Fixed UUIDs ──────────────────────────────────────────────────────────────
 const DEMO_USER_A   = '01abdcef-1234-7000-8abc-aaa000000001';
