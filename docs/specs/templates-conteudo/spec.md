@@ -61,9 +61,9 @@ Permitir que admins de tenant criem, gerenciem e reutilizem templates de estrutu
 
 **Critérios de Aceite:**
 - `GET /api/v1/templates?scope=all` retorna templates de plataforma + templates do tenant (filtrados por RLS)
-  - Parâmetros opcionais: `scope` (`platform` | `tenant` | `all`), `search` (busca por `name`), `sort` (`name_asc` | `name_desc` | `created_asc` | `created_desc`)
-  - Paginação via `{ data: [], meta: { page, limit, total } }`
-  - Apenas a **versão mais recente** de cada `sourceTrailId` por padrão
+  - Parâmetros opcionais: `scope` (`platform` | `tenant` | `all`), `search` (busca por `name`), `sort` (`name` | `-name` | `createdAt` | `-createdAt`) — prefixo `-` = DESC (alinhado com Zod/contracts)
+  - Paginação via `{ data: [], meta: { page, pageSize, total } }` — campo `pageSize` (alinhado com Zod/contracts)
+  - Apenas a **versão mais recente** de cada `sourceTrailId` por padrão; templates com `source_trail_id = NULL` (platform) são sempre incluídos individualmente (não agrupados)
 - `GET /api/v1/templates/:id` retorna detalhes com `structure` completo (árvore módulos → lições)
 - `PATCH /api/v1/templates/:id` — editar `name` e/ou `description`; permitido apenas para templates `scope = 'tenant'` do tenant corrente; plataforma retorna 403
 - `DELETE /api/v1/templates/:id` — soft delete (`deleted_at = now()`); permitido apenas para templates `scope = 'tenant'` do tenant corrente; plataforma retorna 403; sem cascade em trilhas já criadas
@@ -88,7 +88,7 @@ Permitir que admins de tenant criem, gerenciem e reutilizem templates de estrutu
 - A trilha criada **não tem referência** ao template (cópia independente — edições no template não propagam)
 - Se `groupId` fornecido → cria `GroupTrail` associando a trilha ao grupo (mesma lógica de criação existente)
 - Resposta 201 `{ data: TrailResponse }` — mesma forma que criação normal de trilha
-- Erros: 404 se `templateId` não encontrado, 403 se template de outro tenant (não plataforma)
+- Erros: 404 se `templateId` não encontrado, invisível (RLS — outro tenant), deletado (`deleted_at IS NOT NULL`) ou não plataforma; não vazar existência cross-tenant
 
 ---
 
@@ -123,11 +123,11 @@ Permitir que admins de tenant criem, gerenciem e reutilizem templates de estrutu
 | FR-06 | Seed idempotente de 3 templates de plataforma (estrutura apenas) |
 | FR-07 | `POST /api/v1/templates` snapshot da estrutura: módulos+lições com `name`, `order`, `contentType`, `estimatedDurationMinutes`; campos de conteúdo `null` |
 | FR-08 | Versionamento automático: `MAX(version) + 1` por `source_trail_id` |
-| FR-09 | `GET /api/v1/templates` com filtros `scope`, `search`, `sort`; default `scope=all` (plataforma + tenant); padrão mostra versão mais recente por `source_trail_id` |
+| FR-09 | `GET /api/v1/templates` com filtros `scope`, `search`, `sort` (`name`|`-name`|`createdAt`|`-createdAt`), paginação `page`/`pageSize`; default `scope=all`; mostra versão mais recente por `source_trail_id` (templates platform sempre incluídos individualmente) |
 | FR-10 | `GET /api/v1/templates/:id` retorna estrutura completa |
 | FR-11 | `PATCH /api/v1/templates/:id` — apenas `name`/`description`; bloqueado para templates de plataforma (403) |
 | FR-12 | `DELETE /api/v1/templates/:id` — soft delete; bloqueado para plataforma (403); sem cascade |
-| FR-13 | `GET /api/v1/templates/:id/versions` — histórico de versões por `source_trail_id` |
+| FR-13 | `GET /api/v1/templates/:id/versions` — histórico de versões por `source_trail_id`; retorna `{ data: [] }` (array vazio) para templates com `source_trail_id = NULL` (platform sem histórico de versão) |
 | FR-14 | `POST /api/v1/trails` com `templateId` instancia Trail + Modules + Lessons com conteúdo vazio |
 | FR-15 | Trilha criada de template não tem referência ao template (cópia independente) |
 | FR-16 | Guard `@Roles('admin_tenant')` em todos os endpoints de template |
@@ -135,6 +135,8 @@ Permitir que admins de tenant criem, gerenciem e reutilizem templates de estrutu
 | FR-18 | Migration timestamp `>= 20260628000000` (última: `20260627000000_13-4`) |
 | FR-19 | Schemas Zod em `packages/types/src/content/template.ts` com snapshot tests |
 | FR-20 | UI `/app/admin/templates` acessível (FormField, text-secondary, aria labels) |
+| FR-21 | Seed de platform executa com role BYPASSRLS ou SUPERUSER (não o role de aplicação); mecanismo documentado no quickstart e verificado em teste de seed |
+| FR-22 | GET /api/v1/templates lista apenas registros com `deleted_at IS NULL`; GET /api/v1/templates/:id retorna 404 para template com `deleted_at IS NOT NULL` |
 
 ---
 

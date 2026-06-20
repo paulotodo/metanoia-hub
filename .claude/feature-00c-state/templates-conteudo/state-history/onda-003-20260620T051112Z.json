@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -92,23 +92,6 @@
           "skill": "validate-documentation",
           "timestamp": "2026-06-20T05:06:50Z",
           "decision_id": "dec-018"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-20T05:12:26Z",
-      "finished_at": "2026-06-20T05:21:54Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 568,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-20T05:19:07Z",
-          "decision_id": null
         }
       ]
     }
@@ -451,64 +434,6 @@
       "evidence": "grep: '(no MISSING lines)=all internal links resolve'; '(no ODD lines)=balanced'; matches TBD = 'TODOS'/'todos' (all em PT-BR), nao placeholders",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T05:11:12Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase checklist)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T05:19:07Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Quality gate de requisitos FR42 templates-conteudo executado",
-      "options_considered": [
-        "aprovar-com-gaps",
-        "bloquear-por-gaps",
-        "abortar"
-      ],
-      "choice": "aprovar-com-gaps",
-      "rationale": "29/42 items resolvidos OK; 9 abertos (4 Gap + 3 Ambiguity + 2 Conflict) documentados com destino: Gaps viram FRs adicionais em create-tasks; Conflicts e Ambiguity resolvidos inline nos artefatos antes de create-tasks. Nenhum gap bloqueia segurança core (RLS write-isolation CHK001-008 todos OK).",
-      "justification_score": 3,
-      "evidence": "checklists/security-rls.md criado com 42 items: CHK001-008 RLS todos [x]; CHK009 [Gap] seed BYPASSRLS; CHK030-031 [Conflict] sort/paginação; CHK019 [Ambiguity] platform versions filter",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T05:20:55Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resolucao inline de Conflicts e Gaps identificados pelo checklist de requisitos",
-      "options_considered": [
-        "resolver-inline-na-spec",
-        "escalar-para-humano",
-        "criar-bloqueio"
-      ],
-      "choice": "resolver-inline-na-spec",
-      "rationale": "Conflicts CHK030/031 (sort/paginação US3 vs contracts): corrigidos em spec.md US3 e FR-09 para alinhar com Zod/contracts. Ambiguity CHK019: adicionado texto explícito em US3 e FR-09 sobre platform templates. CHK027/CHK041: US4 corrigido (404 unificado). CHK042: FR-13 atualizado (array vazio para platform). CHK009/CHK026: FR-21 e FR-22 adicionados. CHK036: verificado que TemplateVersionItemSchema já tem campos suficientes (id, version, name, createdAt, createdBy) — falso positivo.",
-      "justification_score": 3,
-      "evidence": "spec.md linha 64: sort corrigido para name|-name|createdAt|-createdAt; linha 65: pageSize; linha 66: platform sempre incluídos; linha 91: 404 unificado; FR-13, FR-21, FR-22 adicionados",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -523,15 +448,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-20T05:12:26Z"
+    "current_wave_start": "2026-06-20T05:00:25Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1372,
+    "wallclock_total_seconds": 804,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 21,
+    "decisions_total": 18,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -567,11 +492,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T05:07:05Z",
       "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-20T05:12:35Z",
-      "description": "etapa=checklist hits=0 (fase nao elegivel para read-back)"
     }
   ]
 }
