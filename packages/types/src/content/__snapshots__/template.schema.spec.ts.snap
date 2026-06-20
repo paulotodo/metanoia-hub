@@ -1,0 +1,67 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Template Zod schemas — snapshot tests > ContentTemplateSchema parses valid template 1`] = `
+{
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "createdBy": "00000000-0000-7000-8000-000000000000",
+  "deletedAt": null,
+  "description": "Trilha introdutória",
+  "id": "01921100-0001-7000-8000-000000000001",
+  "name": "Discipulado Básico",
+  "scope": "platform",
+  "sourceTrailId": null,
+  "structure": {
+    "modules": [],
+  },
+  "tenantId": null,
+  "version": 1,
+}
+`;
+
+exports[`Template Zod schemas — snapshot tests > CreateTemplateRequestSchema parses full request 1`] = `
+{
+  "description": "Some description",
+  "name": "My Template",
+  "sourceTrailId": "01921100-0001-7000-8000-000000000099",
+}
+`;
+
+exports[`Template Zod schemas — snapshot tests > CreateTemplateRequestSchema parses minimal request 1`] = `
+{
+  "name": "My Template",
+}
+`;
+
+exports[`Template Zod schemas — snapshot tests > TemplateListQuerySchema applies defaults 1`] = `
+{
+  "page": 1,
+  "pageSize": 20,
+  "sort": "name",
+}
+`;
+
+exports[`Template Zod schemas — snapshot tests > TemplateStructureSchema validates modules array 1`] = `
+{
+  "modules": [
+    {
+      "lessonAccessMode": "sequential",
+      "lessons": [
+        {
+          "contentType": "rich_text",
+          "estimatedDurationMinutes": 30,
+          "name": "Lição 1",
+          "order": 0,
+        },
+      ],
+      "name": "Módulo 1",
+      "order": 0,
+    },
+  ],
+}
+`;
+
+exports[`Template Zod schemas — snapshot tests > UpdateTemplateRequestSchema parses partial update 1`] = `
+{
+  "name": "New Name",
+}
+`;

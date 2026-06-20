@@ -633,6 +633,7 @@ model Trail {
   modules       Module[]
   trailVersions TrailVersion[]
   groupTrails   GroupTrail[]
+  contentTemplates ContentTemplate[] @relation("TrailTemplates")
 
   @@index([tenantId])
   @@index([tenantId, status])
@@ -765,6 +766,11 @@ enum LessonStatus {
   not_started
   in_progress
   completed
+}
+
+enum TemplateScope {
+  platform
+  tenant
 }
 
 /// LessonProgress — async-persisted progress for a user on a specific lesson
@@ -993,4 +999,29 @@ model TenantStorageUsage {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("tenant_storage_usage")
+}
+
+/// ContentTemplate — snapshot imutável da ESTRUTURA de uma trilha (Story 13-5 / FR42).
+/// structure JSONB contém apenas metadados estruturais — NUNCA conteúdo real (URLs, bodies).
+/// tenant_id NULL = template de plataforma (visível a todos); tenant_id NOT NULL = template de tenant.
+model ContentTemplate {
+  id            String        @id @db.Uuid
+  tenantId      String?       @map("tenant_id") @db.Uuid
+  scope         TemplateScope
+  sourceTrailId String?       @map("source_trail_id") @db.Uuid
+  name          String        @db.VarChar(500)
+  description   String?       @db.VarChar(1000)
+  version       Int           @default(1)
+  structure     Json
+  createdBy     String        @map("created_by") @db.Uuid
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt     DateTime?     @map("deleted_at") @db.Timestamptz(6)
+
+  sourceTrail Trail? @relation("TrailTemplates", fields: [sourceTrailId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, scope])
+  @@index([tenantId, deletedAt])
+  @@index([sourceTrailId])
+  @@map("content_templates")
 }

@@ -7,6 +7,8 @@ export const CreateTrailRequestSchema = z.object({
   description: z.string().max(1000).optional(),
   status: TrailStatusSchema.optional().default('draft'),
   accessMode: TrailAccessModeSchema.optional().default('free'),
+  templateId: z.string().uuid().optional(),
+  groupId: z.string().uuid().optional(),
 });
 export type CreateTrailRequest = z.infer<typeof CreateTrailRequestSchema>;
 

@@ -1,0 +1,651 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "templates-conteudo",
+  "execution": {
+    "id": "feat-templates-conteudo-20260620T044110Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 13.5 — Templates de Conteúdo Reutilizáveis (FR42): tabela ContentTemplate (scope platform/tenant, structure JSONB, versionamento source_trail_id+version, RLS platform-null+tenant-isolado), seed 3 templates de plataforma, CRUD /api/v1/templates, fluxo Usar Template (POST /trails {templateId}), UI /app/admin/templates. Gestão de trilhas/conteúdo (NÃO analytics). Estende Epic 8 (Trail/Module/Lesson). @Roles admin_tenant. Validar Postgres local, teste RLS idempotente.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-20T04:41:10Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "execute-task",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-20T04:42:48Z",
+      "finished_at": "2026-06-20T04:46:38Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 230,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-20T04:46:15Z",
+          "decision_id": "dec-003"
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-20T04:46:23Z",
+          "decision_id": "dec-004"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-20T04:51:53Z",
+      "finished_at": "2026-06-20T04:54:47Z",
+      "executed_stages": [
+        "plan"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 174,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-20T04:52:58Z",
+          "decision_id": "dec-006"
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-20T05:00:25Z",
+      "finished_at": "2026-06-20T05:07:05Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 400,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-20T05:04:53Z",
+          "decision_id": "dec-015"
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-20T05:06:50Z",
+          "decision_id": "dec-017"
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-20T05:06:50Z",
+          "decision_id": "dec-018"
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-20T05:12:26Z",
+      "finished_at": "2026-06-20T05:21:54Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 568,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-20T05:19:07Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-20T05:27:12Z",
+      "finished_at": "2026-06-20T05:35:05Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 473,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-20T05:34:51Z",
+          "decision_id": "dec-023"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-20T04:41:10Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T04:43:04Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=templates-conteudo)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story templates conte reutiliz veis fr42 tabela",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T04:46:15Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: spec.md criada para templates-conteudo",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec gerada com 5 user stories (US1-US5), 20 FRs, tabela de dados ContentTemplate, JSONB structure mapeado contra schema real Prisma (Module.name/order/lessonAccessMode + Lesson.name/order/contentType), RLS confirmado contra padrão do projeto, migration timestamp 20260628+, 3 clarificações genuínas para clarify",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T04:46:23Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality (validate-documentation) pos-specify",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "rodar-gate",
+      "rationale": "spec.md gerada agora — gate verifica estrutura, ausencia de TBD, ambiguidades obvias",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T04:50:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:52:12Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify Q1: Formato do campo structure (JSONB)",
+      "options_considered": [
+        "arvore-modules-lessons-sem-conteudo",
+        "flat-list-lessons",
+        "object-map-by-id"
+      ],
+      "choice": "arvore-modules-lessons-sem-conteudo",
+      "rationale": "spec.md §Estrutura do campo structure define explicitamente { modules: [{ name, order, lessonAccessMode, lessons: [{ name, order, contentType }] }] }. Campos de conteudo (contentUrl, contentBody, originalName, mimeType, sizeBytes, uploadedBy, uploadedAt) explicitamente NULL. Alinhado com spec autoritativa 13-5 AC#2.",
+      "justification_score": 3,
+      "evidence": "spec.md linha: module.name/order/lessonAccessMode, lesson.name/order/contentType; contentUrl=null, contentBody=null na tabela de mapeamento",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:52:27Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify Q2: Fluxo Usar Template (POST /api/v1/trails com templateId)",
+      "options_considered": [
+        "estender-createTrail-com-templateId",
+        "endpoint-separado-POST-trails-from-template",
+        "endpoint-proprio-POST-templates-id-use"
+      ],
+      "choice": "estender-createTrail-com-templateId",
+      "rationale": "spec US4 define: POST /api/v1/trails aceita body alternativo { templateId, name, groupId } extends fluxo existente. FR-14 confirma. Instancia Trail+Modules+Lessons com campos de conteudo null. Sem back-link. tenant_id via RequestContext. IDs via uuidv7().",
+      "justification_score": 3,
+      "evidence": "spec US4: POST /api/v1/trails aceita body alternativo { templateId, name, groupId } (extends fluxo existente); FR-14: POST /api/v1/trails com templateId instancia Trail + Modules + Lessons com conteudo vazio",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:52:38Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify Q3: Versionamento de templates (source_trail_id+version UNIQUE)",
+      "options_considered": [
+        "version-auto-por-sourceTrailId-UNIQUE-INDEX",
+        "sobrescrever-unico-registro",
+        "campo-updated_at-sem-versao"
+      ],
+      "choice": "version-auto-por-sourceTrailId-UNIQUE-INDEX",
+      "rationale": "FR-04 define UNIQUE INDEX (source_trail_id, version). FR-08 define MAX(version)+1 por source_trail_id. FR-09 define GET lista versao mais recente por padrao. FR-13 define endpoint /versions para historico. spec US2 confirma: 1a chamada version=1; subsequentes MAX+1. spec 13-5 AC#2 confirma versionamento.",
+      "justification_score": 3,
+      "evidence": "FR-04: UNIQUE INDEX em (source_trail_id, version) como chave logica; FR-08: Versionamento automatico MAX(version)+1 por source_trail_id; FR-09: padrao mostra versao mais recente por source_trail_id",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:52:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify Q4: created_by — origem do userId para o template",
+      "options_considered": [
+        "RequestContext-AsyncLocalStorage",
+        "parametro-de-rota",
+        "header-X-User-Id"
+      ],
+      "choice": "RequestContext-AsyncLocalStorage",
+      "rationale": "CLAUDE.md constitution: Never pass tenant_id as function parameter, use AsyncLocalStorage. Mesmo padrao aplica a created_by (userId). spec FR-01 define created_by como UUID NOT NULL. spec US2: tenant_id = tenant atual via RequestContext/AsyncLocalStorage. created_by segue o mesmo padrao de injecao via RequestContext.",
+      "justification_score": 3,
+      "evidence": "CLAUDE.md: Never pass tenant_id as function parameter — use AsyncLocalStorage (RequestContext). spec US2: tenant_id = <tenant atual> via RequestContext/AsyncLocalStorage",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:54:29Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify C1: estimatedDurationMinutes no snapshot JSONB",
+      "options_considered": [
+        "incluir-no-snapshot",
+        "omitir-informacao-opcional",
+        "incluir-apenas-se-nao-null"
+      ],
+      "choice": "incluir-no-snapshot",
+      "rationale": "Campo existe em Lesson (Int? estimatedDurationMinutes). Informacao estrutural nao-conteudo. Melhora UX de preview (~X min). Nullable no snapshot (null se ausente na licao de origem). Adicionado ao JSONB e ao schema Zod.",
+      "justification_score": 3,
+      "evidence": "prisma schema: estimatedDurationMinutes Int? @map(estimated_duration_minutes) no model Lesson",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:54:29Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify C2: groupId em CreateTrailRequest — adicionar ou ja existe?",
+      "options_considered": [
+        "adicionar-groupId-e-templateId-ao-CreateTrailRequest",
+        "criar-novo-endpoint",
+        "groupId-ja-existe-sem-alteracao"
+      ],
+      "choice": "adicionar-groupId-e-templateId-ao-CreateTrailRequest",
+      "rationale": "createTrail atual (content.service.ts:36) recebe name/description/status/accessMode — sem groupId nem templateId. Ambos devem ser adicionados como campos opcionais ao CreateTrailRequestSchema em packages/types. Extensao de tipo existente, nao novo endpoint.",
+      "justification_score": 2,
+      "evidence": "content.service.ts createTrail: body.name, body.description, body.status, body.accessMode — sem groupId ou templateId",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:54:29Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify C3: Default do parametro scope em GET /api/v1/templates",
+      "options_considered": [
+        "all-plataforma-e-tenant",
+        "apenas-tenant",
+        "apenas-platform"
+      ],
+      "choice": "all-plataforma-e-tenant",
+      "rationale": "AC US3 define GET /api/v1/templates?scope=all como padrao de visibilidade. UI Biblioteca (US5) deve mostrar ambos por padrao. Admin filtra se quiser ver so tenant. Alinhado com premissa de que plataforma fornece templates uteis a todos.",
+      "justification_score": 3,
+      "evidence": "spec US3 AC: GET /api/v1/templates?scope=all retorna templates de plataforma + templates do tenant; spec US5: Lista exibe plataforma e tenant",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T04:58:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T05:00:25Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=6 achados injetados (anti-eco feature=templates-conteudo): createTrail usa withTenantTx+getRequestContext, models Trail(v.publishing)/Module/Lesson exatos, CreateTrailRequestSchema em content/trail.schema.ts, seed idempotente upsert por chave natural, RLS NULLIF closed-by-default (mv_refresh_log 13-2b), repository pattern via PrismaService+withTenantTx",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "Plano fundamentado na estrutura real: estender createTrail (content.repository:79) em vez de fork; RLS herda padrao canonico tenant_id IS NULL OR NULLIF; CreateTemplate* em content/template.schema.ts conforme split de schemas; seed idempotente como subscription-plans-seed",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T05:04:53Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security reportou finding HIGH: RLS USING-sem-WITH-CHECK na policy de content_templates permite write cross-tenant via branch tenant_id IS NULL (A01 Broken Access Control / API3 BOPLA). Postgres copia USING para o write-check quando WITH CHECK ausente — qualquer tenant poderia INSERT/UPDATE com tenant_id=NULL forjando template de plataforma visivel a todos.",
+      "options_considered": [
+        "aceitar-risco-com-justificativa",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "corrigir-agora",
+      "rationale": "Sonda empirica confirmou: tabelas NOT-NULL (trails/modules/lessons) usam USING simples sem branch NULL; meeting_events JA separa FOR INSERT WITH CHECK quando semantica de escrita difere. content_templates e escrita pelo request-path do tenant (ao contrario de mv_refresh_log, escrita so pelo job). Fix: policy de READ (USING, aceita NULL) + policy FOR INSERT/UPDATE/DELETE com WITH CHECK que restringe a tenant_id = NULLIF(...) (NUNCA NULL). Defesa em profundidade: guard de escopo no service (403 platform).",
+      "justification_score": 3,
+      "evidence": "meeting_events: CREATE POLICY meeting_events_tenant_insert FOR INSERT WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid); proposta original em data-model.md:100 era 'USING (tenant_id IS NULL OR tenant_id = NULLIF(...))' sem WITH CHECK",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T05:04:53Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security: demais focos PASS. (a) Snapshot nao vaza conteudo: structure JSONB whitelista so campos estruturais; data-model lista campos PROIBIDOS e materializacao NULA contentUrl/contentBody/originalName/mimeType/sizeBytes/uploadedBy/uploadedAt/tags (LLM02/A02 mitigado). (b) Soft-delete sem cascade: FK source_trail_id ON DELETE SET NULL + sem FK reversa template->trilha; DELETE template nao afeta trilhas materializadas (FR-15). (c) Access control: @Roles(admin_tenant) em toda superficie + 403 platform read-only.",
+      "options_considered": [
+        "aceitar",
+        "corrigir"
+      ],
+      "choice": "aceitar",
+      "rationale": "Whitelist de structure e materializacao NULA verificadas em data-model.md secao 3-4; ON DELETE SET NULL confirmado; @Roles + ParseUUIDPipe confirmados no contrato de API.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T05:06:50Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skill(plan): gerados plan.md, research.md, data-model.md, contracts/{templates-api,template-schemas}.md, quickstart.md em docs/specs/templates-conteudo/ a partir da spec clarified + read-back da estrutura real (content.repository, models, schemas, RLS canonico).",
+      "options_considered": [
+        "gerar-plano",
+        "abortar"
+      ],
+      "choice": "gerar-plano",
+      "rationale": "Plano fundamentado: estende createTrail/CreateTrailRequestSchema; novo model ContentTemplate + RLS split; TemplateService/Repository (repository pattern); seed idempotente; RLS spec idempotente 2x.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T05:06:50Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality (validate-documentation) sobre plan/research/data-model/quickstart/contracts: PASS. 1 H1 por arquivo; links internos resolvem; code fences balanceados; nenhum TBD/placeholder real (matches sao a palavra PT 'todos').",
+      "options_considered": [
+        "aceitar",
+        "corrigir"
+      ],
+      "choice": "aceitar",
+      "rationale": "Checagens deterministicas via Bash: 0 MISSING links, 0 ODD fences, 0 TBD/FIXME reais.",
+      "justification_score": 3,
+      "evidence": "grep: '(no MISSING lines)=all internal links resolve'; '(no ODD lines)=balanced'; matches TBD = 'TODOS'/'todos' (all em PT-BR), nao placeholders",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T05:11:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase checklist)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T05:19:07Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Quality gate de requisitos FR42 templates-conteudo executado",
+      "options_considered": [
+        "aprovar-com-gaps",
+        "bloquear-por-gaps",
+        "abortar"
+      ],
+      "choice": "aprovar-com-gaps",
+      "rationale": "29/42 items resolvidos OK; 9 abertos (4 Gap + 3 Ambiguity + 2 Conflict) documentados com destino: Gaps viram FRs adicionais em create-tasks; Conflicts e Ambiguity resolvidos inline nos artefatos antes de create-tasks. Nenhum gap bloqueia segurança core (RLS write-isolation CHK001-008 todos OK).",
+      "justification_score": 3,
+      "evidence": "checklists/security-rls.md criado com 42 items: CHK001-008 RLS todos [x]; CHK009 [Gap] seed BYPASSRLS; CHK030-031 [Conflict] sort/paginação; CHK019 [Ambiguity] platform versions filter",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T05:20:55Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Resolucao inline de Conflicts e Gaps identificados pelo checklist de requisitos",
+      "options_considered": [
+        "resolver-inline-na-spec",
+        "escalar-para-humano",
+        "criar-bloqueio"
+      ],
+      "choice": "resolver-inline-na-spec",
+      "rationale": "Conflicts CHK030/031 (sort/paginação US3 vs contracts): corrigidos em spec.md US3 e FR-09 para alinhar com Zod/contracts. Ambiguity CHK019: adicionado texto explícito em US3 e FR-09 sobre platform templates. CHK027/CHK041: US4 corrigido (404 unificado). CHK042: FR-13 atualizado (array vazio para platform). CHK009/CHK026: FR-21 e FR-22 adicionados. CHK036: verificado que TemplateVersionItemSchema já tem campos suficientes (id, version, name, createdAt, createdBy) — falso positivo.",
+      "justification_score": 3,
+      "evidence": "spec.md linha 64: sort corrigido para name|-name|createdAt|-createdAt; linha 65: pageSize; linha 66: platform sempre incluídos; linha 91: 404 unificado; FR-13, FR-21, FR-22 adicionados",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T05:26:13Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T05:34:42Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Geração de tasks.md para feature templates-conteudo (FR42)",
+      "options_considered": [
+        "gerar-backlog-completo",
+        "gerar-backlog-parcial",
+        "aguardar-humano"
+      ],
+      "choice": "gerar-backlog-completo",
+      "rationale": "Todos os artefatos (plan.md, data-model.md, security-rls.md) disponíveis; 42 CHKs consumidos; 5 FASEs com 13 tasks decompostas, 170 checkboxes, Matriz de Dependências e gate de template-fidelity passando",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T05:34:51Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate template-fidelity: tasks.md conformante ao template canônico",
+      "options_considered": [
+        "conformante",
+        "divergente"
+      ],
+      "choice": "conformante",
+      "rationale": "5 FASE prefixes, 170 checkboxes, 28 tags criticidade, Matriz de Dependencias, Resumo, Escopo Coberto/Excluido — todos presentes",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-20T05:27:12Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 5,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1845,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 24,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "templates",
+    "conte",
+    "reutiliz",
+    "veis",
+    "fr42",
+    "tabela"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T04:43:04Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T04:46:49Z",
+      "description": "onda-001 concluida (specify); proxima onda: clarify"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T05:00:25Z",
+      "description": "etapa=plan hits=6 (content.service createTrail, models Trail/Module/Lesson, CreateTrailRequestSchema, seed idempotent, RLS NULLIF platform, withTenantTx)"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T05:07:05Z",
+      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T05:12:35Z",
+      "description": "etapa=checklist hits=0 (fase nao elegivel para read-back)"
+    }
+  ]
+}

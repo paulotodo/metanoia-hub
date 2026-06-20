@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "templates-conteudo",
+  "execution": {
+    "id": "feat-templates-conteudo-20260620T044110Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 13.5 — Templates de Conteúdo Reutilizáveis (FR42): tabela ContentTemplate (scope platform/tenant, structure JSONB, versionamento source_trail_id+version, RLS platform-null+tenant-isolado), seed 3 templates de plataforma, CRUD /api/v1/templates, fluxo Usar Template (POST /trails {templateId}), UI /app/admin/templates. Gestão de trilhas/conteúdo (NÃO analytics). Estende Epic 8 (Trail/Module/Lesson). @Roles admin_tenant. Validar Postgres local, teste RLS idempotente.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-20T04:41:10Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "specify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-20T04:42:48Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-20T04:46:15Z",
+          "decision_id": "dec-003"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-20T04:41:10Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T04:43:04Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=templates-conteudo)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story templates conte reutiliz veis fr42 tabela",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T04:46:15Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: spec.md criada para templates-conteudo",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec gerada com 5 user stories (US1-US5), 20 FRs, tabela de dados ContentTemplate, JSONB structure mapeado contra schema real Prisma (Module.name/order/lessonAccessMode + Lesson.name/order/contentType), RLS confirmado contra padrão do projeto, migration timestamp 20260628+, 3 clarificações genuínas para clarify",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-20T04:42:48Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 0,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 0,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 3,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "templates",
+    "conte",
+    "reutiliz",
+    "veis",
+    "fr42",
+    "tabela"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T04:43:04Z",
+      "description": "etapa=specify hits=4"
+    }
+  ]
+}
