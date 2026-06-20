@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "pastoral.participant.risk-detected",
+  "description": "Domain event emitido pelo job detect-evasion-risk quando um participante é flagged como em risco de evasão. Consumido pelo Epic 14 (notificações) — NÃO implementado nesta story. Envelope canônico do projeto.",
+  "type": "object",
+  "required": ["eventId", "eventType", "version", "tenantId", "timestamp", "data", "metadata"],
+  "properties": {
+    "eventId": { "type": "string", "format": "uuid", "description": "UUID v7 via generateId()" },
+    "eventType": { "type": "string", "const": "pastoral.participant.risk-detected" },
+    "version": { "type": "integer", "const": 1 },
+    "tenantId": { "type": "string", "format": "uuid" },
+    "timestamp": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC" },
+    "data": {
+      "type": "object",
+      "required": ["participantId", "groupId", "riskReason", "status", "detectedAt"],
+      "description": "Apenas IDs + motivo. NENHUMA PII (nome/email/telefone) — o consumidor resolve PII sob o tenant.",
+      "properties": {
+        "participantId": { "type": "string", "format": "uuid" },
+        "groupId": { "type": "string", "format": "uuid" },
+        "riskReason": { "type": "string", "enum": ["absences", "inactivity", "absences+inactivity"] },
+        "status": { "type": "string", "enum": ["amarelo", "vermelho"], "description": "Novo status do semáforo após a transição." },
+        "detectedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "const": "detect-evasion-risk" },
+        "jobRunId": { "type": "string", "format": "uuid" }
+      }
+    }
+  },
+  "x-dedup-key": "rt:risk-detected:{tenantId}:{participantId}:{groupId}:{yyyy-mm-dd}",
+  "x-consumer": "Epic 14 (notifications) — deferido, não implementado nesta story",
+  "additionalProperties": false
+}

@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
+  "current_stage": "plan",
+  "next_instruction": "Executar fase plan: gerar plan.md com arquitetura detalhada, task decomposition e research.md se necessario. Pre-decisao read-back (cstk recall) em specify/plan obrigatoria.",
   "waves": [
     {
       "id": "onda-001",
@@ -71,24 +71,17 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-20T00:39:47Z",
-      "finished_at": "2026-06-20T00:45:35Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 348,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "plan",
           "timestamp": "2026-06-20T00:43:25Z",
           "decision_id": "dec-013"
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-20T00:45:06Z",
-          "decision_id": "dec-015"
         }
       ]
     }
@@ -354,25 +347,6 @@
       "evidence": "grep TBD/TODO/lorem: nenhum real (matches foram falsos-positivos PT 'todo'/'na'); jq empty risk-detected.event.json: VALID JSON; 9 sondas D-markers em research.md; 14 headings; 0 flags de ambiguidade",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T00:45:06Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security: 3 findings LOW (privileged-client confinement, last_seen debounce fail-open, domain event sem PII) incorporados como AC-SEC-01..04. Nenhum critical/high.",
-      "options_considered": [
-        "incorporar-como-AC",
-        "escalar-para-humano",
-        "aceitar-risco"
-      ],
-      "choice": "incorporar-como-AC",
-      "rationale": "Findings sao endurecimentos de baixo risco; constituicao exige seguranca como AC -> incorporados ao plan §12 e §6 corrigido",
-      "justification_score": 3,
-      "evidence": "refresh-tenant-views.processor.ts: finally { await privileged.$disconnect() }; with-tenant-tx.ts: if(!UUID_RE.test(tenantId)) throw 'Refusing SET LOCAL'; meeting-event.service.ts: redis.set(key,'1','EX',TTL,'NX'); risk-detected.event.json: additionalProperties false, data sem PII",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -390,12 +364,12 @@
     "current_wave_start": "2026-06-20T00:39:47Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 771,
+    "wallclock_total_seconds": 423,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 15,
+    "decisions_total": 14,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -426,11 +400,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T00:39:10Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T00:45:46Z",
-      "description": "onda-003 plan encerrada; aguardando wakeup p/ checklist"
     }
   ]
 }
