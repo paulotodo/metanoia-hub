@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks — decompor spec+plan+contracts de infra-notificacoes em backlog executavel (tasks.md) com fases, dependencias e criticidade. Pre-gate template-fidelity (validate-tasks-template.sh) + docs-render apos geracao.",
+  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
   "waves": [
     {
       "id": "onda-001",

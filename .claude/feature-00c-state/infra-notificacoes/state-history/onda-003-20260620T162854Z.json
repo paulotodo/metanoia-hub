@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks — decompor spec+plan+contracts de infra-notificacoes em backlog executavel (tasks.md) com fases, dependencias e criticidade. Pre-gate template-fidelity (validate-tasks-template.sh) + docs-render apos geracao.",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — gerar quality gate de requisitos (skill checklist) sobre a spec+plan de infra-notificacoes antes de create-tasks.",
   "waves": [
     {
       "id": "onda-001",
@@ -97,19 +97,13 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-20T16:26:39Z",
-      "finished_at": "2026-06-20T16:29:34Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 175,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-20T16:28:54Z",
-          "decision_id": "dec-020"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -487,25 +481,6 @@
       "evidence": "grep -c sobre requirements.md: resolvidos [x]=36, abertos [ ]=6, total CHK=42, itens com ref de rastreabilidade=42 (100%)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T16:28:54Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "6 itens abertos no gate (3 ambiguidades auto CHK007/CHK016/CHK039; 3 julgamentos de produto CHK024/CHK041/CHK042). Avaliada materialidade: todos tem default fiel a spec/constitution",
-      "options_considered": [
-        "avancar-com-defaults",
-        "bloqueio-humano",
-        "reabrir-clarify"
-      ],
-      "choice": "avancar-com-defaults",
-      "rationale": "Nenhum gap e material-sem-default: Edge Case item 5 cobre CHK007; dispatch interno void cobre CHK016; vocabulario pastoral cobre CHK039; CHK024/041/042 sao valores default ja na spec, decisao de produto nao-bloqueante. Gaps viram tarefas de refinamento em create-tasks",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -523,12 +498,12 @@
     "current_wave_start": "2026-06-20T16:26:39Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2049,
+    "wallclock_total_seconds": 1874,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 21,
+    "decisions_total": 20,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
