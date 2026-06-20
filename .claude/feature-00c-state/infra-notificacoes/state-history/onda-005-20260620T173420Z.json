@@ -9,7 +9,7 @@
     "status": "concluida",
     "termination_reason": "pipeline-completa",
     "started_at": "2026-06-20T15:50:21Z",
-    "finished_at": "2026-06-20T17:34:20Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {

@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Infraestrutura de Notificacoes & Channel Router (FR77) — modulo modules/notifications/ com tabela Notification (RLS tenant-scoped), NotificationService.dispatch() lendo tenant_id do RequestContext (AsyncLocalStorage, nunca como parametro), fila BullMQ queue:notifications, Channel Router com interface NotificationChannel extensivel (InAppChannel/EmailChannel), batching com digest de 5min (configuravel via NOTIFICATION_DIGEST_WINDOW_MS, pastoral_alert nunca agrupado), retries com backoff exponencial (3 tentativas) e failed set retido.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "pipeline-completa",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T15:50:21Z",
-    "finished_at": "2026-06-20T17:34:20Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -136,11 +136,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T17:31:44Z",
-      "finished_at": "2026-06-20T17:34:08Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 144,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -772,44 +772,6 @@
       "evidence": "commit 63ccf61: 'test(types): cobre NotificationPayload/Result schemas no snapshot spec' — fix de lint em packages/types necessário após PR aberto por não ter rodado turbo lint completo",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-034",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:33:12Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: FR-005 extensibilidade ChannelRouter (Open/Closed)",
-      "options_considered": [
-        "ac-atendido",
-        "ac-parcial",
-        "ac-falhou"
-      ],
-      "choice": "ac-atendido",
-      "rationale": "ChannelRouter usa Map<string, NotificationChannelInterface> populada via injeção de dependência no constructor. Adicionar novo canal (ex: WhatsApp) requer: 1) nova classe implements NotificationChannelInterface, 2) injetar no ChannelRouter constructor + registrar no Map, 3) adicionar no providers do NotificationsModule. Nenhuma alteração no dispatch() ou na interface. Confirmado pela implementação de EmailChannel como stub com a mesma interface.",
-      "justification_score": 3,
-      "evidence": "channel-router.ts: channelMap = new Map([inAppChannel.channel, inAppChannel], [emailChannel.channel, emailChannel]]) — extensível por registro",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-035",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:33:21Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: idempotência RLS spec confirmada no CI (2x)",
-      "options_considered": [
-        "confirmado",
-        "falhou",
-        "nao-testado"
-      ],
-      "choice": "confirmado",
-      "rationale": "PR body confirma: 'RLS spec notifications.rls-spec.ts: 5/5 × 2 execuções (idempotente)'. RLS spec usa ON CONFLICT DO NOTHING em todos os INSERTs de setup (ensureTenant, ensureUser, insertNotification). CI Test pass 4m39s. Padrão lições Epic-13: teste RLS idempotente roda 2x no CI sem erro.",
-      "justification_score": 3,
-      "evidence": "notifications.rls-spec.ts: INSERT INTO notifications ... ON CONFLICT (id) DO NOTHING — idempotência garantida por construção",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -827,14 +789,14 @@
     "current_wave_start": "2026-06-20T17:31:44Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4628,
+    "wallclock_total_seconds": 4484,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 35,
+    "decisions_total": 33,
     "human_blocks_total": 0,
-    "global_skill_suggestions_total": 1,
+    "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
     "cache": {
       "tokens_cache_misses_disabled": 2
@@ -871,11 +833,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T16:21:13Z",
       "description": "onda plan encerrada; aguardando wakeup para checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T17:33:47Z",
-      "description": "review-task concluida — feature concluida, PR#170 aguardando merge humano"
     }
   ],
   "current_wave_id": "onda-002",
@@ -1047,46 +1004,6 @@
       "touched_files": [],
       "recorded_at": "2026-06-20T17:10:24Z",
       "source": "execute-task"
-    },
-    {
-      "task_id": "7.0",
-      "title": "Review Final — PR #170 infra-notificacoes",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 5,
-      "tests_passed": 5,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000000_14-1-notifications/migration.sql",
-        "apps/api/prisma/schema.prisma",
-        "apps/api/src/notifications/notifications.service.ts",
-        "apps/api/src/notifications/notifications.worker.ts",
-        "apps/api/src/notifications/digest.service.ts",
-        "apps/api/src/notifications/channel-router.ts",
-        "apps/api/src/notifications/channels/in-app.channel.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/notifications.controller.ts",
-        "apps/api/test/rls/notifications.rls-spec.ts",
-        "packages/types/src/notification.ts",
-        "packages/types/src/__tests__/notification.snapshot.spec.ts"
-      ],
-      "recorded_at": "2026-06-20T17:33:40Z",
-      "source": "review-task"
-    }
-  ],
-  "suggestions": [
-    {
-      "id": "sug-001",
-      "affected_skill": "execute-task",
-      "diagnosis": "execute-task valida lint apenas com --filter do app (ex: pnpm --filter @metanoia/api lint) e não roda o lint completo do monorepo (pnpm turbo lint). Em projetos Turborepo, packages/ auxiliares (ex: packages/types) também são lintados no CI e podem falhar por imports não usados em arquivos de teste, quebrando o CI mesmo com o app passando localmente.",
-      "severity": "aviso",
-      "proposal": "Adicionar instrução explícita na skill execute-task para rodar 'pnpm turbo lint' (ou equivalente no turbo do projeto) como último gate antes de criar PR, além do --filter específico do app.",
-      "references": [
-        "docs/specs/infra-notificacoes/spec.md",
-        "packages/types/src/__tests__/notification.snapshot.spec.ts"
-      ],
-      "issue_opened": null,
-      "created_at": "2026-06-20T17:33:31Z"
     }
   ]
 }

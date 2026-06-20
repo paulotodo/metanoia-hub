@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-infra-notificacoes-20260620T155021Z
 
-**Gerado em**: 2026-06-20T17:13:28Z
-**Status no momento**: em_andamento
+**Gerado em**: 2026-06-20T17:34:57Z
+**Status no momento**: concluida
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,15 +14,15 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | Infraestrutura de Notificacoes & Channel Router (FR77) — modulo modules/notifications/ com tabela Notification (RLS tenant-scoped), NotificationService.dispatch() lendo tenant_id do RequestContext (AsyncLocalStorage, nunca como parametro), fila BullMQ queue:notifications, Channel Router com interface NotificationChannel extensivel (InAppChannel/EmailChannel), batching com digest de 5min (configuravel via NOTIFICATION_DIGEST_WINDOW_MS, pastoral_alert nunca agrupado), retries com backoff exponencial (3 tentativas) e failed set retido. |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | em_andamento |
-| Motivo termino | (em andamento) |
+| Status | concluida |
+| Motivo termino | pipeline-completa |
 | Iniciada em | 2026-06-20T15:50:21Z |
-| Terminada em | ainda em andamento |
-| Ondas executadas | 6 |
+| Terminada em | 2026-06-20T17:34:20Z |
+| Ondas executadas | 7 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 26 |
+| Decisoes registradas | 35 |
 | Bloqueios humanos | 0 |
-| Sugestoes para skills globais | 0 |
+| Sugestoes para skills globais | 1 |
 | Issues abertas no toolkit | 0 |
 | Profundidade max de subagentes | 2 |
 
@@ -36,16 +36,17 @@
 | onda-002 | 2026-06-20T16:00:41Z | 2026-06-20T16:21:13Z |  | 0 | 1232s | concluido |
 | onda-003 | 2026-06-20T16:26:39Z | 2026-06-20T16:29:34Z |  | 0 | 175s | concluido |
 | onda-004 | 2026-06-20T16:34:55Z | 2026-06-20T17:11:02Z |  | 0 | 2167s | concluido |
+| onda-005 | 2026-06-20T17:31:44Z | 2026-06-20T17:34:08Z |  | 0 | 144s | concluido |
 
 ## 3. Decisoes
 
-Total: 26 decisoes registradas.
+Total: 35 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 26 |
+| agente-00c-feature-orchestrator | 35 |
 
 ### 3.2 Lista detalhada
 
@@ -465,6 +466,150 @@ Total: 26 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-027 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:32:01Z
+
+**Contexto**: CI PR#170 verificado: todos os gates passaram
+
+**Opcoes consideradas**: aprovar-ci / rejeitar-ci / solicitar-rerun
+
+**Escolha**: aprovar-ci
+
+**Justificativa**: gh pr checks 170: Setup=pass, Lint=pass, Test=pass(4m39s), E2E=pass(4m14s), Build=pass(59s). CI totalmente verde após fix de snapshot (commit 63ccf61 — NotificationPayload/Result adicionados ao snapshot spec de packages/types).
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-028 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:32:10Z
+
+**Contexto**: AC review: FR-001 multi-tenancy via AsyncLocalStorage
+
+**Opcoes consideradas**: ac-atendido / ac-parcial / ac-falhou
+
+**Escolha**: ac-atendido
+
+**Justificativa**: NotificationsService.dispatch() extrai tenantId via getRequestContext() (AsyncLocalStorage). NotificationsWorker rebuilds RequestContext de job.data.tenantId via requestContext.run(). Nenhum método recebe tenantId como parâmetro de chamada. InAppChannel também usa getRequestContext() para o canal Redis. Controller extrai userId de ctx — BOLA-safe.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-029 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:32:19Z
+
+**Contexto**: AC review: FR-003 RLS USING+WITH CHECK na tabela notifications
+
+**Opcoes consideradas**: rls-correto / rls-parcial / rls-falhou
+
+**Escolha**: rls-correto
+
+**Justificativa**: Migration cria policy tenant_isolation com USING e WITH CHECK usando NULLIF(current_setting('app.current_tenant_id', true), '')::uuid — sem ramo IS NULL (Decision 4 da spec). RLS spec notifications.rls-spec.ts cobre: (1) tenant A só vê suas notificações, (2) tenant B não vê as de A, (3) INSERT com tenant_id errado bloqueado pelo WITH CHECK, (4) SELECT sem SET LOCAL retorna 0 rows. Test pass CI.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-030 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:32:30Z
+
+**Contexto**: AC review: uuidv7 via generateId() — gen_random_uuid() no schema Prisma como fallback
+
+**Opcoes consideradas**: conforme / nao-conforme / aceitavel-com-nota
+
+**Escolha**: aceitavel-com-nota
+
+**Justificativa**: Schema Prisma usa @default(dbgenerated('gen_random_uuid()')) mas o service SEMPRE chama notificationId = generateId() (uuidv7) antes do INSERT e passa explicitamente como $1. O DEFAULT de DB nunca é acionado pelo código da aplicação — mesmo padrão de outras tabelas do projeto (ex: _health table). A regra do projeto é: nunca usar @default(uuid()) do Prisma — e de fato não usa. Recomenda-se remover o gen_random_uuid() default do schema em refactoring futuro para clareza.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-031 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:32:39Z
+
+**Contexto**: AC review: FR-013 contratos Zod com snapshots em packages/types
+
+**Opcoes consideradas**: ac-atendido / ac-parcial / ac-falhou
+
+**Escolha**: ac-atendido
+
+**Justificativa**: 8 schemas Zod em packages/types/src/notification.ts: NotificationTypeSchema, NotificationChannelSchema, NotificationStatusSchema, NotificationDispatchSchema, NotificationPayloadSchema, NotificationResultSchema, NotificationJobPayloadSchema, NotificationRealtimeEventSchema. Snapshot spec notification.snapshot.spec.ts cobre todos os schemas. Fix de lição lint (commit 63ccf61) adicionou cobertura de NotificationPayload e NotificationResult que faltavam. CI Test pass com 582 testes.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-032 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:32:50Z
+
+**Contexto**: Review OWASP findings remanescentes: 1 MEDIUM (actionUrl/metadata), 1 LOW (rate-limit)
+
+**Opcoes consideradas**: endereçado-em-codigo / tech-debt-rastreavel / escalar-humano
+
+**Escolha**: tech-debt-rastreavel
+
+**Justificativa**: MEDIUM: metadata.actionUrl usa z.record(z.string(), z.unknown()) sem sanitização de URL/XSS. Não endereçado na Story 14-1 (escopo: infra backend). O risco se materializa quando o FE (Story 14.2a) consumir actionUrl — Story 14.2a DEVE sanitizar e validar URL no client antes de renderizar. Registrar como tech-debt para Story 14.2a. LOW: endpoints GET /api/v1/notifications não têm ThrottlerGuard — rate-limit global de plataforma cobre (conforme constitution), não é requisito desta story. Registrar como tech-debt opcional para hardening futuro.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-033 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:33:01Z
+
+**Contexto**: Lição capturada: execute-task deve rodar turbo lint completo (monorepo), não só filtro do app
+
+**Opcoes consideradas**: registrar-licao-kb / ignorar / escalar-skill-global
+
+**Escolha**: registrar-licao-kb
+
+**Justificativa**: O orquestrador da onda execute-task validou apenas 'pnpm --filter @metanoia/api lint'. O CI usa 'pnpm turbo lint' que cobre o monorepo completo. packages/types falhava por 2 imports não usados (NotificationPayload, NotificationResult) no snapshot spec — não detectado localmente. Fix foi necessário em onda separada (commit 63ccf61) pelo PAI. Regra: execute-task DEVE rodar 'pnpm turbo lint' completo como último gate antes do PR.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-034 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:33:12Z
+
+**Contexto**: AC review: FR-005 extensibilidade ChannelRouter (Open/Closed)
+
+**Opcoes consideradas**: ac-atendido / ac-parcial / ac-falhou
+
+**Escolha**: ac-atendido
+
+**Justificativa**: ChannelRouter usa Map<string, NotificationChannelInterface> populada via injeção de dependência no constructor. Adicionar novo canal (ex: WhatsApp) requer: 1) nova classe implements NotificationChannelInterface, 2) injetar no ChannelRouter constructor + registrar no Map, 3) adicionar no providers do NotificationsModule. Nenhuma alteração no dispatch() ou na interface. Confirmado pela implementação de EmailChannel como stub com a mesma interface.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-035 — review-task — agente-00c-feature-orchestrator — 2026-06-20T17:33:21Z
+
+**Contexto**: AC review: idempotência RLS spec confirmada no CI (2x)
+
+**Opcoes consideradas**: confirmado / falhou / nao-testado
+
+**Escolha**: confirmado
+
+**Justificativa**: PR body confirma: 'RLS spec notifications.rls-spec.ts: 5/5 × 2 execuções (idempotente)'. RLS spec usa ON CONFLICT DO NOTHING em todos os INSERTs de setup (ensureTenant, ensureUser, insertNotification). CI Test pass 4m39s. Padrão lições Epic-13: teste RLS idempotente roda 2x no CI sem erro.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -484,7 +629,7 @@ Nenhum bloqueio humano nesta execucao.
 
 ## 5. Sugestoes para Skills Globais
 
-Total: 0 sugestoes.
+Total: 1 sugestoes.
 
 ### 5.1 Severidade impeditiva (viraram issues)
 
@@ -492,7 +637,12 @@ Total: 0 sugestoes.
 
 ### 5.2 Severidade aviso
 
-(Nenhuma sugestao com severidade aviso.)
+#### sug-001 — skill `execute-task`
+
+**Diagnostico**: execute-task valida lint apenas com --filter do app (ex: pnpm --filter @metanoia/api lint) e não roda o lint completo do monorepo (pnpm turbo lint). Em projetos Turborepo, packages/ auxiliares (ex: packages/types) também são lintados no CI e podem falhar por imports não usados em arquivos de teste, quebrando o CI mesmo com o app passando localmente.
+
+**Proposta**: Adicionar instrução explícita na skill execute-task para rodar 'pnpm turbo lint' (ou equivalente no turbo do projeto) como último gate antes de criar PR, além do --filter específico do app.
+
 
 ### 5.3 Severidade informativa
 
@@ -500,11 +650,11 @@ Total: 0 sugestoes.
 
 ### 5.4 Sem sugestoes
 
-Nenhuma sugestao para skills globais nesta execucao.
+(Esta secao se aplica apenas a execucoes sem sugestoes — 1 registradas acima.)
 
 ## 6. Licoes Aprendidas
 
-(Sera preenchido no relatorio final.)
+(Relatorio final invocado sem --licoes-aprendidas — operador deve preencher esta secao manualmente OU re-invocar com flag.)
 
 ---
 

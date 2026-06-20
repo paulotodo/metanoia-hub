@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Infraestrutura de Notificacoes & Channel Router (FR77) — modulo modules/notifications/ com tabela Notification (RLS tenant-scoped), NotificationService.dispatch() lendo tenant_id do RequestContext (AsyncLocalStorage, nunca como parametro), fila BullMQ queue:notifications, Channel Router com interface NotificationChannel extensivel (InAppChannel/EmailChannel), batching com digest de 5min (configuravel via NOTIFICATION_DIGEST_WINDOW_MS, pastoral_alert nunca agrupado), retries com backoff exponencial (3 tentativas) e failed set retido.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "pipeline-completa",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T15:50:21Z",
-    "finished_at": "2026-06-20T17:34:20Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -136,11 +136,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T17:31:44Z",
-      "finished_at": "2026-06-20T17:34:08Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 144,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -827,9 +827,9 @@
     "current_wave_start": "2026-06-20T17:31:44Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4628,
+    "wallclock_total_seconds": 4484,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 35,
@@ -871,11 +871,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T16:21:13Z",
       "description": "onda plan encerrada; aguardando wakeup para checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T17:33:47Z",
-      "description": "review-task concluida — feature concluida, PR#170 aguardando merge humano"
     }
   ],
   "current_wave_id": "onda-002",

@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Infraestrutura de Notificacoes & Channel Router (FR77) — modulo modules/notifications/ com tabela Notification (RLS tenant-scoped), NotificationService.dispatch() lendo tenant_id do RequestContext (AsyncLocalStorage, nunca como parametro), fila BullMQ queue:notifications, Channel Router com interface NotificationChannel extensivel (InAppChannel/EmailChannel), batching com digest de 5min (configuravel via NOTIFICATION_DIGEST_WINDOW_MS, pastoral_alert nunca agrupado), retries com backoff exponencial (3 tentativas) e failed set retido.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "pipeline-completa",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T15:50:21Z",
-    "finished_at": "2026-06-20T17:34:20Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -136,11 +136,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T17:31:44Z",
-      "finished_at": "2026-06-20T17:34:08Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 144,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -658,158 +658,6 @@
       "evidence": "Build pass 59s; E2E (Playwright) pass 4m14s; Lint pass 30s; Setup pass 29s; Test pass 4m39s — todos os 5 checks verdes no run 27878351020",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:32:10Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: FR-001 multi-tenancy via AsyncLocalStorage",
-      "options_considered": [
-        "ac-atendido",
-        "ac-parcial",
-        "ac-falhou"
-      ],
-      "choice": "ac-atendido",
-      "rationale": "NotificationsService.dispatch() extrai tenantId via getRequestContext() (AsyncLocalStorage). NotificationsWorker rebuilds RequestContext de job.data.tenantId via requestContext.run(). Nenhum método recebe tenantId como parâmetro de chamada. InAppChannel também usa getRequestContext() para o canal Redis. Controller extrai userId de ctx — BOLA-safe.",
-      "justification_score": 3,
-      "evidence": "notifications.service.ts L43: const ctx = getRequestContext(); L44: const { tenantId, correlationId } = ctx; — sem tenantId como param",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:32:19Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: FR-003 RLS USING+WITH CHECK na tabela notifications",
-      "options_considered": [
-        "rls-correto",
-        "rls-parcial",
-        "rls-falhou"
-      ],
-      "choice": "rls-correto",
-      "rationale": "Migration cria policy tenant_isolation com USING e WITH CHECK usando NULLIF(current_setting('app.current_tenant_id', true), '')::uuid — sem ramo IS NULL (Decision 4 da spec). RLS spec notifications.rls-spec.ts cobre: (1) tenant A só vê suas notificações, (2) tenant B não vê as de A, (3) INSERT com tenant_id errado bloqueado pelo WITH CHECK, (4) SELECT sem SET LOCAL retorna 0 rows. Test pass CI.",
-      "justification_score": 3,
-      "evidence": "migration.sql: CREATE POLICY tenant_isolation ON notifications USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid) WITH CHECK (tenant_id = NULLIF(...))",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-030",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:32:30Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: uuidv7 via generateId() — gen_random_uuid() no schema Prisma como fallback",
-      "options_considered": [
-        "conforme",
-        "nao-conforme",
-        "aceitavel-com-nota"
-      ],
-      "choice": "aceitavel-com-nota",
-      "rationale": "Schema Prisma usa @default(dbgenerated('gen_random_uuid()')) mas o service SEMPRE chama notificationId = generateId() (uuidv7) antes do INSERT e passa explicitamente como $1. O DEFAULT de DB nunca é acionado pelo código da aplicação — mesmo padrão de outras tabelas do projeto (ex: _health table). A regra do projeto é: nunca usar @default(uuid()) do Prisma — e de fato não usa. Recomenda-se remover o gen_random_uuid() default do schema em refactoring futuro para clareza.",
-      "justification_score": 2,
-      "evidence": "notifications.service.ts L58: const notificationId = generateId(); — passado em $1 do INSERT. Migration L12: DEFAULT gen_random_uuid() nunca ativado pelo código.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-031",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:32:39Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: FR-013 contratos Zod com snapshots em packages/types",
-      "options_considered": [
-        "ac-atendido",
-        "ac-parcial",
-        "ac-falhou"
-      ],
-      "choice": "ac-atendido",
-      "rationale": "8 schemas Zod em packages/types/src/notification.ts: NotificationTypeSchema, NotificationChannelSchema, NotificationStatusSchema, NotificationDispatchSchema, NotificationPayloadSchema, NotificationResultSchema, NotificationJobPayloadSchema, NotificationRealtimeEventSchema. Snapshot spec notification.snapshot.spec.ts cobre todos os schemas. Fix de lição lint (commit 63ccf61) adicionou cobertura de NotificationPayload e NotificationResult que faltavam. CI Test pass com 582 testes.",
-      "justification_score": 3,
-      "evidence": "notification.snapshot.spec.ts importa e testa todos os 8 schemas; CI Test pass 4m39s no run 27878351020",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-032",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:32:50Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Review OWASP findings remanescentes: 1 MEDIUM (actionUrl/metadata), 1 LOW (rate-limit)",
-      "options_considered": [
-        "endereçado-em-codigo",
-        "tech-debt-rastreavel",
-        "escalar-humano"
-      ],
-      "choice": "tech-debt-rastreavel",
-      "rationale": "MEDIUM: metadata.actionUrl usa z.record(z.string(), z.unknown()) sem sanitização de URL/XSS. Não endereçado na Story 14-1 (escopo: infra backend). O risco se materializa quando o FE (Story 14.2a) consumir actionUrl — Story 14.2a DEVE sanitizar e validar URL no client antes de renderizar. Registrar como tech-debt para Story 14.2a. LOW: endpoints GET /api/v1/notifications não têm ThrottlerGuard — rate-limit global de plataforma cobre (conforme constitution), não é requisito desta story. Registrar como tech-debt opcional para hardening futuro.",
-      "justification_score": 2,
-      "evidence": "notification.ts: metadata: z.record(z.string(), z.unknown()).optional() — sem validação de actionUrl como URL segura. Controller: sem @Throttle decorator nos endpoints de leitura.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-033",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:33:01Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Lição capturada: execute-task deve rodar turbo lint completo (monorepo), não só filtro do app",
-      "options_considered": [
-        "registrar-licao-kb",
-        "ignorar",
-        "escalar-skill-global"
-      ],
-      "choice": "registrar-licao-kb",
-      "rationale": "O orquestrador da onda execute-task validou apenas 'pnpm --filter @metanoia/api lint'. O CI usa 'pnpm turbo lint' que cobre o monorepo completo. packages/types falhava por 2 imports não usados (NotificationPayload, NotificationResult) no snapshot spec — não detectado localmente. Fix foi necessário em onda separada (commit 63ccf61) pelo PAI. Regra: execute-task DEVE rodar 'pnpm turbo lint' completo como último gate antes do PR.",
-      "justification_score": 3,
-      "evidence": "commit 63ccf61: 'test(types): cobre NotificationPayload/Result schemas no snapshot spec' — fix de lint em packages/types necessário após PR aberto por não ter rodado turbo lint completo",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-034",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:33:12Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: FR-005 extensibilidade ChannelRouter (Open/Closed)",
-      "options_considered": [
-        "ac-atendido",
-        "ac-parcial",
-        "ac-falhou"
-      ],
-      "choice": "ac-atendido",
-      "rationale": "ChannelRouter usa Map<string, NotificationChannelInterface> populada via injeção de dependência no constructor. Adicionar novo canal (ex: WhatsApp) requer: 1) nova classe implements NotificationChannelInterface, 2) injetar no ChannelRouter constructor + registrar no Map, 3) adicionar no providers do NotificationsModule. Nenhuma alteração no dispatch() ou na interface. Confirmado pela implementação de EmailChannel como stub com a mesma interface.",
-      "justification_score": 3,
-      "evidence": "channel-router.ts: channelMap = new Map([inAppChannel.channel, inAppChannel], [emailChannel.channel, emailChannel]]) — extensível por registro",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-035",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T17:33:21Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "AC review: idempotência RLS spec confirmada no CI (2x)",
-      "options_considered": [
-        "confirmado",
-        "falhou",
-        "nao-testado"
-      ],
-      "choice": "confirmado",
-      "rationale": "PR body confirma: 'RLS spec notifications.rls-spec.ts: 5/5 × 2 execuções (idempotente)'. RLS spec usa ON CONFLICT DO NOTHING em todos os INSERTs de setup (ensureTenant, ensureUser, insertNotification). CI Test pass 4m39s. Padrão lições Epic-13: teste RLS idempotente roda 2x no CI sem erro.",
-      "justification_score": 3,
-      "evidence": "notifications.rls-spec.ts: INSERT INTO notifications ... ON CONFLICT (id) DO NOTHING — idempotência garantida por construção",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -827,14 +675,14 @@
     "current_wave_start": "2026-06-20T17:31:44Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4628,
+    "wallclock_total_seconds": 4484,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 35,
+    "decisions_total": 27,
     "human_blocks_total": 0,
-    "global_skill_suggestions_total": 1,
+    "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
     "cache": {
       "tokens_cache_misses_disabled": 2
@@ -871,11 +719,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T16:21:13Z",
       "description": "onda plan encerrada; aguardando wakeup para checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T17:33:47Z",
-      "description": "review-task concluida — feature concluida, PR#170 aguardando merge humano"
     }
   ],
   "current_wave_id": "onda-002",
@@ -1047,46 +890,6 @@
       "touched_files": [],
       "recorded_at": "2026-06-20T17:10:24Z",
       "source": "execute-task"
-    },
-    {
-      "task_id": "7.0",
-      "title": "Review Final — PR #170 infra-notificacoes",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 5,
-      "tests_passed": 5,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000000_14-1-notifications/migration.sql",
-        "apps/api/prisma/schema.prisma",
-        "apps/api/src/notifications/notifications.service.ts",
-        "apps/api/src/notifications/notifications.worker.ts",
-        "apps/api/src/notifications/digest.service.ts",
-        "apps/api/src/notifications/channel-router.ts",
-        "apps/api/src/notifications/channels/in-app.channel.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/notifications.controller.ts",
-        "apps/api/test/rls/notifications.rls-spec.ts",
-        "packages/types/src/notification.ts",
-        "packages/types/src/__tests__/notification.snapshot.spec.ts"
-      ],
-      "recorded_at": "2026-06-20T17:33:40Z",
-      "source": "review-task"
-    }
-  ],
-  "suggestions": [
-    {
-      "id": "sug-001",
-      "affected_skill": "execute-task",
-      "diagnosis": "execute-task valida lint apenas com --filter do app (ex: pnpm --filter @metanoia/api lint) e não roda o lint completo do monorepo (pnpm turbo lint). Em projetos Turborepo, packages/ auxiliares (ex: packages/types) também são lintados no CI e podem falhar por imports não usados em arquivos de teste, quebrando o CI mesmo com o app passando localmente.",
-      "severity": "aviso",
-      "proposal": "Adicionar instrução explícita na skill execute-task para rodar 'pnpm turbo lint' (ou equivalente no turbo do projeto) como último gate antes de criar PR, além do --filter específico do app.",
-      "references": [
-        "docs/specs/infra-notificacoes/spec.md",
-        "packages/types/src/__tests__/notification.snapshot.spec.ts"
-      ],
-      "issue_opened": null,
-      "created_at": "2026-06-20T17:33:31Z"
     }
   ]
 }
