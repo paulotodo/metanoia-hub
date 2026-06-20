@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa create-tasks — decompor spec+plan+contracts de infra-notificacoes em backlog executavel (tasks.md) com fases, dependencias e criticidade. Pre-gate template-fidelity (validate-tasks-template.sh) + docs-render apos geracao.",
   "waves": [
     {
       "id": "onda-001",
@@ -108,23 +108,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-20T16:28:54Z",
           "decision_id": "dec-020"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-20T16:34:55Z",
-      "finished_at": "2026-06-20T16:39:23Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 268,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-20T16:39:23Z",
-          "decision_id": null
         }
       ]
     }
@@ -523,44 +506,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T16:33:16Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T16:35:05Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da onda create-tasks para infra-notificacoes",
-      "options_considered": [
-        "executar-create-tasks",
-        "abortar"
-      ],
-      "choice": "executar-create-tasks",
-      "rationale": "Artefatos spec.md, plan.md, contracts, checklist prontos. 0 bloqueios pendentes. Status em_andamento.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -575,15 +520,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-20T16:34:55Z"
+    "current_wave_start": "2026-06-20T16:26:39Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2317,
+    "wallclock_total_seconds": 2049,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 23,
+    "decisions_total": 21,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,

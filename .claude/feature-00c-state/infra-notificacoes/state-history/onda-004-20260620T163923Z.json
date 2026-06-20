@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "next_instruction": "Iniciar etapa create-tasks — decompor spec+plan+contracts de infra-notificacoes em backlog executavel (tasks.md) com fases, dependencias e criticidade. Pre-gate template-fidelity (validate-tasks-template.sh) + docs-render apos geracao.",
   "waves": [
     {
       "id": "onda-001",
