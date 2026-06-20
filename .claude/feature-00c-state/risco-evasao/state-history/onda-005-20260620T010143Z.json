@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
   "waves": [
     {
@@ -127,24 +127,13 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T01:01:33Z",
-      "finished_at": "2026-06-20T01:05:20Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 227,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-20T01:01:43Z",
-          "decision_id": "dec-024"
-        },
-        {
-          "skill": "validate-tasks-template",
-          "timestamp": "2026-06-20T01:05:11Z",
-          "decision_id": "dec-025"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -577,44 +566,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T01:01:43Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Decomposição da spec FR66 em backlog tasks.md com 8 gaps do checklist como tasks obrigatórias",
-      "options_considered": [
-        "decompor-em-10-fases",
-        "decompor-em-5-fases",
-        "flat-list-sem-fases"
-      ],
-      "choice": "decompor-em-10-fases",
-      "rationale": "10 fases espelham a sequência de dependências: migrations→types/Zod→contracts→interceptor→service/repo→job→recesso→ui→timeline→testes. Garante build order correto e permite paralelismo entre fases independentes.",
-      "justification_score": 3,
-      "evidence": "plan.md §11 define sequência: migrations→types→interceptor→service+job→UI. 8 gaps do checklist distribuídos nas fases correspondentes.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T01:05:11Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: tasks.md validado deterministicamente via Bash",
-      "options_considered": [
-        "aprovado",
-        "reprovado-corrigir",
-        "skip-com-justificativa"
-      ],
-      "choice": "aprovado",
-      "rationale": "10 FASE sections, 80 checkboxes, 52 criticality tags, Matriz+Escopo presentes, todos os 8 gaps (CHK006/007/017/019/025/032/036/043) cobertos",
-      "justification_score": 3,
-      "evidence": "FASE sections: 10 | Checkboxes: 80 | Criticality tags: 52 | Matriz: 1 | Escopo: 2 | CHK006:2 CHK007:1 CHK017:4 CHK019:2 CHK025:3 CHK032:3 CHK036:2 CHK043:4",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -632,12 +583,12 @@
     "current_wave_start": "2026-06-20T01:01:33Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1318,
+    "wallclock_total_seconds": 1091,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 25,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -678,11 +629,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T00:57:47Z",
       "description": "fase=checklist concluido; proxima=create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T01:05:20Z",
-      "description": "onda-005 create-tasks concluido; aguardando wakeup para execute-task"
     }
   ]
 }
