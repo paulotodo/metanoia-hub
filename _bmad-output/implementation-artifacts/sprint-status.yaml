@@ -213,7 +213,7 @@ development_status:
   # Epic 14: Notificações & Comunicação
   # Sprint 19: 14-1, 14-2a, 14-2b, 14-2c, 14-3, 14-4
   epic-14: in-progress
-  14-1-infraestrutura-de-notificacoes-channel-router-fr77: ready-for-dev
+  14-1-infraestrutura-de-notificacoes-channel-router-fr77: done                  # PR #170 (8ff258e) — modulo apps/api/src/notifications/ (service anti-IDOR via RequestContext, ChannelRouter O/C, InApp/Email channels, BullMQ worker retry 3x+failed set, DigestService pastoral_alert imediato, Redis rt:notifications:*), migration 20260629000000 + RLS USING/WITH CHECK, RLS spec idempotente 2x, 8 schemas Zod+snapshot; CI 5/5 verde; via feature-00c. Tech-debt: actionUrl sanitize (14.2a), rate-limit leitura
   14-2a-sse-endpoint-redis-pubsub-backend-fr77: ready-for-dev
   14-2b-notification-center-ui-fr77: ready-for-dev
   14-2c-sse-reconnection-gap-fill-fr77: ready-for-dev
