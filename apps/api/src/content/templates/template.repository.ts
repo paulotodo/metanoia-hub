@@ -3,7 +3,7 @@ import type { ContentTemplate } from '@prisma/client';
 import { uuidv7 } from 'uuidv7';
 import { getRequestContext } from '../../common/context/request-context';
 import { PrismaService } from '../../prisma/prisma.service';
-import { withTenantTx, type TenantTx } from '../../prisma/with-tenant-tx';
+import { withTenantTx } from '../../prisma/with-tenant-tx';
 import type { TemplateListQuery, TemplateStructure } from '@metanoia/types';
 
 // ---------------------------------------------------------------------------
