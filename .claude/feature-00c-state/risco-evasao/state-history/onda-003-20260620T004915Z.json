@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
   "waves": [
     {
@@ -89,38 +89,6 @@
           "skill": "owasp-security",
           "timestamp": "2026-06-20T00:45:06Z",
           "decision_id": "dec-015"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-20T00:52:12Z",
-      "finished_at": "2026-06-20T00:57:32Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 320,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-20T00:52:24Z",
-          "decision_id": "dec-017"
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-20T00:57:11Z",
-          "decision_id": "dec-018"
-        },
-        {
-          "skill": "checklist-algorithm-review",
-          "timestamp": "2026-06-20T00:57:11Z",
-          "decision_id": "dec-019"
-        },
-        {
-          "skill": "checklist-security-review",
-          "timestamp": "2026-06-20T00:57:11Z",
-          "decision_id": "dec-020"
         }
       ]
     }
@@ -405,136 +373,6 @@
       "evidence": "refresh-tenant-views.processor.ts: finally { await privileged.$disconnect() }; with-tenant-tx.ts: if(!UUID_RE.test(tenantId)) throw 'Refusing SET LOCAL'; meeting-event.service.ts: redis.set(key,'1','EX',TTL,'NX'); risk-detected.event.json: additionalProperties false, data sem PII",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T00:49:15Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase checklist)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:52:20Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Início da fase checklist: validação de requisitos FR66 risco-evasao",
-      "options_considered": [
-        "executar-checklist",
-        "abortar"
-      ],
-      "choice": "executar-checklist",
-      "rationale": "specify+clarify+plan concluídos; sem bloqueios pendentes; artefatos spec.md, plan.md, data-model.md, contracts/risk-detected.event.json prontos para validação de qualidade de requisitos",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:56:46Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK025: Teste RLS users.last_seen_at era condicional — sonda confirmou RLS ativo",
-      "options_considered": [
-        "corrigir-para-obrigatorio",
-        "deixar-condicional"
-      ],
-      "choice": "corrigir-para-obrigatorio",
-      "rationale": "migration 20260409231601 confirma ENABLE ROW LEVEL SECURITY + policies users_tenant_isolation e users_tenant_insert na tabela users. Condicional removido do plan §6 e §10.",
-      "justification_score": 3,
-      "evidence": "grep result: migration 20260409231601_create_users: ALTER TABLE users ENABLE ROW LEVEL SECURITY; CREATE POLICY users_tenant_isolation ON users",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:57:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK036: SC-10 prevê risk-resolved mas contrato JSON ausente",
-      "options_considered": [
-        "criar-contrato-em-create-tasks",
-        "abortar-sc10"
-      ],
-      "choice": "criar-contrato-em-create-tasks",
-      "rationale": "spec FR66-04 define o envelope do risk-resolved com todos os campos; só falta o arquivo JSON Schema. Task obrigatória para create-tasks: criar contracts/risk-resolved.event.json + RiskResolvedEventSchema Zod.",
-      "justification_score": 3,
-      "evidence": "spec.md FR66-04 linha 103-123 define evento risk-resolved completo; ls contracts/ retorna apenas risk-detected.event.json",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:57:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK043: manualOverrideAt tratado como low-risk mas SC-04 não é verificável sem coluna de origem",
-      "options_considered": [
-        "elevar-para-task-obrigatoria",
-        "manter-como-nota"
-      ],
-      "choice": "elevar-para-task-obrigatoria",
-      "rationale": "Sem coluna de origem manual, job pode falsamente ignorar recálculo se ele mesmo atualizou updatedAt nas últimas 24h. SC-04 race condition test não é determinístico sem manualOverrideAt. Elevado para task obrigatória no create-tasks.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:57:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK011-RES: presenceType='partial' conta como presença no Critério A",
-      "options_considered": [
-        "partial-e-presenca",
-        "partial-e-ausencia",
-        "sem-definicao"
-      ],
-      "choice": "partial-e-presenca",
-      "rationale": "Presença parcial indica engajamento — excluí-la geraria falso-positivo de risco para participante que compareceu parcialmente. Consistente com vocabulário pastoral do projeto.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:57:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK030-RES: granularidade do correlation_id = 1 UUID v7 por execução de job",
-      "options_considered": [
-        "por-job-run",
-        "por-tenant-por-run",
-        "sem-correlation"
-      ],
-      "choice": "por-job-run",
-      "rationale": "jobRunId no envelope do domain event sugere 1 por execução. Permite correlacionar todos os logs e eventos de um run cross-tenant para debug. Log por tenant inclui ambos jobRunId+tenantId.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -549,15 +387,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-20T00:52:12Z"
+    "current_wave_start": "2026-06-20T00:39:47Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1091,
+    "wallclock_total_seconds": 771,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 22,
+    "decisions_total": 15,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -593,11 +431,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T00:45:46Z",
       "description": "onda-003 plan encerrada; aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T00:57:47Z",
-      "description": "fase=checklist concluido; proxima=create-tasks"
     }
   ]
 }

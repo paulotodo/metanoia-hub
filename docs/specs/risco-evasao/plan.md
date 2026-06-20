@@ -139,7 +139,7 @@ Participante é flagged se **A OU B**. `riskReason` registra qual(is): valores `
 - **Fire-and-forget (não impacta latência):** o interceptor NÃO `await` a escrita no caminho da resposta. Usa `tap()` no observable de resposta e dispara a atualização de forma assíncrona (`void this.updateLastSeen(userId, tenantId)`), com erro **engolido** (best-effort: `.catch(err => logger.debug(...))`). Falha de atualização NUNCA quebra a request.
 - **Debounce Redis (TTL 15min):** antes de escrever, `SET cache:last-seen:{userId} 1 NX EX 900`. Se a key já existe (não-NX), pula a escrita. Isso limita 1 UPDATE por usuário a cada 15 min, evitando DoS de escrita no `users` (sonda `RedisService` disponível, namespace `cache:*` conforme CLAUDE.md).
 - **Escrita:** `UPDATE users SET last_seen_at = now() WHERE id = $userId` via `withTenantTx({ tenantId })` (RLS) — ou, como `last_seen_at` é global e o user pode não ter contexto de escrita de domínio, usar update escopado pelo tenant do token. UUID v7 não se aplica (update). 
-- **Migration C-LASTSEEN:** `ALTER TABLE users ADD COLUMN last_seen_at TIMESTAMPTZ NULL;` → Prisma `lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz`. Tabela `users` tem RLS? (tem `tenantId` nullable + `@@index([tenantId])`). Se houver policy → teste RLS.
+- **Migration C-LASTSEEN:** `ALTER TABLE users ADD COLUMN last_seen_at TIMESTAMPTZ NULL;` → Prisma `lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz`. Tabela `users` tem RLS ativa (ENABLE ROW LEVEL SECURITY + policies `users_tenant_isolation` e `users_tenant_insert` — confirmado via migration 20260409231601). **Teste RLS OBRIGATÓRIO** em `apps/api/test/rls/users-lastseen.rls.spec.ts`.
 - **Tratamento de erro:** best-effort total. Redis down → FAIL-OPEN: pula a escrita (best-effort, nunca escrita direta não-debounced — ver AC-SEC-02); DB down → log debug, segue. Nunca propaga, nunca bloqueia a request.
 
 **Resposta ao FOCO de segurança (LastSeenInterceptor / DoS):** o debounce Redis NX EX 900 é a defesa primária contra amplificação de escrita. Sem ele, cada request autenticado geraria um UPDATE — vetor de DoS de I/O no `users`. Com TTL 15min, o teto é ~4 writes/hora/usuário ativo.
@@ -197,7 +197,7 @@ Participante é flagged se **A OU B**. `riskReason` registra qual(is): valores `
 
 | Migration | Tabela | Coluna(s) | Teste RLS |
 |-----------|--------|-----------|-----------|
-| C-LASTSEEN | `users` | `last_seen_at TIMESTAMPTZ NULL` | sim (se policy em users) |
+| C-LASTSEEN | `users` | `last_seen_at TIMESTAMPTZ NULL` | **sim — OBRIGATÓRIO** (users tem RLS ativa confirmada) |
 | C-GROUP | `groups` | `status VARCHAR(16) DEFAULT 'active'`, `break_until TIMESTAMPTZ NULL` | sim |
 | C2-RISKREASON | `participant_radar_status` | `risk_reason VARCHAR(500) NULL` | sim |
 | C-JOBLOG (opcional) | `evasion_job_log` (novo) | log de job, `tenant_id NULL` permitido | policy `tenant_id IS NULL` |

@@ -593,11 +593,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T00:45:46Z",
       "description": "onda-003 plan encerrada; aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T00:57:47Z",
-      "description": "fase=checklist concluido; proxima=create-tasks"
     }
   ]
 }

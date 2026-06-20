@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
   "waves": [
     {
@@ -95,32 +95,17 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-20T00:52:12Z",
-      "finished_at": "2026-06-20T00:57:32Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 320,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "checklist",
           "timestamp": "2026-06-20T00:52:24Z",
           "decision_id": "dec-017"
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-20T00:57:11Z",
-          "decision_id": "dec-018"
-        },
-        {
-          "skill": "checklist-algorithm-review",
-          "timestamp": "2026-06-20T00:57:11Z",
-          "decision_id": "dec-019"
-        },
-        {
-          "skill": "checklist-security-review",
-          "timestamp": "2026-06-20T00:57:11Z",
-          "decision_id": "dec-020"
         }
       ]
     }
@@ -516,25 +501,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T00:57:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CHK030-RES: granularidade do correlation_id = 1 UUID v7 por execução de job",
-      "options_considered": [
-        "por-job-run",
-        "por-tenant-por-run",
-        "sem-correlation"
-      ],
-      "choice": "por-job-run",
-      "rationale": "jobRunId no envelope do domain event sugere 1 por execução. Permite correlacionar todos os logs e eventos de um run cross-tenant para debug. Log por tenant inclui ambos jobRunId+tenantId.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -552,12 +518,12 @@
     "current_wave_start": "2026-06-20T00:52:12Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1091,
+    "wallclock_total_seconds": 771,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 22,
+    "decisions_total": 21,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -593,11 +559,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T00:45:46Z",
       "description": "onda-003 plan encerrada; aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T00:57:47Z",
-      "description": "fase=checklist concluido; proxima=create-tasks"
     }
   ]
 }

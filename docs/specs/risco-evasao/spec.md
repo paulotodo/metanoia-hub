@@ -407,3 +407,22 @@ O consumer do evento `pastoral.participant.risk-detected` para envio de push ao 
 | 2026-06-19 | C2: riskReason VARCHAR(500) NULL persistido em ParticipantRadarStatus (Migration 3 confirmada) |
 | 2026-06-19 | C3: PATCH /api/v1/groups/:id já existe — extensão do UpdateGroupRequestSchema apenas |
 | 2026-06-19 | C4: resolução de risco no mesmo job diário detect-evasion-risk (batch, não real-time) |
+
+## 12. Clarificações Técnicas (resolvidas em checklist — 2026-06-19)
+
+### CHK011-RES — Definição de "ausência" no Critério A (presenceType)
+
+**Decisão:** Para o Critério A, **qualquer registro de `MeetingAttendance` com `presenceType` não-nulo conta como presença**, incluindo `presenceType='partial'` (presença parcial). A ausência é definida como: (a) ausência de linha em `MeetingAttendance` para o par `(userId, meetingId)`, OU (b) linha existente com `presenceType IS NULL`.
+
+**Racional:** Presença parcial indica engajamento com o grupo — excluí-la da contagem de "presente" seria pastoralmente incorreto e geraria falsos positivos de risco para participantes que compareceram mesmo que parcialmente.
+
+**Critério de teste (adição ao SC-02):** Fixture com participante que tem `presenceType='partial'` na reunião mais recente após 2 ausências consecutivas → NÃO deve ser flagged (2 ausências < 3).
+
+### CHK030-RES — Granularidade de correlation_id
+
+**Decisão:** `correlation_id` = **1 UUID v7 por execução de job** (não por tenant). Gerado no início do `processDetection()`. Incluso em TODOS os logs Pino daquela execução, independente do tenant sendo processado. Mapeado a `metadata.jobRunId` no envelope do domain event.
+
+**Estrutura de log:** `{ level, msg, jobRunId: "<uuid-v7>", tenantId?: "<uuid>", ... }`
+
+**Racional:** O `jobRunId` permite correlacionar todos os logs e eventos de uma execução específica do job — essencial para debug de falhas cross-tenant. O log de erro por tenant inclui ambos (`jobRunId` + `tenantId`) para isolamento.
+
