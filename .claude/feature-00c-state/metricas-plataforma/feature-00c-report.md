@@ -1,6 +1,6 @@
 # Relatorio do Agente-00C — feat-metricas-plataforma-20260620T024158Z
 
-**Gerado em**: 2026-06-20T02:48:24Z
+**Gerado em**: 2026-06-20T02:56:46Z
 **Status no momento**: em_andamento
 **Versao do schema**: 1.0.0
 
@@ -18,9 +18,9 @@
 | Motivo termino | (em andamento) |
 | Iniciada em | 2026-06-20T02:41:58Z |
 | Terminada em | ainda em andamento |
-| Ondas executadas | 1 |
+| Ondas executadas | 2 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 4 |
+| Decisoes registradas | 8 |
 | Bloqueios humanos | 0 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -33,16 +33,17 @@
 | Onda | Inicio | Fim | Etapas | Tool calls | Wallclock | Termino |
 |------|--------|-----|--------|------------|-----------|---------|
 | onda-001 | 2026-06-20T02:43:26Z | 2026-06-20T02:48:03Z |  | 0 | 277s | concluido |
+| onda-002 | 2026-06-20T02:53:56Z | 2026-06-20T02:56:16Z |  | 0 | 140s | concluido |
 
 ## 3. Decisoes
 
-Total: 4 decisoes registradas.
+Total: 8 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 4 |
+| agente-00c-feature-orchestrator | 8 |
 
 ### 3.2 Lista detalhada
 
@@ -105,6 +106,70 @@ Total: 4 decisoes registradas.
 **Justificativa**: Spec autoritativa 13-4 lida, job pai 13.2b existente confirmado via processor.ts, módulo super-admin existente confirmado, pontos críticos documentados: refresh privilegiado obrigatório, tenant_storage_usage ausente no schema, 3 clarify pendentes identificados
 
 **Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-005 — model-routing — agente-00c-feature-orchestrator — 2026-06-20T02:52:15Z
+
+**Contexto**: Selecao de modelo para onda 1 (fase clarify)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-006 — clarify — agente-00c-feature-orchestrator — 2026-06-20T02:54:12Z
+
+**Contexto**: CLARIFY-01: janela temporal churnedTenants e netGrowth
+
+**Opcoes consideradas**: opcao-a-mes-calendario / opcao-b-janela-movel-30d
+
+**Escolha**: opcao-a-mes-calendario
+
+**Justificativa**: Opção A (mês calendário via date_trunc) é mais legível para relatórios gerenciais mensais, fiel à spec autoritativa 13-4 que descreve 'ativos no mês anterior mas inativos agora'. Janela móvel 30d seria ambígua para usuários finais.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-007 — clarify — agente-00c-feature-orchestrator — 2026-06-20T02:54:21Z
+
+**Contexto**: CLARIFY-02: mecanismo de populacao de tenant_storage_usage
+
+**Opcoes consideradas**: opcao-a-hook-storage-service / opcao-b-job-periodico-minio / opcao-c-stub-zero
+
+**Escolha**: opcao-a-hook-storage-service
+
+**Justificativa**: StorageService confirmado em apps/api/src/storage/storage.service.ts (64 linhas, método upload() com buffer.length disponível). Criar tabela tenant_storage_usage + hook de incremento no upload(). Delete ainda não existe — hook de decremento é follow-up quando delete for implementado. MV usa COALESCE(SUM(bytes_used),0). Decisão técnica, não de produto.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-008 — clarify — agente-00c-feature-orchestrator — 2026-06-20T02:54:32Z
+
+**Contexto**: CLARIFY-03: isolamento de falha do child job refresh-platform-views
+
+**Opcoes consideradas**: opcao-a-isolado-retries-proprios / opcao-b-propaga-ao-pai
+
+**Escolha**: opcao-a-isolado-retries-proprios
+
+**Justificativa**: BullMQ FlowProducer: child job failures são isolados por design de arquitetura. AC-03.7 da spec já documenta 'Falha do child NAO falha o job pai'. Child tem retry/log próprios e alerta independente. Sem ambiguidade técnica ou de produto.
+
+**Score**: 3
 
 **Referencias**: (nenhuma)
 

@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — invocar skill plan com spec.md clarificada.",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -44,23 +44,6 @@
           "skill": "specify",
           "timestamp": "2026-06-20T02:47:47Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-002",
-      "started_at": "2026-06-20T02:53:56Z",
-      "finished_at": "2026-06-20T02:56:16Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 140,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-20T02:54:38Z",
-          "decision_id": "dec-006"
         }
       ]
     }
@@ -159,61 +142,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-006",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T02:54:12Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CLARIFY-01: janela temporal churnedTenants e netGrowth",
-      "options_considered": [
-        "opcao-a-mes-calendario",
-        "opcao-b-janela-movel-30d"
-      ],
-      "choice": "opcao-a-mes-calendario",
-      "rationale": "Opção A (mês calendário via date_trunc) é mais legível para relatórios gerenciais mensais, fiel à spec autoritativa 13-4 que descreve 'ativos no mês anterior mas inativos agora'. Janela móvel 30d seria ambígua para usuários finais.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-007",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T02:54:21Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CLARIFY-02: mecanismo de populacao de tenant_storage_usage",
-      "options_considered": [
-        "opcao-a-hook-storage-service",
-        "opcao-b-job-periodico-minio",
-        "opcao-c-stub-zero"
-      ],
-      "choice": "opcao-a-hook-storage-service",
-      "rationale": "StorageService confirmado em apps/api/src/storage/storage.service.ts (64 linhas, método upload() com buffer.length disponível). Criar tabela tenant_storage_usage + hook de incremento no upload(). Delete ainda não existe — hook de decremento é follow-up quando delete for implementado. MV usa COALESCE(SUM(bytes_used),0). Decisão técnica, não de produto.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T02:54:32Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CLARIFY-03: isolamento de falha do child job refresh-platform-views",
-      "options_considered": [
-        "opcao-a-isolado-retries-proprios",
-        "opcao-b-propaga-ao-pai"
-      ],
-      "choice": "opcao-a-isolado-retries-proprios",
-      "rationale": "BullMQ FlowProducer: child job failures são isolados por design de arquitetura. AC-03.7 da spec já documenta 'Falha do child NAO falha o job pai'. Child tem retry/log próprios e alerta independente. Sem ambiguidade técnica ou de produto.",
-      "justification_score": 3,
-      "evidence": "AC-03.7 spec.md: 'Falha do child NÃO falha o job pai — erros do child são isolados.' + BullMQ FlowProducer: child queue independent retry config",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -228,15 +156,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-20T02:53:56Z"
+    "current_wave_start": "2026-06-20T02:43:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 417,
+    "wallclock_total_seconds": 277,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 8,
+    "decisions_total": 5,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

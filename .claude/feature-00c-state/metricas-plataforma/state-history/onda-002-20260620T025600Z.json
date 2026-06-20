@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — invocar skill plan com spec.md clarificada.",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
       "id": "onda-001",
@@ -50,11 +50,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T02:53:56Z",
-      "finished_at": "2026-06-20T02:56:16Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 140,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -231,9 +231,9 @@
     "current_wave_start": "2026-06-20T02:53:56Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 417,
+    "wallclock_total_seconds": 277,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 8,

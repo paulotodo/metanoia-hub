@@ -3,7 +3,7 @@
 **Story:** 13.4 — Epic 13: Relatórios Avançados & Analytics
 **Feature ID:** metricas-plataforma
 **FR:** FR67
-**Status:** draft
+**Status:** clarified
 **Criado em:** 2026-06-19
 
 ---
@@ -85,7 +85,7 @@ A coluna `storageUsed` deve vir de uma tabela `tenant_storage_usage` (tenant_id,
 
 3. **Para a MV:** `storageUsed` = `COALESCE(SUM(tsu.bytes_used), 0)` via JOIN com `tenant_storage_usage`
 
-**DECISÃO PENDENTE (clarify):** Opção A/B/C e se o `StorageService` de upload/MinIO já existe em outro Epic.
+**DECISÃO TOMADA (dec-007, clarify):** Opção A — `StorageService` confirmado em `apps/api/src/storage/storage.service.ts`. Tabela + hook no `upload()`. Hook de decremento no `delete()` como follow-up.
 
 ---
 
@@ -210,13 +210,11 @@ CREATE UNIQUE INDEX idx_mv_platform_metrics_singleton
   ON mv_platform_metrics ((1));
 ```
 
-### Nota: churned_tenants e net_growth — Ambiguidade Pendente
+### churned_tenants e net_growth — Janela Temporal Definida
 
-A janela temporal exata para `churned_tenants` e `net_growth` é item de clarify (ver CLARIFY-01 abaixo). Duas opções:
-- **Opção A (mês calendário):** Comparação entre mês anterior e mês corrente via `date_trunc`
-- **Opção B (janela móvel 30 dias):** Intervalo contínuo 0-30d vs. 30-60d
-
-Opção A é recomendada por legibilidade para relatórios gerenciais mensais.
+**DECIDIDO (dec-006):** Mês calendário via `date_trunc`.
+- `churned_tenants`: tenants com login no mês anterior (date_trunc) E sem login no mês corrente
+- `net_growth`: novos tenants no mês corrente − churned_tenants
 
 ---
 
@@ -385,35 +383,40 @@ A MV `mv_platform_metrics` e a tabela `tenant_storage_usage` são cross-tenant (
 
 ---
 
-## Clarifications Pendentes
+## Clarifications
 
 ### CLARIFY-01 — Janela temporal de churnedTenants e netGrowth
 
-**Pergunta:** Qual janela usar para `churnedTenants` e `netGrowth`?
-- **Opção A:** Mês calendário corrente vs. mês anterior (date_trunc) — mais legível para relatórios gerenciais
-- **Opção B:** Janela móvel 30 dias (intervalo contínuo) — mais "tempo real"
+**DECIDIDO (dec-006, score 2):** Opção A — mês calendário via `date_trunc`.
 
-**Impacto:** SQL da MV muda. Recomendação: Opção A.
-**Decidível autonomamente:** Score 2 (contexto favorece A, mas requer confirmação de produto).
+- `churned_tenants` = tenants que tinham login no mês anterior (date_trunc month-1) E sem login no mês corrente (date_trunc month atual)
+- `net_growth` = tenants criados no mês corrente − `churned_tenants` no mesmo período
+- SQL na MV: `date_trunc('month', NOW())` para delimitar mês corrente; `date_trunc('month', NOW() - INTERVAL '1 month')` para mês anterior
+
+**Justificativa:** Relatórios gerenciais mensais exigem períodos delimitados. Fiel à spec autoritativa 13-4: "ativos no mês anterior mas inativos agora". Janela móvel 30d seria ambígua para usuários finais.
+
+---
 
 ### CLARIFY-02 — Mecanismo de população de tenant_storage_usage
 
-**Pergunta:** Como `tenant_storage_usage` será alimentada?
-- **Opção A:** Hook no `StorageService` (upload/delete) — atomico e tempo-real
-- **Opção B:** Job periódico consultando MinIO — latência alta
-- **Opção C:** Stub MVP (bytes_used = 0) até StorageService existir
+**DECIDIDO (dec-007, score 2):** Opção A — hook no `StorageService` existente.
 
-**Impacto:** Determina se a coluna `storageUsed` reflete dados reais no MVP. Confirmar se o StorageService de upload já existe em outro Epic.
-**Decidível autonomamente com context:** Score 2 (Opção C se StorageService ausente; Opção A se presente).
+- `StorageService` confirmado em `apps/api/src/storage/storage.service.ts` (operacional)
+- Método `upload()` já usa `buffer.length` (bytes disponíveis)
+- **Implementação:** criar tabela `tenant_storage_usage` via migration + UPSERT no `upload()`: `INSERT INTO tenant_storage_usage (tenant_id, bytes_used) VALUES ($id, $delta) ON CONFLICT (tenant_id) DO UPDATE SET bytes_used = tenant_storage_usage.bytes_used + EXCLUDED.bytes_used, updated_at = NOW()`
+- `delete()` ainda não existe no `StorageService` — hook de decremento é **follow-up** quando delete for implementado
+- A MV usa `COALESCE(SUM(tsu.bytes_used), 0)` via LEFT JOIN com `tenant_storage_usage`
+
+---
 
 ### CLARIFY-03 — Isolamento de falha do child job
 
-**Pergunta:** Falha de `refresh-platform-views` deve propagar ao job pai?
-- **Opção A:** Retries independentes, falha isolada (não propaga ao pai)
-- **Opção B:** Falha do child marca o pai como failed
+**DECIDIDO (dec-008, score 3):** Opção A — falha isolada, sem propagação ao job pai.
 
-**Impacto:** Configuração do FlowProducer. Recomendação: Opção A (isolamento).
-**Decidível autonomamente:** Score 3 (BullMQ parent/child flow documenta que child failures são isolados por padrão).
+- BullMQ FlowProducer: child queue tem configuração de retry própria; falha do child não reverte o job pai
+- AC-03.7 já documenta: "Falha do child NÃO falha o job pai — erros do child são isolados"
+- Configuração na child queue: `attempts: 3, backoff: { type: 'exponential', delay: 5000 }`
+- Alerta independente via `logger.warn` com `mv_platform_refresh_failed`
 
 ---
 
