@@ -170,7 +170,7 @@ development_status:
   # Sprint 16: 10-3, 10-4
   epic-10: done
   10-1-wizard-de-onboarding-para-admin-tenant: done
-  10-2-dados-de-demonstracao-seed: done
+  10-2-dados-de-demonstracao-seed: done                                 # flake demo-data RLS (SEC011) CORRIGIDO na causa-raiz — PR #168 (07fb182): tenants próprios por spec (isolation/cleanup) eliminam colisão sob fileParallelism; 2/20→0/60 falhas; sem mais reruns de CI
   10-3-importacao-csv-upload-preview-validacao: done                    # PR #142 (09f61cd) — upload/preview/validação CSV client-side + check-emails
   10-4-importacao-csv-confirmacao-processamento: done                   # PR #144 (97092e8) — POST import sync/async BullMQ + polling + FR03 multi-tenant + plan limit
   epic-10-retrospective: optional
