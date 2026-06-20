@@ -166,6 +166,12 @@ export {
   type PastoralAlertWithTrend,
   type AlertListResponse,
   type AlertSchemaShapes,
+  ParticipantRiskReasonSchema,
+  type ParticipantRiskReason,
+  RiskDetectedEventSchema,
+  type RiskDetectedEvent,
+  RiskResolvedEventSchema,
+  type RiskResolvedEvent,
 } from './pastoral';
 export {
   PASTORAL_CARE,

@@ -70,6 +70,14 @@ export class GroupsService {
         ? { recurrence: body.recurrence }
         : {}),
       ...(body.notes !== undefined ? { notes: body.notes } : {}),
+      // Recesso (Story 13.3): status + breakUntil
+      ...(body.status !== undefined ? { status: body.status } : {}),
+      // Auto-clear breakUntil when resuming to active
+      ...(body.status === 'active' ? { breakUntil: null } : {}),
+      // Explicit breakUntil: convert ISO string to Date (or null to clear)
+      ...(body.breakUntil !== undefined && body.status !== 'active'
+        ? { breakUntil: body.breakUntil ? new Date(body.breakUntil) : null }
+        : {}),
     });
     if (!updated) throw new NotFoundException('Group not found');
     return this.toResponse(updated);
@@ -93,6 +101,8 @@ export class GroupsService {
       recurrence: group.recurrence,
       notes: group.notes,
       isDemoData: group.isDemoData,
+      status: group.status,
+      breakUntil: group.breakUntil ? group.breakUntil.toISOString() : null,
       createdAt: group.createdAt.toISOString(),
       updatedAt: group.updatedAt.toISOString(),
     });

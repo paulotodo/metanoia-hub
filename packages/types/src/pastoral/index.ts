@@ -38,3 +38,12 @@ export {
   type AlertListResponse,
   type AlertSchemaShapes,
 } from './alert.schema';
+
+export {
+  ParticipantRiskReasonSchema,
+  type ParticipantRiskReason,
+  RiskDetectedEventSchema,
+  type RiskDetectedEvent,
+  RiskResolvedEventSchema,
+  type RiskResolvedEvent,
+} from './evasion-events.schema';

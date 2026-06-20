@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
@@ -32,6 +33,7 @@ import { ReportsModule } from './reports/reports.module';
 import { SearchModule } from './search/search.module';
 import { AuditModule } from './audit/audit.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
+import { LastSeenInterceptor } from './common/interceptors/last-seen.interceptor';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
 @Module({
@@ -79,6 +81,12 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     ReportsModule,
     SearchModule,
     AuditModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LastSeenInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {

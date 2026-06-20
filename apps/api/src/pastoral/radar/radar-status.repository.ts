@@ -66,4 +66,41 @@ export class RadarStatusRepository {
       }),
     );
   }
+
+  /**
+   * Updates the evasion risk status for a participant in a group.
+   * Called by EvasionDetectionService after evaluating risk criteria.
+   * NOTE: tenantId may be passed via opts for job boundary context.
+   */
+  async upsertRisk(
+    participantId: string,
+    groupId: string,
+    patch: {
+      status: 'verde' | 'amarelo' | 'vermelho';
+      riskReason: string | null;
+      manualOverrideAt: Date | null;
+    },
+    opts: { tenantId?: string } = {},
+  ): Promise<void> {
+    await withTenantTx(
+      this.prisma,
+      async (tx) => {
+        await tx.$executeRawUnsafe(
+          `UPDATE participant_radar_status
+           SET status = $3::text::"RadarStatus",
+               risk_reason = $4,
+               manual_override_at = $5::timestamptz,
+               calculated_at = now()
+           WHERE participant_id = $1::uuid
+             AND group_id = $2::uuid`,
+          participantId,
+          groupId,
+          patch.status,
+          patch.riskReason,
+          patch.manualOverrideAt,
+        );
+      },
+      opts,
+    );
+  }
 }

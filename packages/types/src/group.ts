@@ -40,6 +40,9 @@ export const GroupResponseSchema = z.object({
   recurrence: GroupRecurrenceSchema.nullable(),
   notes: z.string().nullable(),
   isDemoData: z.boolean(),
+  // Story 13.3: group operational status (recesso)
+  status: z.enum(['active', 'on_break']),
+  breakUntil: z.string().datetime().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
@@ -57,9 +60,20 @@ export const UpdateGroupRequestSchema = z
       .optional(),
     recurrence: GroupRecurrenceSchema.optional(),
     notes: z.string().max(500).nullable().optional(),
+    status: z.enum(['active', 'on_break']).optional(),
+    breakUntil: z.string().datetime().nullable().optional(),
   })
   .refine((v) => Object.keys(v).length > 0, {
     message: 'at_least_one_field_required',
+  })
+  .superRefine((v, ctx) => {
+    if (v.status === 'on_break' && !v.breakUntil) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'break_until_required_when_on_break',
+        path: ['breakUntil'],
+      });
+    }
   });
 export type UpdateGroupRequest = z.infer<typeof UpdateGroupRequestSchema>;
 

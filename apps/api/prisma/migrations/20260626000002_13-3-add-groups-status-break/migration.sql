@@ -1,0 +1,3 @@
+ALTER TABLE groups
+  ADD COLUMN status VARCHAR(16) NOT NULL DEFAULT 'active',
+  ADD COLUMN break_until TIMESTAMPTZ NULL;

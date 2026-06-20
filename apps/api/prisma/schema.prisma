@@ -176,6 +176,7 @@ model User {
   createdAt             DateTime  @default(now()) @map("created_at")
   updatedAt             DateTime  @updatedAt @map("updated_at")
   isDemoData            Boolean   @default(false) @map("is_demo_data")
+  lastSeenAt            DateTime? @map("last_seen_at") @db.Timestamptz
 
   userTenants        UserTenant[]
   consents           Consent[]
@@ -347,6 +348,9 @@ model Group {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
   isDemoData Boolean  @default(false) @map("is_demo_data")
+  /// Story 13.3: group operational status (active | on_break)
+  status     String    @default("active") @db.VarChar(16)
+  breakUntil DateTime? @map("break_until") @db.Timestamptz
 
   tenant             Tenant                      @relation(fields: [tenantId], references: [id])
   members            GroupMember[]
@@ -503,6 +507,10 @@ model ParticipantRadarStatus {
   presencePercentage Decimal     @map("presence_percentage") @db.Decimal(5, 4)
   lastActiveAt       DateTime?   @map("last_active_at") @db.Timestamptz
   calculatedAt       DateTime    @default(now()) @map("calculated_at") @db.Timestamptz
+  /// Story 13.3: reason for risk flag (absences | inactivity | absences+inactivity)
+  riskReason       String?   @map("risk_reason") @db.VarChar(500)
+  /// Story 13.3: timestamp of last manual override by pastor — guard 24h window
+  manualOverrideAt DateTime? @map("manual_override_at") @db.Timestamptz
 
   tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   group       Group  @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -956,4 +964,22 @@ model MvRefreshLog {
 
   @@index([mvName, refreshedAt])
   @@map("mv_refresh_log")
+}
+
+/// EvasionJobLog — observability table for the detect-evasion-risk daily job (Story 13.3)
+/// tenant_id NULL = global job run entry; non-NULL = per-tenant error entry
+model EvasionJobLog {
+  id                  String    @id @db.Uuid
+  tenantId            String?   @map("tenant_id") @db.Uuid
+  jobRunId            String    @map("job_run_id") @db.Uuid
+  status              String    @db.VarChar(16)
+  durationMs          Int?      @map("duration_ms")
+  tenantsProcessed    Int       @default(0) @map("tenants_processed")
+  participantsFlagged Int       @default(0) @map("participants_flagged")
+  errorMessage        String?   @map("error_message") @db.Text
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([jobRunId, createdAt])
+  @@index([tenantId, createdAt])
+  @@map("evasion_job_log")
 }

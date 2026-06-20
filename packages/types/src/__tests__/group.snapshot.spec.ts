@@ -77,6 +77,8 @@ describe('GroupResponseSchema snapshot', () => {
       recurrence: 'weekly',
       notes: null,
       isDemoData: false,
+      status: 'active',
+      breakUntil: null,
       createdAt: '2026-04-13T12:00:00.000Z',
       updatedAt: '2026-04-13T12:00:00.000Z',
     });
@@ -99,6 +101,7 @@ describe('GroupResponseSchema snapshot', () => {
     }).toMatchInlineSnapshot(`
       {
         "data": {
+          "breakUntil": null,
           "createdAt": "2026-04-13T12:00:00.000Z",
           "dayOfWeek": "thu",
           "id": "019756c0-0001-7000-8000-000000000001",
@@ -106,6 +109,7 @@ describe('GroupResponseSchema snapshot', () => {
           "name": "Célula de Quinta",
           "notes": null,
           "recurrence": "weekly",
+          "status": "active",
           "tenantId": "019756c0-0001-7000-8000-000000000002",
           "time": "19:30",
           "updatedAt": "2026-04-13T12:00:00.000Z",
