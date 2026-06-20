@@ -354,11 +354,11 @@ FASE 5 (Revisão + Gate)
 - `apps/api/src/content/content.service.spec.ts` (editar — adicionar casos de materialização)
 
 **Critérios de aceite**:
-- [ ] Trail criada de template: lessons têm contentUrl=null, contentBody=null
-- [ ] Estrutura de módulos e lições espelha a structure do template
-- [ ] Após deletar template, Trail criada permanece inalterada
-- [ ] templateId inexistente → NotFoundException
-- [ ] templateId com deletedAt NOT NULL → NotFoundException
+- [x] Trail criada de template: lessons têm contentUrl=null, contentBody=null
+- [x] Estrutura de módulos e lições espelha a structure do template
+- [x] Após deletar template, Trail criada permanece inalterada
+- [x] templateId inexistente → NotFoundException
+- [x] templateId com deletedAt NOT NULL → NotFoundException
 
 **Referências**: data-model.md §4, spec FR-14, security-rls.md CHK040-CHK042
 
@@ -376,19 +376,19 @@ FASE 5 (Revisão + Gate)
 - `apps/web/messages/pt-BR.json` (editar — adicionar chaves de templates)
 
 **Critérios de aceite**:
-- [ ] Rota `/app/admin/templates` acessível apenas para admin_tenant
-- [ ] Server Component com Suspense para hydration
-- [ ] Client Component com TanStack Query para busca/filtro
-- [ ] Lista exibe: nome, descrição (truncada), scope (badge Plataforma/Tenant), versão, data criação, contagem módulos/lições
-- [ ] Templates de plataforma com badge "Somente leitura" e sem botões Editar/Excluir
-- [ ] Busca por nome com debounce 300ms
-- [ ] Filtro por scope: Todos / Plataforma / Meus Templates
-- [ ] Sort: nome A-Z (padrão), Z-A, mais recente, mais antigo
-- [ ] Paginação pageSize=20 com prev/next
-- [ ] Estado loading (skeleton) e erro (mensagem PT-BR)
-- [ ] Mensagens PT-BR em pt-BR.json (templates.page.title, templates.scope.platform, etc.)
-- [ ] Usa classe `text-secondary` (não `text-muted-foreground` — tech debt a11y EP12)
-- [ ] Componentes shadcn/ui existentes (Badge, Button, Input, Skeleton)
+- [x] Rota `/app/admin/templates` acessível apenas para admin_tenant
+- [x] Server Component com Suspense para hydration
+- [x] Client Component com TanStack Query para busca/filtro
+- [x] Lista exibe: nome, descrição (truncada), scope (badge Plataforma/Tenant), versão, data criação, contagem módulos/lições
+- [x] Templates de plataforma com badge "Somente leitura" e sem botões Editar/Excluir
+- [x] Busca por nome com debounce 300ms
+- [x] Filtro por scope: Todos / Plataforma / Meus Templates
+- [x] Sort: nome A-Z (padrão), Z-A, mais recente, mais antigo
+- [x] Paginação pageSize=20 com prev/next
+- [x] Estado loading (skeleton) e erro (mensagem PT-BR)
+- [x] Mensagens PT-BR em pt-BR.json (templates.page.title, templates.scope.platform, etc.)
+- [x] Usa classe `text-secondary` (não `text-muted-foreground` — tech debt a11y EP12)
+- [x] Componentes shadcn/ui existentes (Badge, Button, Input, Skeleton)
 
 **Referências**: spec US5, plan §4.5, §A11
 
@@ -404,13 +404,13 @@ FASE 5 (Revisão + Gate)
 - `apps/web/messages/pt-BR.json` (editar — chaves de preview e ação)
 
 **Critérios de aceite**:
-- [ ] GET /api/v1/templates/:id via TanStack Query
-- [ ] TemplateStructurePreview: árvore módulos expandíveis → lições com ícone de tipo e duração
-- [ ] Botão "Usar Template" → redirect para /app/admin/trails/new?templateId=<id>
-- [ ] Botão "Histórico de Versões" visível apenas para templates com sourceTrailId NOT NULL
-- [ ] Templates de plataforma: sem Editar/Excluir; badge "Somente leitura"
-- [ ] 404: template inexistente ou deletado → página de erro PT-BR
-- [ ] axe-core nos componentes (reusar padrão Epic 12)
+- [x] GET /api/v1/templates/:id via TanStack Query
+- [x] TemplateStructurePreview: árvore módulos expandíveis → lições com ícone de tipo e duração
+- [x] Botão "Usar Template" → redirect para /app/admin/trails/new?templateId=<id>
+- [x] Botão "Histórico de Versões" visível apenas para templates com sourceTrailId NOT NULL
+- [x] Templates de plataforma: sem Editar/Excluir; badge "Somente leitura"
+- [x] 404: template inexistente ou deletado → página de erro PT-BR
+- [x] axe-core nos componentes (reusar padrão Epic 12)
 
 **Referências**: spec US4, US5
 
@@ -427,14 +427,14 @@ FASE 5 (Revisão + Gate)
 - `apps/web/messages/pt-BR.json` (editar — chaves CRUD)
 
 **Critérios de aceite**:
-- [ ] Formulário de edição: name e description; validação Zod client-side; mutation PATCH via TanStack Query
-- [ ] Feedback de sucesso/erro PT-BR após mutação
-- [ ] Soft-delete com modal de confirmação
-- [ ] Página Criar Template: dropdown de trilhas do tenant → POST /api/v1/templates
-- [ ] Histórico de versões: lista version, name, createdAt; para platform exibe "Templates de plataforma não possuem histórico de versões"
-- [ ] Botão "Salvar como Template" na página de detalhe de trilha existente
-- [ ] Reutiliza FormField do projeto
-- [ ] Todos os textos PT-BR via pt-BR.json
+- [x] Formulário de edição: name e description; validação Zod client-side; mutation PATCH via TanStack Query
+- [x] Feedback de sucesso/erro PT-BR após mutação
+- [x] Soft-delete com modal de confirmação
+- [x] Página Criar Template: dropdown de trilhas do tenant → POST /api/v1/templates
+- [x] Histórico de versões: lista version, name, createdAt; para platform exibe "Templates de plataforma não possuem histórico de versões"
+- [x] Botão "Salvar como Template" na página de detalhe de trilha existente
+- [x] Reutiliza FormField do projeto
+- [x] Todos os textos PT-BR via pt-BR.json
 
 **Referências**: spec US2, US3, plan §4.5
 
@@ -447,12 +447,12 @@ FASE 5 (Revisão + Gate)
 **Descrição**: Garantir que a RLS spec roda 2x no CI e que o build TypeScript passa.
 
 **Critérios de aceite**:
-- [ ] content-templates.rls-spec.ts incluída no glob de RLS do CI
-- [ ] CI executa suite RLS 2x consecutivos e ambas passam
-- [ ] Nenhum console.error de constraint violation em execução limpa
-- [ ] docker-compose.test.yml tem DATABASE_URL com role que permite SET LOCAL row_security = off para seed de testes
-- [ ] `pnpm --filter @metanoia/types build` sem erro
-- [ ] `pnpm lint` sem erro nos arquivos novos
+- [x] content-templates.rls-spec.ts incluída no glob de RLS do CI
+- [x] CI executa suite RLS 2x consecutivos e ambas passam
+- [x] Nenhum console.error de constraint violation em execução limpa
+- [x] docker-compose.test.yml tem DATABASE_URL com role que permite SET LOCAL row_security = off para seed de testes
+- [x] `pnpm --filter @metanoia/types build` sem erro
+- [x] `pnpm lint` sem erro nos arquivos novos
 
 **Referências**: security-rls.md §Notas, lição 13-3
 
@@ -466,13 +466,13 @@ FASE 5 (Revisão + Gate)
 - `apps/api/test/smoke/templates.smoke.spec.ts` (criar — opcional se coberto por service tests)
 
 **Critérios de aceite**:
-- [ ] GET /api/v1/templates sem auth → 401
-- [ ] GET /api/v1/templates com role lider → 403
-- [ ] POST /api/v1/templates com body inválido → 400 com details de validação
-- [ ] PATCH /api/v1/templates/:id em template platform → 403
-- [ ] DELETE /api/v1/templates/:id em template platform → 403
-- [ ] POST /api/v1/trails { templateId: deletedId } → 404
-- [ ] Envelope: { data, meta? } em sucesso; { statusCode, error, message } em erro
+- [x] GET /api/v1/templates sem auth → 401
+- [x] GET /api/v1/templates com role lider → 403
+- [x] POST /api/v1/templates com body inválido → 400 com details de validação
+- [x] PATCH /api/v1/templates/:id em template platform → 403
+- [x] DELETE /api/v1/templates/:id em template platform → 403
+- [x] POST /api/v1/trails { templateId: deletedId } → 404
+- [x] Envelope: { data, meta? } em sucesso; { statusCode, error, message } em erro
 
 **Referências**: security-rls.md CHK028-CHK034, CLAUDE.md
 
@@ -483,19 +483,19 @@ FASE 5 (Revisão + Gate)
 **Descrição**: Verificação final de todos os 42 items do checklist antes de abrir PR.
 
 **Critérios de aceite**:
-- [ ] Todos os CHKs [crit] do checklists/security-rls.md passando
-- [ ] CHK001-CHK009: 4 políticas RLS corretas e separadas (finding HIGH resolvido)
-- [ ] CHK010-CHK019: JSONB snapshot sem conteúdo
-- [ ] CHK020-CHK027: versionamento e materialização
-- [ ] CHK028-CHK034: contrato API (envelope, paginação, sort, roles)
-- [ ] CHK035-CHK038: Zod schemas completos
-- [ ] CHK039-CHK042: edge cases (soft-delete, templateId deletado, platform 403)
-- [ ] FR-21 (seed privilegiado) e FR-22 (filtro deleted_at) implementados e testados
-- [ ] Nenhum tenant_id passado como parâmetro de função
-- [ ] Nenhum @default(uuid()) no schema Prisma
-- [ ] Nenhum text-muted-foreground no frontend
-- [ ] uuidv7() em todos os inserts de ID
-- [ ] PR com description referenciando checklist e findings resolvidos
+- [x] Todos os CHKs [crit] do checklists/security-rls.md passando
+- [x] CHK001-CHK009: 4 políticas RLS corretas e separadas (finding HIGH resolvido)
+- [x] CHK010-CHK019: JSONB snapshot sem conteúdo
+- [x] CHK020-CHK027: versionamento e materialização
+- [x] CHK028-CHK034: contrato API (envelope, paginação, sort, roles)
+- [x] CHK035-CHK038: Zod schemas completos
+- [x] CHK039-CHK042: edge cases (soft-delete, templateId deletado, platform 403)
+- [x] FR-21 (seed privilegiado) e FR-22 (filtro deleted_at) implementados e testados
+- [x] Nenhum tenant_id passado como parâmetro de função
+- [x] Nenhum @default(uuid()) no schema Prisma
+- [x] Nenhum text-muted-foreground no frontend
+- [x] uuidv7() em todos os inserts de ID
+- [x] PR com description referenciando checklist e findings resolvidos
 
 **Referências**: security-rls.md (CHK001-CHK042), plan §7 Riscos
 
