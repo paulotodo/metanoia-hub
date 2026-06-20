@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — invocar skill checklist sobre spec.md + plan.md (gate de qualidade de requisitos antes de create-tasks).",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — invocar skill plan com spec.md clarificada.",
   "waves": [
     {
       "id": "onda-001",
@@ -67,13 +67,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-20T03:03:03Z",
-      "finished_at": "2026-06-20T03:09:29Z",
-      "executed_stages": [
-        "plan"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 386,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -276,44 +274,6 @@
       "evidence": "grep BullMqService: apenas createQueue (l23) e createWorker (l35), sem FlowProducer. schema users l62: lastSeenAt @map(last_seen_at); sem last_login. migration 13-2b l70: CREATE UNIQUE INDEX mv_tenant_report_pk ON mv_tenant_report (tenant_id, group_id)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T03:08:29Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security: 0 critical/0 high. 3 findings MEDIUM/LOW viram AC obrigatorio no execute-task (NAO bloqueio humano): (1) authz single-barrier super_admin na MV cross-tenant — guard fail-closed OK, exige teste 403 + guards class-level; (2) sort enum->coluna via objeto literal Prisma.sql (nunca Prisma.raw(runtime-string)); (3) hook storage guard tenant-present + warn-skip (nunca INSERT tenant NULL, nunca falhar upload)",
-      "options_considered": [
-        "escalar-para-humano",
-        "converter-findings-em-AC",
-        "aceitar-risco"
-      ],
-      "choice": "converter-findings-em-AC",
-      "rationale": "Severidade max=MEDIUM; controles desenhados corretamente. RolesGuard real e fail-closed (early-return super_admin; deny-by-default ForbiddenException). A03 fechado por z.enum whitelist + tagged-template. Privileged refresh isola conexao com disconnect no finally (padrao 13-2b verificado).",
-      "justification_score": 3,
-      "evidence": "roles.guard.ts: if(user.roles.includes(Role.SUPER_ADMIN)) return true; senao if(!requiredRoles.some(...)) throw ForbiddenException — sem return true em catch. contract: sortBy in z.enum(7 campos), page/limit via queryRaw tagged-template. research: await privileged.disconnect() no finally",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T03:09:29Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality (validate-documentation skill indisponivel neste ambiente -> checagem deterministica via codigo): 0 placeholders/TBD nos 5 artefatos; coerencia cross-doc OK; dec-006/007/008 citadas em research.md; 1 warning (path /tenants abreviado em quickstart) corrigido",
-      "options_considered": [
-        "aceitar",
-        "corrigir-agora",
-        "escalar"
-      ],
-      "choice": "corrigir-agora",
-      "rationale": "Artefatos completos e coerentes; warning de path abreviado corrigido inline para path completo.",
-      "justification_score": 3,
-      "evidence": "scan: 0 match de TBD|TODO|FIXME|NEEDS CLARIFICATION nos 5 arquivos; tokens mv_platform_metrics/tenant_storage_usage/SUPER_ADMIN presentes nos arquivos esperados; quickstart agora contem /api/v1/admin/platform-metrics/tenants",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -331,12 +291,12 @@
     "current_wave_start": "2026-06-20T03:03:03Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 803,
+    "wallclock_total_seconds": 417,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 12,
+    "decisions_total": 10,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -367,11 +327,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T03:02:34Z",
       "description": "etapa=plan hits=8 (migration 13-2b MV/index/RLS, refresh processor + createPrivilegedClient, super-admin module structure, storage.upload hook, roles guard, schema cols)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T03:09:29Z",
-      "description": "onda-003 plan encerrada (concluido); aguardando wakeup p/ checklist"
     }
   ]
 }
