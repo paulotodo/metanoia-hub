@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "Story 13.5 — Templates de Conteúdo Reutilizáveis (FR42): tabela ContentTemplate (scope platform/tenant, structure JSONB, versionamento source_trail_id+version, RLS platform-null+tenant-isolado), seed 3 templates de plataforma, CRUD /api/v1/templates, fluxo Usar Template (POST /trails {templateId}), UI /app/admin/templates. Gestão de trilhas/conteúdo (NÃO analytics). Estende Epic 8 (Trail/Module/Lesson). @Roles admin_tenant. Validar Postgres local, teste RLS idempotente.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T04:41:10Z",
-    "finished_at": "2026-06-20T06:36:30Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -143,21 +143,13 @@
     {
       "id": "onda-007",
       "started_at": "2026-06-20T06:32:31Z",
-      "finished_at": "2026-06-20T06:36:22Z",
-      "executed_stages": [
-        "review-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 231,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "review-task",
-          "timestamp": "2026-06-20T06:36:03Z",
-          "decision_id": "dec-033"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -763,25 +755,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-033",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-20T06:35:56Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Auditoria de corretude Story 13.5 (FR42) — lint + build + testes + auditoria manual",
-      "options_considered": [
-        "aprovado",
-        "reprovado-corrigir",
-        "reprovado-bloquear"
-      ],
-      "choice": "aprovado",
-      "rationale": "Lint verde (4/4 cached). Build verde (3/3). Types (565/565), Web (875 testes), API-unit (14/14). RLS 4-policy, seed idempotente, service/controller corretos, frontend Client Components com TanStack, badges ícone+texto, text-text-secondary. ci.yml e a11y-pages.json ZERO diff vs dev.",
-      "justification_score": 3,
-      "evidence": "pnpm turbo lint: 4 successful 4 cached 179ms; pnpm turbo build: 3 successful 3 cached 148ms; vitest run api templates: 14 passed; types: 565 passed; web: 875 passed; git diff dev..HEAD ci.yml a11y-pages.json: (empty)",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -799,12 +772,12 @@
     "current_wave_start": "2026-06-20T06:32:31Z"
   },
   "accumulated_metrics": {
-    "waves_total": 8,
+    "waves_total": 7,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3870,
+    "wallclock_total_seconds": 3639,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 33,
+    "decisions_total": 32,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
