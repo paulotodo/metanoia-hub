@@ -327,7 +327,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 5.4 `PastoralRiskEventPublisher` — publicar domain events [imp]
 
-- [ ] Criar `apps/api/src/pastoral/pastoral-risk-event-publisher.service.ts`:
+- [x] Criar `apps/api/src/pastoral/pastoral-risk-event-publisher.service.ts`:
   - `publishRiskDetected(event: RiskDetectedEvent)`: publica na queue/Redis com dedup key `rt:risk-detected:{tenantId}:{participantId}:{groupId}:{yyyy-mm-dd}` (TTL 24h)
   - `publishRiskResolved(event: RiskResolvedEvent)`: sem dedup (resolução pode ser re-emitida)
   - Usar `generateId()` (UUID v7) para `eventId`
@@ -343,7 +343,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 6.1 `DetectEvasionRiskProcessor` — processor BullMQ [crit]
 
-- [ ] Criar `apps/api/src/reports/jobs/detect-evasion-risk.processor.ts`:
+- [x] Criar `apps/api/src/reports/jobs/detect-evasion-risk.processor.ts`:
   - Espelhar estrutura de `refresh-tenant-views.processor.ts`
   - `OnModuleInit`: criar queue `queue:reports` + worker, registrar job repetível:
     ```ts
@@ -367,13 +367,13 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 6.2 Registrar processor no `ReportsModule` [crit]
 
-- [ ] Registrar `DetectEvasionRiskProcessor`, `EvasionDetectionService`, `EvasionRiskRepository`, `PastoralRiskEventPublisher` nos providers do `ReportsModule`
-- [ ] Garantir que `BullModule.registerQueue({ name: REPORTS_QUEUE_NAME })` já está configurado (ou adicionar se ausente)
-- [ ] Verificar que `PastoralModule` está importado em `ReportsModule` (para acesso a `RadarStatusRepository`)
+- [x] Registrar `DetectEvasionRiskProcessor`, `EvasionDetectionService`, `EvasionRiskRepository`, `PastoralRiskEventPublisher` nos providers do `ReportsModule`
+- [x] Garantir que `BullModule.registerQueue({ name: REPORTS_QUEUE_NAME })` já está configurado (ou adicionar se ausente)
+- [x] Verificar que `PastoralModule` está importado em `ReportsModule` (para acesso a `RadarStatusRepository`)
 
 ### 6.3 Testes do processor [imp]
 
-- [ ] Criar `apps/api/src/reports/jobs/detect-evasion-risk.processor.spec.ts`:
+- [x] Criar `apps/api/src/reports/jobs/detect-evasion-risk.processor.spec.ts`:
   - Caso: cliente privilegiado é `$disconnect()`-ado ANTES do loop per-tenant (AC-SEC-01)
   - Caso: erro num tenant não aborta os demais (skip+retry)
   - Caso: SLA — mock de 1000 participantes processa em < 30min (assertiva de throughput)
@@ -412,16 +412,16 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 8.1 Integrar emissão de `risk-detected` no job [imp]
 
-- [ ] No `EvasionDetectionService.evaluateParticipant()`: após gravar mudança de status via `upsertRisk()`, chamar `pastoralRiskEventPublisher.publishRiskDetected(event)`
-- [ ] Garantir dedup Redis antes de publicar: `rt:risk-detected:{tenantId}:{participantId}:{groupId}:{yyyy-mm-dd}` (TTL 24h)
-- [ ] Validar envelope final contra `RiskDetectedEventSchema` (Zod `.parse()`) antes de publicar — falha de schema = log + skip (não aborta o job)
-- [ ] Criar teste unitário: dedup impede re-emissão no mesmo dia; novo dia permite re-emissão
+- [x] No `EvasionDetectionService.evaluateParticipant()`: após gravar mudança de status via `upsertRisk()`, chamar `pastoralRiskEventPublisher.publishRiskDetected(event)`
+- [x] Garantir dedup Redis antes de publicar: `rt:risk-detected:{tenantId}:{participantId}:{groupId}:{yyyy-mm-dd}` (TTL 24h)
+- [x] Validar envelope final contra `RiskDetectedEventSchema` (Zod `.parse()`) antes de publicar — falha de schema = log + skip (não aborta o job)
+- [x] Criar teste unitário: dedup impede re-emissão no mesmo dia; novo dia permite re-emissão
 
 ### 8.2 Integrar emissão de `risk-resolved` na resolução [imp]
 
-- [ ] No `EvasionDetectionService.resolveRisk()`: chamar `pastoralRiskEventPublisher.publishRiskResolved(event)`
-- [ ] Validar envelope contra `RiskResolvedEventSchema` antes de publicar
-- [ ] Criar teste unitário: resolução emite evento com `resolvedBy: 'attendance' | 'platform_access'`
+- [x] No `EvasionDetectionService.resolveRisk()`: chamar `pastoralRiskEventPublisher.publishRiskResolved(event)`
+- [x] Validar envelope contra `RiskResolvedEventSchema` antes de publicar
+- [x] Criar teste unitário: resolução emite evento com `resolvedBy: 'attendance' | 'platform_access'`
 
 ---
 
@@ -431,39 +431,39 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 9.1 Radar UI — exibir `riskReason` no card do participante [imp]
 
-- [ ] Localizar componente de card do participante no Radar (`apps/web/src/...`)
-- [ ] Adicionar exibição de `riskReason` (texto pastoral PT-BR) ao lado do semáforo:
+- [x] Localizar componente de card do participante no Radar (`apps/web/src/...`)
+- [x] Adicionar exibição de `riskReason` (texto pastoral PT-BR) ao lado do semáforo:
   - Mapeamento: `consecutive_absences` → "Ausências consecutivas ao grupo", `platform_inactivity` → "Inatividade na plataforma", `combined` → "Ausências e inatividade"
   - Texto em `apps/web/messages/pt-BR.json` (NÃO hardcode)
-- [ ] **a11y obrigatório:**
+- [x] **a11y obrigatório:**
   - Semáforo = ícone + texto (não apenas cor) — contraste AA
   - `aria-live="polite"` para atualizações de status
   - Verificar com `axe-core` (scripts Epic 12)
-- [ ] Atualizar tipo na chamada de API (usar `ParticipantRiskReasonSchema` de `packages/types`)
+- [x] Atualizar tipo na chamada de API (usar `ParticipantRiskReasonSchema` de `packages/types`)
 
 ### 9.2 `CelebrationBanner` — exibir no retorno do risco [imp]
 
 > Reusar Epic 6-5 se disponível; caso contrário criar inline.
 
-- [ ] Identificar se `CelebrationBanner` já existe (Epic 6/7)
+- [x] Identificar se `CelebrationBanner` já existe (Epic 6/7)
   - Se existe: reusar com `role="status"` + `aria-live="polite"`
   - Se não existe: criar `apps/web/src/components/pastoral/celebration-banner.tsx` com `role="status"`, `aria-live="polite"`, ícone + texto, contraste AA
-- [ ] Exibir banner quando status muda de vermelho→amarelo ou amarelo→verde
-- [ ] Texto em `pt-BR.json`: "Parabéns! {Nome} voltou para {status}" (vocabulário pastoral)
-- [ ] Testar com `axe-core` (componente isolado)
+- [x] Exibir banner quando status muda de vermelho→amarelo ou amarelo→verde
+- [x] Texto em `pt-BR.json`: "Parabéns! {Nome} voltou para {status}" (vocabulário pastoral)
+- [x] Testar com `axe-core` (componente isolado)
 
 ### 9.3 Care Timeline — registrar via `PastoralNote` (FR66-09) [imp]
 
 > **CHK006 — Gap:** FR66-09 sem detalhamento de eventos/permissões.
 
-- [ ] **[CHK006]** Definir e documentar no `quickstart.md`:
+- [x] **[CHK006]** Definir e documentar no `quickstart.md`:
   - **Eventos registrados:** `risk_detected` (status verde→amarelo ou amarelo→vermelho) + `risk_resolved` (status amarelo→verde ou vermelho→amarelo)
   - **Campos da PastoralNote:** `type: 'system_event'`, `content: { eventType, previousStatus, newStatus, riskReason, detectedAt }`, `authorId: null` (sistema), `visibility: 'leader_and_above'`
   - **Permissões:** líderes e pastores podem visualizar; apenas sistema pode criar (origem automática)
-- [ ] No `RadarStatusRepository.upsertRisk()` (task 5.3): após upsert, criar `PastoralNote` via `PastoralNoteService` (módulo Epic 7)
+- [x] No `RadarStatusRepository.upsertRisk()` (task 5.3): após upsert, criar `PastoralNote` via `PastoralNoteService` (módulo Epic 7)
   - Verificar que `PastoralNoteService` está injetável em `ReportsModule` (ou via evento interno)
   - Alternativa: publicar evento interno `pastoral.note.create` para desacoplar módulos
-- [ ] Criar teste unitário: mudança de status → `PastoralNote` criada com campos corretos
+- [x] Criar teste unitário: mudança de status → `PastoralNote` criada com campos corretos
 
 ---
 
@@ -473,7 +473,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 10.1 Teste de segurança: isolamento multi-tenant do job [crit]
 
-- [ ] Criar `apps/api/test/rls/evasion-job-isolation.spec.ts`:
+- [x] Criar `apps/api/test/rls/evasion-job-isolation.spec.ts`:
   - Setup: 2 tenants (A e B) com participantes em risco
   - Verificar que o job processa tenant A sem vazar dados de B
   - Verificar que `EvasionJobLog` com `tenantId=null` é visível por ambos os tenants (policy `tenant_id IS NULL`)
@@ -498,7 +498,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 10.4 Teste de segurança: cliente privilegiado confinado (AC-SEC-01) [crit]
 
-- [ ] Em `apps/api/src/reports/jobs/detect-evasion-risk.processor.spec.ts` (task 6.3):
+- [x] Em `apps/api/src/reports/jobs/detect-evasion-risk.processor.spec.ts` (task 6.3):
   - Adicionar assertiva explícita: `prismaPrivileged.$disconnect()` chamado ANTES do início do loop per-tenant
   - Verificar que nenhuma query de domínio roda via cliente privilegiado (mock spy)
 

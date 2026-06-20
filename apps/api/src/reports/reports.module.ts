@@ -13,6 +13,7 @@ import { StorageModule } from '../storage/storage.module';
 import { RadarModule } from '../pastoral/radar/radar.module';
 import { EvasionDetectionService } from '../pastoral/evasion-detection.service';
 import { EvasionRiskRepository } from '../pastoral/repositories/evasion-risk.repository';
+import { PastoralRiskEventPublisher } from '../pastoral/pastoral-risk-event-publisher.service';
 
 @Module({
   imports: [BullMqModule, PrismaModule, RedisModule, StorageModule, RadarModule],
@@ -26,6 +27,7 @@ import { EvasionRiskRepository } from '../pastoral/repositories/evasion-risk.rep
     TenantReportRefreshService,
     EvasionDetectionService,
     EvasionRiskRepository,
+    PastoralRiskEventPublisher,
   ],
   exports: [ReportsService],
 })

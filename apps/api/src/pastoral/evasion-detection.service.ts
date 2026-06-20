@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EvasionRiskRepository } from './repositories/evasion-risk.repository';
 import { RadarStatusRepository } from './radar/radar-status.repository';
+import { PastoralRiskEventPublisher } from './pastoral-risk-event-publisher.service';
 import type { ParticipantRiskReason } from '@metanoia/types';
 
 const CONSECUTIVE_ABSENCE_THRESHOLD = 3;
@@ -27,6 +28,7 @@ export class EvasionDetectionService {
   constructor(
     private readonly evasionRepo: EvasionRiskRepository,
     private readonly radarStatusRepo: RadarStatusRepository,
+    private readonly eventPublisher: PastoralRiskEventPublisher,
   ) {}
 
   /**
@@ -38,7 +40,7 @@ export class EvasionDetectionService {
   async evaluateParticipant(
     participantId: string,
     groupId: string,
-    opts: { tenantId?: string } = {},
+    opts: { tenantId?: string; jobRunId?: string } = {},
   ): Promise<EvasionEvaluationResult> {
     // 1. Get current radar status
     const current = await this.evasionRepo.getCurrentRadarStatus(participantId, groupId, opts);
@@ -99,6 +101,18 @@ export class EvasionDetectionService {
           { status: 'verde', riskReason: null, manualOverrideAt: null },
           opts,
         );
+
+        // FASE 8.2: Emit risk-resolved domain event
+        if (previousStatus === 'amarelo' || previousStatus === 'vermelho') {
+          await this.eventPublisher.publishRiskResolved(
+            participantId,
+            groupId,
+            opts.tenantId ?? '',
+            previousStatus as 'amarelo' | 'vermelho',
+            opts.jobRunId,
+          );
+        }
+
         return {
           participantId,
           groupId,
@@ -148,6 +162,16 @@ export class EvasionDetectionService {
         manualOverrideAt: null,
       },
       opts,
+    );
+
+    // FASE 8.1: Emit risk-detected domain event (dedup handled inside publisher)
+    await this.eventPublisher.publishRiskDetected(
+      participantId,
+      groupId,
+      opts.tenantId ?? '',
+      riskReason!,
+      newStatus as 'amarelo' | 'vermelho',
+      opts.jobRunId,
     );
 
     this.logger.log(

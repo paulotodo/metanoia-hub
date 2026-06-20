@@ -24,11 +24,16 @@ function makeService() {
   const radarStatusRepo = {
     upsertRisk: vi.fn().mockResolvedValue(undefined),
   };
+  const eventPublisher = {
+    publishRiskDetected: vi.fn().mockResolvedValue(undefined),
+    publishRiskResolved: vi.fn().mockResolvedValue(undefined),
+  };
   const service = new EvasionDetectionService(
     evasionRepo as never,
     radarStatusRepo as never,
+    eventPublisher as never,
   );
-  return { service, evasionRepo, radarStatusRepo };
+  return { service, evasionRepo, radarStatusRepo, eventPublisher };
 }
 
 describe('EvasionDetectionService', () => {

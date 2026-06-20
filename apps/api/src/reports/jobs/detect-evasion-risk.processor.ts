@@ -222,7 +222,7 @@ export class DetectEvasionRiskProcessor implements OnModuleInit {
           const result = await this.evasionDetectionService.evaluateParticipant(
             pair.user_id,
             pair.group_id,
-            { tenantId },
+            { tenantId, jobRunId: correlationId },
           );
           if (result.action === 'flagged') {
             flaggedCount++;
