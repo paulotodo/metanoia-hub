@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "plan",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -71,11 +71,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-20T05:00:25Z",
-      "finished_at": "2026-06-20T05:07:05Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 400,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -87,11 +87,6 @@
           "skill": "plan",
           "timestamp": "2026-06-20T05:06:50Z",
           "decision_id": "dec-017"
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-20T05:06:50Z",
-          "decision_id": "dec-018"
         }
       ]
     }
@@ -416,24 +411,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T05:06:50Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality (validate-documentation) sobre plan/research/data-model/quickstart/contracts: PASS. 1 H1 por arquivo; links internos resolvem; code fences balanceados; nenhum TBD/placeholder real (matches sao a palavra PT 'todos').",
-      "options_considered": [
-        "aceitar",
-        "corrigir"
-      ],
-      "choice": "aceitar",
-      "rationale": "Checagens deterministicas via Bash: 0 MISSING links, 0 ODD fences, 0 TBD/FIXME reais.",
-      "justification_score": 3,
-      "evidence": "grep: '(no MISSING lines)=all internal links resolve'; '(no ODD lines)=balanced'; matches TBD = 'TODOS'/'todos' (all em PT-BR), nao placeholders",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -451,12 +428,12 @@
     "current_wave_start": "2026-06-20T05:00:25Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 804,
+    "wallclock_total_seconds": 404,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 18,
+    "decisions_total": 17,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -487,11 +464,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T05:00:25Z",
       "description": "etapa=plan hits=6 (content.service createTrail, models Trail/Module/Lesson, CreateTrailRequestSchema, seed idempotent, RLS NULLIF platform, withTenantTx)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T05:07:05Z",
-      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
     }
   ]
 }

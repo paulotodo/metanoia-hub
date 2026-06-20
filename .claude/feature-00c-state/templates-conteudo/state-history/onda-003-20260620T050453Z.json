@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
+  "current_stage": "plan",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -71,27 +71,17 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-20T05:00:25Z",
-      "finished_at": "2026-06-20T05:07:05Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 400,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "owasp-security",
           "timestamp": "2026-06-20T05:04:53Z",
           "decision_id": "dec-015"
-        },
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-20T05:06:50Z",
-          "decision_id": "dec-017"
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-20T05:06:50Z",
-          "decision_id": "dec-018"
         }
       ]
     }
@@ -380,60 +370,6 @@
       "evidence": "meeting_events: CREATE POLICY meeting_events_tenant_insert FOR INSERT WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::uuid); proposta original em data-model.md:100 era 'USING (tenant_id IS NULL OR tenant_id = NULLIF(...))' sem WITH CHECK",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T05:04:53Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security: demais focos PASS. (a) Snapshot nao vaza conteudo: structure JSONB whitelista so campos estruturais; data-model lista campos PROIBIDOS e materializacao NULA contentUrl/contentBody/originalName/mimeType/sizeBytes/uploadedBy/uploadedAt/tags (LLM02/A02 mitigado). (b) Soft-delete sem cascade: FK source_trail_id ON DELETE SET NULL + sem FK reversa template->trilha; DELETE template nao afeta trilhas materializadas (FR-15). (c) Access control: @Roles(admin_tenant) em toda superficie + 403 platform read-only.",
-      "options_considered": [
-        "aceitar",
-        "corrigir"
-      ],
-      "choice": "aceitar",
-      "rationale": "Whitelist de structure e materializacao NULA verificadas em data-model.md secao 3-4; ON DELETE SET NULL confirmado; @Roles + ParseUUIDPipe confirmados no contrato de API.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T05:06:50Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skill(plan): gerados plan.md, research.md, data-model.md, contracts/{templates-api,template-schemas}.md, quickstart.md em docs/specs/templates-conteudo/ a partir da spec clarified + read-back da estrutura real (content.repository, models, schemas, RLS canonico).",
-      "options_considered": [
-        "gerar-plano",
-        "abortar"
-      ],
-      "choice": "gerar-plano",
-      "rationale": "Plano fundamentado: estende createTrail/CreateTrailRequestSchema; novo model ContentTemplate + RLS split; TemplateService/Repository (repository pattern); seed idempotente; RLS spec idempotente 2x.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-20T05:06:50Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality (validate-documentation) sobre plan/research/data-model/quickstart/contracts: PASS. 1 H1 por arquivo; links internos resolvem; code fences balanceados; nenhum TBD/placeholder real (matches sao a palavra PT 'todos').",
-      "options_considered": [
-        "aceitar",
-        "corrigir"
-      ],
-      "choice": "aceitar",
-      "rationale": "Checagens deterministicas via Bash: 0 MISSING links, 0 ODD fences, 0 TBD/FIXME reais.",
-      "justification_score": 3,
-      "evidence": "grep: '(no MISSING lines)=all internal links resolve'; '(no ODD lines)=balanced'; matches TBD = 'TODOS'/'todos' (all em PT-BR), nao placeholders",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -451,12 +387,12 @@
     "current_wave_start": "2026-06-20T05:00:25Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 804,
+    "wallclock_total_seconds": 404,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 18,
+    "decisions_total": 15,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -487,11 +423,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T05:00:25Z",
       "description": "etapa=plan hits=6 (content.service createTrail, models Trail/Module/Lesson, CreateTrailRequestSchema, seed idempotent, RLS NULLIF platform, withTenantTx)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T05:07:05Z",
-      "description": "onda plan encerrada (concluido); aguardando wakeup p/ checklist"
     }
   ]
 }
