@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-risco-evasao-20260620T001902Z
 
-**Gerado em**: 2026-06-20T01:05:38Z
-**Status no momento**: em_andamento
+**Gerado em**: 2026-06-20T02:08:33Z
+**Status no momento**: concluida
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,13 +14,13 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | Story 13.3 — Detecção de Risco de Evasão (FR66): job BullMQ detect-evasion-risk (cron diário, tenant-isolated) detecta participantes em risco (3+ ausências consecutivas OU 2+ semanas sem acesso via last_seen_at), transiciona semáforo (Epic 7), emite domain events pastoral.participant.risk-detected/resolved, suporta grupo em recesso, mostra motivo no Radar UI. Notificação ao líder DEFERIDA ao Epic 14 via evento. Migrations: User.last_seen_at + Group.status/breakUntil. Multi-tenant RLS, Zod, gate a11y. |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | em_andamento |
-| Motivo termino | (em andamento) |
+| Status | concluida |
+| Motivo termino | review-task-complete |
 | Iniciada em | 2026-06-20T00:19:02Z |
-| Terminada em | ainda em andamento |
-| Ondas executadas | 5 |
+| Terminada em | 2026-06-20T02:08:10Z |
+| Ondas executadas | 8 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 25 |
+| Decisoes registradas | 32 |
 | Bloqueios humanos | 0 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -36,17 +36,18 @@
 | onda-002 | 2026-06-20T00:30:23Z | 2026-06-20T00:32:58Z | clarify | 0 | 155s | concluido |
 | onda-003 | 2026-06-20T00:39:47Z | 2026-06-20T00:45:35Z | plan | 0 | 348s | etapa_concluida_avancando |
 | onda-004 | 2026-06-20T00:52:12Z | 2026-06-20T00:57:32Z |  | 0 | 320s | concluido |
-| onda-005 | 2026-06-20T01:01:33Z | 2026-06-20T01:05:20Z |  | 0 | 227s | concluido |
+| onda-005 | 2026-06-20T01:01:33Z | 2026-06-20T01:28:09Z |  | 0 | 1596s | concluido |
+| onda-006 | 2026-06-20T01:34:35Z | 2026-06-20T02:08:10Z |  | 0 | 2015s | concluido |
 
 ## 3. Decisoes
 
-Total: 25 decisoes registradas.
+Total: 32 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 25 |
+| agente-00c-feature-orchestrator | 32 |
 
 ### 3.2 Lista detalhada
 
@@ -450,6 +451,118 @@ Total: 25 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-026 — model-routing — agente-00c-feature-orchestrator — 2026-06-20T01:11:12Z
+
+**Contexto**: Selecao de modelo para onda 5 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-027 — execute-task — agente-00c-feature-orchestrator — 2026-06-20T01:27:31Z
+
+**Contexto**: Execução backend Story 13.3: FASES 1-7 (migrations, Zod, contratos, interceptor, detection service, job BullMQ, recesso) + FASE 10 parcial (RLS + unit SC-04). Build typecheck limpo (0 erros), 543 tests types + 6 detection + 5 interceptor + 10 groups passando.
+
+**Opcoes consideradas**: executar-backend-completo-1onda / fatiar-backend-frontend
+
+**Escolha**: fatiar-backend-frontend
+
+**Justificativa**: Backend (FASES 1-7,10) é subconjunto coerente e testável local; FASE 8 (publisher) + FASE 9 (UI web) ficam para próxima onda. tsc --noEmit retornou 0 erros nos arquivos da feature; vitest: 543 types + 6 EvasionDetection + 5 interceptor + 10 groups verdes.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-028 — execute-task — agente-00c-feature-orchestrator — 2026-06-20T01:54:01Z
+
+**Contexto**: FASE 8 concluida: PastoralRiskEventPublisher criado, integrado no EvasionDetectionService, testes unitarios passando (9 testes: dedup, schema-fail-no-throw, no-PII, resolved-no-dedup)
+
+**Opcoes consideradas**: concluir-fase-8 / deferir
+
+**Escolha**: concluir-fase-8
+
+**Justificativa**: pastoral-risk-event-publisher.service.ts + spec + integracao no evasion-detection.service.ts verificados via pnpm vitest run (9 pass)
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-029 — execute-task — agente-00c-feature-orchestrator — 2026-06-20T01:54:12Z
+
+**Contexto**: FASE 9 concluida: RiskReasonBadge (PT-BR, a11y WCAG AA), RiskResolvedBanner (aria-live+polite, auto-dismiss 10s), participant-card.tsx atualizado, strings em vocabulary.ts + types barrel, mocks web atualizados, 875 testes web passando
+
+**Opcoes consideradas**: concluir-fase-9 / deferir
+
+**Escolha**: concluir-fase-9
+
+**Justificativa**: risk-reason-badge.tsx + risk-resolved-banner.tsx + testes criados; pnpm web test 875/875 pass; a11y: icon+text+aria-label (nao so cor)
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-030 — execute-task — agente-00c-feature-orchestrator — 2026-06-20T01:54:23Z
+
+**Contexto**: FASE 10 (parcial) concluida: 10.1 evasion-job-isolation.spec.ts (multi-tenant RLS), 10.4 detect-evasion-risk.processor.spec.ts (AC-SEC-01 disconnect+privileged-confinement, isolation, CHK030-RES) 4/4 pass, 10.6 risk-event.snapshot.spec.ts (inline snapshots Zod). Tasks 10.2+10.3+10.5 ja estavam concluidas em ondas anteriores.
+
+**Opcoes consideradas**: concluir-fase-10-parcial / deferir
+
+**Escolha**: concluir-fase-10-parcial
+
+**Justificativa**: API test suite: evasion-detection 6/6, publisher 9/9, processor 4/4, tipos 553/553. Web: 875/875.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-031 — model-routing — agente-00c-feature-orchestrator — 2026-06-20T01:59:12Z
+
+**Contexto**: Selecao de modelo para onda 6 (fase review-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:haiku
+
+**Justificativa**: sugerido=haiku aplicado=haiku origem=mapa | faixa=rasa fase=review-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-032 — review-task — agente-00c-feature-orchestrator — 2026-06-20T02:07:46Z
+
+**Contexto**: Auditoria review-task Story 13.3 (FR66) — lint+build+testes+corretude
+
+**Opcoes consideradas**: concluido-sem-ressalvas / concluido-com-findings-menor / bloquear-humano
+
+**Escolha**: concluido-sem-ressalvas
+
+**Justificativa**: Lint verde (8 erros corrigidos em 4 arquivos), build verde, testes verdes (553+875+164). Algoritmo correto: ausencias consecutivas por participante/grupo, partial conta como presenca, 14d inatividade, SC-04 manualOverride 24h, recesso skip, semaforo transicao conforme spec. Domain events sem PII, envelope valido. a11y gate nao tocado.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -489,7 +602,7 @@ Nenhuma sugestao para skills globais nesta execucao.
 
 ## 6. Licoes Aprendidas
 
-(Sera preenchido no relatorio final.)
+(Relatorio final invocado sem --licoes-aprendidas — operador deve preencher esta secao manualmente OU re-invocar com flag.)
 
 ---
 

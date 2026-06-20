@@ -9,7 +9,7 @@
     "status": "concluida",
     "termination_reason": "review-task-complete",
     "started_at": "2026-06-20T00:19:02Z",
-    "finished_at": "2026-06-20T02:08:10Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
