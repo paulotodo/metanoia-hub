@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
+  "current_stage": "checklist",
   "next_instruction": "Iniciar etapa checklist — invocar skill checklist sobre spec.md + plan.md (gate de qualidade de requisitos antes de create-tasks).",
   "waves": [
     {
@@ -91,11 +91,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-20T03:19:47Z",
-      "finished_at": "2026-06-20T03:21:11Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 84,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -445,25 +445,6 @@
       "evidence": "schema.prisma linha 266: id String @id @db.Uuid; linha 267: tenantId String @map(tenant_id) @db.Uuid — campos distintos",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T03:20:47Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "execucao-checklist-fase",
-      "options_considered": [
-        "executar",
-        "abortar",
-        "escalar-humano"
-      ],
-      "choice": "executar",
-      "rationale": "20 itens avaliados: 13 requisitos testáveis, 1 alerta crítico (MIG-02 Tenant.id vs tenantId — resolvido), 5 decisões bloqueantes resolvidas (D1-D5). Artefato checklist.md gerado em docs/specs/metricas-plataforma/. Nenhum bloqueio humano necessário.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -481,12 +462,12 @@
     "current_wave_start": "2026-06-20T03:19:47Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 887,
+    "wallclock_total_seconds": 803,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 19,
+    "decisions_total": 18,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
