@@ -163,8 +163,16 @@ jobs:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
-      - name: Run RLS isolation tests
+      - name: Run RLS isolation tests (pass 1/2)
         run: pnpm turbo test --filter=@metanoia/api -- test/rls/
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+      # Pass 2/2 — verifica idempotência: suite deve passar 2x consecutivos sem erro de constraint.
+      # Origem: Story 13-5 (content-templates.rls-spec.ts usa UUIDs fixos, idempotente por design).
+      - name: Run RLS isolation tests (pass 2/2 — idempotência)
+        run: pnpm turbo test --filter=@metanoia/api -- test/rls/ --force
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}

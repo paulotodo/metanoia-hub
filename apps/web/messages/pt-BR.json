@@ -1689,5 +1689,77 @@
       "loading": "Não foi possível carregar o relatório.",
       "retry": "Tentar novamente"
     }
+  },
+  "templates": {
+    "page": {
+      "title": "Modelos de Trilha",
+      "subtitle": "Crie e gerencie modelos reutilizáveis de trilhas de discipulado"
+    },
+    "scope": {
+      "platform": "Plataforma",
+      "tenant": "Meu Template",
+      "all": "Todos",
+      "myTemplates": "Meus Templates"
+    },
+    "badge": {
+      "readOnly": "Somente leitura"
+    },
+    "filter": {
+      "searchPlaceholder": "Buscar por nome...",
+      "sortLabel": "Ordenar",
+      "sort": {
+        "nameAsc": "Nome A-Z",
+        "nameDesc": "Nome Z-A",
+        "newest": "Mais recente",
+        "oldest": "Mais antigo"
+      }
+    },
+    "list": {
+      "empty": "Nenhum modelo encontrado",
+      "emptySearch": "Nenhum modelo corresponde à busca",
+      "loading": "Carregando modelos...",
+      "error": "Erro ao carregar modelos. Tente novamente.",
+      "moduleCount": "{count} {count, plural, one {módulo} other {módulos}}",
+      "lessonCount": "{count} {count, plural, one {lição} other {lições}}",
+      "version": "v{version}",
+      "createdAt": "Criado em {date}",
+      "useTemplate": "Usar Template",
+      "versionHistory": "Histórico de Versões",
+      "retry": "Tentar novamente"
+    },
+    "preview": {
+      "title": "Estrutura do Modelo",
+      "noModules": "Este modelo não possui módulos.",
+      "lessons": "{count} {count, plural, one {lição} other {lições}}",
+      "noHistoryPlatform": "Templates de plataforma não possuem histórico de versões.",
+      "versions": "Versões disponíveis",
+      "noVersions": "Nenhuma versão anterior registrada."
+    },
+    "crud": {
+      "edit": "Editar",
+      "delete": "Excluir",
+      "confirmDelete": "Excluir modelo?",
+      "confirmDeleteDesc": "Esta ação não pode ser desfeita. O modelo será removido permanentemente.",
+      "cancel": "Cancelar",
+      "confirmDeleteAction": "Excluir",
+      "editTitle": "Editar Modelo",
+      "nameLabel": "Nome",
+      "namePlaceholder": "Nome do modelo",
+      "descriptionLabel": "Descrição",
+      "descriptionPlaceholder": "Descrição opcional do modelo",
+      "saveSuccess": "Modelo atualizado com sucesso.",
+      "saveError": "Erro ao salvar. Tente novamente.",
+      "deleteSuccess": "Modelo excluído com sucesso.",
+      "deleteError": "Erro ao excluir. Tente novamente.",
+      "createTitle": "Salvar como Modelo",
+      "selectTrail": "Selecionar Trilha",
+      "selectTrailPlaceholder": "Escolha uma trilha do seu ministério",
+      "createSuccess": "Modelo criado com sucesso.",
+      "createError": "Erro ao criar modelo. Tente novamente.",
+      "saveAsTemplate": "Salvar como Modelo",
+      "notFound": "Modelo não encontrado",
+      "notFoundDesc": "O modelo que você procura não existe ou foi removido.",
+      "backToList": "Voltar para Modelos"
+    }
   }
 }

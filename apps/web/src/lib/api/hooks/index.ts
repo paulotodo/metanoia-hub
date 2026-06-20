@@ -43,3 +43,12 @@ export {
   useModuleLessons,
 } from './use-trail-structure';
 export { myTrailsKeys, useMyTrails } from './use-my-trails';
+export {
+  templateKeys,
+  useTemplatesList,
+  useTemplateById,
+  useTemplateVersions,
+  useCreateTemplate,
+  useUpdateTemplate,
+  useDeleteTemplate,
+} from './use-templates';

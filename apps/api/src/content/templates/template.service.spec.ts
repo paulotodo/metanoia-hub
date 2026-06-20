@@ -10,15 +10,16 @@ vi.mock('../../common/context/request-context', () => ({
 }));
 
 // Mock withTenantTx: executes callback with mock tx
+const mockTx = {
+  trail: { create: vi.fn() },
+  module: { create: vi.fn() },
+  lesson: { create: vi.fn() },
+  groupTrail: { create: vi.fn() },
+};
+
 vi.mock('../../prisma/with-tenant-tx', () => ({
   withTenantTx: vi.fn((_prisma: unknown, cb: (tx: unknown) => Promise<unknown>) => {
-    const tx = {
-      trail: { create: vi.fn() },
-      module: { create: vi.fn() },
-      lesson: { create: vi.fn() },
-      groupTrail: { create: vi.fn() },
-    };
-    return cb(tx);
+    return cb(mockTx);
   }),
 }));
 
@@ -59,6 +60,11 @@ describe('TemplateService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Also reset mockTx fns since they live outside the vi.mock factory
+    mockTx.trail.create.mockReset();
+    mockTx.module.create.mockReset();
+    mockTx.lesson.create.mockReset();
+    mockTx.groupTrail.create.mockReset();
     service = new TemplateService(mockRepository, mockPrisma as never);
   });
 
@@ -133,6 +139,103 @@ describe('TemplateService', () => {
       await expect(
         service.materializeTrail('deleted-id'),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('creates trail + modules + lessons from template structure (content fields null)', async () => {
+      const TRAIL_RESULT = {
+        id: 'trail-new-1',
+        tenantId: 'tenant-uuid-test',
+        name: 'Jornada de Fé',
+        status: 'draft',
+        accessMode: 'free',
+        createdBy: 'user-uuid-test',
+      };
+      const MODULE_RESULT = { id: 'mod-new-1', tenantId: 'tenant-uuid-test', name: 'Módulo Fé', order: 0 };
+
+      vi.mocked(mockTx.trail.create).mockResolvedValue(TRAIL_RESULT);
+      vi.mocked(mockTx.module.create).mockResolvedValue(MODULE_RESULT);
+      vi.mocked(mockTx.lesson.create).mockResolvedValue({ id: 'lesson-new-1' });
+
+      vi.mocked(mockRepository.findByIdForMaterialization).mockResolvedValue(
+        makePrismaTemplate({
+          structure: {
+            modules: [
+              {
+                name: 'Módulo Fé',
+                order: 0,
+                lessonAccessMode: 'free',
+                lessons: [
+                  { name: 'Aula 1', contentType: 'video', order: 0, estimatedDurationMinutes: 10 },
+                ],
+              },
+            ],
+          } as unknown as import('@prisma/client').Prisma.JsonValue,
+        }),
+      );
+
+      const result = await service.materializeTrail('template-id-1', 'Jornada de Fé');
+      expect(result).toHaveProperty('trailId');
+      // Trail created with correct name
+      expect(mockTx.trail.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ name: 'Jornada de Fé', status: 'draft' }) }),
+      );
+      // Module created mirroring template structure
+      expect(mockTx.module.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ name: 'Módulo Fé', order: 0 }) }),
+      );
+      // Lesson created with contentUrl and contentBody null (independent copy)
+      expect(mockTx.lesson.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            name: 'Aula 1',
+            contentUrl: null,
+            contentBody: null,
+          }),
+        }),
+      );
+    });
+
+    it('uses template name when no name provided', async () => {
+      vi.mocked(mockTx.trail.create).mockResolvedValue({ id: 'trail-new-2' });
+      vi.mocked(mockTx.module.create).mockResolvedValue({ id: 'mod-new-2' });
+
+      vi.mocked(mockRepository.findByIdForMaterialization).mockResolvedValue(
+        makePrismaTemplate({ name: 'Template Padrão', structure: { modules: [] } as unknown as import('@prisma/client').Prisma.JsonValue }),
+      );
+
+      await service.materializeTrail('template-id-1');
+      expect(mockTx.trail.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ name: 'Template Padrão' }) }),
+      );
+    });
+
+    it('structure mirrors template modules order correctly', async () => {
+      vi.mocked(mockTx.trail.create).mockResolvedValue({ id: 'trail-new-3' });
+      vi.mocked(mockTx.module.create).mockResolvedValue({ id: 'mod-new-3' });
+      vi.mocked(mockTx.lesson.create).mockResolvedValue({ id: 'lesson-new-3' });
+
+      vi.mocked(mockRepository.findByIdForMaterialization).mockResolvedValue(
+        makePrismaTemplate({
+          structure: {
+            modules: [
+              { name: 'Módulo A', order: 0, lessonAccessMode: 'sequential', lessons: [] },
+              { name: 'Módulo B', order: 1, lessonAccessMode: 'free', lessons: [
+                { name: 'Lição B1', contentType: 'rich_text', order: 0, estimatedDurationMinutes: null },
+              ]},
+            ],
+          } as unknown as import('@prisma/client').Prisma.JsonValue,
+        }),
+      );
+
+      await service.materializeTrail('template-id-1', 'Trilha Teste');
+      // Two modules created in order
+      expect(mockTx.module.create).toHaveBeenCalledTimes(2);
+      const firstCall = vi.mocked(mockTx.module.create).mock.calls[0][0];
+      const secondCall = vi.mocked(mockTx.module.create).mock.calls[1][0];
+      expect(firstCall.data.name).toBe('Módulo A');
+      expect(secondCall.data.name).toBe('Módulo B');
+      // One lesson in second module
+      expect(mockTx.lesson.create).toHaveBeenCalledTimes(1);
     });
   });
 
