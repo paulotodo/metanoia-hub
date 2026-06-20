@@ -13,9 +13,7 @@ import type { Job } from 'bullmq';
 
 // These mocks are hoisted — factories must not reference outer variables.
 vi.mock('@prisma/adapter-pg', () => ({
-  PrismaPg: class PrismaPg {
-    constructor(_opts: unknown) {}
-  },
+  PrismaPg: vi.fn(),
 }));
 
 vi.mock('@prisma/client', () => ({
@@ -23,7 +21,6 @@ vi.mock('@prisma/client', () => ({
     $queryRawUnsafe = vi.fn().mockResolvedValue([]);
     $disconnect = vi.fn().mockResolvedValue(undefined);
     $executeRawUnsafe = vi.fn().mockResolvedValue(undefined);
-    constructor(_opts?: unknown) {}
   },
 }));
 
@@ -190,9 +187,7 @@ describe('DetectEvasionRiskProcessor', () => {
     it('generateId is invoked during dispatch (correlationId creation)', async () => {
       const { generateId } = await import('@metanoia/types');
 
-      let clientCallCount = 0;
       vi.spyOn(processor, 'createPrivilegedClient').mockImplementation(() => {
-        clientCallCount++;
         return makeFakeClient({});
       });
 

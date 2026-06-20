@@ -108,7 +108,7 @@ export class DetectEvasionRiskProcessor implements OnModuleInit {
 
     // Step 1: List active tenants via privileged client (AC-SEC-01)
     const privileged = this.createPrivilegedClient();
-    let activeTenantIds: string[] = [];
+    let activeTenantIds!: string[];
 
     try {
       const tenants = await privileged.$queryRawUnsafe<ActiveTenant[]>(
@@ -213,9 +213,6 @@ export class DetectEvasionRiskProcessor implements OnModuleInit {
         },
         { tenantId },
       );
-
-      // Stop when batch is smaller than BATCH_SIZE (last page or empty)
-      hasMore = pairs.length === BATCH_SIZE;
 
       for (const pair of pairs) {
         try {

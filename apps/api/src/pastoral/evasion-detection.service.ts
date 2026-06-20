@@ -169,7 +169,7 @@ export class EvasionDetectionService {
       participantId,
       groupId,
       opts.tenantId ?? '',
-      riskReason!,
+      riskReason as ParticipantRiskReason,
       newStatus as 'amarelo' | 'vermelho',
       opts.jobRunId,
     );

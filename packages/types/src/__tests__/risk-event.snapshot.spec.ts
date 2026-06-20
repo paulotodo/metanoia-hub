@@ -173,7 +173,9 @@ describe('RiskResolvedEventSchema', () => {
   });
 
   it('rejects missing resolvedAt', () => {
-    const { resolvedAt: _, ...dataWithoutResolvedAt } = validResolved.data;
+    const dataWithoutResolvedAt = Object.fromEntries(
+      Object.entries(validResolved.data).filter(([k]) => k !== 'resolvedAt'),
+    );
     const bad = { ...validResolved, data: dataWithoutResolvedAt };
     expect(RiskResolvedEventSchema.safeParse(bad).success).toBe(false);
   });
