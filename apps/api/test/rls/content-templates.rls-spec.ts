@@ -139,37 +139,45 @@ async function cleanup(prisma: PrismaClient): Promise<void> {
 }
 
 describe('RLS Isolation: content_templates table', () => {
-  let prisma: PrismaClient;
+  // privileged: owner role (DATABASE_URL) — bypassa RLS, usado para seed/cleanup de linhas
+  // globais (tenant_id NULL) que o WITH CHECK das policies impede via app role.
+  let privileged: PrismaClient;
+  // app: metanoia_app (DATABASE_APP_URL, NOSUPERUSER) — RLS aplicada, testa isolamento real.
+  let app: PrismaClient;
 
   beforeAll(async () => {
-    const connectionString = process.env.DATABASE_APP_URL!;
-    const adapter = new PrismaPg({ connectionString });
-    prisma = new PrismaClient({ adapter });
-    await prisma.$connect();
+    const privAdapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+    privileged = new PrismaClient({ adapter: privAdapter });
+    await privileged.$connect();
 
-    await ensureUser(prisma, USER_A, `ct-rls-a@test.com`);
-    await ensureUser(prisma, USER_B, `ct-rls-b@test.com`);
-    await ensureTenant(prisma, TENANT_A_ID, 'Tenant A');
-    await ensureTenant(prisma, TENANT_B_ID, 'Tenant B');
+    const appAdapter = new PrismaPg({ connectionString: process.env.DATABASE_APP_URL! });
+    app = new PrismaClient({ adapter: appAdapter });
+    await app.$connect();
+
+    await ensureUser(privileged, USER_A, `ct-rls-a@test.com`);
+    await ensureUser(privileged, USER_B, `ct-rls-b@test.com`);
+    await ensureTenant(privileged, TENANT_A_ID, 'Tenant A');
+    await ensureTenant(privileged, TENANT_B_ID, 'Tenant B');
 
     // Cleanup from previous run (idempotency)
-    await cleanup(prisma);
+    await cleanup(privileged);
 
-    // Seed: 1 platform template, 1 per tenant
-    await insertTemplateBypassed(prisma, TEMPLATE_PLATFORM_ID, null, 'platform', 'Platform Tpl RLS Test', SYSTEM_USER);
-    await insertTemplateBypassed(prisma, TEMPLATE_A_ID, TENANT_A_ID, 'tenant', 'Tenant A Tpl RLS Test', USER_A);
-    await insertTemplateBypassed(prisma, TEMPLATE_B_ID, TENANT_B_ID, 'tenant', 'Tenant B Tpl RLS Test', USER_B);
+    // Seed: 1 platform template, 1 per tenant — via privileged (tenant_id NULL needs bypass)
+    await insertTemplateBypassed(privileged, TEMPLATE_PLATFORM_ID, null, 'platform', 'Platform Tpl RLS Test', SYSTEM_USER);
+    await insertTemplateBypassed(privileged, TEMPLATE_A_ID, TENANT_A_ID, 'tenant', 'Tenant A Tpl RLS Test', USER_A);
+    await insertTemplateBypassed(privileged, TEMPLATE_B_ID, TENANT_B_ID, 'tenant', 'Tenant B Tpl RLS Test', USER_B);
   });
 
   afterAll(async () => {
-    await cleanup(prisma);
-    await prisma.$disconnect();
+    await cleanup(privileged);
+    await privileged.$disconnect();
+    await app.$disconnect();
   });
 
   // ---- Cenário 1: READ isolation ----
 
   it('TENANT_A sees platform template + its own template', async () => {
-    const visible = await readTemplates(prisma, TENANT_A_ID);
+    const visible = await readTemplates(app, TENANT_A_ID);
     const ids = visible.map((t) => t.id);
     expect(ids).toContain(TEMPLATE_PLATFORM_ID);
     expect(ids).toContain(TEMPLATE_A_ID);
@@ -177,7 +185,7 @@ describe('RLS Isolation: content_templates table', () => {
   });
 
   it('TENANT_B sees platform template + its own template, not TENANT_A', async () => {
-    const visible = await readTemplates(prisma, TENANT_B_ID);
+    const visible = await readTemplates(app, TENANT_B_ID);
     const ids = visible.map((t) => t.id);
     expect(ids).toContain(TEMPLATE_PLATFORM_ID);
     expect(ids).toContain(TEMPLATE_B_ID);
@@ -185,7 +193,7 @@ describe('RLS Isolation: content_templates table', () => {
   });
 
   it('empty tenant context sees no templates (nullif returns null uuid)', async () => {
-    const visible = await prisma.$transaction(async (tx) => {
+    const visible = await app.$transaction(async (tx) => {
       await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = ''`);
       return tx.contentTemplate.findMany({ where: { deletedAt: null } });
     });
@@ -199,24 +207,24 @@ describe('RLS Isolation: content_templates table', () => {
   it('INSERT with tenant_id=NULL under TENANT_A context is rejected by RLS', async () => {
     const BOGUS_ID = '01976600-0001-7000-8000-000000009901';
     await expect(
-      tryInsertTemplate(prisma, TENANT_A_ID, BOGUS_ID, null),
+      tryInsertTemplate(app, TENANT_A_ID, BOGUS_ID, null),
     ).rejects.toThrow();
   });
 
   it('INSERT with tenant_id=TENANT_B under TENANT_A context is rejected by RLS', async () => {
     const BOGUS_ID = '01976600-0001-7000-8000-000000009902';
     await expect(
-      tryInsertTemplate(prisma, TENANT_A_ID, BOGUS_ID, TENANT_B_ID),
+      tryInsertTemplate(app, TENANT_A_ID, BOGUS_ID, TENANT_B_ID),
     ).rejects.toThrow();
   });
 
   it('INSERT with tenant_id=TENANT_A under TENANT_A context succeeds', async () => {
     const OWN_ID = '01976600-0001-7000-8000-000000009903';
     await expect(
-      tryInsertTemplate(prisma, TENANT_A_ID, OWN_ID, TENANT_A_ID),
+      tryInsertTemplate(app, TENANT_A_ID, OWN_ID, TENANT_A_ID),
     ).resolves.not.toThrow();
-    // Cleanup this inserted row
-    await prisma.$transaction(async (tx) => {
+    // Cleanup this inserted row (privileged)
+    await privileged.$transaction(async (tx) => {
       await tx.$executeRawUnsafe('SET LOCAL row_security = off');
       await tx.$executeRawUnsafe(`DELETE FROM content_templates WHERE id = '${OWN_ID}'::uuid`);
     });
@@ -225,32 +233,32 @@ describe('RLS Isolation: content_templates table', () => {
   // ---- Cenário 3: Platform read-only ----
 
   it('UPDATE platform template under TENANT_A affects 0 rows', async () => {
-    const affected = await tryUpdateTemplate(prisma, TENANT_A_ID, TEMPLATE_PLATFORM_ID);
+    const affected = await tryUpdateTemplate(app, TENANT_A_ID, TEMPLATE_PLATFORM_ID);
     expect(affected).toBe(0);
   });
 
   it('DELETE platform template under TENANT_A affects 0 rows', async () => {
-    const affected = await tryDeleteTemplate(prisma, TENANT_A_ID, TEMPLATE_PLATFORM_ID);
+    const affected = await tryDeleteTemplate(app, TENANT_A_ID, TEMPLATE_PLATFORM_ID);
     expect(affected).toBe(0);
   });
 
   // ---- Cenário 4: Soft-delete isolation (application layer) ----
 
   it('template with deletedAt IS NOT NULL is excluded by application-layer filter', async () => {
-    // Mark TEMPLATE_A as soft-deleted (bypassing RLS)
-    await prisma.$transaction(async (tx) => {
+    // Mark TEMPLATE_A as soft-deleted (bypassing RLS, privileged)
+    await privileged.$transaction(async (tx) => {
       await tx.$executeRawUnsafe('SET LOCAL row_security = off');
       await tx.$executeRawUnsafe(
         `UPDATE content_templates SET deleted_at = now() WHERE id = '${TEMPLATE_A_ID}'::uuid`,
       );
     });
 
-    const visible = await readTemplates(prisma, TENANT_A_ID);
+    const visible = await readTemplates(app, TENANT_A_ID);
     const ids = visible.map((t) => t.id);
     expect(ids).not.toContain(TEMPLATE_A_ID);
 
-    // Restore
-    await prisma.$transaction(async (tx) => {
+    // Restore (privileged)
+    await privileged.$transaction(async (tx) => {
       await tx.$executeRawUnsafe('SET LOCAL row_security = off');
       await tx.$executeRawUnsafe(
         `UPDATE content_templates SET deleted_at = NULL WHERE id = '${TEMPLATE_A_ID}'::uuid`,
@@ -262,7 +270,7 @@ describe('RLS Isolation: content_templates table', () => {
 
   it('running cleanup + re-seed twice gives same platform count (idempotency)', async () => {
     // Count platform templates seeded in beforeAll
-    const result = await prisma.$queryRaw<[{ count: bigint }]>`
+    const result = await privileged.$queryRaw<[{ count: bigint }]>`
       SELECT COUNT(*) as count FROM content_templates
       WHERE tenant_id IS NULL
         AND id = ${TEMPLATE_PLATFORM_ID}::uuid
