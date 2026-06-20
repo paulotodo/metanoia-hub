@@ -792,11 +792,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T01:05:20Z",
       "description": "onda-005 create-tasks concluido; aguardando wakeup para execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T01:56:09Z",
-      "description": "onda-006 concluida: FASE 8+9+10 done → avancando para review-task"
     }
   ],
   "tasks": [

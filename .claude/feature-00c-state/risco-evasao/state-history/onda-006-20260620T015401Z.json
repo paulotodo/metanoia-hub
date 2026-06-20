@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
+  "current_stage": "execute-task",
   "next_instruction": "Onda parcial: backend FASES 1-7 + FASE 10 (RLS/unit) commitado em feat/13-3-risco-evasao (commits 100fbba, 0c64833). Build typecheck 0 erros. PENDENTE: FASE 8 (PastoralRiskEventPublisher — emitir risk-detected no job + risk-resolved na resolução via EventEmitter2, envelope sem PII); FASE 9 (UI web: Radar exibe riskReason, CelebrationBanner aria-live, Care Timeline via PastoralNote FR66-09 — pagina autenticada, NAO tocar gate axe publico); FASE 10 restante (10.1 isolamento multi-tenant do job, 10.4 cliente privilegiado confinado AC-SEC-01). Manter current_stage=execute-task ate FASE 8+9 completas.",
   "waves": [
     {
@@ -149,19 +149,13 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-20T01:34:35Z",
-      "finished_at": "2026-06-20T01:55:50Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1275,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-20T01:55:22Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -670,60 +664,6 @@
       "evidence": "tsc --noEmit grep 'error TS' (excl. 3 specs pré-existentes) = vazio (exit 0); vitest evasion-detection.service.spec.ts: Tests 6 passed; last-seen.interceptor.spec.ts: Tests 5 passed; groups.service.spec.ts: Tests 10 passed",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-028",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-20T01:54:01Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 8 concluida: PastoralRiskEventPublisher criado, integrado no EvasionDetectionService, testes unitarios passando (9 testes: dedup, schema-fail-no-throw, no-PII, resolved-no-dedup)",
-      "options_considered": [
-        "concluir-fase-8",
-        "deferir"
-      ],
-      "choice": "concluir-fase-8",
-      "rationale": "pastoral-risk-event-publisher.service.ts + spec + integracao no evasion-detection.service.ts verificados via pnpm vitest run (9 pass)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-20T01:54:12Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 9 concluida: RiskReasonBadge (PT-BR, a11y WCAG AA), RiskResolvedBanner (aria-live+polite, auto-dismiss 10s), participant-card.tsx atualizado, strings em vocabulary.ts + types barrel, mocks web atualizados, 875 testes web passando",
-      "options_considered": [
-        "concluir-fase-9",
-        "deferir"
-      ],
-      "choice": "concluir-fase-9",
-      "rationale": "risk-reason-badge.tsx + risk-resolved-banner.tsx + testes criados; pnpm web test 875/875 pass; a11y: icon+text+aria-label (nao so cor)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-030",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-20T01:54:23Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 10 (parcial) concluida: 10.1 evasion-job-isolation.spec.ts (multi-tenant RLS), 10.4 detect-evasion-risk.processor.spec.ts (AC-SEC-01 disconnect+privileged-confinement, isolation, CHK030-RES) 4/4 pass, 10.6 risk-event.snapshot.spec.ts (inline snapshots Zod). Tasks 10.2+10.3+10.5 ja estavam concluidas em ondas anteriores.",
-      "options_considered": [
-        "concluir-fase-10-parcial",
-        "deferir"
-      ],
-      "choice": "concluir-fase-10-parcial",
-      "rationale": "API test suite: evasion-detection 6/6, publisher 9/9, processor 4/4, tipos 553/553. Web: 875/875.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -741,12 +681,12 @@
     "current_wave_start": "2026-06-20T01:34:35Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4189,
+    "wallclock_total_seconds": 2914,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 30,
+    "decisions_total": 27,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -792,11 +732,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T01:05:20Z",
       "description": "onda-005 create-tasks concluido; aguardando wakeup para execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T01:56:09Z",
-      "description": "onda-006 concluida: FASE 8+9+10 done → avancando para review-task"
     }
   ],
   "tasks": [
@@ -858,54 +793,6 @@
       "lint_ok": true,
       "touched_files": [],
       "recorded_at": "2026-06-20T01:27:41Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "8.1",
-      "title": "PastoralRiskEventPublisher — emissao risk-detected + risk-resolved",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 9,
-      "tests_passed": 9,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/src/pastoral/pastoral-risk-event-publisher.service.ts",
-        "apps/api/src/pastoral/evasion-detection.service.ts",
-        "apps/api/src/reports/jobs/detect-evasion-risk.processor.ts",
-        "apps/api/src/reports/reports.module.ts",
-        "apps/api/src/pastoral/pastoral-risk-event-publisher.service.spec.ts"
-      ],
-      "recorded_at": "2026-06-20T01:55:33Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "9.1",
-      "title": "Radar UI riskReason + RiskReasonBadge + RiskResolvedBanner",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 875,
-      "tests_passed": 875,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/web/app/(authenticated)/app/gestao/radar/_components/risk-reason-badge.tsx",
-        "apps/web/app/(authenticated)/app/gestao/radar/_components/risk-resolved-banner.tsx",
-        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx"
-      ],
-      "recorded_at": "2026-06-20T01:55:33Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "10.4",
-      "title": "Testes AC-SEC-01 privileged client + isolamento tenant",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 4,
-      "tests_passed": 4,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/src/reports/jobs/detect-evasion-risk.processor.spec.ts"
-      ],
-      "recorded_at": "2026-06-20T01:55:33Z",
       "source": "execute-task"
     }
   ]
