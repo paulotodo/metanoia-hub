@@ -56,10 +56,10 @@ describe('detect-evasion-risk: multi-tenant isolation (Task 10.1)', () => {
 
     // Seed tenants A and B
     await privileged.$executeRawUnsafe(
-      `INSERT INTO tenants (id, name, slug, status, created_at, updated_at)
+      `INSERT INTO tenants (id, tenant_id, name, slug, status, created_at, updated_at)
        VALUES
-         ($1::uuid, 'Tenant A (evasion-test)', 'tenant-a-evasion', 'active', now(), now()),
-         ($2::uuid, 'Tenant B (evasion-test)', 'tenant-b-evasion', 'active', now(), now())
+         ($1::uuid, $1::uuid, 'Tenant A (evasion-test)', 'tenant-a-evasion', 'active', now(), now()),
+         ($2::uuid, $2::uuid, 'Tenant B (evasion-test)', 'tenant-b-evasion', 'active', now(), now())
        ON CONFLICT (id) DO NOTHING`,
       tenantA, tenantB,
     );
@@ -68,9 +68,18 @@ describe('detect-evasion-risk: multi-tenant isolation (Task 10.1)', () => {
     const userA = randomUUID();
     await privileged.$executeRawUnsafe(
       `INSERT INTO users (id, email, name, last_seen_at, created_at, updated_at)
-       VALUES ($1::uuid, 'usera@test.com', 'User A', now(), now(), now())
+       VALUES ($1::uuid, 'usera-' || $1::text || '@test.com', 'User A', now(), now(), now())
        ON CONFLICT (id) DO NOTHING`,
       userA,
+    );
+
+    // Seed group A (FK target for participant_radar_status)
+    const groupA = randomUUID();
+    await privileged.$executeRawUnsafe(
+      `INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence, updated_at)
+       VALUES ($1::uuid, $2::uuid, 'Group A (evasion)', 'wed', '19:00', 'weekly', now())
+       ON CONFLICT (id) DO NOTHING`,
+      groupA, tenantA,
     );
 
     // Seed participant_radar_status for tenant A
@@ -78,9 +87,9 @@ describe('detect-evasion-risk: multi-tenant isolation (Task 10.1)', () => {
       `INSERT INTO participant_radar_status
          (id, tenant_id, group_id, participant_id, status, trend, presence_percentage, calculated_at)
        VALUES
-         ($1::uuid, $2::uuid, $3::uuid, $4::uuid, 'vermelho', 'declining', 0.3, now())
+         ($1::uuid, $2::uuid, $3::uuid, $4::uuid, 'vermelho', 'declinio', 0.3, now())
        ON CONFLICT DO NOTHING`,
-      randomUUID(), tenantA, randomUUID(), userA,
+      randomUUID(), tenantA, groupA, userA,
     );
 
     // Seed evasion_job_log with tenant_id = NULL (global observability)
@@ -105,13 +114,26 @@ describe('detect-evasion-risk: multi-tenant isolation (Task 10.1)', () => {
   it('tenant A cannot see participant_radar_status of tenant B', async () => {
     // Insert a participant_radar_status for tenant B via privileged client
     const userB = randomUUID();
+    const groupB = randomUUID();
+    await privileged.$executeRawUnsafe(
+      `INSERT INTO users (id, email, name, created_at, updated_at)
+       VALUES ($1::uuid, 'userb-' || $1::text || '@test.com', 'User B', now(), now())
+       ON CONFLICT (id) DO NOTHING`,
+      userB,
+    );
+    await privileged.$executeRawUnsafe(
+      `INSERT INTO groups (id, tenant_id, name, day_of_week, time, recurrence, updated_at)
+       VALUES ($1::uuid, $2::uuid, 'Group B (evasion)', 'wed', '19:00', 'weekly', now())
+       ON CONFLICT (id) DO NOTHING`,
+      groupB, tenantB,
+    );
     await privileged.$executeRawUnsafe(
       `INSERT INTO participant_radar_status
          (id, tenant_id, group_id, participant_id, status, trend, presence_percentage, calculated_at)
        VALUES
-         ($1::uuid, $2::uuid, $3::uuid, $4::uuid, 'vermelho', 'declining', 0.2, now())
+         ($1::uuid, $2::uuid, $3::uuid, $4::uuid, 'vermelho', 'declinio', 0.2, now())
        ON CONFLICT DO NOTHING`,
-      randomUUID(), tenantB, randomUUID(), userB,
+      randomUUID(), tenantB, groupB, userB,
     );
 
     // Query via app client (RLS) under tenant A context
