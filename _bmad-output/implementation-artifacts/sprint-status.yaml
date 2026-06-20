@@ -208,7 +208,7 @@ development_status:
   13-3-deteccao-de-risco-de-evasao-fr66: done                       # PR #165 (job detecção cross-tenant; semáforo c/ guarda manual; notificação DEFERIDA ao Epic 14 via evento; 5 bugs Postgres no teste RLS corrigidos via validação local)
   13-4-metricas-de-plataforma-super-admin-fr67: done                # PR #166 (MV cross-tenant mv_platform_metrics + FlowProducer invertido child; super_admin sem RLS; 3 bugs Postgres corrigidos via validação local: ordenação migration, RLS closed-by-default, app-role no teste)
   13-5-templates-de-conteudo-reutilizaveis-fr42: done               # PR #167 (ContentTemplate scope platform/tenant + structure JSONB sem conteúdo + versionamento; RLS 4-policy write-isolation [gate OWASP HIGH: tenant não forja platform tenant_id NULL]; seed platform privilegiado; Usar Template cópia independente; UI /app/admin/templates; 2 bugs Postgres corrigidos via validação local)
-  epic-13-retrospective: optional
+  epic-13-retrospective: done                                      # retro em epic-13-retro-2026-06-20.md (validação Postgres local = diferencial; 3 findings OWASP reais; flake demo-data = action item nº1)
 
   # Epic 14: Notificações & Comunicação
   # Sprint 19: 14-1, 14-2a, 14-2b, 14-2c, 14-3, 14-4
