@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "plan",
-  "next_instruction": "Executar fase plan: gerar plan.md com arquitetura detalhada, task decomposition e research.md se necessario. Pre-decisao read-back (cstk recall) em specify/plan obrigatoria.",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker com spec gerada.",
   "waves": [
     {
       "id": "onda-001",

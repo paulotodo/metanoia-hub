@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Executar fase plan: gerar plan.md com arquitetura detalhada, task decomposition e research.md se necessario. Pre-decisao read-back (cstk recall) em specify/plan obrigatoria.",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker com spec gerada.",
   "waves": [
     {
       "id": "onda-001",
@@ -47,13 +47,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T00:30:23Z",
-      "finished_at": "2026-06-20T00:32:58Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 155,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -272,9 +270,9 @@
     "current_wave_start": "2026-06-20T00:30:23Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 423,
+    "wallclock_total_seconds": 268,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 10,

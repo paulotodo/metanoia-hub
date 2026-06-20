@@ -3,7 +3,7 @@
 **Feature:** risco-evasao
 **Épico:** Epic 13 — Relatórios Avançados & Analytics
 **Referência autoritativa:** `_bmad-output/implementation-artifacts/13-3-deteccao-de-risco-de-evasao-fr66.md`
-**Status:** specify — aguardando clarify
+**Status:** clarify — concluído (todas as decisões resolvidas autonomamente, score 3)
 
 ---
 
@@ -333,7 +333,65 @@ O consumer do evento `pastoral.participant.risk-detected` para envio de push ao 
 
 ## 11. Clarifications
 
-*(Seção reservada para respostas do clarify — a preencher na próxima etapa)*
+### C1 — Mecanismo de população de `last_seen_at` (RESOLVIDO, score 3)
+
+**Decisão:** Interceptor/middleware no ponto de saída do `KeycloakAuthGuard` atualiza `User.last_seen_at` de forma **assíncrona (fire-and-forget)** com debounce via Redis TTL 15 min (chave `cache:last-seen:{userId}`).
+
+**Mecanismo:**
+- Um NestJS interceptor global (ou hook no final do `KeycloakAuthGuard.canActivate()`) verifica se existe a chave Redis para o userId autenticado.
+- Se a chave **não existir** (ou seja, passaram >15 min desde o último update): executa  de forma assíncrona ( — best-effort, não bloqueia a request).
+- Se a chave **existir**: skip (debounce ativo).
+- Grava a chave Redis com TTL de 15 min após cada write bem-sucedido.
+
+**Alternativas rejeitadas:**
+- Keycloak session event webhook: adiciona dependência externa não estabelecida na arquitetura
+- Evento de presença/check-in apenas: perde cobertura para usuários que apenas lêem conteúdo sem registrar presença formal
+
+**Impacto no Plan:** Migration 1 () + implementação do interceptor  (novo arquivo ) + registro global no .
+
+---
+
+### C2 — Campo `riskReason` em `ParticipantRadarStatus` (RESOLVIDO, score 3)
+
+**Decisão:** Adicionar coluna `riskReason VARCHAR(500) NULL` ao modelo `ParticipantRadarStatus` (Migration 3). O job grava o motivo junto com o status no mesmo upsert.
+
+**Formato do motivo:** String descritiva em PT-BR gerada pelo job, ex:
+- 
+- 
+
+**Alternativa rejeitada:** Derivar on-demand exigiria query adicional de attendance + lastSeenAt a cada render do Radar UI — inconsistente com o padrão de modelo materializado do projeto e impacto desnecessário na latência do UI.
+
+**Impacto no Plan:** Migration 3 (nova coluna + RLS test), atualização do  para incluir , atualização do schema Zod de resposta do Radar UI.
+
+---
+
+### C3 — Endpoint `PATCH /api/v1/groups/:id` para recesso (RESOLVIDO, score 3)
+
+**Decisão:** O  **já existe** e **já implementa**  com , ,  e .
+
+**Escopo da implementação (apenas extensão):**
+1. Adicionar campos opcionais  e  ao  em 
+2. Atualizar  para persistir  e  no banco
+3. Adicionar validação:  é obrigatório quando 
+4. **Não** criar novo controller, novo endpoint ou novo router
+
+**Nota sobre Roles:** O endpoint existente usa . O líder de grupo () também deve poder marcar recesso — verificar se  cobre líderes ou se é necessário adicionar  ao método específico de recesso.
+
+---
+
+### C4 — Trigger de resolução de risco (RESOLVIDO, score 3)
+
+**Decisão:** A resolução de risco é avaliada **no mesmo job diário ** (cron ). O job processa todos os participantes com status não-verde e verifica retorno de atividade.
+
+**Lógica de resolução (no mesmo job):**
+1. Para cada participante com : verificar se houve presença em reunião OU  recente (< 7 dias)
+2. Se houve retorno: aplicar transição gradual:
+   -  →  na 1ª atividade detectada
+   -  →  após 2 presenças consecutivas verificadas
+3. Emitir evento  quando  retorna a 
+4. Exibir  ao líder (via domain event ou estado de UI)
+
+**Alternativa rejeitada:** Real-time via event listener separado aumentaria complexidade arquitetural sem benefício UX claro — líderes consultam o Radar periodicamente, não em tempo-real.
 
 ---
 
@@ -344,3 +402,8 @@ O consumer do evento `pastoral.participant.risk-detected` para envio de push ao 
 | 2026-06-19 | Spec criada a partir de `13-3-deteccao-de-risco-de-evasao-fr66.md` + análise do `schema.prisma` |
 | 2026-06-19 | Decisão: notificação deferida ao Epic 14 via domain event (operador delegou, não reabrir) |
 | 2026-06-19 | Sub-dependência `last_seen_at` sinalizada como item de clarify/plan obrigatório (C1) |
+| 2026-06-19 | Clarify concluído: C1-C4 resolvidos autonomamente (todos score 3/3) — nenhum bloqueio humano |
+| 2026-06-19 | C1: interceptor Last-Seen + Redis debounce 15min via KeycloakAuthGuard |
+| 2026-06-19 | C2: riskReason VARCHAR(500) NULL persistido em ParticipantRadarStatus (Migration 3 confirmada) |
+| 2026-06-19 | C3: PATCH /api/v1/groups/:id já existe — extensão do UpdateGroupRequestSchema apenas |
+| 2026-06-19 | C4: resolução de risco no mesmo job diário detect-evasion-risk (batch, não real-time) |

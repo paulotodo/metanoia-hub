@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Executar fase plan: gerar plan.md com arquitetura detalhada, task decomposition e research.md se necessario. Pre-decisao read-back (cstk recall) em specify/plan obrigatoria.",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — invocar clarify-asker com spec gerada.",
   "waves": [
     {
       "id": "onda-001",
@@ -47,26 +47,13 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-20T00:30:23Z",
-      "finished_at": "2026-06-20T00:32:58Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 155,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-20T00:32:34Z",
-          "decision_id": "dec-006"
-        },
-        {
-          "skill": "feature-00c-clarify-answerer",
-          "timestamp": "2026-06-20T00:32:34Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -237,24 +224,6 @@
       "evidence": "Spec autoritativa 13-3 Tasks: 'Task 5: Implement risk resolution flow' no mesmo job detect-evasion-risk; FR66-01 descreve job unico com SLA 30min; nenhuma mencao a event listener real-time para resolucao",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-20T00:32:44Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Avanco de fase: clarify concluido sem bloqueios, transitar para plan",
-      "options_considered": [
-        "avancar-para-plan",
-        "aguardar-humano"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "Todos 4 itens de clarify (C1-C4) resolvidos com score 3: evidencias empiricas do codebase (keycloak.guard.ts, groups.controller.ts, schema.prisma, radar-status.repository.ts) validam cada decisao. Nenhum item requer decisao de produto nem escopo sem default tecnico claro.",
-      "justification_score": 3,
-      "evidence": "C1 score 3: keycloak.guard.ts confirmado; C2 score 3: FR66-06 exige tooltip; C3 score 3: groups.controller.ts PATCH implementado; C4 score 3: spec 13-3 Task 5 no mesmo job",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -272,12 +241,12 @@
     "current_wave_start": "2026-06-20T00:30:23Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 423,
+    "wallclock_total_seconds": 268,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 10,
+    "decisions_total": 9,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -298,11 +267,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T00:21:00Z",
       "description": "etapa=specify hits=4"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-20T00:31:23Z",
-      "description": "etapa=clarify hits=0 (clarify nao dispara read-back per spec)"
     }
   ]
 }
