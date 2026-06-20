@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
+  "current_stage": "execute-task",
   "next_instruction": "PR #170 aberto (feat/story-14-1-infra-notificacoes → dev). Proxima onda: verificar CI do PR e executar review-task.",
   "waves": [
     {

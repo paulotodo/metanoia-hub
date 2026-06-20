@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "PR #170 aberto (feat/story-14-1-infra-notificacoes → dev). Proxima onda: verificar CI do PR e executar review-task.",
+  "current_stage": "execute-task",
+  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -114,11 +114,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-20T16:34:55Z",
-      "finished_at": "2026-06-20T17:11:02Z",
+      "finished_at": "2026-06-20T16:39:23Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2167,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 268,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -639,9 +639,9 @@
     "current_wave_start": "2026-06-20T16:34:55Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4484,
+    "wallclock_total_seconds": 2317,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 26,

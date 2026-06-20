@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "PR #170 aberto (feat/story-14-1-infra-notificacoes → dev). Proxima onda: verificar CI do PR e executar review-task.",
+  "current_stage": "execute-task",
+  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -114,22 +114,17 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-20T16:34:55Z",
-      "finished_at": "2026-06-20T17:11:02Z",
+      "finished_at": "2026-06-20T16:39:23Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2167,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 268,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "create-tasks",
           "timestamp": "2026-06-20T16:39:23Z",
           "decision_id": null
-        },
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-20T17:10:09Z",
-          "decision_id": "dec-026"
         }
       ]
     }
@@ -566,62 +561,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T16:44:12Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 4 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T16:47:21Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio onda execute-task — implementar FASE 1-6 de infra-notificacoes",
-      "options_considered": [
-        "iniciar",
-        "abortar"
-      ],
-      "choice": "iniciar",
-      "rationale": "Backlog completo (tasks.md FASE 1-6) — nenhum bloqueio pendente, hash integro, wave onda-004 ativa",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T17:09:56Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "execute-task FASE 1-5 concluida: tipos Zod, migration Prisma + RLS, env, service, controller, module, worker, channels, digest — backlog 97 subtarefas completas. Pendente: FASE 6 git+PR (criacao de branch+commit+PR bloqueada pelo safety classifier)",
-      "options_considered": [
-        "concluir-task-agendar-pr",
-        "bloquear-humano"
-      ],
-      "choice": "concluir-task-agendar-pr",
-      "rationale": "Validacao local completa: types build OK (582 tests), API lint OK, API build OK, prisma validate+generate OK, migration deploy OK (Postgres local), RLS spec 5/5 x2 OK, unit tests 17/17 OK. Safety classifier indisponivel impede git/PR. Proxima onda executa git/PR.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -639,12 +578,12 @@
     "current_wave_start": "2026-06-20T16:34:55Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4484,
+    "wallclock_total_seconds": 2317,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 26,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0,
@@ -685,175 +624,5 @@
       "description": "onda plan encerrada; aguardando wakeup para checklist"
     }
   ],
-  "current_wave_id": "onda-002",
-  "tasks": [
-    {
-      "task_id": "1.1",
-      "title": "Fechar gaps abertos do checklist",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "1.2",
-      "title": "Contratos Zod em packages/types",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "2.1",
-      "title": "Prisma model e enums",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "2.2",
-      "title": "Migration SQL 20260629000000",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "2.3",
-      "title": "Spec RLS idempotente",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.1",
-      "title": "Configuracao de ambiente NOTIFICATION_DIGEST_WINDOW_MS",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.2",
-      "title": "NotificationsService.dispatch()",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.3",
-      "title": "NotificationsController",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "3.4",
-      "title": "NotificationsModule",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.1",
-      "title": "ChannelRouter",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.2",
-      "title": "NotificationChannelInterface e InAppChannel",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.3",
-      "title": "EmailChannel stub",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "4.4",
-      "title": "NotificationsWorker",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "5.1",
-      "title": "DigestService",
-      "wave_id": "onda-004",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": true,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T17:10:24Z",
-      "source": "execute-task"
-    }
-  ]
+  "current_wave_id": "onda-002"
 }

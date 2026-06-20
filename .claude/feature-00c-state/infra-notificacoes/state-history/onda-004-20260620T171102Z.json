@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "PR #170 aberto (feat/story-14-1-infra-notificacoes → dev). Proxima onda: verificar CI do PR e executar review-task.",
+  "current_stage": "execute-task",
+  "next_instruction": "Retomada pos execute-task: 1) docker compose -f docker-compose.test.yml down (cleanup); 2) criar branch feat/story-14-1-infra-notificacoes; 3) stage files (packages/types/src/notification.ts, packages/types/src/__tests__/notification.snapshot.spec.ts, packages/types/src/index.ts, apps/api/prisma/schema.prisma, apps/api/prisma/migrations/20260629000000_14-1-notifications/, apps/api/src/config/env.validation.ts, apps/api/src/app.module.ts, apps/api/src/notifications/, apps/api/test/rls/notifications.rls-spec.ts); 4) commit PT-BR conventional com trailer Co-Authored-By; 5) push + gh pr create contra dev. Depois: marcar FASE 6 concluida e transitar para review-task.",
   "waves": [
     {
       "id": "onda-001",
@@ -114,11 +114,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-20T16:34:55Z",
-      "finished_at": "2026-06-20T17:11:02Z",
+      "finished_at": "2026-06-20T16:39:23Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 2167,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 268,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -639,9 +639,9 @@
     "current_wave_start": "2026-06-20T16:34:55Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 4484,
+    "wallclock_total_seconds": 2317,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 26,
