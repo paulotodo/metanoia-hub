@@ -1,0 +1,688 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "risco-evasao",
+  "execution": {
+    "id": "feat-risco-evasao-20260620T001902Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 13.3 — Detecção de Risco de Evasão (FR66): job BullMQ detect-evasion-risk (cron diário, tenant-isolated) detecta participantes em risco (3+ ausências consecutivas OU 2+ semanas sem acesso via last_seen_at), transiciona semáforo (Epic 7), emite domain events pastoral.participant.risk-detected/resolved, suporta grupo em recesso, mostra motivo no Radar UI. Notificação ao líder DEFERIDA ao Epic 14 via evento. Migrations: User.last_seen_at + Group.status/breakUntil. Multi-tenant RLS, Zod, gate a11y.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-20T00:19:02Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "execute-task",
+  "next_instruction": "Executar fase checklist: rodar skill checklist (quality gate de requisitos por dominio) sobre spec.md + plan.md. Apos checklist, seguir para create-tasks.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-20T00:20:45Z",
+      "finished_at": "2026-06-20T00:25:13Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 268,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-20T00:25:06Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-20T00:30:23Z",
+      "finished_at": "2026-06-20T00:32:58Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 155,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-20T00:32:34Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "feature-00c-clarify-answerer",
+          "timestamp": "2026-06-20T00:32:34Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-20T00:39:47Z",
+      "finished_at": "2026-06-20T00:45:35Z",
+      "executed_stages": [
+        "plan"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 348,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-20T00:43:25Z",
+          "decision_id": "dec-013"
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-20T00:45:06Z",
+          "decision_id": "dec-015"
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-20T00:52:12Z",
+      "finished_at": "2026-06-20T00:57:32Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 320,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-20T00:52:24Z",
+          "decision_id": "dec-017"
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-20T00:57:11Z",
+          "decision_id": "dec-018"
+        },
+        {
+          "skill": "checklist-algorithm-review",
+          "timestamp": "2026-06-20T00:57:11Z",
+          "decision_id": "dec-019"
+        },
+        {
+          "skill": "checklist-security-review",
+          "timestamp": "2026-06-20T00:57:11Z",
+          "decision_id": "dec-020"
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-20T01:01:33Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-20T01:01:43Z",
+          "decision_id": "dec-024"
+        },
+        {
+          "skill": "validate-tasks-template",
+          "timestamp": "2026-06-20T01:05:11Z",
+          "decision_id": "dec-025"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-20T00:19:03Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T00:21:12Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=risco-evasao)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story detec risco evas fr66 job bullmq",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T00:21:23Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio da etapa specify: spec autoritativa 13-3 disponivel, schema verificado",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec autoritativa 13-3 disponivel, epico-13 lido, schema analisado. Prosseguir com geracao de spec.md.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T00:25:06Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Spec risco-evasao criada em docs/specs/risco-evasao/spec.md",
+      "options_considered": [
+        "concluido",
+        "abortar",
+        "aguardar-clarify"
+      ],
+      "choice": "concluido",
+      "rationale": "Spec gerada a partir de 13-3 autoritativo + schema analisado. FR66 completo com 9 FRs, 17 SCs, migrations identificadas, dependencias mapeadas, 4 itens para clarify documentados.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T00:28:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T00:30:39Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "C1: Mecanismo de populacao de User.last_seen_at",
+      "options_considered": [
+        "interceptor-keycloak-guard-redis-debounce",
+        "keycloak-webhook",
+        "presenca-checkin-apenas"
+      ],
+      "choice": "interceptor-keycloak-guard-redis-debounce",
+      "rationale": "KeycloakAuthGuard eh ponto de intercep de toda request autenticada; request-context.middleware ja existe; debounce Redis TTL 15min (cache:last-seen:{userId}) eh idiomatico no projeto; escrita assincrona best-effort nao impacta latencia. Keycloak webhook adiciona dep externa; checkin-apenas perde usuarios que so leem conteudo.",
+      "justification_score": 3,
+      "evidence": "keycloak.guard.ts existe em /src/auth/keycloak.guard.ts; request-context.middleware.ts em /common/context/; Redis namespaces cache:* definidos em CLAUDE.md; todos controllers usam KeycloakAuthGuard como 1o guard",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T00:30:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "C2: Campo riskReason em ParticipantRadarStatus",
+      "options_considered": [
+        "persistir-coluna-varchar500",
+        "derivar-on-demand"
+      ],
+      "choice": "persistir-coluna-varchar500",
+      "rationale": "FR66-06 exige motivo visivel no Radar UI via tooltip; tooltip exige carga rapida sem recalcular; modelo ParticipantRadarStatus ja eh materializado; job tem todo contexto e pode gravar motivo junto com status; derivar on-demand imposaria query extra a cada render e seria inconsistente com padrao materializado.",
+      "justification_score": 3,
+      "evidence": "FR66-06 spec: 'motivo visivel no Radar UI: tooltip ou label com motivo'; radar-status.repository.ts usa executeRaw ON CONFLICT DO UPDATE — adicionar coluna e trivial; ParticipantRadarStatus nao tem riskReason no schema.prisma atual",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T00:31:00Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "C3: Endpoint PATCH /api/v1/groups/:id para recesso — infraestrutura existente",
+      "options_considered": [
+        "extender-controller-existente",
+        "criar-endpoint-separado"
+      ],
+      "choice": "extender-controller-existente",
+      "rationale": "GroupsController JA tem @Patch(':id') com ZodValidationPipe(UpdateGroupRequestSchema); KeycloakAuthGuard + RolesGuard + ADMIN_TENANT ja configurados; task e apenas extender UpdateGroupRequestSchema em packages/types com status e breakUntil opcionais, e GroupsService.update() para persistir. Endpoint separado seria over-engineering.",
+      "justification_score": 3,
+      "evidence": "groups.controller.ts linha @Patch(':id') com service.update(id, body) e ZodValidationPipe(UpdateGroupRequestSchema) JA IMPLEMENTADOS em /apps/api/src/groups/groups.controller.ts",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T00:31:11Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "C4: Trigger da resolucao de risco — batch diario vs real-time",
+      "options_considered": [
+        "batch-diario-mesmo-job",
+        "real-time-event-listener"
+      ],
+      "choice": "batch-diario-mesmo-job",
+      "rationale": "Job detect-evasion-risk diario (cron 0 6 * * *) ja processa todos participantes; resolucao no mesmo job garante consistencia com deteccao; spec autoritativa 13-3 descreve batch diario; real-time aumentaria complexidade arquitetural sem beneficio UX claro para lideres que consultam Radar periodicamente.",
+      "justification_score": 3,
+      "evidence": "Spec autoritativa 13-3 Tasks: 'Task 5: Implement risk resolution flow' no mesmo job detect-evasion-risk; FR66-01 descreve job unico com SLA 30min; nenhuma mencao a event listener real-time para resolucao",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T00:32:44Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Avanco de fase: clarify concluido sem bloqueios, transitar para plan",
+      "options_considered": [
+        "avancar-para-plan",
+        "aguardar-humano"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "Todos 4 itens de clarify (C1-C4) resolvidos com score 3: evidencias empiricas do codebase (keycloak.guard.ts, groups.controller.ts, schema.prisma, radar-status.repository.ts) validam cada decisao. Nenhum item requer decisao de produto nem escopo sem default tecnico claro.",
+      "justification_score": 3,
+      "evidence": "C1 score 3: keycloak.guard.ts confirmado; C2 score 3: FR66-06 exige tooltip; C3 score 3: groups.controller.ts PATCH implementado; C4 score 3: spec 13-3 Task 5 no mesmo job",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T00:37:14Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T00:39:47Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=risco-evasao)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados: story detec risco evas fr66 job bullmq; achados de 13-2b sobre privileged client + tenant iteration injetados no contexto do plan",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T00:43:25Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Plano técnico gerado: job em reports/jobs com privileged client p/ listar tenants + withTenantTx por tenant; LastSeenInterceptor global; extensao UpdateGroupRequestSchema; 4 migrations; domain event sem PII",
+      "options_considered": [
+        "gerar-plano",
+        "abortar"
+      ],
+      "choice": "gerar-plano",
+      "rationale": "Sondas confirmaram: createPrivilegedClient (DATABASE_URL superuser, RLS-bypass) em refresh-tenant-views.processor.ts; withTenantTx aceita opts.tenantId com SET LOCAL app.current_tenant_id; RadarStatusRepository.upsert raw INSERT ON CONFLICT(tenant_id,group_id,participant_id); GroupsController @Patch existente; UpdateGroupRequestSchema z.object().refine; schema.prisma sem last_seen_at/status/break_until/risk_reason",
+      "justification_score": 3,
+      "evidence": "createPrivilegedClient: const connectionString = this.configService.get('DATABASE_URL'); withTenantTx: SET LOCAL app.current_tenant_id; ParticipantRadarStatus @@unique([tenantId,groupId,participantId]); Tenant.status default 'active'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T00:45:06Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality: skill validate-documentation ausente neste ambiente (nao registrada). Executado check inline deterministico no lugar.",
+      "options_considered": [
+        "rodar-skill",
+        "check-inline-com-justificativa",
+        "skip"
+      ],
+      "choice": "check-inline-com-justificativa",
+      "rationale": "validate-documentation nao esta na lista de skills deste harness; check inline cobriu o essencial",
+      "justification_score": 3,
+      "evidence": "grep TBD/TODO/lorem: nenhum real (matches foram falsos-positivos PT 'todo'/'na'); jq empty risk-detected.event.json: VALID JSON; 9 sondas D-markers em research.md; 14 headings; 0 flags de ambiguidade",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T00:45:06Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security: 3 findings LOW (privileged-client confinement, last_seen debounce fail-open, domain event sem PII) incorporados como AC-SEC-01..04. Nenhum critical/high.",
+      "options_considered": [
+        "incorporar-como-AC",
+        "escalar-para-humano",
+        "aceitar-risco"
+      ],
+      "choice": "incorporar-como-AC",
+      "rationale": "Findings sao endurecimentos de baixo risco; constituicao exige seguranca como AC -> incorporados ao plan §12 e §6 corrigido",
+      "justification_score": 3,
+      "evidence": "refresh-tenant-views.processor.ts: finally { await privileged.$disconnect() }; with-tenant-tx.ts: if(!UUID_RE.test(tenantId)) throw 'Refusing SET LOCAL'; meeting-event.service.ts: redis.set(key,'1','EX',TTL,'NX'); risk-detected.event.json: additionalProperties false, data sem PII",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-20T00:49:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase checklist)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T00:52:20Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Início da fase checklist: validação de requisitos FR66 risco-evasao",
+      "options_considered": [
+        "executar-checklist",
+        "abortar"
+      ],
+      "choice": "executar-checklist",
+      "rationale": "specify+clarify+plan concluídos; sem bloqueios pendentes; artefatos spec.md, plan.md, data-model.md, contracts/risk-detected.event.json prontos para validação de qualidade de requisitos",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T00:56:46Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK025: Teste RLS users.last_seen_at era condicional — sonda confirmou RLS ativo",
+      "options_considered": [
+        "corrigir-para-obrigatorio",
+        "deixar-condicional"
+      ],
+      "choice": "corrigir-para-obrigatorio",
+      "rationale": "migration 20260409231601 confirma ENABLE ROW LEVEL SECURITY + policies users_tenant_isolation e users_tenant_insert na tabela users. Condicional removido do plan §6 e §10.",
+      "justification_score": 3,
+      "evidence": "grep result: migration 20260409231601_create_users: ALTER TABLE users ENABLE ROW LEVEL SECURITY; CREATE POLICY users_tenant_isolation ON users",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T00:57:04Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK036: SC-10 prevê risk-resolved mas contrato JSON ausente",
+      "options_considered": [
+        "criar-contrato-em-create-tasks",
+        "abortar-sc10"
+      ],
+      "choice": "criar-contrato-em-create-tasks",
+      "rationale": "spec FR66-04 define o envelope do risk-resolved com todos os campos; só falta o arquivo JSON Schema. Task obrigatória para create-tasks: criar contracts/risk-resolved.event.json + RiskResolvedEventSchema Zod.",
+      "justification_score": 3,
+      "evidence": "spec.md FR66-04 linha 103-123 define evento risk-resolved completo; ls contracts/ retorna apenas risk-detected.event.json",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T00:57:04Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK043: manualOverrideAt tratado como low-risk mas SC-04 não é verificável sem coluna de origem",
+      "options_considered": [
+        "elevar-para-task-obrigatoria",
+        "manter-como-nota"
+      ],
+      "choice": "elevar-para-task-obrigatoria",
+      "rationale": "Sem coluna de origem manual, job pode falsamente ignorar recálculo se ele mesmo atualizou updatedAt nas últimas 24h. SC-04 race condition test não é determinístico sem manualOverrideAt. Elevado para task obrigatória no create-tasks.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T00:57:04Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK011-RES: presenceType='partial' conta como presença no Critério A",
+      "options_considered": [
+        "partial-e-presenca",
+        "partial-e-ausencia",
+        "sem-definicao"
+      ],
+      "choice": "partial-e-presenca",
+      "rationale": "Presença parcial indica engajamento — excluí-la geraria falso-positivo de risco para participante que compareceu parcialmente. Consistente com vocabulário pastoral do projeto.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T00:57:04Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CHK030-RES: granularidade do correlation_id = 1 UUID v7 por execução de job",
+      "options_considered": [
+        "por-job-run",
+        "por-tenant-por-run",
+        "sem-correlation"
+      ],
+      "choice": "por-job-run",
+      "rationale": "jobRunId no envelope do domain event sugere 1 por execução. Permite correlacionar todos os logs e eventos de um run cross-tenant para debug. Log por tenant inclui ambos jobRunId+tenantId.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-20T01:00:00Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T01:01:43Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Decomposição da spec FR66 em backlog tasks.md com 8 gaps do checklist como tasks obrigatórias",
+      "options_considered": [
+        "decompor-em-10-fases",
+        "decompor-em-5-fases",
+        "flat-list-sem-fases"
+      ],
+      "choice": "decompor-em-10-fases",
+      "rationale": "10 fases espelham a sequência de dependências: migrations→types/Zod→contracts→interceptor→service/repo→job→recesso→ui→timeline→testes. Garante build order correto e permite paralelismo entre fases independentes.",
+      "justification_score": 3,
+      "evidence": "plan.md §11 define sequência: migrations→types→interceptor→service+job→UI. 8 gaps do checklist distribuídos nas fases correspondentes.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-025",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-20T01:05:11Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate template-fidelity: tasks.md validado deterministicamente via Bash",
+      "options_considered": [
+        "aprovado",
+        "reprovado-corrigir",
+        "skip-com-justificativa"
+      ],
+      "choice": "aprovado",
+      "rationale": "10 FASE sections, 80 checkboxes, 52 criticality tags, Matriz+Escopo presentes, todos os 8 gaps (CHK006/007/017/019/025/032/036/043) cobertos",
+      "justification_score": 3,
+      "evidence": "FASE sections: 10 | Checkboxes: 80 | Criticality tags: 52 | Matriz: 1 | Escopo: 2 | CHK006:2 CHK007:1 CHK017:4 CHK019:2 CHK025:3 CHK032:3 CHK036:2 CHK043:4",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-20T01:01:33Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 4,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1091,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 25,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "detec",
+    "risco",
+    "evas",
+    "fr66",
+    "job",
+    "bullmq"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T00:21:00Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T00:31:23Z",
+      "description": "etapa=clarify hits=0 (clarify nao dispara read-back per spec)"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T00:39:10Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T00:45:46Z",
+      "description": "onda-003 plan encerrada; aguardando wakeup p/ checklist"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T00:57:47Z",
+      "description": "fase=checklist concluido; proxima=create-tasks"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T01:05:20Z",
+      "description": "onda-005 create-tasks concluido; aguardando wakeup para execute-task"
+    }
+  ]
+}

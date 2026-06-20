@@ -153,3 +153,24 @@ export const WIZARD_SKIP_LATER_LABEL = 'Fazer depois' as const;
 export const WIZARD_REPLAY_LABEL = 'Rever tutorial' as const;
 /** Label for the demo radar preview in Step 5 */
 export const WIZARD_DEMO_PREVIEW_LABEL = 'Exemplo de como o radar funciona' as const;
+
+// ---------------------------------------------------------------------------
+// Risk reason labels (FR66 — Story 13.3 Evasion Risk)
+// Used in ParticipantCard and RadarParticipant risk badges.
+// ---------------------------------------------------------------------------
+
+/** Human-readable labels for each ParticipantRiskReason value (PT-BR). */
+export const RISK_REASON_LABELS = {
+  absences: 'Ausências consecutivas ao grupo',
+  inactivity: 'Inatividade na plataforma',
+  'absences+inactivity': 'Ausências e inatividade',
+} as const;
+
+export type RiskReasonKey = keyof typeof RISK_REASON_LABELS;
+
+/** CelebrationBanner title when evasion risk is resolved. */
+export const RISK_RESOLVED_BANNER_TITLE = 'Retorno ao engajamento!' as const;
+/** CelebrationBanner message — {{name}} replaced at runtime. */
+export const RISK_RESOLVED_BANNER_MESSAGE = '{{name}} voltou a participar!' as const;
+/** Accessible dismiss label for evasion-risk-resolved banner. */
+export const RISK_RESOLVED_BANNER_DISMISS = 'Dispensar notificação' as const;

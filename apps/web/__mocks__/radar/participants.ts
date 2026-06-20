@@ -10,6 +10,8 @@ export type SignalType = "care-urgent" | "care-attention" | "care-ok";
 
 export type PresenceDot = "present" | "absent" | "no-meeting";
 
+export type RiskReason = "absences" | "inactivity" | "absences+inactivity";
+
 export interface RadarParticipant {
   participantId: string;
   name: string;
@@ -22,6 +24,8 @@ export interface RadarParticipant {
     date: string; // ISO 8601
     type: "message" | "call" | "visit" | "prayer";
   } | null;
+  /** Risk reason from evasion detection (FR66). Null when no active risk. */
+  riskReason?: RiskReason | null;
 }
 
 export interface RadarGroup {

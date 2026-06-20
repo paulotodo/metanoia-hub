@@ -13,6 +13,7 @@ export type {
   RadarSignalCounts,
   SignalType,
   PresenceDot,
+  RiskReason,
 } from "./participants";
 
 export {

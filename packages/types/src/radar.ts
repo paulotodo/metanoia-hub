@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ParticipantRiskReasonSchema } from './pastoral/evasion-events.schema';
 
 // --- Enums ---
 
@@ -52,6 +53,8 @@ export const RadarParticipantSchema = z.object({
   groupName: z.string(),
   presenceDots: z.array(PresenceDotSchema),
   lastCareRecord: LastCareRecordSchema.nullable(),
+  /** Risk reason from evasion detection (FR66). Null when no active risk. */
+  riskReason: ParticipantRiskReasonSchema.nullable().optional(),
 });
 export type RadarParticipant = z.infer<typeof RadarParticipantSchema>;
 

@@ -166,6 +166,12 @@ export {
   type PastoralAlertWithTrend,
   type AlertListResponse,
   type AlertSchemaShapes,
+  ParticipantRiskReasonSchema,
+  type ParticipantRiskReason,
+  RiskDetectedEventSchema,
+  type RiskDetectedEvent,
+  RiskResolvedEventSchema,
+  type RiskResolvedEvent,
 } from './pastoral';
 export {
   PASTORAL_CARE,
@@ -190,6 +196,12 @@ export {
   PASTORAL_CELEBRATION_MESSAGE,
   PASTORAL_CELEBRATION_DISMISS,
   PASTORAL_VOCABULARY,
+  // Story 13.3 — Evasion Risk reason labels (FR66)
+  RISK_REASON_LABELS,
+  RISK_RESOLVED_BANNER_TITLE,
+  RISK_RESOLVED_BANNER_MESSAGE,
+  RISK_RESOLVED_BANNER_DISMISS,
+  type RiskReasonKey,
   type SemaforoStatus,
   type SemaforoStatusLabel,
   type NudgeSuggestionKey,

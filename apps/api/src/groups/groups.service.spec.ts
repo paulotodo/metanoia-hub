@@ -41,6 +41,8 @@ function buildGroupRow(overrides: Record<string, unknown> = {}) {
     recurrence: validBody.recurrence,
     notes: validBody.notes,
     isDemoData: false,
+    status: 'active',
+    breakUntil: null,
     createdAt: now,
     updatedAt: now,
     ...overrides,

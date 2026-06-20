@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "pastoral.participant.risk-resolved",
+  "description": "Domain event emitido quando um participante previamente em risco de evasão retorna ao status verde (2 presenças consecutivas confirmadas). Consumido pelo Epic 14 (notificações) — NÃO implementado nesta story. Envelope canônico do projeto.",
+  "type": "object",
+  "required": ["eventId", "eventType", "version", "tenantId", "timestamp", "data", "metadata"],
+  "properties": {
+    "eventId": { "type": "string", "format": "uuid", "description": "UUID v7 via generateId()" },
+    "eventType": { "type": "string", "const": "pastoral.participant.risk-resolved" },
+    "version": { "type": "integer", "const": 1 },
+    "tenantId": { "type": "string", "format": "uuid" },
+    "timestamp": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC" },
+    "data": {
+      "type": "object",
+      "required": ["participantId", "groupId", "previousStatus", "resolvedAt"],
+      "description": "Apenas IDs. NENHUMA PII.",
+      "properties": {
+        "participantId": { "type": "string", "format": "uuid" },
+        "groupId": { "type": "string", "format": "uuid" },
+        "previousStatus": { "type": "string", "enum": ["amarelo", "vermelho"] },
+        "resolvedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "const": "detect-evasion-risk" },
+        "jobRunId": { "type": "string", "format": "uuid" }
+      }
+    }
+  },
+  "x-dedup-key": "rt:risk-resolved:{tenantId}:{participantId}:{groupId}:{yyyy-mm-dd}",
+  "x-consumer": "Epic 14 (notifications) — deferido, não implementado nesta story",
+  "additionalProperties": false
+}

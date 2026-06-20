@@ -58,6 +58,9 @@ export class GroupsRepository {
       time: string;
       recurrence: string;
       notes: string | null;
+      // Story 13.3: recesso de grupo
+      status: string;
+      breakUntil: Date | null;
     }>,
   ): Promise<Group | null> {
     return withTenantTx(this.prisma, async (tx) => {

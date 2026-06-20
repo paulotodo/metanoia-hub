@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@metanoia/ui";
 import { ChevronDown } from "lucide-react";
 import type { RadarParticipant } from "../../../../../../__mocks__/radar";
+import { RiskReasonBadge } from "./risk-reason-badge";
 
 // --- Expanded Card (care-urgent) ---
 
@@ -32,6 +33,11 @@ function ParticipantCardExpanded({
             <span className="mt-1 inline-block text-xs text-text-muted">
               {participant.groupName}
             </span>
+            {participant.riskReason && (
+              <div className="mt-2" aria-live="polite">
+                <RiskReasonBadge riskReason={participant.riskReason} />
+              </div>
+            )}
           </div>
         </div>
       </Link>
@@ -69,6 +75,11 @@ function ParticipantCardMedium({
             <p className="mt-0.5 text-sm text-text-secondary">
               {participant.contextPhrase}
             </p>
+          )}
+          {participant.riskReason && (
+            <div className="mt-1.5" aria-live="polite">
+              <RiskReasonBadge riskReason={participant.riskReason} />
+            </div>
           )}
         </div>
         <span className="shrink-0 text-sm font-medium text-brand-teal">
