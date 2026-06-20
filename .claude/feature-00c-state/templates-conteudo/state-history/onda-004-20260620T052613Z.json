@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -109,23 +109,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-20T05:19:07Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-20T05:27:12Z",
-      "finished_at": "2026-06-20T05:35:05Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 473,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-20T05:34:51Z",
-          "decision_id": "dec-023"
         }
       ]
     }
@@ -526,63 +509,6 @@
       "evidence": "spec.md linha 64: sort corrigido para name|-name|createdAt|-createdAt; linha 65: pageSize; linha 66: platform sempre incluídos; linha 91: 404 unificado; FR-13, FR-21, FR-22 adicionados",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-022",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-20T05:26:13Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T05:34:42Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Geração de tasks.md para feature templates-conteudo (FR42)",
-      "options_considered": [
-        "gerar-backlog-completo",
-        "gerar-backlog-parcial",
-        "aguardar-humano"
-      ],
-      "choice": "gerar-backlog-completo",
-      "rationale": "Todos os artefatos (plan.md, data-model.md, security-rls.md) disponíveis; 42 CHKs consumidos; 5 FASEs com 13 tasks decompostas, 170 checkboxes, Matriz de Dependências e gate de template-fidelity passando",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T05:34:51Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: tasks.md conformante ao template canônico",
-      "options_considered": [
-        "conformante",
-        "divergente"
-      ],
-      "choice": "conformante",
-      "rationale": "5 FASE prefixes, 170 checkboxes, 28 tags criticidade, Matriz de Dependencias, Resumo, Escopo Coberto/Excluido — todos presentes",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -597,15 +523,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-20T05:27:12Z"
+    "current_wave_start": "2026-06-20T05:12:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1845,
+    "wallclock_total_seconds": 1372,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 24,
+    "decisions_total": 21,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -646,11 +572,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T05:12:35Z",
       "description": "etapa=checklist hits=0 (fase nao elegivel para read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T05:35:19Z",
-      "description": "create-tasks concluido, aguardando wakeup para execute-task"
     }
   ]
 }

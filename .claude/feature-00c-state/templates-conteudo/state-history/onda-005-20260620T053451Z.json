@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
+  "current_stage": "create-tasks",
   "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
   "waves": [
     {
@@ -115,11 +115,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T05:27:12Z",
-      "finished_at": "2026-06-20T05:35:05Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 473,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -565,24 +565,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T05:34:51Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: tasks.md conformante ao template canônico",
-      "options_considered": [
-        "conformante",
-        "divergente"
-      ],
-      "choice": "conformante",
-      "rationale": "5 FASE prefixes, 170 checkboxes, 28 tags criticidade, Matriz de Dependencias, Resumo, Escopo Coberto/Excluido — todos presentes",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -600,12 +582,12 @@
     "current_wave_start": "2026-06-20T05:27:12Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1845,
+    "wallclock_total_seconds": 1372,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 24,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -646,11 +628,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T05:12:35Z",
       "description": "etapa=checklist hits=0 (fase nao elegivel para read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T05:35:19Z",
-      "description": "create-tasks concluido, aguardando wakeup para execute-task"
     }
   ]
 }

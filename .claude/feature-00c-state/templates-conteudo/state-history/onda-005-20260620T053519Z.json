@@ -646,11 +646,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-20T05:12:35Z",
       "description": "etapa=checklist hits=0 (fase nao elegivel para read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T05:35:19Z",
-      "description": "create-tasks concluido, aguardando wakeup para execute-task"
     }
   ]
 }
