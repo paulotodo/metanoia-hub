@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Queue, Worker, type Processor } from 'bullmq';
+import { FlowProducer, Queue, Worker, type Processor } from 'bullmq';
 import type { RedisOptions } from 'ioredis';
 import type { EnvConfig } from '../config/env.validation';
 
@@ -41,10 +41,34 @@ export class BullMqService implements OnModuleDestroy {
     return worker;
   }
 
+  private readonly flowProducers: FlowProducer[] = [];
+
+  /**
+   * INF-02: FlowProducer — árvore invertida de jobs (children run before parent).
+   * O parent job só executa após todos os children completarem.
+   * Uso: refresh-platform-views (parent) depende de refresh-tenant-views (child).
+   */
+  createFlowProducer(): FlowProducer {
+    const fp = new FlowProducer({
+      connection: this.connection,
+      prefix: QUEUE_PREFIX,
+    });
+    this.flowProducers.push(fp);
+    return fp;
+  }
+
+  /**
+   * Expõe connection options para uso em FlowJob direto.
+   */
+  getConnectionOptions(): typeof this.connection {
+    return this.connection;
+  }
+
   async onModuleDestroy() {
     await Promise.all([
       ...Array.from(this.queues.values()).map((q) => q.close()),
       ...this.workers.map((w) => w.close()),
+      ...this.flowProducers.map((fp) => fp.close()),
     ]);
   }
 }

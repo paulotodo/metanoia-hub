@@ -1,0 +1,267 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "metricas-plataforma",
+  "execution": {
+    "id": "feat-metricas-plataforma-20260620T024158Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 13.4 — Métricas de Plataforma Super Admin (FR67): materialized view mv_platform_metrics cross-tenant (totais, churn, growth, storage) + UNIQUE INDEX, job child refresh-platform-views (BullMQ parent/child do refresh-tenant-views da 13.2b), endpoints GET /api/v1/admin/platform-metrics/{summary,tenants} (@Roles super_admin, sem RLS, cache Redis 5min), sub-dependência tenant_storage_usage. Refresh via conexão privilegiada (lição 13-2b). Zod, validar Postgres local.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-20T02:41:58Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-20T02:43:26Z",
+      "finished_at": "2026-06-20T02:48:03Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 277,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "recall-read-back",
+          "timestamp": "2026-06-20T02:43:47Z",
+          "decision_id": null
+        },
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-20T02:47:47Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-20T02:53:56Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-20T02:54:38Z",
+          "decision_id": "dec-006"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-20T02:41:58Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T02:43:47Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=metricas-plataforma)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story tricas plataforma super admin fr67 materialized",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T02:47:47Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "ambiguidades-identificadas-para-clarify",
+      "options_considered": [
+        "documentar-para-clarify",
+        "resolver-agora"
+      ],
+      "choice": "documentar-para-clarify",
+      "rationale": "CLARIFY-01 (janela churn mês vs 30d): recomendação Opção A mas requer confirmação de produto. CLARIFY-02 (tenant_storage_usage stub vs hook): decidível com context (Opção C se StorageService ausente). CLARIFY-03 (isolamento child job): score 3 - BullMQ isolamento é padrão.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T02:47:55Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio-de-execucao-onda-specify",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec autoritativa 13-4 lida, job pai 13.2b existente confirmado via processor.ts, módulo super-admin existente confirmado, pontos críticos documentados: refresh privilegiado obrigatório, tenant_storage_usage ausente no schema, 3 clarify pendentes identificados",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-20T02:52:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T02:54:12Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CLARIFY-01: janela temporal churnedTenants e netGrowth",
+      "options_considered": [
+        "opcao-a-mes-calendario",
+        "opcao-b-janela-movel-30d"
+      ],
+      "choice": "opcao-a-mes-calendario",
+      "rationale": "Opção A (mês calendário via date_trunc) é mais legível para relatórios gerenciais mensais, fiel à spec autoritativa 13-4 que descreve 'ativos no mês anterior mas inativos agora'. Janela móvel 30d seria ambígua para usuários finais.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T02:54:21Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CLARIFY-02: mecanismo de populacao de tenant_storage_usage",
+      "options_considered": [
+        "opcao-a-hook-storage-service",
+        "opcao-b-job-periodico-minio",
+        "opcao-c-stub-zero"
+      ],
+      "choice": "opcao-a-hook-storage-service",
+      "rationale": "StorageService confirmado em apps/api/src/storage/storage.service.ts (64 linhas, método upload() com buffer.length disponível). Criar tabela tenant_storage_usage + hook de incremento no upload(). Delete ainda não existe — hook de decremento é follow-up quando delete for implementado. MV usa COALESCE(SUM(bytes_used),0). Decisão técnica, não de produto.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-20T02:54:32Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "CLARIFY-03: isolamento de falha do child job refresh-platform-views",
+      "options_considered": [
+        "opcao-a-isolado-retries-proprios",
+        "opcao-b-propaga-ao-pai"
+      ],
+      "choice": "opcao-a-isolado-retries-proprios",
+      "rationale": "BullMQ FlowProducer: child job failures são isolados por design de arquitetura. AC-03.7 da spec já documenta 'Falha do child NAO falha o job pai'. Child tem retry/log próprios e alerta independente. Sem ambiguidade técnica ou de produto.",
+      "justification_score": 3,
+      "evidence": "AC-03.7 spec.md: 'Falha do child NÃO falha o job pai — erros do child são isolados.' + BullMQ FlowProducer: child queue independent retry config",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-20T02:53:56Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 1,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 277,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 8,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "tricas",
+    "plataforma",
+    "super",
+    "admin",
+    "fr67",
+    "materialized"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-20T02:43:40Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-20T02:48:24Z",
+      "description": "onda-001 specify concluida; aguardando wakeup para clarify"
+    }
+  ]
+}
