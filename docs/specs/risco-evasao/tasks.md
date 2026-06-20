@@ -70,47 +70,47 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 1.1 Migration M1: `users.last_seen_at` [crit]
 
-- [ ] Criar migration Prisma: `ALTER TABLE users ADD COLUMN last_seen_at TIMESTAMPTZ NULL`
-- [ ] Adicionar ao schema Prisma: `lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz` em `model User`
-- [ ] Rodar `pnpm --filter @metanoia/api exec prisma generate` após migration
-- [ ] Verificar que policy RLS em `users` cobre a nova coluna (policy de SELECT/UPDATE deve filtrar por `tenant_id`)
-- [ ] Criar teste RLS obrigatório (ver FASE 10, task 10.2 — CHK025)
+- [x] Criar migration Prisma: `ALTER TABLE users ADD COLUMN last_seen_at TIMESTAMPTZ NULL`
+- [x] Adicionar ao schema Prisma: `lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz` em `model User`
+- [x] Rodar `pnpm --filter @metanoia/api exec prisma generate` após migration
+- [x] Verificar que policy RLS em `users` cobre a nova coluna (policy de SELECT/UPDATE deve filtrar por `tenant_id`)
+- [x] Criar teste RLS obrigatório (ver FASE 10, task 10.2 — CHK025)
 
 ### 1.2 Migration M2: `groups.status` + `groups.break_until` [crit]
 
-- [ ] Criar migration: `ALTER TABLE groups ADD COLUMN status VARCHAR(16) NOT NULL DEFAULT 'active', ADD COLUMN break_until TIMESTAMPTZ NULL`
-- [ ] Adicionar ao schema Prisma:
+- [x] Criar migration: `ALTER TABLE groups ADD COLUMN status VARCHAR(16) NOT NULL DEFAULT 'active', ADD COLUMN break_until TIMESTAMPTZ NULL`
+- [x] Adicionar ao schema Prisma:
   ```prisma
   status     String    @default("active") @db.VarChar(16)
   breakUntil DateTime? @map("break_until") @db.Timestamptz
   ```
-- [ ] Adicionar enum Prisma `GroupStatus { active on_break }` e mapear via `@@map`
-- [ ] Rodar `pnpm --filter @metanoia/api exec prisma generate`
-- [ ] Verificar policy RLS em `groups` cobre as novas colunas
+- [x] Adicionar enum Prisma `GroupStatus { active on_break }` e mapear via `@@map`
+- [x] Rodar `pnpm --filter @metanoia/api exec prisma generate`
+- [x] Verificar policy RLS em `groups` cobre as novas colunas
 
 ### 1.3 Migration M3: `participant_radar_status.risk_reason` + `manual_override_at` [crit]
 
 > **CHK043 — Gap obrigatório:** `manualOverrideAt` necessário para guarda de não-sobrescrita de decisão manual (24h). Sem esta coluna, SC-04 não é verificável de forma determinística.
 
-- [ ] **[CHK043]** Verificar rota de override manual do Epic 7 (`ParticipantRadarStatus`): distingue origem manual vs. automática?
+- [x] **[CHK043]** Verificar rota de override manual do Epic 7 (`ParticipantRadarStatus`): distingue origem manual vs. automática?
   - Se NÃO distingue → criar migration com `manual_override_at TIMESTAMPTZ NULL`
   - Se JÁ distingue → documentar campo existente e pular a sub-tarefa abaixo
-- [ ] Criar migration: `ALTER TABLE participant_radar_status ADD COLUMN risk_reason VARCHAR(500) NULL`
-- [ ] Se necessário (CHK043): `ALTER TABLE participant_radar_status ADD COLUMN manual_override_at TIMESTAMPTZ NULL`
-- [ ] Adicionar ao schema Prisma:
+- [x] Criar migration: `ALTER TABLE participant_radar_status ADD COLUMN risk_reason VARCHAR(500) NULL`
+- [x] Se necessário (CHK043): `ALTER TABLE participant_radar_status ADD COLUMN manual_override_at TIMESTAMPTZ NULL`
+- [x] Adicionar ao schema Prisma:
   ```prisma
   riskReason       String?   @map("risk_reason") @db.VarChar(500)
   manualOverrideAt DateTime? @map("manual_override_at") @db.Timestamptz
   ```
-- [ ] Rodar `pnpm --filter @metanoia/api exec prisma generate`
+- [x] Rodar `pnpm --filter @metanoia/api exec prisma generate`
 
 ### 1.4 Migration M4: `evasion_job_log` (modelo de observabilidade) [imp]
 
 > Modelo leve para métricas/alerta. `tenant_id NULL` permitido — policy RLS `tenant_id IS NULL OR tenant_id = current_tenant_id()`.
 > **CHK032 — Gap:** definir canal do alerta Super Admin. Decisão: log Pino `level:error` no `worker.on('failed')` após `attemptsMade === 3` + insert em `evasion_job_log` com `status='failed'`. Epic 14 consumirá como evento futuro; documentar no quickstart.md.
 
-- [ ] **[CHK032]** Documentar decisão de canal de alerta no `quickstart.md`: log Pino `level:error` + `evasion_job_log.status='failed'` (sem notification service — Epic 14)
-- [ ] Criar migration: nova tabela `evasion_job_log`:
+- [x] **[CHK032]** Documentar decisão de canal de alerta no `quickstart.md`: log Pino `level:error` + `evasion_job_log.status='failed'` (sem notification service — Epic 14)
+- [x] Criar migration: nova tabela `evasion_job_log`:
   ```sql
   CREATE TABLE evasion_job_log (
     id UUID PRIMARY KEY,
@@ -123,9 +123,9 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   );
   ```
-- [ ] Adicionar model Prisma `EvasionJobLog` com `tenantId String? @map("tenant_id") @db.Uuid`
-- [ ] Adicionar policy RLS: `USING (tenant_id IS NULL OR tenant_id = current_setting('app.current_tenant_id')::uuid)`
-- [ ] Rodar `pnpm --filter @metanoia/api exec prisma generate`
+- [x] Adicionar model Prisma `EvasionJobLog` com `tenantId String? @map("tenant_id") @db.Uuid`
+- [x] Adicionar policy RLS: `USING (tenant_id IS NULL OR tenant_id = current_setting('app.current_tenant_id')::uuid)`
+- [x] Rodar `pnpm --filter @metanoia/api exec prisma generate`
 
 ---
 
@@ -137,22 +137,22 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 > **CHK007/CHK036 — Gap obrigatório:** `RiskResolvedEventSchema` e `contracts/risk-resolved.event.json` NÃO existem ainda.
 
-- [ ] Criar `packages/types/src/pastoral/risk-event.ts`:
+- [x] Criar `packages/types/src/pastoral/risk-event.ts`:
   ```ts
   // Envelope canônico: { eventId, eventType, version, tenantId, timestamp, data, metadata }
   // SEM PII (nome/email/telefone) — apenas IDs
   export const RiskDetectedEventSchema = z.object({ ... }) // conforme spec §FR66-04
   export const RiskResolvedEventSchema = z.object({ ... }) // conforme spec §FR66-04
   ```
-- [ ] Garantir `additionalProperties: false` equivalente via `.strict()` no Zod
-- [ ] Exportar de `packages/types/src/index.ts`
-- [ ] Criar snapshot test: `packages/types/src/__tests__/risk-event.snapshot.spec.ts`
+- [x] Garantir `additionalProperties: false` equivalente via `.strict()` no Zod
+- [x] Exportar de `packages/types/src/index.ts`
+- [x] Criar snapshot test: `packages/types/src/__tests__/risk-event.snapshot.spec.ts`
   - Snapshot de `RiskDetectedEventSchema._def` e `RiskResolvedEventSchema._def`
   - Gate contra breaking changes silenciosos (CHK038)
 
 ### 2.2 Zod: estender `UpdateGroupRequestSchema` para recesso [crit]
 
-- [ ] Editar `packages/types/src/group.ts` (linha ~50): adicionar `GroupStatusSchema` + campos `status` e `breakUntil`
+- [x] Editar `packages/types/src/group.ts` (linha ~50): adicionar `GroupStatusSchema` + campos `status` e `breakUntil`
   ```ts
   export const GroupStatusSchema = z.enum(['active', 'on_break']);
   // No UpdateGroupRequestSchema .object():
@@ -160,12 +160,12 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
   breakUntil: z.string().datetime().nullable().optional(),
   // Nova .refine: !(status === 'on_break' && !breakUntil)
   ```
-- [ ] Atualizar snapshot test em `packages/types/src/__tests__/group.snapshot.spec.ts` (já existe — estender para incluir novos campos)
-- [ ] Rodar `pnpm --filter @metanoia/types test` para confirmar snapshot atualizado
+- [x] Atualizar snapshot test em `packages/types/src/__tests__/group.snapshot.spec.ts` (já existe — estender para incluir novos campos)
+- [x] Rodar `pnpm --filter @metanoia/types test` para confirmar snapshot atualizado
 
 ### 2.3 Zod: `ParticipantRiskReasonSchema` (valores semânticos) [imp]
 
-- [ ] Criar ou adicionar a `packages/types/src/pastoral/radar.ts` (ou `risk-event.ts`):
+- [x] Criar ou adicionar a `packages/types/src/pastoral/radar.ts` (ou `risk-event.ts`):
   ```ts
   export const ParticipantRiskReasonSchema = z.enum([
     'consecutive_absences',
@@ -173,8 +173,8 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
     'combined',
   ]);
   ```
-- [ ] Usar em `RiskDetectedEventSchema.data.riskReason` e em `ParticipantRadarStatus` (type inference)
-- [ ] Exportar de index
+- [x] Usar em `RiskDetectedEventSchema.data.riskReason` e em `ParticipantRadarStatus` (type inference)
+- [x] Exportar de index
 
 ---
 
@@ -186,7 +186,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 > **CHK036 — Gap crítico obrigatório:** este arquivo NÃO existe.
 
-- [ ] Criar `docs/specs/risco-evasao/contracts/risk-resolved.event.json` com JSON Schema completo:
+- [x] Criar `docs/specs/risco-evasao/contracts/risk-resolved.event.json` com JSON Schema completo:
   ```json
   {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -223,12 +223,12 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
     }
   }
   ```
-- [ ] Validar que `additionalProperties: false` está no envelope raiz E dentro de `data`
+- [x] Validar que `additionalProperties: false` está no envelope raiz E dentro de `data`
 
 ### 3.2 Validar `contracts/risk-detected.event.json` já existente [imp]
 
-- [ ] Confirmar que `contracts/risk-detected.event.json` já tem `additionalProperties: false` no envelope e em `data` (CHK035 — já confirmado no checklist, mas re-verificar após migrations M1-M3)
-- [ ] Confirmar que SEM PII (nenhum campo `name`, `email`, `phone`)
+- [x] Confirmar que `contracts/risk-detected.event.json` já tem `additionalProperties: false` no envelope e em `data` (CHK035 — já confirmado no checklist, mas re-verificar após migrations M1-M3)
+- [x] Confirmar que SEM PII (nenhum campo `name`, `email`, `phone`)
 
 ---
 
@@ -238,7 +238,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 4.1 Implementar `LastSeenInterceptor` [crit]
 
-- [ ] Criar `apps/api/src/auth/last-seen.interceptor.ts`:
+- [x] Criar `apps/api/src/auth/last-seen.interceptor.ts`:
   - Implementa `NestInterceptor`
   - No `intercept()`: `tap()` (fire-and-forget) lê `RequestContext.getStore()` → obtém `userId`
   - Debounce Redis: `redis.set('cache:last-seen:{userId}', '1', 'EX', 900, 'NX')`
@@ -246,8 +246,8 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
     - Se Redis indisponível → **fail-open**: engole erro, NUNCA lança exceção, NUNCA escreve diretamente sem debounce
   - Quando debounce não existe: `prisma.user.update({ where: { id: userId }, data: { lastSeenAt: new Date() } })`
   - Wraps em `try/catch` async — erro loggado via Pino `logger.warn`, request não bloqueada
-- [ ] Registrar como `APP_INTERCEPTOR` global em `AppModule` (ou `AuthModule`)
-- [ ] Criar teste unitário: `apps/api/src/auth/last-seen.interceptor.spec.ts`
+- [x] Registrar como `APP_INTERCEPTOR` global em `AppModule` (ou `AuthModule`)
+- [x] Criar teste unitário: `apps/api/src/auth/last-seen.interceptor.spec.ts`
   - Caso: Redis disponível, key inexistente → escreve `lastSeenAt`
   - Caso: Redis disponível, key existente (debounce ativo) → NÃO escreve
   - Caso: Redis indisponível → fail-open, request continua sem erro (AC-SEC-02)
@@ -255,7 +255,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 4.2 Testes de integração do interceptor [imp]
 
-- [ ] Criar `apps/api/src/auth/last-seen.interceptor.integration-spec.ts`:
+- [x] Criar `apps/api/src/auth/last-seen.interceptor.integration-spec.ts`:
   - Usar `docker-compose.test.yml` (Redis real)
   - Verificar que 2 requests em <15min resultam em apenas 1 update de `last_seen_at`
   - Verificar que request com Redis down retorna 200 (fail-open)
@@ -268,7 +268,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 5.1 `EvasionRiskRepository` — queries de ausência/atividade [crit]
 
-- [ ] Criar `apps/api/src/reports/jobs/evasion-risk.repository.ts`:
+- [x] Criar `apps/api/src/reports/jobs/evasion-risk.repository.ts`:
   - `findConsecutiveAbsences(participantId, groupId)`:
     - Busca últimas reuniões **realizadas** do grupo (`status ∈ {realizado, ended}`) ordenadas por `scheduledFor DESC`
     - Conta ausências consecutivas a partir da mais recente (sem `MeetingAttendance` OU `presenceType == null`)
@@ -286,11 +286,11 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
     - Retorna `ParticipantRadarStatus` atual (semáforo + `calculatedAt` + `manualOverrideAt`)
   - `upsertRisk(participantId, groupId, riskData)`:
     - Delega para `RadarStatusRepository.upsertRisk()` (módulo `pastoral/radar/`) — NÃO duplicar lógica
-- [ ] Criar teste unitário com Prisma mock
+- [x] Criar teste unitário com Prisma mock
 
 ### 5.2 `EvasionDetectionService` — lógica central de detecção [crit]
 
-- [ ] Criar `apps/api/src/reports/jobs/evasion-detection.service.ts`:
+- [x] Criar `apps/api/src/reports/jobs/evasion-detection.service.ts`:
   - `evaluateParticipant(participantId, groupId)`:
     - **Critério A:** `consecutiveAbsences >= 3` → risco
     - **Critério B:** `daysSinceLastAccess >= 14` → risco
@@ -305,7 +305,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
   - `resolveRisk(participantId, groupId, resolvedBy)`:
     - Transiciona vermelho→amarelo ou amarelo→verde após 2 presenças
     - Emite `risk-resolved` domain event (via `PastoralRiskEventPublisher`)
-- [ ] Criar `apps/api/src/reports/jobs/evasion-detection.service.spec.ts` com cenários determinísticos:
+- [x] Criar `apps/api/src/reports/jobs/evasion-detection.service.spec.ts` com cenários determinísticos:
   - Cenário: 3 ausências consecutivas → risco (Critério A)
   - Cenário: presença parcial quebra sequência (dec-021)
   - Cenário: 14 dias sem last_seen_at → risco (Critério B)
@@ -319,7 +319,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 5.3 `RadarStatusRepository.upsertRisk()` — estender método existente [crit]
 
-- [ ] Localizar `apps/api/src/pastoral/radar/radar-status.repository.ts` e adicionar/estender `upsertRisk()`:
+- [x] Localizar `apps/api/src/pastoral/radar/radar-status.repository.ts` e adicionar/estender `upsertRisk()`:
   - Persiste `riskReason` (VARCHAR 500) + atualiza `status`/`calculatedAt`
   - Persiste `manualOverrideAt` quando a origem é manual (flag de origem)
   - Registra na care timeline via `PastoralNote` (FR66-09 — ver FASE 9, task 9.3)
@@ -387,12 +387,12 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 7.1 `GroupsService.update()` — lógica de recesso e auto-resume [crit]
 
-- [ ] Editar `apps/api/src/groups/groups.service.ts` → `update(id, dto)`:
+- [x] Editar `apps/api/src/groups/groups.service.ts` → `update(id, dto)`:
   - Ao receber `status: 'on_break'` + `breakUntil`: gravar ambos (migration M2)
   - Validar que `breakUntil > now()` (não pode marcar recesso no passado)
   - **Auto-resume:** no início do update (e no processor do job), checar se `status='on_break' AND breakUntil < now()` → transicionar automaticamente para `'active'`
   - NUNCA passa `tenantId` como parâmetro — usa `AsyncLocalStorage` (regra absoluta)
-- [ ] Criar ou estender teste unitário `apps/api/src/groups/groups.service.spec.ts`:
+- [x] Criar ou estender teste unitário `apps/api/src/groups/groups.service.spec.ts`:
   - Caso: POST recesso com `breakUntil` futuro → grava OK
   - Caso: POST recesso sem `breakUntil` → erro validação (Zod refine)
   - Caso: auto-resume quando `breakUntil` já passou → transiciona para `active`
@@ -400,9 +400,9 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 7.2 Estender `GroupsController` com validação de role [imp]
 
-- [ ] Confirmar que `@Patch(':id')` em `GroupsController` usa `ZodValidationPipe(UpdateGroupRequestSchema)` — já validado (C3 resolvido), apenas verificar que a extensão do schema Zod (task 2.2) é carregada corretamente
-- [ ] Verificar guard de role: apenas líder/pastor pode marcar recesso (não membro)
-- [ ] Adicionar Swagger `@ApiBody` para documentar os novos campos `status` e `breakUntil`
+- [x] Confirmar que `@Patch(':id')` em `GroupsController` usa `ZodValidationPipe(UpdateGroupRequestSchema)` — já validado (C3 resolvido), apenas verificar que a extensão do schema Zod (task 2.2) é carregada corretamente
+- [x] Verificar guard de role: apenas líder/pastor pode marcar recesso (não membro)
+- [x] Adicionar Swagger `@ApiBody` para documentar os novos campos `status` e `breakUntil`
 
 ---
 
@@ -484,7 +484,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 > **CHK025 — Gap obrigatório:** teste RLS de `users.last_seen_at` é MANDATÓRIO (tabela `users` tem RLS ativa confirmada).
 
-- [ ] **[CHK025]** Criar `apps/api/test/rls/users-lastseen.rls.spec.ts`:
+- [x] **[CHK025]** Criar `apps/api/test/rls/users-lastseen.rls.spec.ts`:
   - Verificar que tenant A NÃO pode ler `last_seen_at` de usuário do tenant B
   - Verificar que UPDATE de `last_seen_at` respeita RLS (usuário só atualiza o próprio registro)
   - Validar contra Postgres real (`docker-compose.test.yml`)
@@ -492,7 +492,7 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 10.3 Teste RLS: `groups.status`/`break_until` isolamento [crit]
 
-- [ ] Criar ou estender `apps/api/test/rls/groups.rls.spec.ts`:
+- [x] Criar ou estender `apps/api/test/rls/groups.rls.spec.ts`:
   - Verificar que tenant A NÃO pode alterar `status`/`break_until` de grupo do tenant B
   - Verificar que policy de INSERT/UPDATE para `groups` cobre os novos campos
 
@@ -504,16 +504,16 @@ FASE 9 (UI) ←── FASE 5+8     FASE 10 (Testes) ←── TODAS
 
 ### 10.5 Teste: cenário `manualOverrideAt` — guarda 24h (SC-04) [crit]
 
-- [ ] Em `evasion-detection.service.spec.ts` (task 5.2), adicionar cenários específicos de SC-04:
+- [x] Em `evasion-detection.service.spec.ts` (task 5.2), adicionar cenários específicos de SC-04:
   - Caso: `manualOverrideAt` = now - 2h → guarda ativa, status NÃO sobrescrito
   - Caso: `manualOverrideAt` = now - 25h → guarda expirada, status sobrescrito normalmente
   - Caso: `manualOverrideAt` = null → sem guarda, status atualizado normalmente
 
 ### 10.6 Snapshot tests dos schemas Zod [crit]
 
-- [ ] Confirmar que `packages/types/src/__tests__/risk-event.snapshot.spec.ts` (task 2.1) passa
-- [ ] Confirmar que `packages/types/src/__tests__/group.snapshot.spec.ts` (task 2.2) atualizado passa
-- [ ] Rodar `pnpm --filter @metanoia/types test` — todos os snapshots verdes
+- [x] Confirmar que `packages/types/src/__tests__/risk-event.snapshot.spec.ts` (task 2.1) passa
+- [x] Confirmar que `packages/types/src/__tests__/group.snapshot.spec.ts` (task 2.2) atualizado passa
+- [x] Rodar `pnpm --filter @metanoia/types test` — todos os snapshots verdes
 
 ---
 
