@@ -193,14 +193,14 @@ pnpm --filter @metanoia/api exec prisma migrate dev --create-only --name create_
 ```
 
 **AC obrigatórios:**
-- [ ] `tenant_storage_usage` existe com `tenant_id UUID PRIMARY KEY`, `bytes_used BIGINT NOT NULL DEFAULT 0`, `updated_at TIMESTAMPTZ`
-- [ ] RLS ativo (`ENABLE` + `FORCE`) com policy `tenant_isolation` usando `NULLIF(...)::uuid`
-- [ ] `mv_platform_metrics` tem 13 colunas: `tenant_id`, `tenant_name`, `tenant_status`, `tenant_plan`, `tenant_created_at`, `total_users`, `active_users`, `total_groups`, `meetings_held`, `storage_bytes_used`, `active_current_month`, `active_prev_month`, `refreshed_at`
-- [ ] UNIQUE INDEX `mv_platform_metrics_pk` em `(tenant_id)` criado
-- [ ] `GRANT SELECT ON mv_platform_metrics TO metanoia_app`
-- [ ] `GRANT SELECT, INSERT, UPDATE ON tenant_storage_usage TO metanoia_app`
-- [ ] SQL usa `t.id` como chave dos JOINs (NUNCA `t.tenant_id`) — MIG-02
-- [ ] `REFRESH MATERIALIZED VIEW CONCURRENTLY mv_platform_metrics` executa sem erro após populate mínimo
+- [x] `tenant_storage_usage` existe com `tenant_id UUID PRIMARY KEY`, `bytes_used BIGINT NOT NULL DEFAULT 0`, `updated_at TIMESTAMPTZ`
+- [x] RLS ativo (`ENABLE` + `FORCE`) com policy `tenant_isolation` usando `NULLIF(...)::uuid`
+- [x] `mv_platform_metrics` tem 13 colunas: `tenant_id`, `tenant_name`, `tenant_status`, `tenant_plan`, `tenant_created_at`, `total_users`, `active_users`, `total_groups`, `meetings_held`, `storage_bytes_used`, `active_current_month`, `active_prev_month`, `refreshed_at`
+- [x] UNIQUE INDEX `mv_platform_metrics_pk` em `(tenant_id)` criado
+- [x] `GRANT SELECT ON mv_platform_metrics TO metanoia_app`
+- [x] `GRANT SELECT, INSERT, UPDATE ON tenant_storage_usage TO metanoia_app`
+- [x] SQL usa `t.id` como chave dos JOINs (NUNCA `t.tenant_id`) — MIG-02
+- [x] `REFRESH MATERIALIZED VIEW CONCURRENTLY mv_platform_metrics` executa sem erro após populate mínimo
 
 ---
 
@@ -229,11 +229,11 @@ pnpm --filter @metanoia/api exec prisma generate
 ```
 
 **AC obrigatórios:**
-- [ ] `TenantStorageUsage` adicionado ao `schema.prisma` com `@@map("tenant_storage_usage")`
-- [ ] `tenantId` como `@id` (PK única por tenant — INF-01)
-- [ ] `bytesUsed BigInt` com `@default(0)`
-- [ ] `pnpm --filter @metanoia/api exec prisma generate` passa sem erro
-- [ ] `PrismaClient` exporta `prisma.tenantStorageUsage` como tipo válido
+- [x] `TenantStorageUsage` adicionado ao `schema.prisma` com `@@map("tenant_storage_usage")`
+- [x] `tenantId` como `@id` (PK única por tenant — INF-01)
+- [x] `bytesUsed BigInt` com `@default(0)`
+- [x] `pnpm --filter @metanoia/api exec prisma generate` passa sem erro
+- [x] `PrismaClient` exporta `prisma.tenantStorageUsage` como tipo válido
 
 ### 2.2 Criar Zod schemas platform-metrics em packages/types + snapshot tests [crit]
 
@@ -366,12 +366,12 @@ describe('PlatformMetricsTenantListResponseSchema', () => {
 - `packages/types/src/index.ts`: verificar se `reports/index.ts` já é re-exportado; se não, adicionar.
 
 **AC obrigatórios:**
-- [ ] `packages/types/src/reports/platform-metrics.ts` criado com todos os schemas
-- [ ] `PlatformMetricsTenantsSortFieldSchema` enum exportado (sync com SORT_COLUMN_MAP)
-- [ ] `packages/types/src/reports/__tests__/platform-metrics.spec.ts` criado
-- [ ] Snapshot gerado automaticamente no primeiro `pnpm test` em packages/types
-- [ ] `packages/types/src/reports/index.ts` re-exporta `platform-metrics`
-- [ ] `packages/types/src/index.ts` re-exporta reports
+- [x] `packages/types/src/reports/platform-metrics.ts` criado com todos os schemas
+- [x] `PlatformMetricsTenantsSortFieldSchema` enum exportado (sync com SORT_COLUMN_MAP)
+- [x] `packages/types/src/reports/__tests__/platform-metrics.spec.ts` criado
+- [x] Snapshot gerado automaticamente no primeiro `pnpm test` em packages/types
+- [x] `packages/types/src/reports/index.ts` re-exporta `platform-metrics`
+- [x] `packages/types/src/index.ts` re-exporta reports
 
 ---
 
@@ -441,15 +441,15 @@ await flow.close();
 - Adicionar `RefreshPlatformViewsProcessor` ao providers
 
 **AC obrigatórios:**
-- [ ] `BullMqService.createFlowProducer()` retorna `FlowProducer` com mesma connection config de `createQueue`
-- [ ] Scheduler usa `flow.add()` com `refresh-platform-views` como PARENT e `refresh-tenant-views` como CHILD
-- [ ] Comentário obrigatório "NOTA: árvore invertida..." presente no código do flow
-- [ ] `failParentOnFailure: false` no child (INF-05)
-- [ ] `refresh-platform-views.processor.ts` existe e usa `createPrivilegedClient()` (INF-03)
-- [ ] REFRESH CONCURRENTLY fora de `$transaction`
-- [ ] `$disconnect()` no finally
-- [ ] Cache Redis `cache:platform-metrics:summary` invalidado após refresh
-- [ ] `RefreshPlatformViewsProcessor` registrado no `ReportsModule`
+- [x] `BullMqService.createFlowProducer()` retorna `FlowProducer` com mesma connection config de `createQueue`
+- [x] Scheduler usa `flow.add()` com `refresh-platform-views` como PARENT e `refresh-tenant-views` como CHILD
+- [x] Comentário obrigatório "NOTA: árvore invertida..." presente no código do flow
+- [x] `failParentOnFailure: false` no child (INF-05)
+- [x] `refresh-platform-views.processor.ts` existe e usa `createPrivilegedClient()` (INF-03)
+- [x] REFRESH CONCURRENTLY fora de `$transaction`
+- [x] `$disconnect()` no finally
+- [x] Cache Redis `cache:platform-metrics:summary` invalidado após refresh
+- [x] `RefreshPlatformViewsProcessor` registrado no `ReportsModule`
 
 ### 3.2 Implementar alerta mv_platform_refresh_slow (>5min) [crit]
 
@@ -470,9 +470,9 @@ if (durationMs > 300_000) {
 ```
 
 **AC obrigatórios:**
-- [ ] `logger.warn('mv_platform_refresh_slow', { mvName, durationMs, threshold })` ao ultrapassar 5min
-- [ ] Log estruturado (objeto, não string interpolada)
-- [ ] Alerta é independente do sucesso/falha do REFRESH (sempre verificado no finally)
+- [x] `logger.warn('mv_platform_refresh_slow', { mvName, durationMs, threshold })` ao ultrapassar 5min
+- [x] Log estruturado (objeto, não string interpolada)
+- [x] Alerta é independente do sucesso/falha do REFRESH (sempre verificado no finally)
 
 ### 3.3 Escrever spec unitária do refresh-platform-views.processor [warn]
 
@@ -491,9 +491,9 @@ it('FlowProducer: tenant-child completa antes de platform-parent iniciar', ...)
 ```
 
 **AC obrigatórios:**
-- [ ] Spec criada com mocks de `PrismaService.createPrivilegedClient()` e `RedisService`
-- [ ] Todos os 5 cenários cobertos
-- [ ] `pnpm --filter @metanoia/api test` passa
+- [x] Spec criada com mocks de `PrismaService.createPrivilegedClient()` e `RedisService`
+- [x] Todos os 5 cenários cobertos
+- [x] `pnpm --filter @metanoia/api test` passa
 
 ---
 
@@ -541,13 +541,13 @@ async upload(objectKey: string, buffer: Buffer, mimeType: string): Promise<strin
 **Nota:** Usar `$executeRaw` com template literal (previne SQL injection). Não usar `withTenantTx` aqui — a extensão Prisma multi-tenant injeta o GUC automaticamente quando `tenantId` está no contexto; `$executeRaw` é necessário pois `TenantStorageUsage` não tem um upsert Prisma nativo com `ON CONFLICT DO UPDATE SET bytes_used += ...`.
 
 **AC obrigatórios:**
-- [ ] `PrismaModule` importado em `StorageModule`
-- [ ] `PrismaService` injetado em `StorageService` via constructor
-- [ ] `RequestContext.getTenantId()` verificado antes do UPSERT
-- [ ] Se `null`: `logger.warn('storage-hook: skipping upsert, no tenant context')` + return objectKey (upload não falha)
-- [ ] Se presente: `$executeRaw` com `INSERT ... ON CONFLICT DO UPDATE SET bytes_used += buffer.length`
-- [ ] Upload para MinIO ocorre ANTES do UPSERT (falha de UPSERT não reverte o upload — comportamento intencional para MVP)
-- [ ] Decremento no `delete()` marcado como TODO/follow-up em comentário
+- [x] `PrismaModule` importado em `StorageModule`
+- [x] `PrismaService` injetado em `StorageService` via constructor
+- [x] `RequestContext.getTenantId()` verificado antes do UPSERT
+- [x] Se `null`: `logger.warn('storage-hook: skipping upsert, no tenant context')` + return objectKey (upload não falha)
+- [x] Se presente: `$executeRaw` com `INSERT ... ON CONFLICT DO UPDATE SET bytes_used += buffer.length`
+- [x] Upload para MinIO ocorre ANTES do UPSERT (falha de UPSERT não reverte o upload — comportamento intencional para MVP)
+- [x] Decremento no `delete()` marcado como TODO/follow-up em comentário
 
 ### 4.2 Atualizar storage.service.spec.ts com cenários do hook [crit]
 
@@ -578,9 +578,9 @@ describe('upload() — storage hook SEC-03', () => {
 ```
 
 **AC obrigatórios:**
-- [ ] Todos os 3 cenários implementados
-- [ ] Mocks de `RequestContext.getTenantId()` e `PrismaService.$executeRaw`
-- [ ] `pnpm --filter @metanoia/api test` passa para o storage.service.spec.ts
+- [x] Todos os 3 cenários implementados
+- [x] Mocks de `RequestContext.getTenantId()` e `PrismaService.$executeRaw`
+- [x] `pnpm --filter @metanoia/api test` passa para o storage.service.spec.ts
 
 ---
 
@@ -636,15 +636,15 @@ const SORT_COLUMN_MAP: Record<PlatformMetricsTenantsSortField, string> = {
 **Resultado BigInt:** converter `storage_bytes_used` de `BigInt` para `number` antes de retornar DTO.
 
 **AC obrigatórios:**
-- [ ] `PlatformMetricsService` criado em `apps/api/src/super-admin/`
-- [ ] `getSummary()` usa `$queryRaw` sobre `mv_platform_metrics` com agregados corretos
-- [ ] `netGrowth = newTenants - churnedTenants` calculado em TS (D1)
-- [ ] Cache Redis `cache:platform-metrics:summary` TTL 300s (API-02)
-- [ ] `getTenants()` usa `SORT_COLUMN_MAP` whitelist para ORDER BY (SEC-02)
-- [ ] Filtro por `plan` e `status` via parâmetros Zod validados (SEC-02)
-- [ ] `storage_bytes_used` BigInt → number antes do DTO
-- [ ] `totalTrails: 0` como placeholder explícito com TODO comment (GAP-02)
-- [ ] `averageAttendance: 0` e `averageTrailCompletion: 0` com TODO comment (GAP-02)
+- [x] `PlatformMetricsService` criado em `apps/api/src/super-admin/`
+- [x] `getSummary()` usa `$queryRaw` sobre `mv_platform_metrics` com agregados corretos
+- [x] `netGrowth = newTenants - churnedTenants` calculado em TS (D1)
+- [x] Cache Redis `cache:platform-metrics:summary` TTL 300s (API-02)
+- [x] `getTenants()` usa `SORT_COLUMN_MAP` whitelist para ORDER BY (SEC-02)
+- [x] Filtro por `plan` e `status` via parâmetros Zod validados (SEC-02)
+- [x] `storage_bytes_used` BigInt → number antes do DTO
+- [x] `totalTrails: 0` como placeholder explícito com TODO comment (GAP-02)
+- [x] `averageAttendance: 0` e `averageTrailCompletion: 0` com TODO comment (GAP-02)
 
 ### 5.2 Criar PlatformMetricsController com guards SUPER_ADMIN [crit]
 
@@ -697,12 +697,12 @@ export class PlatformMetricsController {
 ```
 
 **AC obrigatórios:**
-- [ ] `@UseGuards(KeycloakAuthGuard, RolesGuard)` + `@Roles('super_admin')` em nível de classe
-- [ ] `GET /api/v1/admin/platform-metrics/summary` retorna envelope `{data, meta:{generatedAt, cacheTTL:300}}`
-- [ ] `GET /api/v1/admin/platform-metrics/tenants` retorna envelope `{data[], meta:{total,page,limit,totalPages}}`
-- [ ] `PlatformTenantsQueryDto` validado via `ZodValidationPipe` (não third-party — CLAUDE.md)
-- [ ] `sortBy` validado contra `PlatformMetricsTenantsSortFieldSchema` (SEC-02)
-- [ ] Rota registrada com prefixo `/api/v1/` (CLAUDE.md)
+- [x] `@UseGuards(KeycloakAuthGuard, RolesGuard)` + `@Roles('super_admin')` em nível de classe
+- [x] `GET /api/v1/admin/platform-metrics/summary` retorna envelope `{data, meta:{generatedAt, cacheTTL:300}}`
+- [x] `GET /api/v1/admin/platform-metrics/tenants` retorna envelope `{data[], meta:{total,page,limit,totalPages}}`
+- [x] `PlatformTenantsQueryDto` validado via `ZodValidationPipe` (não third-party — CLAUDE.md)
+- [x] `sortBy` validado contra `PlatformMetricsTenantsSortFieldSchema` (SEC-02)
+- [x] Rota registrada com prefixo `/api/v1/` (CLAUDE.md)
 
 ### 5.3 Estender SuperAdminTenantsModule para incluir PlatformMetricsController [crit]
 
@@ -728,10 +728,10 @@ export class SuperAdminTenantsModule {}
 ```
 
 **AC obrigatórios:**
-- [ ] `PlatformMetricsController` adicionado ao `controllers` do módulo
-- [ ] `PlatformMetricsService` adicionado ao `providers`
-- [ ] `PrismaModule` e `RedisModule` (ou equivalente de cache) importados
-- [ ] `pnpm --filter @metanoia/api build` passa sem erro TypeScript
+- [x] `PlatformMetricsController` adicionado ao `controllers` do módulo
+- [x] `PlatformMetricsService` adicionado ao `providers`
+- [x] `PrismaModule` e `RedisModule` (ou equivalente de cache) importados
+- [x] `pnpm --filter @metanoia/api build` passa sem erro TypeScript
 
 ---
 
@@ -786,10 +786,10 @@ describe('tenant_storage_usage — RLS isolation (SEC-04)', () => {
 - `DATABASE_APP_URL` para app role; `DATABASE_URL` para superuser
 
 **AC obrigatórios:**
-- [ ] Arquivo criado em `apps/api/test/rls/tenant-storage-usage.rls-spec.ts`
-- [ ] Usa `generateId()` para todos os IDs (idempotência)
-- [ ] 4 cenários implementados (leitura cross-tenant, INSERT violação, superuser, sem context)
-- [ ] `pnpm --filter @metanoia/api test` passa (rodando 2x não acumula rows espúrios)
+- [x] Arquivo criado em `apps/api/test/rls/tenant-storage-usage.rls-spec.ts`
+- [x] Usa `generateId()` para todos os IDs (idempotência)
+- [x] 4 cenários implementados (leitura cross-tenant, INSERT violação, superuser, sem context)
+- [x] `pnpm --filter @metanoia/api test` passa (rodando 2x não acumula rows espúrios)
 
 ### 6.2 Testes de segurança: 403 não-super-admin + sort-injection [crit]
 
@@ -820,11 +820,11 @@ describe('PlatformMetricsController — security', () => {
 ```
 
 **AC obrigatórios:**
-- [ ] Spec criada em `apps/api/src/super-admin/platform-metrics.controller.spec.ts`
-- [ ] 403 para não-super-admin em ambos os endpoints (SEC-01)
-- [ ] 403 para request sem auth
-- [ ] 400 para `sortBy` fora da whitelist `PlatformMetricsTenantsSortFieldSchema` (SEC-02)
-- [ ] `pnpm --filter @metanoia/api test` passa
+- [x] Spec criada em `apps/api/src/super-admin/platform-metrics.controller.spec.ts`
+- [x] 403 para não-super-admin em ambos os endpoints (SEC-01)
+- [x] 403 para request sem auth
+- [x] 400 para `sortBy` fora da whitelist `PlatformMetricsTenantsSortFieldSchema` (SEC-02)
+- [x] `pnpm --filter @metanoia/api test` passa
 
 ### 6.3 Testes de integração: churn/netGrowth + cache + paginação [crit]
 
@@ -857,11 +857,11 @@ describe('PlatformMetricsService', () => {
 ```
 
 **AC obrigatórios:**
-- [ ] Spec criada com mocks de `PrismaService` e `RedisService`
-- [ ] Lógica de churn/netGrowth testada com dados de atividade por mês calendário
-- [ ] Cache hit/miss testado
-- [ ] Paginação e `totalPages` testados
-- [ ] `pnpm --filter @metanoia/api test` passa
+- [x] Spec criada com mocks de `PrismaService` e `RedisService`
+- [x] Lógica de churn/netGrowth testada com dados de atividade por mês calendário
+- [x] Cache hit/miss testado
+- [x] Paginação e `totalPages` testados
+- [x] `pnpm --filter @metanoia/api test` passa
 
 ### 6.4 Snapshot Zod: gerar e comitar arquivo .snap [warn]
 
@@ -877,9 +877,9 @@ pnpm --filter @metanoia/types test -- --update-snapshots
 ```
 
 **AC obrigatórios:**
-- [ ] Arquivo `.snap` gerado após rodar os testes de `platform-metrics.spec.ts`
-- [ ] Arquivo commitado no repositório (não em `.gitignore`)
-- [ ] CI valida que o snapshot não regrediu (não requer `--update-snapshots` no CI)
+- [x] Arquivo `.snap` gerado após rodar os testes de `platform-metrics.spec.ts`
+- [x] Arquivo commitado no repositório (não em `.gitignore`)
+- [x] CI valida que o snapshot não regrediu (não requer `--update-snapshots` no CI)
 
 ---
 

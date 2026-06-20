@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
+  "current_stage": "execute-task",
   "next_instruction": "Iniciar etapa checklist — invocar skill checklist sobre spec.md + plan.md (gate de qualidade de requisitos antes de create-tasks).",
   "waves": [
     {
@@ -123,11 +123,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-20T03:37:57Z",
-      "finished_at": "2026-06-20T03:56:26Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1109,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": []
     }
@@ -623,25 +623,6 @@
       "evidence": "tsc grep -c 'error TS' = 0; vitest: Tests 9 passed (2 files); Zod: 5 passed, 4 snapshots written; MIG-02 grep t.tenant_id = somente comentario",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-20T03:55:48Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Correcao de 3 bugs nos specs gerados: require() de guard nao resolve no vitest SSR; mock minio precisava ser classe construtora; prisma mock precisava nest sob .client (service usa this.prisma.client.$executeRaw)",
-      "options_considered": [
-        "corrigir-specs",
-        "deixar-quebrado",
-        "remover-specs"
-      ],
-      "choice": "corrigir-specs",
-      "rationale": "Specs falhavam 9/9 -> apos correcao 9/9 passam; guards via ES import (padrao super-audit.controller.spec); minio class; prisma .client nesting",
-      "justification_score": 3,
-      "evidence": "antes: Tests 9 failed; depois: Tests 9 passed; tsc 0 errors apos edits",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -659,12 +640,12 @@
     "current_wave_start": "2026-06-20T03:37:57Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2684,
+    "wallclock_total_seconds": 1575,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 27,
+    "decisions_total": 26,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -700,169 +681,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T03:09:29Z",
       "description": "onda-003 plan encerrada (concluido); aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-20T03:56:26Z",
-      "description": "onda-005 execute-task concluida; avancando para review-task"
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "2.1",
-      "title": "Adicionar model TenantStorageUsage ao schema.prisma e regenerar client [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "2.2",
-      "title": "Criar Zod schemas platform-metrics em packages/types + snapshot tests [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "3.1",
-      "title": "Adicionar createFlowProducer() ao BullMqService e migrar scheduler [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "3.2",
-      "title": "Implementar alerta mv_platform_refresh_slow (>5min) [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "3.3",
-      "title": "Escrever spec unitária do refresh-platform-views.processor [warn]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "4.1",
-      "title": "Adicionar hook de UPSERT em StorageService.upload() [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "4.2",
-      "title": "Atualizar storage.service.spec.ts com cenários do hook [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "5.1",
-      "title": "Criar PlatformMetricsService com queries $queryRaw sobre mv_platform_metrics [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "5.2",
-      "title": "Criar PlatformMetricsController com guards SUPER_ADMIN [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "5.3",
-      "title": "Estender SuperAdminTenantsModule para incluir PlatformMetricsController [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "6.1",
-      "title": "Criar RLS isolation spec: tenant-storage-usage.rls-spec.ts [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "6.2",
-      "title": "Testes de segurança: 403 não-super-admin + sort-injection [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
-    },
-    {
-      "task_id": "6.3",
-      "title": "Testes de integração: churn/netGrowth + cache + paginação [crit]",
-      "wave_id": "onda-005",
-      "outcome": "pass",
-      "tests_run": 0,
-      "tests_passed": 0,
-      "lint_ok": null,
-      "touched_files": [],
-      "recorded_at": "2026-06-20T03:56:15Z",
-      "source": "reconcile"
     }
   ]
 }
