@@ -113,6 +113,49 @@ describe('NotificationRealtimeEventSchema', () => {
   });
 });
 
+describe('NotificationPayloadSchema', () => {
+  const valid = {
+    notificationId: '019756c0-0002-7000-8000-000000000001',
+    tenantId: '019756c0-0002-7000-8000-000000000002',
+    userId: '019756c0-0002-7000-8000-000000000003',
+    channel: 'in_app',
+    type: 'pastoral_alert',
+    title: 'Alerta Pastoral',
+    body: 'Membro em risco detectado',
+    metadata: { actionUrl: '/app/radar' },
+  };
+  it('accepts valid payload', () => {
+    expect(NotificationPayloadSchema.safeParse(valid).success).toBe(true);
+  });
+  it('accepts payload without optional metadata', () => {
+    const result = NotificationPayloadSchema.safeParse({
+      notificationId: valid.notificationId,
+      tenantId: valid.tenantId,
+      userId: valid.userId,
+      channel: 'email',
+      type: 'system',
+      title: 'Resumo',
+      body: 'Conteudo',
+    });
+    expect(result.success).toBe(true);
+  });
+  it('rejects non-uuid notificationId', () => {
+    expect(NotificationPayloadSchema.safeParse({ ...valid, notificationId: 'not-a-uuid' }).success).toBe(false);
+  });
+});
+
+describe('NotificationResultSchema', () => {
+  it('accepts a success result', () => {
+    expect(NotificationResultSchema.safeParse({ success: true }).success).toBe(true);
+  });
+  it('accepts a failure result with error message', () => {
+    expect(NotificationResultSchema.safeParse({ success: false, error: 'channel timeout' }).success).toBe(true);
+  });
+  it('rejects missing success flag', () => {
+    expect(NotificationResultSchema.safeParse({ error: 'x' }).success).toBe(false);
+  });
+});
+
 describe('constants', () => {
   it('NOTIFICATIONS_QUEUE_NAME is correct', () => {
     expect(NOTIFICATIONS_QUEUE_NAME).toBe('notifications');
