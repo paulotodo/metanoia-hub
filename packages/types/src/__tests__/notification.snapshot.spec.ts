@@ -164,3 +164,56 @@ describe('constants', () => {
     expect(NOTIFICATION_DIGEST_DEFAULT_WINDOW_MS).toBe(300000);
   });
 });
+
+// Story 14-2b: ReadAllResponseSchema + NotificationsListSchema snapshots
+import {
+  ReadAllResponseSchema,
+  NotificationsListSchema,
+  NotificationsQuerySchema,
+} from '../notification';
+
+describe('ReadAllResponseSchema', () => {
+  it('matches snapshot', () => {
+    expect(ReadAllResponseSchema.shape).toMatchSnapshot();
+  });
+  it('accepts valid read-all response', () => {
+    expect(ReadAllResponseSchema.safeParse({ updatedCount: 5 }).success).toBe(true);
+  });
+  it('accepts zero count (idempotent call)', () => {
+    expect(ReadAllResponseSchema.safeParse({ updatedCount: 0 }).success).toBe(true);
+  });
+  it('rejects negative count', () => {
+    expect(ReadAllResponseSchema.safeParse({ updatedCount: -1 }).success).toBe(false);
+  });
+  it('rejects float count', () => {
+    expect(ReadAllResponseSchema.safeParse({ updatedCount: 1.5 }).success).toBe(false);
+  });
+});
+
+describe('NotificationsQuerySchema', () => {
+  it('matches snapshot', () => {
+    expect(NotificationsQuerySchema.shape).toMatchSnapshot();
+  });
+  it('accepts unread=true as string (coerce)', () => {
+    const r = NotificationsQuerySchema.safeParse({ unread: 'true' });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.unread).toBe(true);
+  });
+  it('accepts without unread (optional)', () => {
+    expect(NotificationsQuerySchema.safeParse({}).success).toBe(true);
+  });
+});
+
+describe('NotificationsListSchema', () => {
+  it('matches snapshot', () => {
+    expect(NotificationsListSchema.shape).toMatchSnapshot();
+  });
+
+  it('accepts a valid list response', () => {
+    const valid = {
+      data: [],
+      meta: { page: 1, perPage: 20, total: 0 },
+    };
+    expect(NotificationsListSchema.safeParse(valid).success).toBe(true);
+  });
+});

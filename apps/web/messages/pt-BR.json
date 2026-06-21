@@ -1761,5 +1761,24 @@
       "notFoundDesc": "O modelo que você procura não existe ou foi removido.",
       "backToList": "Voltar para Modelos"
     }
+  },
+  "notificationCenter": {
+    "bell": {
+      "labelNone": "Sem notificações",
+      "labelCountOne": "1 notificação não lida",
+      "labelCount": "{count} notificações não lidas",
+      "labelOverflow": "99+ notificações não lidas",
+      "newAnnouncement": "Nova notificação: {title}"
+    },
+    "panel": {
+      "title": "Notificações",
+      "markAll": "Marcar todas como lidas",
+      "silence": "Silenciar",
+      "unsilence": "Ativar alertas"
+    },
+    "empty": {
+      "title": "Tudo em ordem",
+      "body": "Você está em dia com a sua congregação. Nenhuma notificação pendente."
+    }
   }
 }

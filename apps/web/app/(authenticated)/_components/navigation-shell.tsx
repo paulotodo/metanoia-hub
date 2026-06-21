@@ -20,6 +20,18 @@ const FocusManager = dynamic(
   { ssr: false },
 );
 
+/**
+ * NotificationCenter importado via dynamic() com ssr:false.
+ * Usa hooks de client-side (TanStack Query, SSE, localStorage).
+ */
+const NotificationCenter = dynamic(
+  () =>
+    import("@/components/notifications/notification-center").then(
+      (m) => ({ default: m.NotificationCenter }),
+    ),
+  { ssr: false },
+);
+
 interface NavigationShellProps {
   children: React.ReactNode;
 }
@@ -52,15 +64,21 @@ export function NavigationShell({ children }: NavigationShellProps) {
       <FocusManager />
       <header
         data-testid="mobile-tenant-header"
-        className="sticky top-0 z-30 flex items-center justify-center border-b border-[var(--border)] bg-[var(--background)] px-4 py-2 lg:hidden"
+        className="sticky top-0 z-30 flex items-center justify-between border-b border-[var(--border)] bg-[var(--background)] px-4 py-2 lg:hidden"
       >
         <TenantSwitcher />
+        <NotificationCenter />
       </header>
       <Sidebar
         items={items}
         activeKey={activeKey}
         renderLink={renderLink}
-        header={<TenantSwitcher className="w-full" />}
+        header={
+          <div className="flex flex-col gap-2">
+            <TenantSwitcher className="w-full" />
+            <NotificationCenter />
+          </div>
+        }
         className="hidden lg:flex"
       />
       <main id="conteudo" className="pb-16 lg:ml-60 lg:pb-0">

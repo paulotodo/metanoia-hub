@@ -82,3 +82,46 @@ export type NotificationRealtimeEvent = z.infer<typeof NotificationRealtimeEvent
 
 export const NOTIFICATIONS_QUEUE_NAME = 'notifications' as const;
 export const NOTIFICATION_DIGEST_DEFAULT_WINDOW_MS = 300000 as const;
+
+// --- Query schema (shared FE/BE) ---
+
+export const NotificationsQuerySchema = z.object({
+  status: NotificationStatusSchema.optional(),
+  page: z.coerce.number().int().positive().default(1),
+  perPage: z.coerce.number().int().positive().max(100).default(20),
+  unread: z.coerce.boolean().optional(),
+});
+export type NotificationsQuery = z.infer<typeof NotificationsQuerySchema>;
+
+// --- Read-all response schema ---
+
+export const ReadAllResponseSchema = z.object({
+  updatedCount: z.number().int().nonnegative(),
+});
+export type ReadAllResponse = z.infer<typeof ReadAllResponseSchema>;
+
+// --- Notification list item (FE consumption) ---
+
+export const NotificationListItemSchema = z.object({
+  id: z.string().uuid(),
+  type: NotificationTypeSchema,
+  channel: NotificationChannelSchema,
+  status: NotificationStatusSchema,
+  title: z.string(),
+  body: z.string(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  read_at: z.string().nullable(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+export type NotificationListItem = z.infer<typeof NotificationListItemSchema>;
+
+export const NotificationsListSchema = z.object({
+  data: z.array(NotificationListItemSchema),
+  meta: z.object({
+    page: z.number(),
+    perPage: z.number(),
+    total: z.number(),
+  }),
+});
+export type NotificationsList = z.infer<typeof NotificationsListSchema>;
