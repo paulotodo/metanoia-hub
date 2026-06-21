@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — executar tasks do backlog tasks.md em ordem de FASE 1→6, uma task por onda, conforme dependencias declaradas na Matriz de Dependências.",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa create-tasks — decompor feature sse-reconnection em backlog executável (tasks.md) conforme plan.md e checklists/ gerados.",
   "waves": [
     {
       "id": "onda-001",
@@ -113,13 +113,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-21T06:19:21Z",
-      "finished_at": "2026-06-21T06:28:08Z",
-      "executed_stages": [
-        "create-tasks"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 527,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -474,9 +472,9 @@
     "current_wave_start": "2026-06-21T06:19:21Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 1,
-    "wallclock_total_seconds": 1586,
+    "wallclock_total_seconds": 1059,
     "max_depth_reached": 2,
     "subagents_spawned": 1,
     "decisions_total": 17,
@@ -515,11 +513,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T06:14:06Z",
       "description": "onda-004 checklist concluida; proxima=create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T06:28:41Z",
-      "description": "create-tasks concluido; aguardando wakeup para execute-task"
     }
   ]
 }

@@ -515,11 +515,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T06:14:06Z",
       "description": "onda-004 checklist concluida; proxima=create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T06:28:41Z",
-      "description": "create-tasks concluido; aguardando wakeup para execute-task"
     }
   ]
 }
