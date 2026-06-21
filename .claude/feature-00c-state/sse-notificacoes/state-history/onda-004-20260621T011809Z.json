@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar fase create-tasks: invocar Skill(create-tasks) para decompor o plano em backlog executavel. Checklist concluido (41 items, 30 auto-resolvidos, 0 gaps bloqueantes, 11 humano documentados). Items humano de risco medio CHK025 e CHK033 devem virar criterios de aceite ou notas explicitas nas tasks. Apos create-tasks, rodar gate validate-tasks-template.sh e validate-docs-rendered.",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar fase checklist: invocar Skill(checklist) para gerar quality gate (dominios api + security + performance) sobre spec+plan da feature sse-notificacoes. Plan ja gerado (plan.md, research.md, data-model.md, contracts/sse-notifications.md, quickstart.md) + gate owasp-security aplicado (5 findings -> dec-017..dec-021, nenhum critico). Considerar os SR-1..SR-5 do plan ao gerar o checklist.",
   "waves": [
     {
       "id": "onda-001",
@@ -113,23 +113,6 @@
         {
           "skill": "owasp-security",
           "timestamp": "2026-06-21T01:11:07Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-21T01:18:09Z",
-      "finished_at": "2026-06-21T01:21:57Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 228,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-21T01:21:14Z",
           "decision_id": null
         }
       ]
@@ -555,44 +538,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T01:21:22Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execucao do quality gate de requisitos (domínios api, security, performance)",
-      "options_considered": [
-        "executar-checklist-completo",
-        "executar-parcial",
-        "skip-com-justificativa"
-      ],
-      "choice": "executar-checklist-completo",
-      "rationale": "Feature SSE de infra/backend com superficie de seguranca (token-in-URL, isolamento cross-tenant, DoS) requer gate nos 3 dominios especificados. 41 items gerados, 30 auto-resolvidos, 0 gaps bloqueantes, 11 humano pendentes de decisao de escopo/prioridade.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T01:21:34Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Avaliacao de 11 items humano: CHK025 (rate-limit abertura SR-3) e CHK033 (race ZSET multi-instance EC-05) sao risco medio",
-      "options_considered": [
-        "bloquear-humano",
-        "aceitar-como-tech-debt-documentado",
-        "escalar-para-create-tasks"
-      ],
-      "choice": "escalar-para-create-tasks",
-      "rationale": "CHK025: SR-3/dec-019 ja documenta rate-limit como nao-bloqueante MVP com proposta de follow-up. CHK033: EC-05 ja documenta que em single-instance MVP a queda total do Redis fecha todas as conexoes na pratica; race condition de multi-instance e futuro documentado. Ambos sao tech debt registrado, nao gap novo. Viram criterios de aceite ou notas em create-tasks.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -630,15 +575,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T01:18:09Z"
+    "current_wave_start": "2026-06-21T01:04:53Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1386,
+    "wallclock_total_seconds": 1158,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 24,
+    "decisions_total": 22,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -679,11 +624,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T01:13:26Z",
       "description": "onda-004 plan concluida; aguardando wakeup p/ checklist"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:22:22Z",
-      "description": "onda-005 encerrada: checklist concluido (41 items, 0 gaps bloqueantes); proxima fase: create-tasks"
     }
   ]
 }
