@@ -10,8 +10,9 @@ import { useNotificationStream } from '@/hooks/use-notification-stream';
 
 const MAX_BADGE_COUNT = 99;
 
-interface NotificationBellProps {
-  onClick?: () => void;
+interface NotificationBellProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Controlled "open" state of the popover (drives aria-expanded). */
   open?: boolean;
 }
 
@@ -20,7 +21,10 @@ interface NotificationBellProps {
  * Announces new notifications via aria-live="polite" region.
  * Badge updates always; aria-live announcements respect silence toggle.
  */
-export function NotificationBell({ onClick, open }: NotificationBellProps) {
+export const NotificationBell = React.forwardRef<
+  HTMLButtonElement,
+  NotificationBellProps
+>(function NotificationBell({ open, ...rest }, ref) {
   const { unreadCount } = useUnreadNotifications();
   const { silenced } = useNotificationSilence();
   const { announce } = useAsyncAnnouncer();
@@ -45,8 +49,13 @@ export function NotificationBell({ onClick, open }: NotificationBellProps) {
 
   return (
     <button
+      ref={ref}
       type="button"
-      onClick={onClick}
+      // `rest` carries the props Radix injects via <PopoverTrigger asChild>
+      // (ref, onClick, onPointerDown, data-state, aria-*). Spreading them is
+      // REQUIRED so Floating UI can measure the trigger and position the panel;
+      // without it the popover renders at top:0 with a -200% transform (off-screen).
+      {...rest}
       aria-label={ariaLabel}
       aria-expanded={open}
       aria-haspopup="dialog"
@@ -63,4 +72,6 @@ export function NotificationBell({ onClick, open }: NotificationBellProps) {
       )}
     </button>
   );
-}
+});
+
+NotificationBell.displayName = 'NotificationBell';

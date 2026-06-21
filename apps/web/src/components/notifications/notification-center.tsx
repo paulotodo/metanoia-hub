@@ -45,17 +45,24 @@ export function NotificationCenter() {
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <NotificationBell
-            open={open}
-            onClick={() => setOpen((v) => !v)}
-          />
+          {/*
+            No manual onClick here: <PopoverTrigger asChild> injects its own
+            click handler (and the trigger ref) which NotificationBell now
+            forwards. Adding a second setOpen handler would double-toggle.
+          */}
+          <NotificationBell open={open} data-testid="notification-bell" />
         </PopoverTrigger>
 
         <PopoverContent
           className="w-80 p-0"
           align="end"
+          side="bottom"
+          sideOffset={8}
+          collisionPadding={16}
+          avoidCollisions
           role="dialog"
           aria-label="Notificações"
+          data-testid="notification-panel"
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
@@ -64,7 +71,7 @@ export function NotificationCenter() {
               <button
                 type="button"
                 onClick={() => setSilenced(!silenced)}
-                className="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-brand-teal/30 rounded px-1"
+                className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-brand-teal/30 rounded px-1"
               >
                 {silenced ? 'Ativar alertas' : 'Silenciar'}
               </button>
@@ -88,7 +95,7 @@ export function NotificationCenter() {
               <div className="flex flex-col items-center justify-center gap-2 px-4 py-8 text-center">
                 <span className="text-2xl" aria-hidden="true">✓</span>
                 <p className="text-sm font-medium">Tudo em ordem</p>
-                <p className="text-xs text-[var(--muted-foreground)]">
+                <p className="text-xs text-[var(--color-text-secondary)]">
                   Você está em dia com a sua congregação. Nenhuma notificação pendente.
                 </p>
               </div>

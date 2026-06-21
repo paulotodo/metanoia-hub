@@ -49,10 +49,10 @@ export function NotificationItem({ notification, onMarkRead }: NotificationItemP
       <div className="min-w-0 flex-1">
         {/* Render text-only — anti-XSS (no dangerouslySetInnerHTML) */}
         <p className="truncate text-sm">{notification.title}</p>
-        <p className="mt-0.5 line-clamp-2 text-xs text-[var(--muted-foreground)]">
+        <p className="mt-0.5 line-clamp-2 text-xs text-[var(--color-text-secondary)]">
           {preview}
         </p>
-        <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+        <p className="mt-1 text-xs text-[var(--color-text-secondary)]">
           {formatRelativeTime(notification.created_at)}
         </p>
       </div>

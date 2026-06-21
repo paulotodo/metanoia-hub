@@ -240,8 +240,11 @@ test.describe('P3 — Marcar todas como lidas', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    // Open the VISIBLE bell (5 notifications)
-    const bell = page.locator('button[aria-label="5 notificações não lidas"]:visible');
+    // Open the VISIBLE bell (5 notifications). Use the stable data-testid:
+    // the dynamic aria-label changes from "5 notificações..." to "Sem
+    // notificações" after mark-all, so a label-based locator would go stale.
+    const bell = page.locator('[data-testid="notification-bell"]:visible');
+    await expect(bell).toHaveAttribute('aria-label', '5 notificações não lidas', { timeout: 10_000 });
     await bell.click();
 
     const panel = page.getByRole('dialog', { name: 'Notificações' });
@@ -250,8 +253,11 @@ test.describe('P3 — Marcar todas como lidas', () => {
     // Click mark all as read
     await page.getByRole('button', { name: 'Marcar todas como lidas' }).click();
 
-    // Badge should disappear (0 unread)
-    await expect(page.getByText('5')).not.toBeVisible({ timeout: 5_000 });
+    // Badge should disappear (0 unread) — scope to the bell's badge to avoid
+    // matching the "Alerta Pastoral 5" list text (strict-mode ambiguity).
+    await expect(bell.getByText('5', { exact: true })).not.toBeVisible({ timeout: 5_000 });
+    // Bell announces the empty state via its aria-label.
+    await expect(bell).toHaveAttribute('aria-label', 'Sem notificações', { timeout: 5_000 });
   });
 });
 
@@ -270,8 +276,11 @@ test.describe('P4 — Toggle Silenciar', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    // Open the VISIBLE bell (1 notification)
-    const bell = page.locator('button[aria-label*="notificações" i]:visible');
+    // Open the VISIBLE bell (1 notification). With a single unread item the
+    // aria-label is singular ("1 notificação não lida"), which does NOT contain
+    // the plural substring "notificações" — so use the stable data-testid.
+    const bell = page.locator('[data-testid="notification-bell"]:visible');
+    await expect(bell).toHaveAttribute('aria-label', '1 notificação não lida', { timeout: 10_000 });
     await bell.click();
 
     const panel = page.getByRole('dialog', { name: 'Notificações' });
@@ -286,7 +295,7 @@ test.describe('P4 — Toggle Silenciar', () => {
     await expect(page.getByRole('button', { name: 'Ativar alertas' })).toBeVisible();
 
     // Badge still visible (silence only suppresses aria-live, not badge)
-    const badgeAfterSilence = bell.getByText('1');
+    const badgeAfterSilence = bell.getByText('1', { exact: true });
     await expect(badgeAfterSilence).toBeVisible();
   });
 });

@@ -68,11 +68,21 @@ test.describe('Notification Center — a11y (Story 14-2b)', () => {
     });
   });
 
-  test('1. axe WCAG 2AA: zero violações com sino visível', async ({ page }) => {
-    // Wait for the VISIBLE bell to render
-    await page.waitForSelector('button[aria-label*="notificações" i]:visible', { timeout: 10_000 });
+  test('1. axe WCAG 2AA: zero violações no Notification Center (sino + painel)', async ({ page }) => {
+    // Open the panel so axe scans both the bell trigger AND the open dialog —
+    // the richest interactive surface of the NotificationCenter component.
+    const bell = page.locator('[data-testid="notification-bell"]:visible');
+    await bell.click();
+    const panel = page.locator('[data-testid="notification-panel"]');
+    await expect(panel).toBeVisible({ timeout: 5_000 });
 
+    // SCOPE the scan to the NotificationCenter component ONLY.
+    // A whole-page scan flags pre-existing color-contrast debt in the existing
+    // sidebar nav (text-muted token, Epic 12 tech-debt R2) which is OUT OF SCOPE
+    // for story 14-2b. This test asserts the COMPONENT is WCAG-clean, not the page.
     const results = await new AxeBuilder({ page })
+      .include('[data-testid="notification-bell"]')
+      .include('[data-testid="notification-panel"]')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
       .analyze();
 
