@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "SSE Endpoint & Redis Pub/Sub Backend (FR77) — endpoint GET /api/v1/sse/notifications tenant-scoped (guard Keycloak extrai tenant_id/user_id), heartbeat a cada 30s, limite 1000 conexoes/instancia (SSE_MAX_CONNECTIONS, 503+Retry-After:30) e 5/usuario via Redis SET sse:connections:{tenantId}:{userId} (SSE_MAX_PER_USER, fecha a mais antiga). InAppChannel publica em rt:notifications:{tenantId}:{userId} (criado na 14-1); SseController assina o canal e faz push event:notification. Cleanup remove do SET e desfaz subscription. Teste de isolamento cross-tenant obrigatorio.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T21:16:29Z",
-    "finished_at": "2026-06-21T01:59:34Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -155,17 +155,6 @@
           "decision_id": "dec-028"
         }
       ]
-    },
-    {
-      "id": "onda-007",
-      "started_at": "2026-06-21T01:56:18Z",
-      "finished_at": "2026-06-21T01:59:47Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 209,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -720,139 +709,6 @@
       "evidence": "Test Files 4 passed (4), Tests 34 passed (34); pnpm turbo lint: 4 successful; nest build success",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-030",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:58:07Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "CI PR #172 — todos os checks SUCCESS",
-      "options_considered": [
-        "aprovado",
-        "reprovado",
-        "ajuste-necessario"
-      ],
-      "choice": "aprovado",
-      "rationale": "5/5 checks SUCCESS: Setup(34s), Lint(35s), Test(3m2s), E2E(4m29s), Build(57s). mergeStateStatus=CLEAN, mergeable=MERGEABLE",
-      "justification_score": 3,
-      "evidence": "Setup pass 34s; Lint pass 35s; Test pass 3m2s; E2E(Playwright) pass 4m29s; Build pass 57s — job 82532277044",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-031",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:58:19Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Revisão cobertura ACs Story 14-2a: endpoint SSE, heartbeat, limites, evicção, Redis subscriber, push event, cleanup, blast radius",
-      "options_considered": [
-        "todos-ACs-cobertos",
-        "ACs-parciais",
-        "ACs-ausentes"
-      ],
-      "choice": "todos-ACs-cobertos",
-      "rationale": "SseController GET /api/v1/sse/notifications OK; heartbeat interval(ConfigService SSE_HEARTBEAT_INTERVAL_MS=30000) OK; limites: checkInstanceLimit 503+Retry-After:30, checkAndRegister ZCARD evicção mais-antiga(ZRANGE+ZREM loop EC-04) OK; SseRedisService subscriber ioredis dedicado rt:notifications:{t}:{u} OK; push event:notification com mapeamento notificationId->id OK; finalize()+release() cleanup determinístico OK; EC-02 blast-radius: erro fecha apenas canal afetado OK",
-      "justification_score": 3,
-      "evidence": "SseController.stream() L52-115; SseConnectionManager.checkAndRegister() L155-185; SseRedisService.subscribe() com refcount L62-120; onModuleDestroy quit() L136-140",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-032",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:58:30Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Revisão aderência regras projeto: tenant_id AsyncLocalStorage, contrato Zod, padrão SSE, sem migration",
-      "options_considered": [
-        "aderente",
-        "desvio-menor",
-        "desvio-maior"
-      ],
-      "choice": "aderente",
-      "rationale": "tenant_id e userId via getRequestContext() (AsyncLocalStorage) — NUNCA como param: OK. Contrato Zod NotificationRealtimeEventSchema em packages/types com safeParse EC-06: OK. Padrão SSE reusado do meeting-sse (Subject+refcount+dedicated Redis conn): OK. Sem migration (sem tabela DB): OK. Controller em bounded context notifications/sse/: OK. Logger estruturado (sem texto livre): OK",
-      "justification_score": 3,
-      "evidence": "sse.controller.ts L7 getRequestContext import; packages/types/src/notification.ts NotificationRealtimeEventSchema; sse-redis.service.ts Subject+channelSubscriberCount pattern",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-033",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:58:41Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "SR-1 (dec-017): token-na-URL — TLS + filtro de log confirmados na implementação",
-      "options_considered": [
-        "tratado-em-codigo",
-        "tech-debt-rastreavel",
-        "ausente-bloqueante"
-      ],
-      "choice": "tratado-em-codigo",
-      "rationale": "SseController contém comentário OBRIGATÓRIO em nível de classe (SR-1 dec-017): NEVER log req.url, req.query.token, Referer. Logger usa apenas structured fields (tenantId, userId, connectionId) em TODOS os log calls. Contrato sse-notifications.md §SEGURANÇA documenta TLS obrigatório + tokens curtos. Nenhum log.debug/log.log inclui req.url ou query string.",
-      "justification_score": 3,
-      "evidence": "sse.controller.ts L14-17: SR-1 (dec-017): this controller NEVER logs req.url, req.query.token, Referer; contracts/sse-notifications.md TLS requirement block",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-034",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:58:51Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "SR-2 (dec-018): XSS title/body — tech-debt rastreável para Story 14-2b (frontend)",
-      "options_considered": [
-        "tratado-em-codigo",
-        "tech-debt-rastreavel",
-        "ausente-bloqueante"
-      ],
-      "choice": "tech-debt-rastreavel",
-      "rationale": "Backend faz safeParse com NotificationRealtimeEventSchema (EC-06) — payload schema-inválido descartado. O risco XSS CWE-79 é na RENDERIZAÇÃO frontend (Story 14-2b, não incluída nesta PR). Marcação UNTRUSTED documentada no contrato sse-notifications.md. Tech-debt rastreado no plan.md dec-018 como escopo 14-2b. Não bloqueante para 14-2a (backend-only).",
-      "justification_score": 3,
-      "evidence": "sse-redis.service.ts L91-99 safeParse Zod; plan.md dec-018 SR-2 mitigation: frontend (14-2b) escapa antes do DOM",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-035",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:59:01Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "SR-3 (dec-019) rate-limit abertura + CHK033 (dec-012) race ZSET multi-instance — tech-debts MVP rastreáveis",
-      "options_considered": [
-        "tratado-em-codigo",
-        "tech-debt-rastreavel",
-        "ausente-bloqueante"
-      ],
-      "choice": "tech-debt-rastreavel",
-      "rationale": "SR-3 (LOW): limites cobrem concorrência (SSE_MAX_CONNECTIONS/SSE_MAX_PER_USER) mas não TAXA de abertura. Rate-limit connect-storm planejado para namespace rate:* pós-MVP (dec-019). CHK033: race condition ZSET multi-instance documentado em comentário de classe no SseConnectionManager (L14-22). Mitigação futura: Lua scripting ou Redis locks. Ambos documentados como não-bloqueantes MVP e rastreáveis nas decisões do plan.",
-      "justification_score": 3,
-      "evidence": "sse-connection.manager.ts L14-22: CHK033 (tech debt MVP): race condition in multi-instance ZSET; plan.md dec-019 SR-3 mitigação rate:* namespace",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-036",
-      "wave_id": "onda-007",
-      "timestamp": "2026-06-21T01:59:11Z",
-      "stage": "review-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "tasks.md: todos os 92 checkboxes em [ ] não-marcados, mas CI passa e código implementado integralmente",
-      "options_considered": [
-        "aceitar-estado-tasks",
-        "corrigir-checkboxes",
-        "bloquear-por-drift"
-      ],
-      "choice": "aceitar-estado-tasks",
-      "rationale": "CI verde (Setup/Lint/Test/E2E/Build = 5/5 SUCCESS) é evidência mais forte que checkboxes. Todos os artefatos foram entregues: sse-connection.manager.ts, sse-redis.service.ts, sse.controller.ts, módulo registrado, Zod schema, testes unitários e integração. Os checkboxes não marcados são falha do task-tracker mas não reflectem ausência de entrega. O review-task confirma cobertura de ACs, não o estado de checkboxes.",
-      "justification_score": 3,
-      "evidence": "git diff --name-only lista 10 arquivos novos/modificados incluindo todos os artefatos do tasks.md; CI 5/5 SUCCESS run 27890120220",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -890,15 +746,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T01:56:18Z"
+    "current_wave_start": "2026-06-21T01:26:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 8,
+    "waves_total": 7,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3268,
+    "wallclock_total_seconds": 3059,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 36,
+    "decisions_total": 29,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -949,11 +805,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T01:50:23Z",
       "description": "execute-task concluído; PR #172 aberto; próxima onda = review-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:59:28Z",
-      "description": "review-task terminal: feature concluida, PR #172 aguarda merge humano"
     }
   ],
   "tasks": [
@@ -1268,38 +1119,6 @@
       ],
       "recorded_at": "2026-06-21T01:49:40Z",
       "source": "execute-task"
-    },
-    {
-      "task_id": "review-task-final",
-      "title": "Review-task: verificação PR #172 SSE Notificações (Story 14-2a)",
-      "wave_id": "onda-007",
-      "outcome": "pass",
-      "tests_run": 5,
-      "tests_passed": 5,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/src/config/__tests__/env.validation.spec.ts",
-        "apps/api/src/config/env.validation.ts",
-        "apps/api/src/notifications/notifications.module.ts",
-        "apps/api/src/notifications/sse/sse-connection.manager.spec.ts",
-        "apps/api/src/notifications/sse/sse-connection.manager.ts",
-        "apps/api/src/notifications/sse/sse-redis.service.spec.ts",
-        "apps/api/src/notifications/sse/sse-redis.service.ts",
-        "apps/api/src/notifications/sse/sse.controller.spec.ts",
-        "apps/api/src/notifications/sse/sse.controller.ts",
-        "apps/api/src/notifications/sse/sse.integration-spec.ts",
-        "docs/specs/sse-notificacoes/checklists/checklist.md",
-        "docs/specs/sse-notificacoes/contracts/sse-notifications.md",
-        "docs/specs/sse-notificacoes/data-model.md",
-        "docs/specs/sse-notificacoes/plan.md",
-        "docs/specs/sse-notificacoes/quickstart.md",
-        "docs/specs/sse-notificacoes/research.md",
-        "docs/specs/sse-notificacoes/spec.md",
-        "docs/specs/sse-notificacoes/tasks.md",
-        "packages/types/src/notification.ts"
-      ],
-      "recorded_at": "2026-06-21T01:59:19Z",
-      "source": "review-task"
     }
   ]
 }

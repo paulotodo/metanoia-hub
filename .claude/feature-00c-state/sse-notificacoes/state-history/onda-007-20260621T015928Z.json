@@ -6,10 +6,10 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "SSE Endpoint & Redis Pub/Sub Backend (FR77) — endpoint GET /api/v1/sse/notifications tenant-scoped (guard Keycloak extrai tenant_id/user_id), heartbeat a cada 30s, limite 1000 conexoes/instancia (SSE_MAX_CONNECTIONS, 503+Retry-After:30) e 5/usuario via Redis SET sse:connections:{tenantId}:{userId} (SSE_MAX_PER_USER, fecha a mais antiga). InAppChannel publica em rt:notifications:{tenantId}:{userId} (criado na 14-1); SseController assina o canal e faz push event:notification. Cleanup remove do SET e desfaz subscription. Teste de isolamento cross-tenant obrigatorio.",
     "suggested_stack": null,
-    "status": "concluida",
-    "termination_reason": "concluido",
+    "status": "em_andamento",
+    "termination_reason": null,
     "started_at": "2026-06-20T21:16:29Z",
-    "finished_at": "2026-06-21T01:59:34Z"
+    "finished_at": null
   },
   "prerequisites": {
     "briefing": {
@@ -159,11 +159,11 @@
     {
       "id": "onda-007",
       "started_at": "2026-06-21T01:56:18Z",
-      "finished_at": "2026-06-21T01:59:47Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 209,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": []
     }
@@ -893,9 +893,9 @@
     "current_wave_start": "2026-06-21T01:56:18Z"
   },
   "accumulated_metrics": {
-    "waves_total": 8,
+    "waves_total": 7,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3268,
+    "wallclock_total_seconds": 3059,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 36,
@@ -949,11 +949,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T01:50:23Z",
       "description": "execute-task concluído; PR #172 aberto; próxima onda = review-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:59:28Z",
-      "description": "review-task terminal: feature concluida, PR #172 aguarda merge humano"
     }
   ],
   "tasks": [
