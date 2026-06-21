@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "plan",
-  "next_instruction": "Transicao clarify→plan: rodar feature-00c-preflight.sh check (gate FR-010A) ANTES de invocar Skill(plan). Aplicar read-back loop (passo 4.bis) no inicio de plan.",
+  "next_instruction": "Invocar fase clarify — verificar se spec requer clarificações; se não, avançar para plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -47,13 +47,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-21T02:17:27Z",
-      "finished_at": "2026-06-21T02:23:43Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 376,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -303,9 +301,9 @@
     "current_wave_start": "2026-06-21T02:17:27Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 517,
+    "wallclock_total_seconds": 141,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 11,

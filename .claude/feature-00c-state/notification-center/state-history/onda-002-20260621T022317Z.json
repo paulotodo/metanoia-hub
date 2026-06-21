@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Transicao clarify→plan: rodar feature-00c-preflight.sh check (gate FR-010A) ANTES de invocar Skill(plan). Aplicar read-back loop (passo 4.bis) no inicio de plan.",
+  "current_stage": "clarify",
+  "next_instruction": "Invocar fase clarify — verificar se spec requer clarificações; se não, avançar para plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -47,13 +47,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-21T02:17:27Z",
-      "finished_at": "2026-06-21T02:23:43Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 376,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -268,24 +266,6 @@
       "evidence": "notifications.controller.ts: @Patch(':id/read') estabelece o padrao PATCH para mark-read; Constitution IV: 'PATCH para updates parciais'; FR-008: 'requisicao em lote para marcar todas como lidas'.",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:23:17Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Conclusao da fase clarify: 3 perguntas materiais respondidas (todas score>=2), spec atualizada com secao Clarifications + FR-001/FR-005/FR-008 refinados",
-      "options_considered": [
-        "avancar-para-plan",
-        "bloqueio-humano"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "Todas as 3 ambiguidades materiais resolvidas autonomamente (score 2/2/3) com defaults fieis ao briefing/constitution/codigo existente. Nenhum pause_humano. Evidencia empirica confirmada para score 3 (controller PATCH :id/read existe; nenhuma lib de data instalada).",
-      "justification_score": 3,
-      "evidence": "answerer retornou 3 respostas pause_humano=false; grep confirmou notifications.controller.ts:62 @Patch(':id/read') e ausencia de date-fns/dayjs/luxon em apps/web/package.json.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -303,12 +283,12 @@
     "current_wave_start": "2026-06-21T02:17:27Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 517,
+    "wallclock_total_seconds": 141,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 11,
+    "decisions_total": 10,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

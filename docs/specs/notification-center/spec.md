@@ -6,6 +6,14 @@
 **Story**: 14-2b (Epic 14 — Notificações)
 **Requirement Reference**: FR77
 
+## Clarifications
+
+### Session 2026-06-20
+
+- Q: Onde o NotificationBell deve ser posicionado no layout autenticado existente? → A: Inserido no header mobile existente (ao lado do TenantSwitcher) e no topo da Sidebar desktop via prop `header` — modificando apenas o `NavigationShell`, sem criar novo slot em `packages/ui` (menor blast radius).
+- Q: Como implementar a formatação de tempo relativo em PT-BR ("há 5 min", "há 2h")? → A: Usar `Intl.RelativeTimeFormat` nativo com locale `pt-BR` — zero nova dependência (nenhuma lib de datas está instalada no projeto).
+- Q: Qual o verbo HTTP e rota para "marcar todas como lidas"? → A: `PATCH /api/v1/notifications/read-all` — consistente com o padrão existente `PATCH /api/v1/notifications/:id/read` e com a convenção do projeto "PATCH para updates parciais".
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Badge de notificações no cabeçalho (Priority: P1)
@@ -148,7 +156,7 @@ ou sonoro acontece; desabilitar e confirmar que os alertas voltam.
 
 ### Functional Requirements
 
-- **FR-001**: O sistema DEVE exibir um ícone de sino no cabeçalho da aplicação para usuários autenticados, com um indicador numérico do total de notificações não lidas, limitado ao máximo visual de "99+" quando o total supera 99.
+- **FR-001**: O sistema DEVE exibir um ícone de sino no cabeçalho da aplicação para usuários autenticados, com um indicador numérico do total de notificações não lidas, limitado ao máximo visual de "99+" quando o total supera 99. O sino DEVE ser integrado ao `NavigationShell` do layout autenticado: no header mobile (ao lado do `TenantSwitcher`) e no topo da `Sidebar` desktop via prop `header`, sem introduzir novo slot em `packages/ui`.
 
 - **FR-002**: O indicador do sino DEVE ser acessível: possuir descrição alternativa legível por tecnologias assistivas que informe o número exato de notificações não lidas (ou "99 ou mais" quando limitado), e uma região da página dedicada ao anúncio de novas notificações em tempo real, sem interromper o foco do usuário.
 
@@ -156,13 +164,13 @@ ou sonoro acontece; desabilitar e confirmar que os alertas voltam.
 
 - **FR-004**: Ao clicar no sino, o sistema DEVE abrir um painel listando as notificações não lidas mais recentes (limite: 20), recuperadas via serviço de listagem existente da Story 14-1, filtradas por status não lido.
 
-- **FR-005**: Cada entrada na lista de notificações DEVE apresentar: ícone visual correspondente ao tipo da notificação, título completo, prévia do corpo da mensagem truncada em 100 caracteres, e tempo relativo de quando a notificação foi criada (ex.: "há 5 min", "há 2h", "há 3 dias").
+- **FR-005**: Cada entrada na lista de notificações DEVE apresentar: ícone visual correspondente ao tipo da notificação, título completo, prévia do corpo da mensagem truncada em 100 caracteres, e tempo relativo de quando a notificação foi criada (ex.: "há 5 min", "há 2h", "há 3 dias"). O tempo relativo DEVE ser formatado via `Intl.RelativeTimeFormat` nativo com locale `pt-BR`, sem introduzir nova dependência de biblioteca de datas.
 
 - **FR-006**: Ao clicar em uma notificação individual, o sistema DEVE atualizar o status para "lida" via serviço existente da Story 14-1 e direcionar o usuário para a página ou recurso relacionado indicado pela notificação — sem expor erros técnicos caso a URL de destino seja inválida.
 
 - **FR-007**: O painel DEVE exibir um estado vazio com ilustração e mensagem pastoral quando não há notificações não lidas. A mensagem DEVE utilizar vocabulário pastoral e ser centralizada no arquivo de mensagens de internacionalização PT-BR do projeto.
 
-- **FR-008**: O sistema DEVE prover uma ação "Marcar todas como lidas" que, ao ser acionada, envia uma requisição em lote ao backend para marcar todas as notificações não lidas do usuário autenticado como lidas. O backend DEVE aplicar isolamento por tenant automaticamente, sem exposição do identificador de tenant na interface.
+- **FR-008**: O sistema DEVE prover uma ação "Marcar todas como lidas" que, ao ser acionada, envia uma requisição em lote ao endpoint `PATCH /api/v1/notifications/read-all` (consistente com o padrão existente `PATCH /api/v1/notifications/:id/read`) para marcar todas as notificações não lidas do usuário autenticado como lidas. O backend DEVE aplicar isolamento por tenant automaticamente, sem exposição do identificador de tenant na interface.
 
 - **FR-009**: O endpoint de lote "marcar todas como lidas" DEVE ser validado por schema de contrato compartilhado (FE e BE consomem o mesmo contrato), garantindo que breaking changes sejam detectados automaticamente por testes de snapshot.
 

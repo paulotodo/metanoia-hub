@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Transicao clarify→plan: rodar feature-00c-preflight.sh check (gate FR-010A) ANTES de invocar Skill(plan). Aplicar read-back loop (passo 4.bis) no inicio de plan.",
+  "current_stage": "clarify",
+  "next_instruction": "Invocar fase clarify — verificar se spec requer clarificações; se não, avançar para plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -40,35 +40,6 @@
         {
           "skill": "specify",
           "timestamp": "2026-06-21T02:13:43Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-002",
-      "started_at": "2026-06-21T02:17:27Z",
-      "finished_at": "2026-06-21T02:23:43Z",
-      "executed_stages": [
-        "clarify"
-      ],
-      "tool_calls": 0,
-      "wallclock_seconds": 376,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "model-selector",
-          "timestamp": "2026-06-21T02:18:04Z",
-          "decision_id": "dec-006"
-        },
-        {
-          "skill": "model-selector",
-          "timestamp": "2026-06-21T02:20:09Z",
-          "decision_id": "dec-007"
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-21T02:23:17Z",
           "decision_id": null
         }
       ]
@@ -169,123 +140,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-006",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:18:04Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual",
-        "fallback-default"
-      ],
-      "choice": "manter-atual",
-      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-007",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:20:09Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual",
-        "fallback-default"
-      ],
-      "choice": "manter-atual",
-      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:21:56Z",
-      "stage": "clarify",
-      "agent": "feature-00c-clarify-answerer",
-      "context": "Q1: Posicionamento do NotificationBell no layout autenticado",
-      "options_considered": [
-        "A-header-mobile+sidebar-prop",
-        "B-novo-slot-actions",
-        "C-por-pagina"
-      ],
-      "choice": "A: inserir no header mobile ao lado de TenantSwitcher + prop header do Sidebar desktop (modifica apenas NavigationShell)",
-      "rationale": "FR-001 exige sino em TODA pagina autenticada (elimina C). Opcao B exigiria modificar interfaces em packages/ui aumentando blast radius. A = menor blast radius, modifica apenas NavigationShell.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:21:56Z",
-      "stage": "clarify",
-      "agent": "feature-00c-clarify-answerer",
-      "context": "Q2: Formatacao de tempo relativo PT-BR",
-      "options_considered": [
-        "A-Intl.RelativeTimeFormat-nativo",
-        "B-date-fns",
-        "C-dayjs"
-      ],
-      "choice": "A: Intl.RelativeTimeFormat nativo (locale pt-BR, zero nova dependencia)",
-      "rationale": "package.json nao lista date-fns/dayjs/luxon. Intl.RelativeTimeFormat nativo suporta pt-BR e cobre os formatos da spec sem nova dep. Alinhado ao principio de escopo restrito.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:21:57Z",
-      "stage": "clarify",
-      "agent": "feature-00c-clarify-answerer",
-      "context": "Q3: Verbo HTTP e rota para 'marcar todas como lidas'",
-      "options_considered": [
-        "A-PATCH-/notifications/read-all",
-        "B-POST-/notifications/read-all",
-        "C-PATCH-/notifications-body"
-      ],
-      "choice": "A: PATCH /api/v1/notifications/read-all",
-      "rationale": "Tres fontes convergem: FR-008 'requisicao em lote' = update parcial; Constitution IV 'PATCH para updates parciais'; controller existente usa PATCH :id/read para individual. POST reservado p/ criacao (201).",
-      "justification_score": 3,
-      "evidence": "notifications.controller.ts: @Patch(':id/read') estabelece o padrao PATCH para mark-read; Constitution IV: 'PATCH para updates parciais'; FR-008: 'requisicao em lote para marcar todas como lidas'.",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T02:23:17Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Conclusao da fase clarify: 3 perguntas materiais respondidas (todas score>=2), spec atualizada com secao Clarifications + FR-001/FR-005/FR-008 refinados",
-      "options_considered": [
-        "avancar-para-plan",
-        "bloqueio-humano"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "Todas as 3 ambiguidades materiais resolvidas autonomamente (score 2/2/3) com defaults fieis ao briefing/constitution/codigo existente. Nenhum pause_humano. Evidencia empirica confirmada para score 3 (controller PATCH :id/read existe; nenhuma lib de data instalada).",
-      "justification_score": 3,
-      "evidence": "answerer retornou 3 respostas pause_humano=false; grep confirmou notifications.controller.ts:62 @Patch(':id/read') e ausencia de date-fns/dayjs/luxon em apps/web/package.json.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -300,15 +154,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T02:17:27Z"
+    "current_wave_start": "2026-06-21T02:11:37Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 517,
-    "max_depth_reached": 2,
-    "subagents_spawned": 2,
-    "decisions_total": 11,
+    "wallclock_total_seconds": 141,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 5,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
