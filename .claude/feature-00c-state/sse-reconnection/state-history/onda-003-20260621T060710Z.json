@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks — decompor feature sse-reconnection em backlog executável (tasks.md) conforme plan.md e checklists/ gerados.",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -90,23 +90,6 @@
           "skill": "plan",
           "timestamp": "2026-06-21T06:03:49Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-21T06:08:27Z",
-      "finished_at": "2026-06-21T06:13:56Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 329,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-21T06:13:23Z",
-          "decision_id": "dec-012"
         }
       ]
     }
@@ -283,82 +266,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T06:07:10Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase checklist)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T06:09:04Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=sse-reconnection)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados da feature: sse reconnection gap fill fr77 story backend",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T06:13:16Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Execução da etapa checklist: 4 domínios validados (api, ux-a11y, security, performance)",
-      "options_considered": [
-        "executar-todos-dominios",
-        "executar-dominios-principais",
-        "skip"
-      ],
-      "choice": "executar-todos-dominios",
-      "rationale": "Feature atravessa 4 domínios de risco: api (filtro since + RLS), ux-a11y (connection-status, aria-live), security (OWASP M1/M2/L1/L2/L3), performance (backoff, gap-fill sob volume). Todos os findings do OWASP gate foram convertidos em itens CHK verificáveis.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T06:13:33Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gaps identificados no checklist: 4 itens humanos críticos (CHK015/CHK046/CHK047 — 401 sem loop; CHK021/CHK055 — gap-fill paginado; CHK025 — 'sutil' não quantificado; CHK066 — índice composto)",
-      "options_considered": [
-        "escalar-como-gaps-em-tasks",
-        "pausar-para-humano",
-        "aceitar-risco"
-      ],
-      "choice": "escalar-como-gaps-em-tasks",
-      "rationale": "Nenhum gap é bloqueador de create-tasks: os 4 clusters de gaps humanos (401-handling, paginação gap-fill, UI sizing, índice DB) têm impacto conhecido e podem virar tasks de definição no backlog. Score 2: contexto da spec+OWASP sustenta a decisão de escalar sem pausar.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -373,15 +280,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T06:08:27Z"
+    "current_wave_start": "2026-06-21T05:57:11Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 1,
-    "wallclock_total_seconds": 1059,
+    "wallclock_total_seconds": 730,
     "max_depth_reached": 2,
     "subagents_spawned": 1,
-    "decisions_total": 13,
+    "decisions_total": 9,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -407,16 +314,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T05:57:24Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-21T06:08:57Z",
-      "description": "etapa=checklist hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T06:14:06Z",
-      "description": "onda-004 checklist concluida; proxima=create-tasks"
     }
   ]
 }

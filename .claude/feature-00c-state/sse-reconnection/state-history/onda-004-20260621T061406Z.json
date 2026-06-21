@@ -412,11 +412,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T06:08:57Z",
       "description": "etapa=checklist hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T06:14:06Z",
-      "description": "onda-004 checklist concluida; proxima=create-tasks"
     }
   ]
 }
