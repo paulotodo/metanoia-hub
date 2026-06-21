@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — clarify validado sem perguntas (no-op); spec completa e pronta para planejamento tecnico. Rodar feature-00c-preflight.sh na transicao (gate FR-010A) e Skill(plan).",
   "waves": [
     {
       "id": "onda-001",
@@ -74,11 +74,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-21T05:57:11Z",
-      "finished_at": "2026-06-21T06:03:49Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 398,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -283,9 +283,9 @@
     "current_wave_start": "2026-06-21T05:57:11Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 1,
-    "wallclock_total_seconds": 730,
+    "wallclock_total_seconds": 332,
     "max_depth_reached": 2,
     "subagents_spawned": 1,
     "decisions_total": 9,

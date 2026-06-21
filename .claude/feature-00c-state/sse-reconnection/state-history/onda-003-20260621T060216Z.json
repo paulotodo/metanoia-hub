@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — clarify validado sem perguntas (no-op); spec completa e pronta para planejamento tecnico. Rodar feature-00c-preflight.sh na transicao (gate FR-010A) e Skill(plan).",
   "waves": [
     {
       "id": "onda-001",
@@ -74,24 +74,13 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-21T05:57:11Z",
-      "finished_at": "2026-06-21T06:03:49Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 398,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-21T06:02:16Z",
-          "decision_id": "dec-008"
-        },
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-21T06:03:49Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -230,42 +219,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T06:02:16Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Plano tecnico gerado: arquitetura reconexao+gap-fill, data-model (zero migration), contrato since, research (6 decisoes), quickstart (6 cenarios+roundtrip). Constitution PASS em todos os MUST.",
-      "options_considered": [
-        "aceitar-plano",
-        "revisar"
-      ],
-      "choice": "aceitar-plano",
-      "rationale": "Plano reflete codigo REAL da 14-2b (hook use-notification-stream.ts, controller/service notifications, schema Zod compartilhado, messages pt-BR); zero NEEDS_CLARIFICATION; alinha controller ao shared schema fechando divida de duplicacao",
-      "justification_score": 3,
-      "evidence": "ls docs/specs/sse-reconnection/: plan.md(184L) research.md(193L) data-model.md(74L) quickstart.md(120L) contracts/notifications-since.md(127L); total 6 artefatos no disco",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T06:02:34Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate doc-quality (validate-documentation): skill nao disponivel/registrada neste ambiente (tool Skill retornou 'Unknown skill: validate-documentation')",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Skill validate-documentation ausente do skill set ativo; nao e bypass deliberado. Artefatos foram revisados manualmente: sem TBD/placeholder, caminhos verificados contra codebase real (use-notification-stream.ts, notifications.controller/service, packages/types, messages/pt-BR.json), consistencia plan<->research<->contract validada",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -283,12 +236,12 @@
     "current_wave_start": "2026-06-21T05:57:11Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 1,
-    "wallclock_total_seconds": 730,
+    "wallclock_total_seconds": 332,
     "max_depth_reached": 2,
     "subagents_spawned": 1,
-    "decisions_total": 9,
+    "decisions_total": 7,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

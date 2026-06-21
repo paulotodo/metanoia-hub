@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "next_instruction": "Iniciar etapa plan — clarify validado sem perguntas (no-op); spec completa e pronta para planejamento tecnico. Rodar feature-00c-preflight.sh na transicao (gate FR-010A) e Skill(plan).",
   "waves": [
     {
       "id": "onda-001",
