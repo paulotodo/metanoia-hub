@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "create-tasks",
-  "next_instruction": "Etapa create-tasks: invocar Skill(create-tasks) sobre docs/specs/notification-center/ para gerar tasks.md (backend PATCH read-all + service + RLS test + snapshot Zod; FE NotificationBell/NotificationCenter/hooks/relative-time/safeNavigate; packages/ui Popover+Badge; i18n; E2E P1-P4 + axe + contraste). Folhar HARDENING do gate owasp (dec-015): task de redacao do token nos access-logs do SSE server-side + corpus hostil do safeNavigate + E2E title inerte. Resolver OPEN D2 (filtro unread no findByUser) como task explicita. Depois rodar gates template-fidelity (validate-tasks-template.sh) + docs-render.",
+  "next_instruction": "Transicao clarify→plan: rodar feature-00c-preflight.sh check (gate FR-010A) ANTES de invocar Skill(plan). Aplicar read-back loop (passo 4.bis) no inicio de plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -76,11 +76,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-21T02:29:01Z",
-      "finished_at": "2026-06-21T02:39:09Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 608,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -424,9 +424,9 @@
     "current_wave_start": "2026-06-21T02:29:01Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1125,
+    "wallclock_total_seconds": 517,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 16,
@@ -460,11 +460,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T02:28:28Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T02:39:22Z",
-      "description": "plan wave fechada; aguardando wakeup para create-tasks"
     }
   ]
 }

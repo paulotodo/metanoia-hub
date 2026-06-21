@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Etapa create-tasks: invocar Skill(create-tasks) sobre docs/specs/notification-center/ para gerar tasks.md (backend PATCH read-all + service + RLS test + snapshot Zod; FE NotificationBell/NotificationCenter/hooks/relative-time/safeNavigate; packages/ui Popover+Badge; i18n; E2E P1-P4 + axe + contraste). Folhar HARDENING do gate owasp (dec-015): task de redacao do token nos access-logs do SSE server-side + corpus hostil do safeNavigate + E2E title inerte. Resolver OPEN D2 (filtro unread no findByUser) como task explicita. Depois rodar gates template-fidelity (validate-tasks-template.sh) + docs-render.",
+  "current_stage": "plan",
+  "next_instruction": "Transicao clarify→plan: rodar feature-00c-preflight.sh check (gate FR-010A) ANTES de invocar Skill(plan). Aplicar read-back loop (passo 4.bis) no inicio de plan.",
   "waves": [
     {
       "id": "onda-001",
@@ -70,33 +70,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-21T02:23:17Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-21T02:29:01Z",
-      "finished_at": "2026-06-21T02:39:09Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 608,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-21T02:33:58Z",
-          "decision_id": "dec-014"
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-21T02:38:19Z",
-          "decision_id": "dec-015"
-        },
-        {
-          "skill": "validate-documentation",
-          "timestamp": "2026-06-21T02:38:49Z",
-          "decision_id": "dec-016"
         }
       ]
     }
@@ -333,80 +306,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T02:29:09Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notification-center)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados da feature: notification center fr77 frontend apps web sino; achados a11y (globals.css em packages/ui/styles, color2k contrast) uteis p/ gate a11y",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T02:33:58Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Desenho tecnico do notification-center: reuso de 14-1 (NotificationsService.updateStatusForUser/findByUser, withTenantTx+RLS) e 14-2a (SSE GET /api/v1/sse/notifications, guard aceita ?token=). Novo PATCH read-all + componentes FE NotificationBell/NotificationCenter.",
-      "options_considered": [
-        "plano-reuso-deps",
-        "plano-do-zero"
-      ],
-      "choice": "plano-reuso-deps",
-      "rationale": "grep confirmou: @Controller('api/v1/notifications') com @Patch(':id/read') (linha 62); NotificationStatusSchema z.enum([...,'read']) linha 17; RLS policy tenant_isolation USING+WITH CHECK na migration 20260629000000_14-1; FE apiClient.getEnvelope/patch + AsyncAnnouncerProvider envolve NavigationShell linha 50; EventSource precedente em use-attendance-live.ts; packages/ui so tem @radix-ui/react-dialog (linhas 17-18)",
-      "justification_score": 3,
-      "evidence": "grep src/notifications/notifications.controller.ts: linha 45 @Controller('api/v1/notifications'), linha 62 @Patch(':id/read'); packages/types/src/notification.ts linha 17 NotificationStatusSchema z.enum(['pending','sent','failed','read']); packages/ui/package.json linhas 17-18 @radix-ui/react-dialog + react-slot (sem dropdown/popover/badge)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T02:38:19Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security sobre a arquitetura do plano: 0 critical/0 high, 1 medium (token SSE via ?token= em URL = CWE-598 exposicao em logs/history), 2 low residuais (regex de safeNavigate; asserir render inerte de title com <script>). XSS (D5 texto/React escapa), open-redirect (D4 safeNavigate allowlist same-origin), e BOLA do read-all (sem id/user_id no request; getRequestContext + withTenantTx RLS) estao ADDRESSED.",
-      "options_considered": [
-        "aceitar-com-hardening-no-create-tasks",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-com-hardening-no-create-tasks",
-      "rationale": "Sem finding critical/high => sem BloqueioHumano obrigatorio. Medium (token em URL) e restricao herdada do EventSource+guard da 14-2a (ja em producao); mitigacao = task de hardening (redigir token nos access-logs server-side, evitar URL em telemetria) no create-tasks, nao bloqueio. Os 2 low viram tasks de teste (corpus hostil do safeNavigate; E2E de title inerte).",
-      "justification_score": 3,
-      "evidence": "contracts.md L23,27: read-all sem id/user_id, userId=getRequestContext(), tenant via withTenantTx RLS; research D4 L46-50 safeNavigate rejeita esquema//absoluto; D5 L61-66 JSX texto sem dangerouslySetInnerHTML; D3 L33 ?token= em query (CWE-598)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T02:38:49Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate doc-quality (validate-documentation) sobre plan.md/research.md/data-model.md/contracts.md/quickstart.md: estrutura coerente (1 H1 real por arquivo; os 7 'H1' do quickstart sao comentarios shell dentro de code fence), sem TBD/TODO/FIXME reais (matches de grep foram substrings de palavras PT 'todos'/'metodo'), decisoes ancoradas em evidencia empirica do codigo dev@3727339. 1 ponto OPEN explicitamente marcado p/ create-tasks (D2: filtro unread no findByUser).",
-      "options_considered": [
-        "aprovar",
-        "corrigir-agora",
-        "escalar-para-humano"
-      ],
-      "choice": "aprovar",
-      "rationale": "Artefatos completos, sem ambiguidades obvias nem TBD; o unico ponto aberto (D2) tem default fiel documentado (ampliar findByUser preservando contrato) e vira task, nao bloqueio. Findings: nenhum critical.",
-      "justification_score": 3,
-      "evidence": "grep -niE 'TBD|TODO|FIXME|XXX|placeholder' nos 5 artefatos => 0 match real (so substrings PT); wc: plan 274 / research 119 / data-model 86 / contracts 53 / quickstart 80 linhas",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -421,15 +320,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T02:29:01Z"
+    "current_wave_start": "2026-06-21T02:17:27Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1125,
+    "wallclock_total_seconds": 517,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 16,
+    "decisions_total": 12,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -455,16 +354,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T02:14:19Z",
       "description": "onda-001 specify concluída; próxima: clarify"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-21T02:28:28Z",
-      "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T02:39:22Z",
-      "description": "plan wave fechada; aguardando wakeup para create-tasks"
     }
   ]
 }
