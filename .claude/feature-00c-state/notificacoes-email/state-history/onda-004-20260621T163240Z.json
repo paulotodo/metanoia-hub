@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks: decompor spec/plan/checklists em backlog executavel tasks.md",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -96,13 +96,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-21T16:27:34Z",
-      "finished_at": "2026-06-21T16:33:06Z",
-      "executed_stages": [
-        "checklist"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 332,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -490,24 +488,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T16:32:40Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Conflict CHK050 detectado: backoff exponencial 30s × 3 tentativas = 90s excede SC-01 (1 min alertas criticos)",
-      "options_considered": [
-        "registrar-como-conflict-humano",
-        "resolver-autonomamente"
-      ],
-      "choice": "registrar-como-conflict-humano",
-      "rationale": "Decisao de produto: separar retry config por criticidade (pastoral_alert vs tipos deferr. criticos) exige validacao do tech lead; nao decido sem score >=2 de contexto tecnico confirmado",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -525,12 +505,12 @@
     "current_wave_start": "2026-06-21T16:27:34Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1351,
+    "wallclock_total_seconds": 1019,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 21,
+    "decisions_total": 20,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -561,11 +541,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T16:16:37Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T16:33:29Z",
-      "description": "checklist concluido; proxima fase=create-tasks"
     }
   ]
 }

@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks: decompor spec/plan/checklists em backlog executavel tasks.md",
+  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -96,13 +96,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-21T16:27:34Z",
-      "finished_at": "2026-06-21T16:33:06Z",
-      "executed_stages": [
-        "checklist"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 332,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -525,9 +523,9 @@
     "current_wave_start": "2026-06-21T16:27:34Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1351,
+    "wallclock_total_seconds": 1019,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 21,
@@ -561,11 +559,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T16:16:37Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T16:33:29Z",
-      "description": "checklist concluido; proxima fase=create-tasks"
     }
   ]
 }
