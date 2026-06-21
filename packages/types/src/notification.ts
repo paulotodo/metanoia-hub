@@ -8,8 +8,18 @@ export const NotificationTypeSchema = z.enum([
   'content_update',
   'meeting_reminder',
   'system',
+  'export_ready',   // Story 14-3: export file ready for download (signed URL)
+  'content_new',    // Story 14-3: new trail/content available
 ]);
 export type NotificationType = z.infer<typeof NotificationTypeSchema>;
+
+/**
+ * Notification types that bypass rate limiting and retry with shorter backoff.
+ * SC-01: pastoral_alert must be delivered within ~1 min.
+ * CHK050: EMAIL_CRITICAL_BACKOFF_MS=5s x 3 retries = max 15s delivery time.
+ */
+export const CRITICAL_NOTIFICATION_TYPES = ['pastoral_alert', 'export_ready', 'system'] as const;
+export type CriticalNotificationType = typeof CRITICAL_NOTIFICATION_TYPES[number];
 
 export const NotificationChannelSchema = z.enum(['in_app', 'email']);
 export type NotificationChannel = z.infer<typeof NotificationChannelSchema>;
