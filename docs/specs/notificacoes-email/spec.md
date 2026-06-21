@@ -1,7 +1,7 @@
 # Feature Spec: Notificações por Email via Resend
 
 **Short name**: `notificacoes-email`  
-**Status**: Draft  
+**Status**: Clarified  
 **Data**: 2026-06-21  
 **FR principal**: FR77  
 **NFRs**: NFR-I1 (operação continua 30min sem provedor), NFR-I2 (retry com backoff), NFR-I3 (timeouts explícitos)  
@@ -9,6 +9,16 @@
 **Dependências**: Story 14-1 (canal in-app + BullMQ — DONE), Story 14-4 (health-check/circuit-breaker — NÃO done → integração via abstração-stub), Epic 6 (branding do tenant — DONE)
 
 ---
+
+## Clarifications
+
+### Session 2026-06-21
+
+- Q: O limite diário de 100 emails é hardcoded ou configurável por tenant? → A: Hardcoded como constantes `EMAIL_DAILY_LIMIT=100` e `EMAIL_RATE_THRESHOLD=80`; Lua script recebe o limite como argumento permitindo configurabilidade pós-MVP sem reestruturar.
+- Q: `content_new` deve coexistir com `content_update` ou substituí-lo? → A: Coexistem. `content_update` mantém semântica de atualização de conteúdo existente; `content_new` é para disponibilização de novo conteúdo pela primeira vez. Rate limiter trata ambos como tipos não-críticos deferríveis.
+- Q: Qual o remetente padrão quando tenant não tem sender configurado? → A: Variável de ambiente `EMAIL_DEFAULT_FROM` (ex: `notifications@metanoia.app`); domínio deve ser verificado no Resend antes do deploy. Implementação lê da env com fallback para constante.
+- Q: TTL do rate counter é reset à meia-noite UTC ou TTL fixo de 24h? → A: TTL calculado como segundos até próxima meia-noite UTC (não TTL fixo). Chave `{YYYYMMDD}` implica semântica de dia-calendário; Lua script calcula `TTL = seconds_until_midnight_utc`.
+
 
 ## Contexto & Motivação
 
@@ -107,7 +117,10 @@ provedor externo: conexão em no máximo 3 segundos, leitura em no máximo 10 se
 
 **FR-04** — O isolamento multi-tenant deve ser garantido: cada notificação de email
 usa o contexto do tenant correto (logo, identidade visual, remetente configurado);
-nenhuma cross-tenant data leak é tolerada.
+nenhuma cross-tenant data leak é tolerada. Quando o tenant não tiver remetente
+customizado, o sistema usa o remetente padrão da plataforma definido pela variável
+de ambiente `EMAIL_DEFAULT_FROM` (ex: `Metanoia <notifications@metanoia.app>`),
+cujo domínio deve estar verificado no Resend antes do deploy.
 
 ### Resiliência e continuidade (NFR-I1, NFR-I2)
 
@@ -128,9 +141,10 @@ automaticamente da fila).
 ### Rate limiting
 
 **FR-09** — O sistema deve manter um contador diário de emails enviados por tenant,
-verificado atomicamente antes de cada envio.
+verificado atomicamente antes de cada envio. O limite diário é definido pela constante
+`EMAIL_DAILY_LIMIT=100`, configurável via variável de ambiente para evolução pós-MVP.
 
-**FR-10** — Quando o contador atingir 80% do limite diário (80 de 100):
+**FR-10** — Quando o contador atingir o threshold de alerta (constante `EMAIL_RATE_THRESHOLD=80`, configurável via env var) dos `EMAIL_DAILY_LIMIT=100` envios diários:
 - Emails de tipo `content_new` são diferidos para o próximo dia
 - Emails de tipo `meeting_reminder` são diferidos mas geram fallback in-app imediato
 - Emails críticos (`pastoral_alert`, `export_ready`, emails de sistema) continuam sendo
@@ -182,14 +196,17 @@ para permitir diagnóstico post-mortem sem acesso a logs externos.
 - `status` — `pending` → `sent` | `failed` (→ fallback in-app criado)
 - `metadata` — JSON livre para `failureReason`, `actionUrl`, `signedUrl`, etc.
 
-> Nota: o tipo `export_ready` e `content_new` precisam ser adicionados ao enum
-> `NotificationType` em `packages/types` (atualmente: `pastoral_alert`,
-> `group_message`, `content_update`, `meeting_reminder`, `system`).
+> Nota: os tipos `export_ready` e `content_new` precisam ser **adicionados** (não substituem tipos existentes)
+> ao enum `NotificationType` em `packages/types` (atualmente: `pastoral_alert`,
+> `group_message`, `content_update`, `meeting_reminder`, `system`). `content_update`
+> permanece com semântica de atualização de conteúdo existente; `content_new` é para
+> disponibilização de novo conteúdo pela primeira vez. O rate limiter trata ambos como
+> tipos não-críticos deferríveis (FR-10).
 
 **EmailRateCounter** (novo — estado Redis, não persistido em banco):
 - Chave: `rate:email:{tenantId}:{YYYYMMDD}`
 - Valor: contador inteiro, incrementado atomicamente via Lua script
-- TTL: 24 horas (expira à meia-noite UTC + 1 dia)
+- TTL: calculado como segundos até a próxima meia-noite UTC (`EXPIREAT`), não TTL fixo de 86400s — garante reset exato por dia-calendário alinhado com a chave `{YYYYMMDD}`
 
 **CircuitBreakerState** (novo — estado gerenciado via abstração health-port):
 - Estado: `closed` (funcionando) | `open` (contingência)

@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan. Spec clarificada com 4 decisoes (Q1: EMAIL_DAILY_LIMIT hardcoded; Q2: content_new coexiste com content_update; Q3: EMAIL_DEFAULT_FROM via env var; Q4: TTL=seconds_until_midnight_utc). Executar pre-flight clarify->plan antes de avancar.",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -45,13 +45,11 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-21T16:02:59Z",
-      "finished_at": "2026-06-21T16:10:01Z",
-      "executed_stages": [
-        "clarify"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 422,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -68,11 +66,6 @@
           "skill": "model-selector",
           "timestamp": "2026-06-21T16:05:44Z",
           "decision_id": "dec-008"
-        },
-        {
-          "skill": "clarify-answerer",
-          "timestamp": "2026-06-21T16:07:22Z",
-          "decision_id": null
         }
       ]
     }
@@ -288,60 +281,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T16:07:14Z",
-      "stage": "clarify",
-      "agent": "feature-00c-clarify-answerer",
-      "context": "Q4: TTL do rate counter reset a meia-noite UTC exata vs TTL fixo 24h",
-      "options_considered": [
-        "reset-meia-noite-utc",
-        "ttl-fixo-86400s"
-      ],
-      "choice": "reset-meia-noite-utc",
-      "rationale": "YYYYMMDD na chave ja implica semantica de dia-calendario. TTL=seconds_until_midnight_utc evita sobreposicao de contadores entre dias quando primeiro envio ocorre proximo da meia-noite.",
-      "justification_score": 3,
-      "evidence": "chave Redis usa formato {YYYYMMDD} (baseada em data). TTL calculado como segundos-ate-proxima-meia-noite-UTC no Lua script garante alinhamento com a virada de dia",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T16:08:57Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Q3-override: sender padrao — answerer deu score=0; orquestrador resolve via padrao de deployment SaaS",
-      "options_considered": [
-        "escalar-humano",
-        "resolver-via-env-var-padrao"
-      ],
-      "choice": "resolver-via-env-var-padrao",
-      "rationale": "Sender padrao e decisao de deployment (nao de produto): EMAIL_DEFAULT_FROM lida de env var com fallback 'Metanoia <notifications@metanoia.app>'. Dominio verificado no Resend e pre-requisito operacional documentavel na spec. Padrao universal em SaaS. Nao bloqueia a pipeline SDD.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T16:09:38Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "clarify concluido: 4 perguntas respondidas (Q1-Q4 score>=2), spec atualizada para Clarified",
-      "options_considered": [
-        "avancar-para-plan",
-        "abrir-bloqueio-humano"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "Q1/Q2/Q4 score=3 via answerer; Q3 score=0 do answerer overridden pelo orquestrador com score=2 (decisao de deployment via env var — nao decisao de produto). Spec atualizada em FR-04, FR-09, FR-10, Key Entities, EmailRateCounter TTL. Nenhum bloqueio humano necessario.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -359,12 +298,12 @@
     "current_wave_start": "2026-06-21T16:02:59Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 591,
+    "wallclock_total_seconds": 169,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 14,
+    "decisions_total": 11,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
