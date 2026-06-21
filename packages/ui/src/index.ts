@@ -24,3 +24,5 @@ export { cn } from "../lib/utils";
 export type { NavigationItem } from "../components/navigation-types";
 export { BottomTabs, type BottomTabsProps } from "../components/bottom-tabs";
 export { Sidebar, type SidebarProps } from "../components/sidebar";
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from "../components/popover";
+export { Badge, badgeVariants, type BadgeProps } from "../components/badge";

@@ -9,7 +9,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { z } from 'zod';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -57,6 +57,19 @@ export class NotificationsController {
     const ctx = getRequestContext();
     // userId from context — BOLA-safe (user can only see their own notifications)
     return this.notificationsService.findByUser(ctx.userId ?? '', query);
+  }
+
+  @Patch('read-all')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Mark all unread notifications as read for the authenticated user' })
+  @ApiResponse({ status: 200, description: 'Returns count of updated notifications' })
+  async markAllRead() {
+    const ctx = getRequestContext();
+    const updatedCount = await this.notificationsService.markAllAsRead(
+      ctx.userId ?? '',
+      new Date(),
+    );
+    return { data: { updatedCount } };
   }
 
   @Patch(':id/read')

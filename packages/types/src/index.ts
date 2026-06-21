@@ -1023,3 +1023,13 @@ export {
   NOTIFICATIONS_QUEUE_NAME,
   NOTIFICATION_DIGEST_DEFAULT_WINDOW_MS,
 } from './notification';
+export {
+  NotificationsQuerySchema,
+  type NotificationsQuery,
+  ReadAllResponseSchema,
+  type ReadAllResponse,
+  NotificationListItemSchema,
+  type NotificationListItem,
+  NotificationsListSchema,
+  type NotificationsList,
+} from './notification';

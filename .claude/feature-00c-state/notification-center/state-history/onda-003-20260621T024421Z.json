@@ -1,0 +1,490 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "notification-center",
+  "execution": {
+    "id": "feat-notification-center-20260621T021011Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Notification Center UI (FR77) — frontend apps/web: sino no header com badge de nao-lidas (cap 99+, aria-label PT-BR, aria-live=polite anuncia 'Nova notificacao: {title}'); dropdown NotificationCenter lista nao-lidas (GET /api/v1/notifications?status=unread&limit=20) icone por tipo/titulo/preview 100 chars/tempo relativo; clique marca lida (PATCH /:id status:read) e navega metadata.actionUrl; empty state vocabulario pastoral via pt-BR.json; 'Marcar todas como lidas' (novo PATCH /api/v1/notifications/mark-all-read batch tenant RLS); toggle Silenciar em localStorage; integracao SSE (EventSource GET /api/v1/sse/notifications da 14-2a) com TanStack Query invalidate-on-event; gate a11y; testes E2E Playwright + a11y.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-21T02:10:11Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "create-tasks",
+  "next_instruction": "Etapa create-tasks: invocar Skill(create-tasks) sobre docs/specs/notification-center/ para gerar tasks.md (backend PATCH read-all + service + RLS test + snapshot Zod; FE NotificationBell/NotificationCenter/hooks/relative-time/safeNavigate; packages/ui Popover+Badge; i18n; E2E P1-P4 + axe + contraste). Folhar HARDENING do gate owasp (dec-015): task de redacao do token nos access-logs do SSE server-side + corpus hostil do safeNavigate + E2E title inerte. Resolver OPEN D2 (filtro unread no findByUser) como task explicita. Depois rodar gates template-fidelity (validate-tasks-template.sh) + docs-render.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-21T02:11:37Z",
+      "finished_at": "2026-06-21T02:13:58Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 141,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-21T02:13:43Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-21T02:17:27Z",
+      "finished_at": "2026-06-21T02:23:43Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 376,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-21T02:18:04Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-21T02:20:09Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-21T02:23:17Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-21T02:29:01Z",
+      "finished_at": "2026-06-21T02:39:09Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 608,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-21T02:33:58Z",
+          "decision_id": "dec-014"
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-21T02:38:19Z",
+          "decision_id": "dec-015"
+        },
+        {
+          "skill": "validate-documentation",
+          "timestamp": "2026-06-21T02:38:49Z",
+          "decision_id": "dec-016"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-21T02:10:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "init",
+      "timestamp": "2026-06-21T02:11:17Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notification-center)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: notification center fr77 frontend apps web sino",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-21T02:13:43Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Geração de spec.md para feature notification-center (Story 14-2b FR77)",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 14-2b ready-for-dev com ACs detalhados; dependências 14-1 e 14-2a já entregues em dev; spec gerada com 4 USs, 13 FRs, 9 SCs, zero NEEDS_CLARIFICATION",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-21T02:13:43Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality inline: spec.md validada contra checklist de qualidade",
+      "options_considered": [
+        "aceitar-spec",
+        "corrigir-e-reiterar",
+        "escalar-para-humano"
+      ],
+      "choice": "aceitar-spec",
+      "rationale": "Zero NEEDS_CLARIFICATION, zero findings críticos, 4 USs independentes, 13 FRs testaveis, 9 SCs mensuráveis technology-agnostic, zero detalhes de implementação no corpo",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-21T02:16:11Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:18:04Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:20:09Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:21:56Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q1: Posicionamento do NotificationBell no layout autenticado",
+      "options_considered": [
+        "A-header-mobile+sidebar-prop",
+        "B-novo-slot-actions",
+        "C-por-pagina"
+      ],
+      "choice": "A: inserir no header mobile ao lado de TenantSwitcher + prop header do Sidebar desktop (modifica apenas NavigationShell)",
+      "rationale": "FR-001 exige sino em TODA pagina autenticada (elimina C). Opcao B exigiria modificar interfaces em packages/ui aumentando blast radius. A = menor blast radius, modifica apenas NavigationShell.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:21:56Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q2: Formatacao de tempo relativo PT-BR",
+      "options_considered": [
+        "A-Intl.RelativeTimeFormat-nativo",
+        "B-date-fns",
+        "C-dayjs"
+      ],
+      "choice": "A: Intl.RelativeTimeFormat nativo (locale pt-BR, zero nova dependencia)",
+      "rationale": "package.json nao lista date-fns/dayjs/luxon. Intl.RelativeTimeFormat nativo suporta pt-BR e cobre os formatos da spec sem nova dep. Alinhado ao principio de escopo restrito.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:21:57Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q3: Verbo HTTP e rota para 'marcar todas como lidas'",
+      "options_considered": [
+        "A-PATCH-/notifications/read-all",
+        "B-POST-/notifications/read-all",
+        "C-PATCH-/notifications-body"
+      ],
+      "choice": "A: PATCH /api/v1/notifications/read-all",
+      "rationale": "Tres fontes convergem: FR-008 'requisicao em lote' = update parcial; Constitution IV 'PATCH para updates parciais'; controller existente usa PATCH :id/read para individual. POST reservado p/ criacao (201).",
+      "justification_score": 3,
+      "evidence": "notifications.controller.ts: @Patch(':id/read') estabelece o padrao PATCH para mark-read; Constitution IV: 'PATCH para updates parciais'; FR-008: 'requisicao em lote para marcar todas como lidas'.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:23:17Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Conclusao da fase clarify: 3 perguntas materiais respondidas (todas score>=2), spec atualizada com secao Clarifications + FR-001/FR-005/FR-008 refinados",
+      "options_considered": [
+        "avancar-para-plan",
+        "bloqueio-humano"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "Todas as 3 ambiguidades materiais resolvidas autonomamente (score 2/2/3) com defaults fieis ao briefing/constitution/codigo existente. Nenhum pause_humano. Evidencia empirica confirmada para score 3 (controller PATCH :id/read existe; nenhuma lib de data instalada).",
+      "justification_score": 3,
+      "evidence": "answerer retornou 3 respostas pause_humano=false; grep confirmou notifications.controller.ts:62 @Patch(':id/read') e ausencia de date-fns/dayjs/luxon em apps/web/package.json.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T02:27:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-21T02:29:09Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notification-center)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: notification center fr77 frontend apps web sino; achados a11y (globals.css em packages/ui/styles, color2k contrast) uteis p/ gate a11y",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-21T02:33:58Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Desenho tecnico do notification-center: reuso de 14-1 (NotificationsService.updateStatusForUser/findByUser, withTenantTx+RLS) e 14-2a (SSE GET /api/v1/sse/notifications, guard aceita ?token=). Novo PATCH read-all + componentes FE NotificationBell/NotificationCenter.",
+      "options_considered": [
+        "plano-reuso-deps",
+        "plano-do-zero"
+      ],
+      "choice": "plano-reuso-deps",
+      "rationale": "grep confirmou: @Controller('api/v1/notifications') com @Patch(':id/read') (linha 62); NotificationStatusSchema z.enum([...,'read']) linha 17; RLS policy tenant_isolation USING+WITH CHECK na migration 20260629000000_14-1; FE apiClient.getEnvelope/patch + AsyncAnnouncerProvider envolve NavigationShell linha 50; EventSource precedente em use-attendance-live.ts; packages/ui so tem @radix-ui/react-dialog (linhas 17-18)",
+      "justification_score": 3,
+      "evidence": "grep src/notifications/notifications.controller.ts: linha 45 @Controller('api/v1/notifications'), linha 62 @Patch(':id/read'); packages/types/src/notification.ts linha 17 NotificationStatusSchema z.enum(['pending','sent','failed','read']); packages/ui/package.json linhas 17-18 @radix-ui/react-dialog + react-slot (sem dropdown/popover/badge)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-21T02:38:19Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security sobre a arquitetura do plano: 0 critical/0 high, 1 medium (token SSE via ?token= em URL = CWE-598 exposicao em logs/history), 2 low residuais (regex de safeNavigate; asserir render inerte de title com <script>). XSS (D5 texto/React escapa), open-redirect (D4 safeNavigate allowlist same-origin), e BOLA do read-all (sem id/user_id no request; getRequestContext + withTenantTx RLS) estao ADDRESSED.",
+      "options_considered": [
+        "aceitar-com-hardening-no-create-tasks",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "aceitar-com-hardening-no-create-tasks",
+      "rationale": "Sem finding critical/high => sem BloqueioHumano obrigatorio. Medium (token em URL) e restricao herdada do EventSource+guard da 14-2a (ja em producao); mitigacao = task de hardening (redigir token nos access-logs server-side, evitar URL em telemetria) no create-tasks, nao bloqueio. Os 2 low viram tasks de teste (corpus hostil do safeNavigate; E2E de title inerte).",
+      "justification_score": 3,
+      "evidence": "contracts.md L23,27: read-all sem id/user_id, userId=getRequestContext(), tenant via withTenantTx RLS; research D4 L46-50 safeNavigate rejeita esquema//absoluto; D5 L61-66 JSX texto sem dangerouslySetInnerHTML; D3 L33 ?token= em query (CWE-598)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-21T02:38:49Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality (validate-documentation) sobre plan.md/research.md/data-model.md/contracts.md/quickstart.md: estrutura coerente (1 H1 real por arquivo; os 7 'H1' do quickstart sao comentarios shell dentro de code fence), sem TBD/TODO/FIXME reais (matches de grep foram substrings de palavras PT 'todos'/'metodo'), decisoes ancoradas em evidencia empirica do codigo dev@3727339. 1 ponto OPEN explicitamente marcado p/ create-tasks (D2: filtro unread no findByUser).",
+      "options_considered": [
+        "aprovar",
+        "corrigir-agora",
+        "escalar-para-humano"
+      ],
+      "choice": "aprovar",
+      "rationale": "Artefatos completos, sem ambiguidades obvias nem TBD; o unico ponto aberto (D2) tem default fiel documentado (ampliar findByUser preservando contrato) e vira task, nao bloqueio. Findings: nenhum critical.",
+      "justification_score": 3,
+      "evidence": "grep -niE 'TBD|TODO|FIXME|XXX|placeholder' nos 5 artefatos => 0 match real (so substrings PT); wc: plan 274 / research 119 / data-model 86 / contracts 53 / quickstart 80 linhas",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-21T02:43:11Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-21T02:29:01Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 3,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1125,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 17,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "notification",
+    "center",
+    "fr77",
+    "frontend",
+    "apps",
+    "web",
+    "sino"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-21T02:11:17Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-21T02:14:19Z",
+      "description": "onda-001 specify concluída; próxima: clarify"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-21T02:28:28Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-21T02:39:22Z",
+      "description": "plan wave fechada; aguardando wakeup para create-tasks"
+    }
+  ]
+}

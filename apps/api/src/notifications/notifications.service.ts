@@ -10,6 +10,7 @@ export interface NotificationsQuery {
   status?: 'pending' | 'sent' | 'failed' | 'read';
   page?: number;
   perPage?: number;
+  unread?: boolean;
 }
 
 export interface NotificationRow {
@@ -157,9 +158,12 @@ export class NotificationsService {
     const page = query.page ?? 1;
     const perPage = Math.min(query.perPage ?? 20, 100);
     const offset = (page - 1) * perPage;
-    const statusFilter = query.status
-      ? `AND status = '${query.status}'::"notification_status"`
-      : '';
+    // unread=true takes priority; falls back to equality filter on status
+    const statusFilter = query.unread
+      ? `AND status <> 'read'::"notification_status"`
+      : query.status
+        ? `AND status = '${query.status}'::"notification_status"`
+        : '';
 
     const [rows, countResult] = await Promise.all([
       withTenantTx(this.prisma, (tx) =>
@@ -190,4 +194,26 @@ export class NotificationsService {
       meta: { page, perPage, total },
     };
   }
+
+
+  /**
+   * markAllAsRead — marks all unread notifications for a user as read.
+   * BOLA-safe: userId sourced from RequestContext, NOT from client input.
+   * tenantId enforced via RLS through withTenantTx.
+   * Idempotent: rows already 'read' are not touched; count reflects only changed rows.
+   */
+  async markAllAsRead(userId: string, readAt: Date): Promise<number> {
+    const rows = await withTenantTx(this.prisma, async (tx) => {
+      return tx.$queryRawUnsafe<Array<{ id: string }>>(
+        `UPDATE notifications
+         SET status = 'read'::"notification_status", read_at = $1, updated_at = now()
+         WHERE user_id = $2::uuid AND status <> 'read'::"notification_status"
+         RETURNING id`,
+        readAt,
+        userId,
+      );
+    });
+    return (rows as Array<{ id: string }>).length;
+  }
+
 }

@@ -180,3 +180,101 @@ describe('notifications RLS isolation', () => {
     ).resolves.not.toThrow();
   });
 });
+
+// Story 14-2b — mark-all RLS: cross-tenant isolation (idempotent, CI runs 2x)
+// Uses separate UUIDs to avoid collision with Story 14-1 tests above.
+
+// Helper: markAllAsRead via app role (RLS enforced)
+async function markAllAsReadForTenant(
+  prisma: PrismaClient,
+  tenantId: string,
+  userId: string,
+): Promise<number> {
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
+    return tx.$queryRawUnsafe<Array<{ id: string }>>(
+      `UPDATE notifications
+       SET status = 'read'::"notification_status", read_at = now(), updated_at = now()
+       WHERE user_id = $1::uuid AND status <> 'read'::"notification_status"
+       RETURNING id`,
+      userId,
+    );
+  });
+  return (result as Array<{ id: string }>).length;
+}
+
+// Helper: get status of a specific notification (privileged, bypasses RLS)
+async function getNotificationStatus(
+  prisma: PrismaClient,
+  id: string,
+): Promise<string | null> {
+  const rows = await prisma.$queryRawUnsafe<Array<{ status: string }>>(
+    `SELECT status::text FROM notifications WHERE id = $1::uuid`,
+    id,
+  );
+  const arr = rows as Array<{ status: string }>;
+  return arr.length > 0 && arr[0] ? arr[0].status : null;
+}
+
+describe('notifications RLS — mark-all cross-tenant isolation (Story 14-2b)', () => {
+  // New IDs that don't collide with 14-1 tests
+  const MA_A1_ID = '01977000-0001-7000-8000-000000000011';
+  const MA_A2_ID = '01977000-0001-7000-8000-000000000012';
+  const MA_B1_ID = '01977000-0001-7000-8000-000000000013';
+  const MA_B2_ID = '01977000-0001-7000-8000-000000000014';
+  const USER_MA_A = '01977000-0001-7000-8000-000000000a11';
+  const USER_MA_B = '01977000-0001-7000-8000-000000000b11';
+
+  beforeAll(async () => {
+    // Ensure users exist (idempotent)
+    await ensureUser(privileged, USER_MA_A, 'user-ma-a@rls-test.com');
+    await ensureUser(privileged, USER_MA_B, 'user-ma-b@rls-test.com');
+    // Insert 2 pending notifications for each tenant
+    await insertNotification(privileged, MA_A1_ID, TENANT_A_ID, USER_MA_A);
+    await insertNotification(privileged, MA_A2_ID, TENANT_A_ID, USER_MA_A);
+    await insertNotification(privileged, MA_B1_ID, TENANT_B_ID, USER_MA_B);
+    await insertNotification(privileged, MA_B2_ID, TENANT_B_ID, USER_MA_B);
+  });
+
+  afterEach(async () => {
+    // Reset to pending so idempotency test works on 2nd CI run
+    await privileged.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `UPDATE notifications SET status = 'pending'::"notification_status", read_at = NULL
+         WHERE id IN ($1::uuid, $2::uuid, $3::uuid, $4::uuid)`,
+        MA_A1_ID, MA_A2_ID, MA_B1_ID, MA_B2_ID,
+      );
+    }).catch(() => {/* best-effort */});
+  });
+
+  afterAll(async () => {
+    await privileged.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `DELETE FROM notifications WHERE id IN ($1::uuid, $2::uuid, $3::uuid, $4::uuid)`,
+        MA_A1_ID, MA_A2_ID, MA_B1_ID, MA_B2_ID,
+      );
+    }).catch(() => {/* best-effort */});
+  });
+
+  it('mark-all for Tenant A only marks A notifications, B remains pending', async () => {
+    const count = await markAllAsReadForTenant(app, TENANT_A_ID, USER_MA_A);
+    expect(count).toBe(2);
+
+    // A's notifications should now be read
+    expect(await getNotificationStatus(privileged, MA_A1_ID)).toBe('read');
+    expect(await getNotificationStatus(privileged, MA_A2_ID)).toBe('read');
+
+    // B's notifications must remain pending (cross-tenant isolation)
+    expect(await getNotificationStatus(privileged, MA_B1_ID)).toBe('pending');
+    expect(await getNotificationStatus(privileged, MA_B2_ID)).toBe('pending');
+  });
+
+  it('mark-all is idempotent: calling twice returns 0 on second call', async () => {
+    // First call: mark 2 as read
+    const first = await markAllAsReadForTenant(app, TENANT_A_ID, USER_MA_A);
+    expect(first).toBe(2);
+    // Second call: nothing left unread → count = 0
+    const second = await markAllAsReadForTenant(app, TENANT_A_ID, USER_MA_A);
+    expect(second).toBe(0);
+  });
+});
