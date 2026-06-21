@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Continuar execute-task: FASE 4 (segurança robustez — 4.1-4.4 inline no hook, verificar), FASE 5 restante (5.4 RLS local real, 5.5 E2E Playwright, 5.7 roundtrip), FASE 6 (lint+build+PR). Branch: feat/sse-reconnection-14-2c",
+  "next_instruction": "Iniciar etapa execute-task — executar tasks do backlog tasks.md em ordem de FASE 1→6, uma task por onda, conforme dependencias declaradas na Matriz de Dependências.",
   "waves": [
     {
       "id": "onda-001",
@@ -137,21 +137,13 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-21T06:32:49Z",
-      "finished_at": "2026-06-21T06:51:00Z",
-      "executed_stages": [
-        "execute-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1091,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-21T06:50:46Z",
-          "decision_id": "dec-019"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -496,25 +488,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-21T06:50:39Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 1-3 + testes unitários executados: contracts Zod, backend since, frontend hook+componente, i18n, unit tests",
-      "options_considered": [
-        "executar-FASE-1-a-3",
-        "executar-somente-FASE-1",
-        "aguardar"
-      ],
-      "choice": "executar-FASE-1-a-3",
-      "rationale": "FASE 1 e 2 completadas (contratos + backend); FASE 3 completa (hook + componente + i18n); testes unitários 5.1/5.2/5.3/5.6 completos; build passes. FASE 4 (segurança robustez) está impl. inline no hook. Pendente: 5.4 RLS real, 5.5 E2E, 5.7 roundtrip, FASE 6 lint+PR.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -532,12 +505,12 @@
     "current_wave_start": "2026-06-21T06:32:49Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 1,
-    "wallclock_total_seconds": 2677,
+    "wallclock_total_seconds": 1586,
     "max_depth_reached": 2,
     "subagents_spawned": 1,
-    "decisions_total": 19,
+    "decisions_total": 18,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
