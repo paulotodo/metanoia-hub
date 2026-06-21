@@ -54,7 +54,7 @@ const SHELL_HTML = `
   <nav aria-label="Main navigation">
     <ul role="list">
       <li><a href="/app/gestao/radar" tabindex="0" aria-current="page">Radar</a></li>
-      <li><a href="/app/gestao/trilhas" tabindex="-1">Trilhas</a></li>
+      <li><a href="/app/gestao/relatorios/trilhas" tabindex="-1">Trilhas</a></li>
     </ul>
   </nav>
   <main id="conteudo">

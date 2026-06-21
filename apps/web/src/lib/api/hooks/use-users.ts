@@ -27,13 +27,19 @@ export const usersKeys = {
   onboardingStatus: () => [...usersKeys.all, 'onboarding-status'] as const,
 };
 
-/** Fetch the authenticated user's onboarding status. */
-export function useOnboardingStatus() {
+/**
+ * Fetch the authenticated user's onboarding status.
+ *
+ * Pass `enabled: false` to skip the request for roles that don't use the
+ * user-scoped onboarding flow (admin_tenant uses the tenant wizard instead).
+ */
+export function useOnboardingStatus(enabled = true) {
   return useQuery({
     queryKey: usersKeys.onboardingStatus(),
     queryFn: () =>
       apiClient.get('/users/me/onboarding-status', OnboardingStatusSchema),
     staleTime: 1000 * 60 * 5,
+    enabled,
   });
 }
 
