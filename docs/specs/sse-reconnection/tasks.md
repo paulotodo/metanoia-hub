@@ -222,23 +222,23 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 **Estado de conexão (client state — `useState`/`useRef`, NUNCA Zustand/TanStack — FR-012):**
 - [x] Adicionar tipo `ConnectionState = 'connected' | 'reconnecting' | 'extended-outage' | 'auth-error'`
 - [x] Adicionar `useState<ConnectionState>('connected')` para `connectionState`
-- [ ] Adicionar `useRef<number>(0)` para `failureCount`
-- [ ] Adicionar `useRef<string | null>(null)` para `lastReceivedAt` (FR-008; NUNCA persistido — FR-009)
-- [ ] Adicionar `useRef<ReturnType<typeof setTimeout> | null>(null)` para `retryTimerRef`
-- [ ] Adicionar `useRef<AbortController | null>(null)` para `gapFillControllerRef` (cancelamento — CHK064)
+- [x] Adicionar `useRef<number>(0)` para `failureCount`
+- [x] Adicionar `useRef<string | null>(null)` para `lastReceivedAt` (FR-008; NUNCA persistido — FR-009)
+- [x] Adicionar `useRef<ReturnType<typeof setTimeout> | null>(null)` para `retryTimerRef`
+- [x] Adicionar `useRef<AbortController | null>(null)` para `gapFillControllerRef` (cancelamento — CHK064)
 
 **Atualização de `lastReceivedAt` no evento `notification`:**
-- [ ] No handler do evento `notification`, quando `parsed.success`, atualizar `lastReceivedAt.current` com `parsed.data.createdAt` se for mais recente
-- [ ] Quando `connectionState !== 'connected'`, transitar para `'connected'` e resetar `failureCount.current = 0`
+- [x] No handler do evento `notification`, quando `parsed.success`, atualizar `lastReceivedAt.current` com `parsed.data.createdAt` se for mais recente
+- [x] Quando `connectionState !== 'connected'`, transitar para `'connected'` e resetar `failureCount.current = 0`
 
 **Backoff exponencial (FR-001):**
-- [ ] Implementar `calcBackoff(attempt: number): number` → `Math.min(Math.pow(2, attempt) * 1000, 30000)` (1000, 2000, 4000, 8000, ..., 30000)
-- [ ] No `onerror` do EventSource: fechar fonte, executar probe de 401 (ver task 4.2), agendar reconexão com backoff
-- [ ] Após 5 falhas consecutivas no teto (30s): transitar para `'extended-outage'` (FR-004)
-- [ ] **NUNCA logar a URL (contém `?token=`)** (CHK042–044)
+- [x] Implementar `calcBackoff(attempt: number): number` → `Math.min(Math.pow(2, attempt) * 1000, 30000)` (1000, 2000, 4000, 8000, ..., 30000)
+- [x] No `onerror` do EventSource: fechar fonte, executar probe de 401 (ver task 4.2), agendar reconexão com backoff
+- [x] Após 5 falhas consecutivas no teto (30s): transitar para `'extended-outage'` (FR-004)
+- [x] **NUNCA logar a URL (contém `?token=`)** (CHK042–044)
 
 **Gap-fill ao reconectar (FR-010/FR-011):**
-- [ ] Implementar `executeGapFill()` chamada após reconexão bem-sucedida:
+- [x] Implementar `executeGapFill()` chamada após reconexão bem-sucedida:
   - Se `lastReceivedAt.current === null`, retornar imediatamente (edge case primeira conexão)
   - Cancelar gap-fill anterior: `gapFillControllerRef.current?.abort()` (CHK064)
   - Criar novo `AbortController` e guardar em `gapFillControllerRef.current`
@@ -250,10 +250,10 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 **Retorno do hook:**
 - [x] Retornar `{ connectionState, retryNow }` além do comportamento original
-- [ ] `retryNow`: cancela timer, reseta `failureCount.current = 0`, reconecta imediatamente (FR-005)
+- [x] `retryNow`: cancela timer, reseta `failureCount.current = 0`, reconecta imediatamente (FR-005)
 
 **Cleanup no desmonte:**
-- [ ] `return () => { source.close(); clearTimeout(retryTimerRef.current ?? undefined); gapFillControllerRef.current?.abort(); }` (CHK071/072)
+- [x] `return () => { source.close(); clearTimeout(retryTimerRef.current ?? undefined); gapFillControllerRef.current?.abort(); }` (CHK071/072)
 
 **Critério de aceitação**: hook exporta `{ connectionState, retryNow }`; unit tests passam (ver 5.1).
 
@@ -265,14 +265,14 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 - [x] Criar componente `ConnectionStatus` com props `{ connectionState: ConnectionState; onRetry: () => void }`
 - [x] `connectionState === 'connected'`: renderizar `null` (sem DOM — FR-013; evita anúncio vazio em aria-live — CHK035)
-- [ ] `connectionState === 'reconnecting'`: texto "Reconectando..." sutil (abaixo do sino, text-sm text-muted-foreground, sem overlay — CHK025: posicionamento documentado em comentário) com `aria-live="polite"` (CHK032)
-- [ ] `connectionState === 'extended-outage'`: mensagem de outage + botão "Tentar agora" (FR-004/005); mesma região `aria-live="polite"`
-- [ ] `connectionState === 'auth-error'`: mensagem "Sessão expirada. Faça login novamente." + link para `/login` (CHK046/047)
-- [ ] Transições com `motion-safe:transition-all` (CHK034)
-- [ ] Focus-ring no botão: `focus-visible:ring-2 focus-visible:ring-brand-teal/30` (CHK033)
-- [ ] Botão com `type="button"` explícito (CHK038)
-- [ ] Textos via `useTranslations('notificationCenter.connection')` (CHK029 — chaves de task 3.4)
-- [ ] Contraste: usar tokens `text-foreground`/`bg-background` (WCAG 4.5:1 por construção dos tokens do projeto — CHK037; documentar em comentário)
+- [x] `connectionState === 'reconnecting'`: texto "Reconectando..." sutil (abaixo do sino, text-sm text-muted-foreground, sem overlay — CHK025: posicionamento documentado em comentário) com `aria-live="polite"` (CHK032)
+- [x] `connectionState === 'extended-outage'`: mensagem de outage + botão "Tentar agora" (FR-004/005); mesma região `aria-live="polite"`
+- [x] `connectionState === 'auth-error'`: mensagem "Sessão expirada. Faça login novamente." + link para `/login` (CHK046/047)
+- [x] Transições com `motion-safe:transition-all` (CHK034)
+- [x] Focus-ring no botão: `focus-visible:ring-2 focus-visible:ring-brand-teal/30` (CHK033)
+- [x] Botão com `type="button"` explícito (CHK038)
+- [x] Textos via `useTranslations('notificationCenter.connection')` (CHK029 — chaves de task 3.4)
+- [x] Contraste: usar tokens `text-foreground`/`bg-background` (WCAG 4.5:1 por construção dos tokens do projeto — CHK037; documentar em comentário)
 - [x] Exportar como named export: `export function ConnectionStatus(...)`
 
 **Critério de aceitação**: 4 estados renderizam corretamente; unit tests passam (ver 5.2).
@@ -283,14 +283,14 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 **Arquivo**: `apps/web/src/components/notifications/notification-bell.tsx`
 
-- [ ] Atualizar chamada de `useNotificationStream`:
+- [x] Atualizar chamada de `useNotificationStream`:
   ```ts
   const { connectionState, retryNow } = useNotificationStream({ silenced, announce });
   ```
 - [x] Importar `ConnectionStatus` de `./connection-status`
-- [ ] Importar tipo `ConnectionState` de `@/hooks/use-notification-stream`
+- [x] Importar tipo `ConnectionState` de `@/hooks/use-notification-stream`
 - [x] Renderizar `<ConnectionStatus connectionState={connectionState} onRetry={retryNow} />` dentro do JSX do bell, posicionado abaixo do ícone/badge
-- [ ] Verificar que o seletor de bell no E2E existente (`aria-label`) não é afetado pela adição (ver `apps/web/e2e/notifications/notification-center.spec.ts`)
+- [x] Verificar que o seletor de bell no E2E existente (`aria-label`) não é afetado pela adição (ver `apps/web/e2e/notifications/notification-center.spec.ts`)
 
 **Critério de aceitação**: `NotificationBell` renderiza `ConnectionStatus`; E2E existente `notification-center.spec.ts` continua passando.
 
@@ -324,13 +324,13 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 **Arquivo**: `apps/web/src/hooks/__tests__/use-notification-stream.spec.ts` (parte da task 5.1)
 
-- [ ] Adicionar suite `"segurança: URL não vaza em logs"` (CHK043/044 — requisito obrigatório, M1):
+- [x] Adicionar suite `"segurança: URL não vaza em logs"` (CHK043/044 — requisito obrigatório, M1):
   - Espiar `console.error`, `console.warn`, `console.log` com `vi.spyOn`
   - Simular falha do `EventSource` (trigger `onerror`)
   - Asseverar que nenhuma chamada aos spies contém substring `"token="`
   - Asseverar que nenhuma chamada contém a URL base do SSE endpoint
-- [ ] Cobrir também o caso de erro do `executeGapFill` falhando com erro de rede
-- [ ] Documentar no comentário do teste: "CHK043/044 — obrigatório por OWASP M1 / spec §Edge Cases"
+- [x] Cobrir também o caso de erro do `executeGapFill` falhando com erro de rede
+- [x] Documentar no comentário do teste: "CHK043/044 — obrigatório por OWASP M1 / spec §Edge Cases"
 
 **Critério de aceitação**: qualquer `console.*` com `token=` faz o teste falhar.
 
@@ -342,7 +342,7 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 O `EventSource` nativo não expõe o status HTTP no `onerror` — detecção de 401 via probe fetch separado (CHK015/046/047 — OWASP M2):
 
-- [ ] No `onerror` do EventSource, executar sonda de autenticação:
+- [x] No `onerror` do EventSource, executar sonda de autenticação:
   ```ts
   // Probe: endpoint /notifications (sem ?token= no query — usa header Bearer)
   // CHK015: interromper loop cego com credencial morta
@@ -357,9 +357,9 @@ O `EventSource` nativo não expõe o status HTTP no `onerror` — detecção de 
     }
   }).catch(() => scheduleReconnect()); // sonda falhou → rede down → reconectar
   ```
-- [ ] Implementar `scheduleReconnect()` como função interna (reusada pelo `retryNow`)
-- [ ] Garantir que `auth-error` não agenda retry (`setTimeout` não chamado)
-- [ ] Confirmar que o endpoint `/notifications` usa header `Authorization` (não query param `?token=`) — a sonda não vaza token em URL
+- [x] Implementar `scheduleReconnect()` como função interna (reusada pelo `retryNow`)
+- [x] Garantir que `auth-error` não agenda retry (`setTimeout` não chamado)
+- [x] Confirmar que o endpoint `/notifications` usa header `Authorization` (não query param `?token=`) — a sonda não vaza token em URL
 
 **Critério de aceitação**: com token expirado, hook transita para `auth-error` e para de tentar reconectar; unit test verifica.
 
@@ -371,10 +371,10 @@ O `EventSource` nativo não expõe o status HTTP no `onerror` — detecção de 
 
 Formaliza CHK021/055 como implementação verificável:
 
-- [ ] Confirmar que `executeGapFill()` usa `perPage=100` (máximo — minimiza requests)
-- [ ] Confirmar que o loop `while (hasMore)` para ao constatar `fetchedIds.size >= total` (não apenas quando `data.length < perPage`)
-- [ ] Adicionar teste específico em `use-notification-stream.spec.ts` (task 5.1): simular gap-fill com `total: 150`, primeira página com 100 itens, segunda com 50 — verificar que o hook faz 2 fetches e `invalidateQueries` é chamado após o último
-- [ ] Documentar no código: `// gap-fill paginado: busca até total (CHK021/055 — sem truncamento silencioso)`
+- [x] Confirmar que `executeGapFill()` usa `perPage=100` (máximo — minimiza requests)
+- [x] Confirmar que o loop `while (hasMore)` para ao constatar `fetchedIds.size >= total` (não apenas quando `data.length < perPage`)
+- [x] Adicionar teste específico em `use-notification-stream.spec.ts` (task 5.1): simular gap-fill com `total: 150`, primeira página com 100 itens, segunda com 50 — verificar que o hook faz 2 fetches e `invalidateQueries` é chamado após o último
+- [x] Documentar no código: `// gap-fill paginado: busca até total (CHK021/055 — sem truncamento silencioso)`
 
 **Critério de aceitação**: unit test com > perPage notificações passa; não trunca silenciosamente.
 
@@ -386,10 +386,10 @@ Formaliza CHK021/055 como implementação verificável:
 
 Resolve CHK064 (race condition: fetch em andamento + nova desconexão):
 
-- [ ] Confirmar que `gapFillControllerRef.current?.abort()` é chamado antes de criar novo `AbortController` em cada `executeGapFill()`
-- [ ] Confirmar que `AbortError` é capturado silenciosamente (fetch cancelado = comportamento esperado)
-- [ ] Confirmar que o cleanup no desmonte também chama `gapFillControllerRef.current?.abort()`
-- [ ] Adicionar teste em `use-notification-stream.spec.ts`: simular gap-fill em andamento + novo `onerror` → apenas 1 gap-fill executado (fetch anterior cancelado, novo iniciado)
+- [x] Confirmar que `gapFillControllerRef.current?.abort()` é chamado antes de criar novo `AbortController` em cada `executeGapFill()`
+- [x] Confirmar que `AbortError` é capturado silenciosamente (fetch cancelado = comportamento esperado)
+- [x] Confirmar que o cleanup no desmonte também chama `gapFillControllerRef.current?.abort()`
+- [x] Adicionar teste em `use-notification-stream.spec.ts`: simular gap-fill em andamento + novo `onerror` → apenas 1 gap-fill executado (fetch anterior cancelado, novo iniciado)
 
 **Critério de aceitação**: sem race conditions; `AbortError` não produz log de erro.
 
@@ -459,8 +459,8 @@ _(Ver task 2.3 — confirmação final de cobertura)_
 
 _(Ver task 2.4 — confirmação de execução dupla)_
 
-- [ ] Rodar `notifications.rls-spec.ts` 2× consecutivas localmente sem falhas intermitentes
-- [ ] Verificar que o CI script de RLS detecta automaticamente os novos describe blocks
+- [x] Rodar `notifications.rls-spec.ts` 2× consecutivas localmente sem falhas intermitentes
+- [x] Verificar que o CI script de RLS detecta automaticamente os novos describe blocks
 
 **Critério de aceitação**: 0 falhas nas 2 execuções.
 
@@ -476,11 +476,11 @@ _(Ver task 2.4 — confirmação de execução dupla)_
 - Mocks com UUID v7 válidos
 - SSE mockado via `page.route()` para `**/sse/notifications*`
 
-- [ ] Setup: mock SSE via `page.route('**/sse/notifications*', ...)` (Content-Type: text/event-stream)
-- [ ] Setup: `loginAs` via `fixtures/auth.fixture.ts`
-- [ ] Mock `GET /api/v1/notifications*` para controlar gap-fill com UUID v7 válidos
+- [x] Setup: mock SSE via `page.route('**/sse/notifications*', ...)` (Content-Type: text/event-stream)
+- [x] Setup: `loginAs` via `fixtures/auth.fixture.ts`
+- [x] Mock `GET /api/v1/notifications*` para controlar gap-fill com UUID v7 válidos
 
-- [ ] **Cenário 1 — Reconexão automática + gap-fill** (US1, FR-020a):
+- [x] **Cenário 1 — Reconexão automática + gap-fill** (US1, FR-020a):
   - Abrir Notification Center com SSE ativo e 0 notificações
   - Simular desconexão: `page.route('**/sse/notifications*', r => r.abort())`
   - `waitForSelector('[aria-live="polite"]')` com texto "Reconectando..."
@@ -490,19 +490,19 @@ _(Ver task 2.4 — confirmação de execução dupla)_
   - Verificar que "Reconectando..." sumiu
   - Verificar as 2 notificações do gap-fill no centro (sem duplicatas)
 
-- [ ] **Cenário 2 — Outage estendido → aviso + retry manual** (US2, FR-020b):
+- [x] **Cenário 2 — Outage estendido → aviso + retry manual** (US2, FR-020b):
   - Simular 5 falhas consecutivas (usando `page.clock` se disponível, ou mock time via env)
   - `waitForSelector` com texto "Sem conexão. Notificações podem estar atrasadas."
   - Verificar que botão "Tentar agora" está visível e focável via Tab
   - Clicar "Tentar agora" → verificar nova chamada ao SSE route
 
-- [ ] **Cenário 3 — Reconexão após outage: indicador some + gap-fill** (US2 AC3, FR-020c):
+- [x] **Cenário 3 — Reconexão após outage: indicador some + gap-fill** (US2 AC3, FR-020c):
   - Continuação do Cenário 2: restaurar SSE
   - Aguardar transição `extended-outage` → `connected` (aviso desaparece)
   - Verificar que gap-fill foi executado (rota `GET /notifications?since=...` chamada)
 
-- [ ] Não usar `networkidle` em nenhum test (usar `domcontentloaded` + `waitForSelector`)
-- [ ] Seletores específicos com `data-testid` ou aria attributes não-duplicados
+- [x] Não usar `networkidle` em nenhum test (usar `domcontentloaded` + `waitForSelector`)
+- [x] Seletores específicos com `data-testid` ou aria attributes não-duplicados
 
 **Critério de aceitação**: `pnpm --filter @metanoia/web e2e -- sse-reconnection.spec.ts` passa com 0 falhas.
 
@@ -523,11 +523,11 @@ _(Ver task 1.2 — confirmação pré-PR)_
 
 **Arquivo**: `apps/web/e2e/notifications/sse-reconnection.spec.ts` (adicionar no mesmo arquivo)
 
-- [ ] Chamar `GET /api/v1/notifications?since=<timestamp>&status=unread` contra backend local real (sem mock de API)
-- [ ] Verificar shape `{ data: NotificationListItemSchema[], meta }` com `created_at` snake_case
-- [ ] Verificar que `since` ISO 8601 retorna apenas itens posteriores ao timestamp
-- [ ] Verificar que `since` inválido retorna 400
-- [ ] Marcar como `test.skip` se backend local não disponível no CI headless (integração condicional)
+- [x] Chamar `GET /api/v1/notifications?since=<timestamp>&status=unread` contra backend local real (sem mock de API)
+- [x] Verificar shape `{ data: NotificationListItemSchema[], meta }` com `created_at` snake_case
+- [x] Verificar que `since` ISO 8601 retorna apenas itens posteriores ao timestamp
+- [x] Verificar que `since` inválido retorna 400
+- [x] Marcar como `test.skip` se backend local não disponível no CI headless (integração condicional)
 
 **Critério de aceitação**: teste passa com backend local; documentado como "roundtrip real (opcional em CI)".
 
