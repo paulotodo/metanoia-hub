@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { SseController } from './sse/sse.controller';
+import { SseConnectionManager } from './sse/sse-connection.manager';
+import { SseRedisService } from './sse/sse-redis.service';
 import { NotificationsService } from './notifications.service';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsWorker } from './notifications.worker';
@@ -23,8 +26,10 @@ import { DigestService } from './digest.service';
     InAppChannel,
     EmailChannel,
     DigestService,
+    SseConnectionManager,
+    SseRedisService,
   ],
-  controllers: [NotificationsController],
+  controllers: [NotificationsController, SseController],
   exports: [NotificationsService],
 })
 export class NotificationsModule {}
