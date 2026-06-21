@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Executar review-task: verificar PR #172 e marcar feature como concluída",
+  "current_stage": "execute-task",
+  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -137,11 +137,11 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-21T01:26:26Z",
-      "finished_at": "2026-06-21T01:50:03Z",
+      "finished_at": "2026-06-21T01:30:42Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1417,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 256,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -691,24 +691,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-029",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-21T01:49:51Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Todas as 13 tarefas (7 fases, 86 subtarefas) concluídas. PR #172 aberto. pnpm turbo lint green, pnpm build green, 43 testes novos passando (34 SSE + 9 env.validation).",
-      "options_considered": [
-        "concluir-execute-task",
-        "retomar-proxima-onda"
-      ],
-      "choice": "concluir-execute-task",
-      "rationale": "Backlog 100% implementado. lint/build/testes verdes. PR aberto contra dev com evidência de validação.",
-      "justification_score": 3,
-      "evidence": "Test Files 4 passed (4), Tests 34 passed (34); pnpm turbo lint: 4 successful; nest build success",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -749,12 +731,12 @@
     "current_wave_start": "2026-06-21T01:26:26Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3059,
+    "wallclock_total_seconds": 1642,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 29,
+    "decisions_total": 28,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -800,11 +782,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T01:22:22Z",
       "description": "onda-005 encerrada: checklist concluido (41 items, 0 gaps bloqueantes); proxima fase: create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:50:23Z",
-      "description": "execute-task concluído; PR #172 aberto; próxima onda = review-task"
     }
   ],
   "tasks": [

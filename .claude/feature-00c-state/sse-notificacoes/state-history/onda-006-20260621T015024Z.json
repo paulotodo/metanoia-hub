@@ -800,11 +800,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T01:22:22Z",
       "description": "onda-005 encerrada: checklist concluido (41 items, 0 gaps bloqueantes); proxima fase: create-tasks"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:50:23Z",
-      "description": "execute-task concluído; PR #172 aberto; próxima onda = review-task"
     }
   ],
   "tasks": [
