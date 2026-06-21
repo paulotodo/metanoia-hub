@@ -1,0 +1,1031 @@
+{
+  "wave_number": 8,
+  "captured_at": "2026-06-21T07:24:50Z",
+  "state_sha256_self": "094b89a23c75db1966a8d8ee3b8ca8f91d10a81e7d42b252b64e0b75d682dfdd",
+  "state_snapshot": {
+    "schema_version": "1.0.0",
+    "short_name": "sse-reconnection",
+    "execution": {
+      "id": "feat-sse-reconnection-20260621T053722Z",
+      "target_project_path": "/var/lib/metanoia-hub",
+      "target_project_description": "SSE Reconnection & Gap Fill (FR77) — Story 14-2c. Backend apps/api: estender GET /api/v1/notifications para aceitar query param since (ISO 8601) que filtra notificacoes criadas apos o timestamp; atualizar Zod query schema em packages/types + teste (e RLS spec se tenant-scoped). Frontend apps/web (Client Components): ESTENDER o hook existente use-notification-stream.ts (criado na 14-2b) com EventSource reconnect + backoff exponencial (1s,2s,4s,8s, max 30s); indicador sutil Reconectando... (some ao reconectar); apos 5 falhas consecutivas no max do backoff aviso Sem conexao. Notificacoes podem estar atrasadas. + botao Tentar agora; gap-fill ao reconectar (fetch ?since={lastReceivedAt}&status=unread, merge no notification center deduplicando por id); lastReceivedAt em memoria (NAO persistido — refresh busca todos unread); novo componente connection-status. REUSE componentes da 14-2b em apps/web/src/components/notifications/. Textos pastorais em pt-BR.json. Testes: E2E Playwright (disconnect->auto-reconnect->gap-fill; outage estendido->aviso; reconnect->indicador some) + unit dos hooks. Fonte primaria: _bmad-output/implementation-artifacts/14-2c-sse-reconnection-gap-fill-fr77.md.",
+      "suggested_stack": null,
+      "status": "concluida",
+      "termination_reason": "concluido",
+      "started_at": "2026-06-21T05:37:22Z",
+      "finished_at": "2026-06-21T07:30:00Z"
+    },
+    "prerequisites": {
+      "briefing": {
+        "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+        "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+      },
+      "constitution": {
+        "path": "/var/lib/metanoia-hub/docs/constitution.md",
+        "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+        "version": "1.0.0"
+      }
+    },
+    "current_stage": "review-task",
+    "next_instruction": "PR #177 aberto (feat/sse-reconnection-14-2c -> dev). Fase execute-task CONCLUÍDA (127/127 checkboxes). Aguardar merge operador, então invocar review-task.",
+    "waves": [
+      {
+        "id": "onda-001",
+        "started_at": "2026-06-21T05:39:48Z",
+        "finished_at": "2026-06-21T05:42:51Z",
+        "executed_stages": [],
+        "tool_calls": 0,
+        "wallclock_seconds": 183,
+        "termination_reason": "etapa_concluida_avancando",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "specify",
+            "timestamp": "2026-06-21T05:42:51Z",
+            "decision_id": null
+          }
+        ]
+      },
+      {
+        "id": "onda-002",
+        "started_at": "2026-06-21T05:48:39Z",
+        "finished_at": "2026-06-21T05:51:08Z",
+        "executed_stages": [
+          "clarify"
+        ],
+        "tool_calls": 1,
+        "wallclock_seconds": 149,
+        "termination_reason": "etapa_concluida_avancando",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "model-selector",
+            "timestamp": "2026-06-21T05:49:08Z",
+            "decision_id": "dec-004"
+          },
+          {
+            "skill": "clarify-asker",
+            "timestamp": "2026-06-21T05:49:59Z",
+            "decision_id": null
+          },
+          {
+            "skill": "clarify",
+            "timestamp": "2026-06-21T05:50:38Z",
+            "decision_id": null
+          }
+        ]
+      },
+      {
+        "id": "onda-003",
+        "started_at": "2026-06-21T05:57:11Z",
+        "finished_at": "2026-06-21T06:03:49Z",
+        "executed_stages": [],
+        "tool_calls": 0,
+        "wallclock_seconds": 398,
+        "termination_reason": "etapa_concluida_avancando",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "plan",
+            "timestamp": "2026-06-21T06:02:16Z",
+            "decision_id": "dec-008"
+          },
+          {
+            "skill": "plan",
+            "timestamp": "2026-06-21T06:03:49Z",
+            "decision_id": null
+          }
+        ]
+      },
+      {
+        "id": "onda-004",
+        "started_at": "2026-06-21T06:08:27Z",
+        "finished_at": "2026-06-21T06:13:56Z",
+        "executed_stages": [],
+        "tool_calls": 0,
+        "wallclock_seconds": 329,
+        "termination_reason": "concluido",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "checklist",
+            "timestamp": "2026-06-21T06:13:23Z",
+            "decision_id": "dec-012"
+          }
+        ]
+      },
+      {
+        "id": "onda-005",
+        "started_at": "2026-06-21T06:19:21Z",
+        "finished_at": "2026-06-21T06:28:08Z",
+        "executed_stages": [
+          "create-tasks"
+        ],
+        "tool_calls": 0,
+        "wallclock_seconds": 527,
+        "termination_reason": "etapa_concluida_avancando",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "create-tasks",
+            "timestamp": "2026-06-21T06:27:39Z",
+            "decision_id": "dec-016"
+          },
+          {
+            "skill": "validate-tasks-template",
+            "timestamp": "2026-06-21T06:27:48Z",
+            "decision_id": null
+          }
+        ]
+      },
+      {
+        "id": "onda-006",
+        "started_at": "2026-06-21T06:32:49Z",
+        "finished_at": "2026-06-21T06:51:00Z",
+        "executed_stages": [
+          "execute-task"
+        ],
+        "tool_calls": 0,
+        "wallclock_seconds": 1091,
+        "termination_reason": "concluido",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "execute-task",
+            "timestamp": "2026-06-21T06:50:46Z",
+            "decision_id": "dec-019"
+          }
+        ]
+      },
+      {
+        "id": "onda-007",
+        "started_at": "2026-06-21T06:58:58Z",
+        "finished_at": "2026-06-21T07:10:49Z",
+        "executed_stages": [],
+        "tool_calls": 0,
+        "wallclock_seconds": 711,
+        "termination_reason": "concluido",
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "execute-task",
+            "timestamp": "2026-06-21T06:59:03Z",
+            "decision_id": "dec-021"
+          }
+        ]
+      },
+      {
+        "id": "onda-008",
+        "started_at": "2026-06-21T07:17:18Z",
+        "finished_at": null,
+        "executed_stages": [],
+        "tool_calls": 0,
+        "wallclock_seconds": 0,
+        "termination_reason": null,
+        "next_wave_scheduled_for": null,
+        "skills_invoked": [
+          {
+            "skill": "execute-task",
+            "timestamp": "2026-06-21T07:24:45Z",
+            "decision_id": "dec-024"
+          }
+        ]
+      }
+    ],
+    "decisions": [
+      {
+        "id": "dec-001",
+        "wave_id": "init",
+        "timestamp": "2026-06-21T05:37:30Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda init (fase specify)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-002",
+        "wave_id": "onda-001",
+        "timestamp": "2026-06-21T05:40:08Z",
+        "stage": "specify",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=sse-reconnection)",
+        "options_considered": [
+          "injetar-achados",
+          "no-op"
+        ],
+        "choice": "injetar-achados",
+        "rationale": "termos derivados da feature: sse reconnection gap fill fr77 story backend",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-003",
+        "wave_id": "onda-001",
+        "timestamp": "2026-06-21T05:47:25Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 1 (fase clarify)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-004",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-21T05:49:08Z",
+        "stage": "clarify",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual",
+          "fallback-default"
+        ],
+        "choice": "manter-atual",
+        "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+        "justification_score": 0,
+        "evidence": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-005",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-21T05:49:59Z",
+        "stage": "clarify",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "clarify-asker retornou perguntas=[] — spec completa, secao ## Clarifications declara zero NEEDS_CLARIFICATION; todos parametros (backoff 1/2/4/8/30s, threshold 5 falhas, dedup por id, lastReceivedAt nao-persistido, RLS no filtro since) definidos nos ACs da Story 14-2c",
+        "options_considered": [
+          "avancar-para-plan",
+          "spawnar-answerer",
+          "pausar-humano"
+        ],
+        "choice": "avancar-para-plan",
+        "rationale": "asker (subagente nivel 2) confirmou ausencia de ambiguidade material; Invariante I1: sem spawn de answerer, nenhuma Decisao de model-routing orfa criada",
+        "justification_score": 3,
+        "evidence": "clarify-asker retornou literalmente {\"perguntas\": []}; verificou FR-001/004/005/009/011/012/014/017/018 + 6 edge cases cobertos",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-006",
+        "wave_id": "onda-002",
+        "timestamp": "2026-06-21T05:55:09Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 2 (fase plan)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:opus",
+        "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-007",
+        "wave_id": "onda-003",
+        "timestamp": "2026-06-21T05:57:33Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=sse-reconnection)",
+        "options_considered": [
+          "injetar-achados",
+          "no-op"
+        ],
+        "choice": "injetar-achados",
+        "rationale": "termos derivados da feature: sse reconnection gap fill fr77 story backend",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-008",
+        "wave_id": "onda-003",
+        "timestamp": "2026-06-21T06:02:16Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Plano tecnico gerado: arquitetura reconexao+gap-fill, data-model (zero migration), contrato since, research (6 decisoes), quickstart (6 cenarios+roundtrip). Constitution PASS em todos os MUST.",
+        "options_considered": [
+          "aceitar-plano",
+          "revisar"
+        ],
+        "choice": "aceitar-plano",
+        "rationale": "Plano reflete codigo REAL da 14-2b (hook use-notification-stream.ts, controller/service notifications, schema Zod compartilhado, messages pt-BR); zero NEEDS_CLARIFICATION; alinha controller ao shared schema fechando divida de duplicacao",
+        "justification_score": 3,
+        "evidence": "ls docs/specs/sse-reconnection/: plan.md(184L) research.md(193L) data-model.md(74L) quickstart.md(120L) contracts/notifications-since.md(127L); total 6 artefatos no disco",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-009",
+        "wave_id": "onda-003",
+        "timestamp": "2026-06-21T06:02:34Z",
+        "stage": "plan",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Skip do gate doc-quality (validate-documentation): skill nao disponivel/registrada neste ambiente (tool Skill retornou 'Unknown skill: validate-documentation')",
+        "options_considered": [
+          "rodar-gate",
+          "skip-com-justificativa"
+        ],
+        "choice": "skip-com-justificativa",
+        "rationale": "Skill validate-documentation ausente do skill set ativo; nao e bypass deliberado. Artefatos foram revisados manualmente: sem TBD/placeholder, caminhos verificados contra codebase real (use-notification-stream.ts, notifications.controller/service, packages/types, messages/pt-BR.json), consistencia plan<->research<->contract validada",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-010",
+        "wave_id": "onda-003",
+        "timestamp": "2026-06-21T06:07:10Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 3 (fase checklist)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-011",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-21T06:09:04Z",
+        "stage": "checklist",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=sse-reconnection)",
+        "options_considered": [
+          "injetar-achados",
+          "no-op"
+        ],
+        "choice": "injetar-achados",
+        "rationale": "termos derivados da feature: sse reconnection gap fill fr77 story backend",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-012",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-21T06:13:16Z",
+        "stage": "checklist",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Execução da etapa checklist: 4 domínios validados (api, ux-a11y, security, performance)",
+        "options_considered": [
+          "executar-todos-dominios",
+          "executar-dominios-principais",
+          "skip"
+        ],
+        "choice": "executar-todos-dominios",
+        "rationale": "Feature atravessa 4 domínios de risco: api (filtro since + RLS), ux-a11y (connection-status, aria-live), security (OWASP M1/M2/L1/L2/L3), performance (backoff, gap-fill sob volume). Todos os findings do OWASP gate foram convertidos em itens CHK verificáveis.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-013",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-21T06:13:33Z",
+        "stage": "checklist",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Gaps identificados no checklist: 4 itens humanos críticos (CHK015/CHK046/CHK047 — 401 sem loop; CHK021/CHK055 — gap-fill paginado; CHK025 — 'sutil' não quantificado; CHK066 — índice composto)",
+        "options_considered": [
+          "escalar-como-gaps-em-tasks",
+          "pausar-para-humano",
+          "aceitar-risco"
+        ],
+        "choice": "escalar-como-gaps-em-tasks",
+        "rationale": "Nenhum gap é bloqueador de create-tasks: os 4 clusters de gaps humanos (401-handling, paginação gap-fill, UI sizing, índice DB) têm impacto conhecido e podem virar tasks de definição no backlog. Score 2: contexto da spec+OWASP sustenta a decisão de escalar sem pausar.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-014",
+        "wave_id": "onda-004",
+        "timestamp": "2026-06-21T06:17:11Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 4 (fase create-tasks)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-015",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-21T06:19:38Z",
+        "stage": "create-tasks",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Inicio da fase create-tasks — decomposicao da feature sse-reconnection em backlog executavel",
+        "options_considered": [
+          "iniciar",
+          "abortar"
+        ],
+        "choice": "iniciar",
+        "rationale": "Todos os artefatos prerequisitos prontos (spec.md, plan.md, data-model.md, research.md, contracts/, checklists/); pre-checks passaram (cycles/circular/budget OK, drift exit 1 = normal para onda 5); zero bloqueios pendentes.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-016",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-21T06:27:39Z",
+        "stage": "create-tasks",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Gate template-fidelity passou (critical=0, warning=0); tasks.md gerado com 24 tasks em 6 fases",
+        "options_considered": [
+          "aceitar",
+          "corrigir-e-reiterar"
+        ],
+        "choice": "aceitar",
+        "rationale": "validate-tasks-template.sh saiu com exit 0, RESULT|critical=0|warning=0. 24 tasks cobrindo: contratos Zod (1.1-1.2), backend since (2.1-2.4), frontend hook+UI (3.1-3.4), seguranca+robustez (4.1-4.4), testes (5.1-5.7), qualidade+entrega (6.1-6.2). Gaps do checklist cobertos: 401/token (4.2), gap-fill paginado (4.3), race condition (4.4), assert no-token-in-logs (4.1), bind posicional (2.2), RLS cross-tenant 2x CI (2.4).",
+        "justification_score": 3,
+        "evidence": "RESULT|critical=0|warning=0 (saida do validate-tasks-template.sh)",
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-017",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-21T06:27:48Z",
+        "stage": "create-tasks",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Skip do gate validate-docs-rendered: tasks.md nao contem Mermaid nem links externos a validar; gate docs-render nao agrega valor significativo neste artefato",
+        "options_considered": [
+          "rodar-gate",
+          "skip-com-justificativa"
+        ],
+        "choice": "skip-com-justificativa",
+        "rationale": "tasks.md e um arquivo de backlog markdown puro (sem Mermaid, sem links externos, sem frontmatter YAML); o gate validate-docs-rendered e projetado para docs com diagramas e links; o gate deterministico validate-tasks-template.sh ja passou (critical=0, warning=0), que e o gate relevante para este artefato.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-018",
+        "wave_id": "onda-005",
+        "timestamp": "2026-06-21T06:31:10Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 5 (fase execute-task)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-019",
+        "wave_id": "onda-006",
+        "timestamp": "2026-06-21T06:50:39Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "FASE 1-3 + testes unitários executados: contracts Zod, backend since, frontend hook+componente, i18n, unit tests",
+        "options_considered": [
+          "executar-FASE-1-a-3",
+          "executar-somente-FASE-1",
+          "aguardar"
+        ],
+        "choice": "executar-FASE-1-a-3",
+        "rationale": "FASE 1 e 2 completadas (contratos + backend); FASE 3 completa (hook + componente + i18n); testes unitários 5.1/5.2/5.3/5.6 completos; build passes. FASE 4 (segurança robustez) está impl. inline no hook. Pendente: 5.4 RLS real, 5.5 E2E, 5.7 roundtrip, FASE 6 lint+PR.",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-020",
+        "wave_id": "onda-006",
+        "timestamp": "2026-06-21T06:57:12Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 6 (fase execute-task)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-021",
+        "wave_id": "onda-006",
+        "timestamp": "2026-06-21T06:58:53Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "inicio-onda-execute-task-FASE4-5",
+        "options_considered": [
+          "iniciar",
+          "abortar"
+        ],
+        "choice": "iniciar",
+        "rationale": "State verificado: hash OK, 0 bloqueios, budget OK. FASE 1-3 commitadas. Onda foca FASE 4 (verificacao checkboxes ja inline) + FASE 5 (testes unit+E2E locais)",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-022",
+        "wave_id": "onda-007",
+        "timestamp": "2026-06-21T07:10:22Z",
+        "stage": "execute-task",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "conclusao-onda-FASE4-5",
+        "options_considered": [
+          "fechar-onda",
+          "continuar"
+        ],
+        "choice": "fechar-onda",
+        "rationale": "FASE 4 verificada inline (todos checkboxes confirmados na implementacao real). FASE 5: unit tests 935/935, controller spec 10/10, RLS spec 2x11/11. E2E spec criado. Falta FASE 6 (lint+build+PR).",
+        "justification_score": 2,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-023",
+        "wave_id": "onda-007",
+        "timestamp": "2026-06-21T07:15:14Z",
+        "stage": "model-routing",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Selecao de modelo para onda 7 (fase execute-task)",
+        "options_considered": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "manter-atual"
+        ],
+        "choice": "model:sonnet",
+        "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+        "justification_score": 0,
+        "evidence": null,
+        "references": [],
+        "originating_artifact": null
+      },
+      {
+        "id": "dec-024",
+        "wave_id": "onda-008",
+        "timestamp": "2026-06-21T07:23:02Z",
+        "stage": "execute-task-FASE6",
+        "agent": "agente-00c-feature-orchestrator",
+        "context": "Lint sweep FASE 6 — 6 erros corrigidos (ConnectionState unused import, eslint-disable para regra inexistente, dynamic delete, variáveis não usadas)",
+        "options_considered": [
+          "corrigir-e-commitar",
+          "registrar-bloqueio"
+        ],
+        "choice": "corrigir-e-commitar",
+        "rationale": "Todos os 6 checks de lint passaram após correções cirúrgicas sem alterar lógica de negócio; build completo também passou.",
+        "justification_score": 3,
+        "evidence": "pnpm turbo lint --force: 4 successful; check-focus-ring: OK; check-motion-safe: OK; check-contrast-tokens: 0 falhas HARD; check-contrast: 7 pairs WCAG AA; check-i18n-scf: APROVADO; pnpm turbo build: 3 successful",
+        "references": [],
+        "originating_artifact": null
+      }
+    ],
+    "human_blocks": [],
+    "budgets": {
+      "max_recursion": 3,
+      "current_subagent_depth": 1,
+      "max_retro_executions_per_feature": 2,
+      "retro_executions_consumed": 0,
+      "max_cycles_per_stage": 5,
+      "cycles_consumed_current_stage": 1,
+      "tool_calls_threshold_wave": 80,
+      "wallclock_threshold_seconds": 5400,
+      "state_size_threshold_bytes": 1048576,
+      "tool_calls_current_wave": 0,
+      "current_wave_start": "2026-06-21T07:17:18Z"
+    },
+    "accumulated_metrics": {
+      "waves_total": 7,
+      "tool_calls_total": 1,
+      "wallclock_total_seconds": 3388,
+      "max_depth_reached": 2,
+      "subagents_spawned": 1,
+      "decisions_total": 24,
+      "human_blocks_total": 0,
+      "global_skill_suggestions_total": 0,
+      "toolkit_issues_opened": 0
+    },
+    "external_urls_whitelist": [],
+    "circular_movement_history": [],
+    "initial_key_aspects": [
+      "sse",
+      "reconnection",
+      "gap",
+      "fill",
+      "fr77",
+      "story",
+      "backend"
+    ],
+    "events": [
+      {
+        "event_type": "recall_consulted",
+        "timestamp": "2026-06-21T05:40:08Z",
+        "description": "etapa=specify hits=4"
+      },
+      {
+        "event_type": "recall_consulted",
+        "timestamp": "2026-06-21T05:57:24Z",
+        "description": "etapa=plan hits=4"
+      },
+      {
+        "event_type": "recall_consulted",
+        "timestamp": "2026-06-21T06:08:57Z",
+        "description": "etapa=checklist hits=4"
+      },
+      {
+        "event_type": "schedule_wait",
+        "timestamp": "2026-06-21T06:14:06Z",
+        "description": "onda-004 checklist concluida; proxima=create-tasks"
+      },
+      {
+        "event_type": "schedule_wait",
+        "timestamp": "2026-06-21T06:28:41Z",
+        "description": "create-tasks concluido; aguardando wakeup para execute-task"
+      },
+      {
+        "event_type": "schedule_wait",
+        "timestamp": "2026-06-21T07:11:05Z",
+        "description": "onda-007 concluida, aguardando FASE 6 lint+build+PR"
+      },
+      {
+        "event_type": "schedule_wait",
+        "timestamp": "2026-06-21T07:24:41Z",
+        "description": "PR #177 aberto; aguardando CI/merge operador; next_stage=review-task"
+      }
+    ],
+    "tasks": [
+      {
+        "task_id": "1.1",
+        "title": "Task 1.1 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:29Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "1.2",
+        "title": "Task 1.2 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:29Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "2.1",
+        "title": "Task 2.1 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:29Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "2.2",
+        "title": "Task 2.2 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:29Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "2.3",
+        "title": "Task 2.3 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:30Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "2.4",
+        "title": "Task 2.4 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:30Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.1",
+        "title": "verificacao-impl-hook-reconexao",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.2",
+        "title": "verificacao-connection-status",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.3",
+        "title": "verificacao-notification-bell",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "3.4",
+        "title": "Task 3.4 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:30Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "5.1",
+        "title": "testes-unit-hook",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:14Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "5.2",
+        "title": "Task 5.2 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:30Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "5.3",
+        "title": "Task 5.3 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:30Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "5.6",
+        "title": "Task 5.6 — FASE execution",
+        "wave_id": "onda-006",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T06:50:30Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "4.1",
+        "title": "testes-seguranca-token-leak",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "4.2",
+        "title": "probe-auth-401",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "4.3",
+        "title": "gap-fill-paginado",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "4.4",
+        "title": "race-condition-abort",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:13Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "5.4",
+        "title": "rls-spec-2x",
+        "wave_id": "onda-007",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/e2e/notifications/sse-reconnection.spec.ts",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:10:14Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "6.1",
+        "title": "Lint sweep completo do CI antes do PR",
+        "wave_id": "onda-008",
+        "outcome": "pass",
+        "tests_run": 6,
+        "tests_passed": 6,
+        "lint_ok": true,
+        "touched_files": [
+          "apps/web/src/components/notifications/__tests__/connection-status.spec.tsx",
+          "apps/web/src/components/notifications/notification-bell.tsx",
+          "apps/web/src/hooks/__tests__/use-notification-stream.spec.ts",
+          "apps/web/src/hooks/use-notification-stream.ts",
+          "docs/specs/sse-reconnection/tasks.md"
+        ],
+        "recorded_at": "2026-06-21T07:24:24Z",
+        "source": "execute-task"
+      },
+      {
+        "task_id": "6.2",
+        "title": "Abrir PR e finalizar story",
+        "wave_id": "onda-008",
+        "outcome": "pass",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "lint_ok": true,
+        "touched_files": [],
+        "recorded_at": "2026-06-21T07:24:24Z",
+        "source": "execute-task"
+      }
+    ]
+  }
+}

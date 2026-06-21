@@ -10,23 +10,11 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { z } from 'zod';
 import { KeycloakAuthGuard } from '../auth/keycloak.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { getRequestContext } from '../common/context/request-context';
-import { NotificationStatusSchema } from '@metanoia/types';
+import { NotificationsQuerySchema, type NotificationsQuery } from '@metanoia/types';
 import { NotificationsService } from './notifications.service';
-
-/**
- * Query schema for GET /api/v1/notifications.
- * perPage is capped at 100 to prevent expensive queries.
- */
-const NotificationsQuerySchema = z.object({
-  status: NotificationStatusSchema.optional(),
-  page: z.coerce.number().int().positive().default(1),
-  perPage: z.coerce.number().int().positive().max(100).default(20),
-});
-type NotificationsQuery = z.infer<typeof NotificationsQuerySchema>;
 
 /**
  * NotificationsController — REST endpoints for the authenticated user's

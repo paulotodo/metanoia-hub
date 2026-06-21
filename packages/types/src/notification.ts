@@ -90,6 +90,7 @@ export const NotificationsQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   perPage: z.coerce.number().int().positive().max(100).default(20),
   unread: z.coerce.boolean().optional(),
+  since: z.string().datetime().optional(), // ISO 8601 — gap-fill (FR-015/FR-017)
 });
 export type NotificationsQuery = z.infer<typeof NotificationsQuerySchema>;
 

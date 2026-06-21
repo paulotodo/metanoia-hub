@@ -74,7 +74,7 @@ export function NavigationShell({ children }: NavigationShellProps) {
         activeKey={activeKey}
         renderLink={renderLink}
         header={
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" data-testid="desktop-tenant-header">
             <TenantSwitcher className="w-full" />
             <NotificationCenter />
           </div>

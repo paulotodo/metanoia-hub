@@ -17,7 +17,7 @@ vi.mock('@/hooks/use-notification-silence', () => ({
 }));
 
 vi.mock('@/hooks/use-notification-stream', () => ({
-  useNotificationStream: vi.fn(),
+  useNotificationStream: vi.fn().mockReturnValue({ connectionState: 'connected', retryNow: vi.fn() }),
 }));
 
 vi.mock('@/components/a11y/async-announcer', () => ({
