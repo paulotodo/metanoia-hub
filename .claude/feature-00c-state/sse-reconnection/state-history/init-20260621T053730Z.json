@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "sse-reconnection",
+  "execution": {
+    "id": "feat-sse-reconnection-20260621T053722Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "SSE Reconnection & Gap Fill (FR77) — Story 14-2c. Backend apps/api: estender GET /api/v1/notifications para aceitar query param since (ISO 8601) que filtra notificacoes criadas apos o timestamp; atualizar Zod query schema em packages/types + teste (e RLS spec se tenant-scoped). Frontend apps/web (Client Components): ESTENDER o hook existente use-notification-stream.ts (criado na 14-2b) com EventSource reconnect + backoff exponencial (1s,2s,4s,8s, max 30s); indicador sutil Reconectando... (some ao reconectar); apos 5 falhas consecutivas no max do backoff aviso Sem conexao. Notificacoes podem estar atrasadas. + botao Tentar agora; gap-fill ao reconectar (fetch ?since={lastReceivedAt}&status=unread, merge no notification center deduplicando por id); lastReceivedAt em memoria (NAO persistido — refresh busca todos unread); novo componente connection-status. REUSE componentes da 14-2b em apps/web/src/components/notifications/. Textos pastorais em pt-BR.json. Testes: E2E Playwright (disconnect->auto-reconnect->gap-fill; outage estendido->aviso; reconnect->indicador some) + unit dos hooks. Fonte primaria: _bmad-output/implementation-artifacts/14-2c-sse-reconnection-gap-fill-fr77.md.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-21T05:37:22Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "specify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [],
+  "decisions": [],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": null
+  },
+  "accumulated_metrics": {
+    "waves_total": 0,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 0,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 0,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "sse",
+    "reconnection",
+    "gap",
+    "fill",
+    "fr77",
+    "story",
+    "backend"
+  ]
+}
