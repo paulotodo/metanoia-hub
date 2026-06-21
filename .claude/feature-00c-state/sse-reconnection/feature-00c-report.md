@@ -1,7 +1,7 @@
 # Relatorio do Agente-00C — feat-sse-reconnection-20260621T053722Z
 
-**Gerado em**: 2026-06-21T07:11:23Z
-**Status no momento**: em_andamento
+**Gerado em**: 2026-06-21T07:25:22Z
+**Status no momento**: concluida
 **Versao do schema**: 1.0.0
 
 ---
@@ -14,13 +14,13 @@
 | Projeto-Alvo | /var/lib/metanoia-hub |
 | Descricao | SSE Reconnection & Gap Fill (FR77) — Story 14-2c. Backend apps/api: estender GET /api/v1/notifications para aceitar query param since (ISO 8601) que filtra notificacoes criadas apos o timestamp; atualizar Zod query schema em packages/types + teste (e RLS spec se tenant-scoped). Frontend apps/web (Client Components): ESTENDER o hook existente use-notification-stream.ts (criado na 14-2b) com EventSource reconnect + backoff exponencial (1s,2s,4s,8s, max 30s); indicador sutil Reconectando... (some ao reconectar); apos 5 falhas consecutivas no max do backoff aviso Sem conexao. Notificacoes podem estar atrasadas. + botao Tentar agora; gap-fill ao reconectar (fetch ?since={lastReceivedAt}&status=unread, merge no notification center deduplicando por id); lastReceivedAt em memoria (NAO persistido — refresh busca todos unread); novo componente connection-status. REUSE componentes da 14-2b em apps/web/src/components/notifications/. Textos pastorais em pt-BR.json. Testes: E2E Playwright (disconnect->auto-reconnect->gap-fill; outage estendido->aviso; reconnect->indicador some) + unit dos hooks. Fonte primaria: _bmad-output/implementation-artifacts/14-2c-sse-reconnection-gap-fill-fr77.md. |
 | Stack final | nao aplicavel — execucao abortada antes de definir |
-| Status | em_andamento |
-| Motivo termino | (em andamento) |
+| Status | concluida |
+| Motivo termino | concluido |
 | Iniciada em | 2026-06-21T05:37:22Z |
-| Terminada em | ainda em andamento |
-| Ondas executadas | 7 |
+| Terminada em | 2026-06-21T07:30:00Z |
+| Ondas executadas | 8 |
 | Tool calls totais | 1 |
-| Decisoes registradas | 22 |
+| Decisoes registradas | 24 |
 | Bloqueios humanos | 0 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -39,16 +39,17 @@
 | onda-005 | 2026-06-21T06:19:21Z | 2026-06-21T06:28:08Z | create-tasks | 0 | 527s | etapa_concluida_avancando |
 | onda-006 | 2026-06-21T06:32:49Z | 2026-06-21T06:51:00Z | execute-task | 0 | 1091s | concluido |
 | onda-007 | 2026-06-21T06:58:58Z | 2026-06-21T07:10:49Z |  | 0 | 711s | concluido |
+| onda-008 | 2026-06-21T07:17:18Z | 2026-06-21T07:25:06Z | execute-task | 0 | 468s | concluido |
 
 ## 3. Decisoes
 
-Total: 22 decisoes registradas.
+Total: 24 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 22 |
+| agente-00c-feature-orchestrator | 24 |
 
 ### 3.2 Lista detalhada
 
@@ -404,6 +405,38 @@ Total: 22 decisoes registradas.
 
 **Artefato originador**: (nenhum)
 
+#### dec-023 — model-routing — agente-00c-feature-orchestrator — 2026-06-21T07:15:14Z
+
+**Contexto**: Selecao de modelo para onda 7 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-024 — execute-task-FASE6 — agente-00c-feature-orchestrator — 2026-06-21T07:23:02Z
+
+**Contexto**: Lint sweep FASE 6 — 6 erros corrigidos (ConnectionState unused import, eslint-disable para regra inexistente, dynamic delete, variáveis não usadas)
+
+**Opcoes consideradas**: corrigir-e-commitar / registrar-bloqueio
+
+**Escolha**: corrigir-e-commitar
+
+**Justificativa**: Todos os 6 checks de lint passaram após correções cirúrgicas sem alterar lógica de negócio; build completo também passou.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
 
 ## 4. Bloqueios Humanos
 
@@ -443,7 +476,7 @@ Nenhuma sugestao para skills globais nesta execucao.
 
 ## 6. Licoes Aprendidas
 
-(Sera preenchido no relatorio final.)
+(Relatorio final invocado sem --licoes-aprendidas — operador deve preencher esta secao manualmente OU re-invocar com flag.)
 
 ---
 
