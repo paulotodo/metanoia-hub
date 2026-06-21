@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar fase checklist: invocar Skill(checklist) para gerar quality gate (dominios api + security + performance) sobre spec+plan da feature sse-notificacoes. Plan ja gerado (plan.md, research.md, data-model.md, contracts/sse-notifications.md, quickstart.md) + gate owasp-security aplicado (5 findings -> dec-017..dec-021, nenhum critico). Considerar os SR-1..SR-5 do plan ao gerar o checklist.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar fase plan: invocar Skill(plan) para gerar plan.md + research.md + data-model.md na feature sse-notificacoes. Preflight ja passou (clarify->plan). Aplicar quality gates apos plan (validate-documentation + owasp-security).",
   "waves": [
     {
       "id": "onda-001",
@@ -92,28 +92,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-21T00:59:40Z",
           "decision_id": "dec-011"
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-21T01:04:53Z",
-      "finished_at": "2026-06-21T01:13:11Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 498,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-21T01:09:55Z",
-          "decision_id": null
-        },
-        {
-          "skill": "owasp-security",
-          "timestamp": "2026-06-21T01:11:07Z",
-          "decision_id": null
         }
       ]
     }
@@ -369,155 +347,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:05:15Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=sse-notificacoes)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados da feature: sse endpoint redis pub sub backend fr77; achado infra-notificacoes corrobora canal rt:notifications:{tenantId}:{userId} com payload minimo {notificationId,type,title,body,createdAt}",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-015",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:09:55Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Geracao do plano tecnico sse-notificacoes: reuso do padrao SSE existente (meetings/sse) + contrato Zod existente (NotificationRealtimeEventSchema)",
-      "options_considered": [
-        "reusar-padrao-meetings-sse",
-        "implementar-sse-do-zero"
-      ],
-      "choice": "reusar-padrao-meetings-sse",
-      "rationale": "Codebase ja possui padrao SSE consolidado: @Sse()+Observable<MessageEvent>+conexao ioredis dedicada+refcount em meeting-sse.service.ts; NotificationRealtimeEventSchema ja existe em packages/types/src/notification.ts com shape identico ao publicado pelo InAppChannel L40-47. Sem migration (stateless).",
-      "justification_score": 3,
-      "evidence": "meeting-sse.service.ts L21-26: new Redis({host,port}) dedicado para subscriber; in-app.channel.ts L40-47 publica {notificationId,type,title,body,createdAt} em rt:notifications:${tenantId}:${payload.userId}; notification.ts L65-72 NotificationRealtimeEventSchema z.object same shape",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:10:24Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Skip do gate doc-quality (validate-documentation): skill nao instalada em ~/.claude/skills neste ambiente (ABSENT confirmado por ls)",
-      "options_considered": [
-        "rodar-gate",
-        "skip-com-justificativa"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "validate-documentation e validate-docs-rendered ausentes do PATH de skills deste host (so owasp-security presente). Artefatos foram autorados nesta onda com cross-check manual de coerencia spec->plan->research->data-model->contracts->quickstart; sem TBD/TODO; todos FR-01..FR-12, SC-01..SC-08, EC-01..EC-07 endereçados explicitamente. Gate de seguranca (owasp-security, o MUST da constitution) sera executado normalmente.",
-      "justification_score": 3,
-      "evidence": "ls -d ~/.claude/skills/validate-documentation -> ABSENT; ~/.claude/skills/validate-docs-rendered -> ABSENT; ~/.claude/skills/owasp-security -> PRESENT",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:11:36Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security MEDIUM (A09/CWE-598 token-in-URL): o contrato SSE diz 'nenhum parametro do cliente', mas KeycloakAuthGuard.extractToken JA usa fallback query-param ?token= para SSE/EventSource (browser EventSource nao seta header Authorization). Token JWT trafega na query string -> risco de vazamento em access logs/proxies/Referer.",
-      "options_considered": [
-        "aceitar-risco-com-justificativa",
-        "corrigir-agora-no-plano",
-        "escalar-para-humano"
-      ],
-      "choice": "corrigir-agora-no-plano",
-      "rationale": "Atualizar contrato/plano: documentar explicitamente que para SSE o token chega via ?token= (mecanismo existente do guard), exigir (a) TLS obrigatorio, (b) NUNCA logar req.url/query.token/Referer com o token, (c) usar token de vida curta. Mitigacao parcial ja existe: grep nao achou logging de query string em common/main. Vira requisito de implementacao para create-tasks.",
-      "justification_score": 3,
-      "evidence": "keycloak.guard.ts L143-156 extractToken: '2. Fallback to query param (SSE/EventSource — cannot set headers) return request.query?.token ?? null'; grep req.url/query.token em common/main = 0 hits",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:11:36Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security MEDIUM (CWE-79 stored XSS / improper output handling): title/body do payload (publicados pelo InAppChannel) chegam ao DOM do cliente em 14-2b. O consumer SSE deve tratar o payload do Redis como UNTRUSTED mesmo sendo origem interna (defense-in-depth).",
-      "options_considered": [
-        "marcar-untrusted-no-contrato",
-        "ignorar",
-        "escalar-para-humano"
-      ],
-      "choice": "marcar-untrusted-no-contrato",
-      "rationale": "O contrato ja faz safeParse com NotificationRealtimeEventSchema (valida shape/tipos, EC-06). Adicionar requisito: marcar data como nao-confiavel no contrato; o frontend (14-2b) DEVE escapar/sanitizar title/body antes do DOM (nunca innerHTML/dangerouslySetInnerHTML cru). Backend nao re-publica, so encaminha — XSS e responsabilidade do render no 14-2b, mas o requisito nasce aqui.",
-      "justification_score": 2,
-      "evidence": "contracts/sse-notifications.md secao 'Eventos consumidos': safeParse(NotificationRealtimeEventSchema); spec EC-06 log+descarta JSON malformado mantendo conexao",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:11:36Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security LOW (API4 Unrestricted Resource Consumption): os limites SSE_MAX_CONNECTIONS (instancia) e SSE_MAX_PER_USER (usuario) cobrem CONCORRENCIA, mas nao a TAXA de abertura/fechamento (connect-storm rapido pode martelar Redis ZADD/ZCARD/subscribe).",
-      "options_considered": [
-        "aceitar-risco-MVP",
-        "adicionar-rate-limit-requisito",
-        "escalar-para-humano"
-      ],
-      "choice": "adicionar-rate-limit-requisito",
-      "rationale": "Adicionar como requisito de implementacao (nao bloqueante MVP): considerar rate-limit de abertura de conexao por usuario/IP (namespace rate:* ja existe no projeto, CLAUDE.md). Limites de concorrencia ja mitigam o pior caso (heap). Vira task de hardening no create-tasks, severidade low.",
-      "justification_score": 2,
-      "evidence": "spec FR-04/FR-05 definem limites de CONCORRENCIA (ZCARD/contador), nenhum FR cobre taxa de abertura; CLAUDE.md lista namespace Redis rate:* disponivel",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:12:00Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security LOW (A07 session longevity): EC-03 documenta que o token e validado SO na conexao inicial; SSE nao re-valida mid-stream. Token revogado/expirado mantem stream ativo ate desconectar.",
-      "options_considered": [
-        "aceitar-EC-03",
-        "forcar-revalidacao-periodica",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-EC-03",
-      "rationale": "Decisao ja tomada na spec (EC-03). Mitigacao: heartbeat detecta cliente morto; tokens Keycloak de vida curta limitam a janela; SSE e read-only (so push de notificacao, sem acao privilegiada via stream) => baixo impacto. Re-validacao periodica e melhoria futura, nao MVP. Sem blast radius alem da janela de expiracao.",
-      "justification_score": 2,
-      "evidence": "spec.md EC-03: 'SSE nao re-valida (validacao so na conexao inicial); heartbeat detecta client morto'; stream e read-only push, guard global APP_GUARD valida na abertura (auth.module.ts L37)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:12:00Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security INFO (A05 Redis key injection): canal/ZSET interpolam tenantId/userId no nome (rt:notifications:{t}:{u}, sse:connections:{t}:{u}). Vetor de key injection SE viessem com ':' ou caracteres especiais.",
-      "options_considered": [
-        "aceitar-sem-acao",
-        "validar-formato-uuid",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-sem-acao",
-      "rationale": "tenantId/userId vem EXCLUSIVAMENTE de claims JWT assinados (canActivate L85-104), nunca de input do cliente; sao UUIDs (uuidv7). Cliente nao controla esses valores -> sem vetor de key injection. Como hardening barato, create-tasks PODE assertar formato UUID antes de montar a chave, mas nao e bloqueante. BOLA/IDOR descartado: cliente nao pode escolher tenant/user do canal.",
-      "justification_score": 3,
-      "evidence": "keycloak.guard.ts L85-104: tenant_id/user_id extraidos de payload JWT verificado (jwtVerify) e gravados em store.tenantId/store.userId; request-context.ts userId opcional do token",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -555,15 +384,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T01:04:53Z"
+    "current_wave_start": "2026-06-21T00:57:48Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1158,
+    "wallclock_total_seconds": 660,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 21,
+    "decisions_total": 13,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -594,16 +423,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T01:00:25Z",
       "description": "onda-003 clarify concluida; stage avancado para plan; aguardando wakeup"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-21T01:05:06Z",
-      "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:13:26Z",
-      "description": "onda-004 plan concluida; aguardando wakeup p/ checklist"
     }
   ]
 }

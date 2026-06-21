@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar fase checklist: invocar Skill(checklist) para gerar quality gate (dominios api + security + performance) sobre spec+plan da feature sse-notificacoes. Plan ja gerado (plan.md, research.md, data-model.md, contracts/sse-notifications.md, quickstart.md) + gate owasp-security aplicado (5 findings -> dec-017..dec-021, nenhum critico). Considerar os SR-1..SR-5 do plan ao gerar o checklist.",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar fase plan: invocar Skill(plan) para gerar plan.md + research.md + data-model.md na feature sse-notificacoes. Preflight ja passou (clarify->plan). Aplicar quality gates apos plan (validate-documentation + owasp-security).",
   "waves": [
     {
       "id": "onda-001",
@@ -98,11 +98,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-21T01:04:53Z",
-      "finished_at": "2026-06-21T01:13:11Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 498,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -499,25 +499,6 @@
       "evidence": "spec.md EC-03: 'SSE nao re-valida (validacao so na conexao inicial); heartbeat detecta client morto'; stream e read-only push, guard global APP_GUARD valida na abertura (auth.module.ts L37)",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-021",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T01:12:00Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate owasp-security INFO (A05 Redis key injection): canal/ZSET interpolam tenantId/userId no nome (rt:notifications:{t}:{u}, sse:connections:{t}:{u}). Vetor de key injection SE viessem com ':' ou caracteres especiais.",
-      "options_considered": [
-        "aceitar-sem-acao",
-        "validar-formato-uuid",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-sem-acao",
-      "rationale": "tenantId/userId vem EXCLUSIVAMENTE de claims JWT assinados (canActivate L85-104), nunca de input do cliente; sao UUIDs (uuidv7). Cliente nao controla esses valores -> sem vetor de key injection. Como hardening barato, create-tasks PODE assertar formato UUID antes de montar a chave, mas nao e bloqueante. BOLA/IDOR descartado: cliente nao pode escolher tenant/user do canal.",
-      "justification_score": 3,
-      "evidence": "keycloak.guard.ts L85-104: tenant_id/user_id extraidos de payload JWT verificado (jwtVerify) e gravados em store.tenantId/store.userId; request-context.ts userId opcional do token",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -558,12 +539,12 @@
     "current_wave_start": "2026-06-21T01:04:53Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1158,
+    "wallclock_total_seconds": 660,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 21,
+    "decisions_total": 20,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -599,11 +580,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T01:05:06Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:13:26Z",
-      "description": "onda-004 plan concluida; aguardando wakeup p/ checklist"
     }
   ]
 }

@@ -599,11 +599,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T01:05:06Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:13:26Z",
-      "description": "onda-004 plan concluida; aguardando wakeup p/ checklist"
     }
   ]
 }
