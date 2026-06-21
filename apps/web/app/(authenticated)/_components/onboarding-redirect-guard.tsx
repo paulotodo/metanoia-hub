@@ -50,11 +50,18 @@ export function OnboardingRedirectGuard({
   const router = useRouter();
   const role = useCurrentRole();
 
-  // User-scoped status (Story 7-1) — used for lider / participante
-  const { data: userOnboarding, isSuccess: userSuccess } = useOnboardingStatus();
+  // User-scoped status (Story 7-1) — only fetched for lider / participante.
+  // Gating by role avoids firing unused requests for admin_tenant / super_admin.
+  const { data: userOnboarding, isSuccess: userSuccess } = useOnboardingStatus(
+    role === 'lider' || role === 'participante',
+  );
 
-  // Tenant-scoped wizard status — used for admin_tenant (FR-01 triple condition)
-  const { data: wizardStatus, isSuccess: wizardSuccess } = useWizardStatus();
+  // Tenant-scoped wizard status — only fetched for admin_tenant (FR-01 triple
+  // condition). The /onboarding/status endpoint is admin_tenant-only, so
+  // fetching it for other roles produced an expected 403 on every page.
+  const { data: wizardStatus, isSuccess: wizardSuccess } = useWizardStatus(
+    role === 'admin_tenant',
+  );
 
   useEffect(() => {
     // Loop prevention: don't redirect if already on a welcome path

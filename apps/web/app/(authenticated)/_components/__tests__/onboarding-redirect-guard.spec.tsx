@@ -198,6 +198,45 @@ describe('OnboardingRedirectGuard — admin_tenant triple condition (FR-01)', ()
 });
 
 // ---------------------------------------------------------------------------
+// Role-gated requests — avoids the admin_tenant-only /onboarding/status 403
+// ---------------------------------------------------------------------------
+
+describe('OnboardingRedirectGuard — role-gated status requests', () => {
+  it('disables the tenant wizard query for lider (no admin-only 403)', () => {
+    vi.mocked(useOnboardingStatus).mockReturnValue({
+      data: { onboardingCompletedAt: '2026-01-01T00:00:00.000Z' },
+      isSuccess: true,
+    } as never);
+    vi.mocked(useCurrentRole).mockReturnValue('lider');
+
+    renderGuard();
+    // /onboarding/status is admin_tenant-only → must be disabled for lider
+    expect(useWizardStatus).toHaveBeenCalledWith(false);
+    expect(useOnboardingStatus).toHaveBeenCalledWith(true);
+  });
+
+  it('disables the user-scoped query for admin_tenant', () => {
+    vi.mocked(useWizardStatus).mockReturnValue({
+      data: DEFAULT_WIZARD_STATUS,
+      isSuccess: true,
+    } as never);
+    vi.mocked(useCurrentRole).mockReturnValue('admin_tenant');
+
+    renderGuard();
+    expect(useOnboardingStatus).toHaveBeenCalledWith(false);
+    expect(useWizardStatus).toHaveBeenCalledWith(true);
+  });
+
+  it('disables both queries until the role is resolved', () => {
+    vi.mocked(useCurrentRole).mockReturnValue(null);
+
+    renderGuard();
+    expect(useOnboardingStatus).toHaveBeenCalledWith(false);
+    expect(useWizardStatus).toHaveBeenCalledWith(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // super_admin — never redirected
 // ---------------------------------------------------------------------------
 

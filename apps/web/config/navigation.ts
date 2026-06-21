@@ -1,14 +1,11 @@
 "use client";
 
-import {
-  Radar,
-  CalendarDays,
-  Route,
-  UserCircle,
-  MoreHorizontal,
-} from "lucide-react";
+import { Radar, CalendarDays, Route, BarChart3 } from "lucide-react";
 import type { NavigationItem } from "@metanoia/ui";
 
+// Leader (gestao) navigation. Every href must resolve to a real route under
+// app/(authenticated)/app/gestao to avoid RSC prefetch 404s. The previous
+// entries (/app/gestao/trilhas, /app/perfil, /app/mais) had no matching page.
 export const navigationItems: NavigationItem[] = [
   { key: "radar", label: "Radar", href: "/app/gestao/radar", icon: Radar },
   {
@@ -18,11 +15,15 @@ export const navigationItems: NavigationItem[] = [
     icon: CalendarDays,
   },
   {
+    key: "relatorios",
+    label: "Relatórios",
+    href: "/app/gestao/relatorios/lider",
+    icon: BarChart3,
+  },
+  {
     key: "trilhas",
     label: "Trilhas",
-    href: "/app/gestao/trilhas",
+    href: "/app/gestao/relatorios/trilhas",
     icon: Route,
   },
-  { key: "perfil", label: "Perfil", href: "/app/perfil", icon: UserCircle },
-  { key: "mais", label: "Mais", href: "/app/mais", icon: MoreHorizontal },
 ];

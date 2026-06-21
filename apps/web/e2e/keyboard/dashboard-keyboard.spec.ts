@@ -68,9 +68,8 @@ const DASHBOARD_SHELL_HTML = `
     <ul role="list">
       <li><a href="/app/gestao/radar" tabindex="0" aria-current="page">Radar</a></li>
       <li><a href="/app/gestao/reunioes" tabindex="-1">Reuniões</a></li>
-      <li><a href="/app/gestao/trilhas" tabindex="-1">Trilhas</a></li>
-      <li><a href="/app/perfil" tabindex="-1">Perfil</a></li>
-      <li><a href="/app/mais" tabindex="-1">Mais</a></li>
+      <li><a href="/app/gestao/relatorios/lider" tabindex="-1">Relatórios</a></li>
+      <li><a href="/app/gestao/relatorios/trilhas" tabindex="-1">Trilhas</a></li>
     </ul>
   </nav>
 

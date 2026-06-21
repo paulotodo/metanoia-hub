@@ -50,13 +50,19 @@ export function useDeleteDemoData() {
   });
 }
 
-/** Fetch tenant wizard status (progress + hasRealGroups). Server-derived — never computed in FE. */
-export function useWizardStatus() {
+/**
+ * Fetch tenant wizard status (progress + hasRealGroups). Server-derived — never computed in FE.
+ *
+ * The `/onboarding/status` endpoint is restricted to admin_tenant (RolesGuard).
+ * Pass `enabled: false` for non-admin roles to avoid an expected-but-noisy 403.
+ */
+export function useWizardStatus(enabled = true) {
   return useQuery({
     queryKey: onboardingKeys.wizardStatus(),
     queryFn: () =>
       apiClient.getEnvelope('/onboarding/status', OnboardingStatusResponseSchema),
     staleTime: 1000 * 60,
+    enabled,
   });
 }
 
