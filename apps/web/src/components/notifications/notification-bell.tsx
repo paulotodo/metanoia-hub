@@ -6,7 +6,7 @@ import { Badge } from '@metanoia/ui';
 import { useAsyncAnnouncer } from '@/components/a11y/async-announcer';
 import { useUnreadNotifications } from '@/lib/api/hooks/use-notifications';
 import { useNotificationSilence } from '@/hooks/use-notification-silence';
-import { useNotificationStream, type ConnectionState } from '@/hooks/use-notification-stream';
+import { useNotificationStream } from '@/hooks/use-notification-stream';
 import { ConnectionStatus } from './connection-status';
 
 const MAX_BADGE_COUNT = 99;

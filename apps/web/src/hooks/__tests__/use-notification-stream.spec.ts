@@ -76,7 +76,7 @@ const mockSessionStorage: Record<string, string> = {};
 vi.stubGlobal('sessionStorage', {
   getItem: (key: string) => mockSessionStorage[key] ?? null,
   setItem: (key: string, val: string) => { mockSessionStorage[key] = val; },
-  clear: () => Object.keys(mockSessionStorage).forEach(k => delete mockSessionStorage[k]),
+  clear: () => { Object.keys(mockSessionStorage).forEach(k => Reflect.deleteProperty(mockSessionStorage, k)); },
 });
 
 // ---------------------------------------------------------------------------
@@ -316,20 +316,13 @@ describe('useNotificationStream — gap-fill paginado (total > perPage)', () => 
     const page1Items = Array.from({ length: 100 }, (_, i) => ({ id: `019756c0-0002-7000-8000-${String(i).padStart(12, '0')}` }));
     const page2Items = Array.from({ length: 50 }, (_, i) => ({ id: `019756c0-0003-7000-8000-${String(i).padStart(12, '0')}` }));
 
-    let fetchCallCount = 0;
     mockFetch
       // Primeiro: probe de auth (retorna 200)
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ data: [], meta: { total: 0 } }) })
-      // Segundo: página 1 do gap-fill
-      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => {
-        fetchCallCount++;
-        return { data: page1Items, meta: { total: 150 } };
-      }})
-      // Terceiro: página 2 do gap-fill
-      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => {
-        fetchCallCount++;
-        return { data: page2Items, meta: { total: 150 } };
-      }});
+      // Segundo: página 1 do gap-fill (total: 150 → loop continua)
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ data: page1Items, meta: { total: 150 } }) })
+      // Terceiro: página 2 do gap-fill (completa)
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ data: page2Items, meta: { total: 150 } }) });
 
     const { Wrapper, invalidateSpy } = createWrapper();
     renderHook(
@@ -430,8 +423,8 @@ describe('useNotificationStream — race condition gap-fill (CHK064)', () => {
 
   it('cleanup no desmonte aborta gap-fill em andamento (gapFillControllerRef.abort chamado)', () => {
     // CHK071/072: cleanup chama abort() no controller
-    const abortSpy = vi.fn();
-    const fakeController = { abort: abortSpy, signal: {} };
+    // O AbortController interno não é exposto; verificamos que o desmonte
+    // não lança erro e fecha o EventSource (comportamento observável via proxy)
 
     // Fetch lento (nunca resolve) para simular gap-fill em andamento
     mockFetch.mockImplementation(() => new Promise(() => {}));

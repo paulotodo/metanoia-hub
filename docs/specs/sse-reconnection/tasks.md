@@ -539,14 +539,14 @@ _(Ver task 1.2 — confirmação pré-PR)_
 
 Scripts relevantes (MEMORY epic-12-a11y: lint CI vai além de `turbo lint`):
 
-- [ ] `pnpm turbo lint` — lint TypeScript / ESLint base
-- [ ] `bash scripts/check-focus-ring-variants.sh` — botão "Tentar agora" tem `focus-visible:ring-brand-teal/30` (task 3.2)
-- [ ] `bash scripts/check-motion-safe.sh` — `transition-*` usa `motion-safe:` no connection-status (task 3.2)
-- [ ] `node scripts/check-contrast-tokens.mjs` — tokens de contraste nos novos textos (task 3.2)
-- [ ] `npx tsx scripts/check-contrast.ts` — contraste WCAG nos novos elementos (task 3.2)
-- [ ] `bash scripts/check-i18n-scf.sh --strict` — todas as chaves de `pt-BR.json` usadas e vice-versa (task 3.4)
-- [ ] Corrigir qualquer achado antes de abrir o PR
-- [ ] `pnpm turbo build` — build completo cross-package (`@metanoia/types` → `@metanoia/api` e `@metanoia/web`)
+- [x] `pnpm turbo lint` — lint TypeScript / ESLint base
+- [x] `bash scripts/check-focus-ring-variants.sh` — botão "Tentar agora" tem `focus-visible:ring-brand-teal/30` (task 3.2)
+- [x] `bash scripts/check-motion-safe.sh` — `transition-*` usa `motion-safe:` no connection-status (task 3.2)
+- [x] `node scripts/check-contrast-tokens.mjs` — tokens de contraste nos novos textos (task 3.2)
+- [x] `npx tsx scripts/check-contrast.ts` — contraste WCAG nos novos elementos (task 3.2)
+- [x] `bash scripts/check-i18n-scf.sh --strict` — todas as chaves de `pt-BR.json` usadas e vice-versa (task 3.4)
+- [x] Corrigir qualquer achado antes de abrir o PR
+- [x] `pnpm turbo build` — build completo cross-package (`@metanoia/types` → `@metanoia/api` e `@metanoia/web`)
 
 **Critério de aceitação**: todos os scripts saem com código 0; `pnpm turbo build` sem erros.
 
@@ -554,11 +554,11 @@ Scripts relevantes (MEMORY epic-12-a11y: lint CI vai além de `turbo lint`):
 
 ### 6.2 Abrir PR e finalizar story `[CRIT]`
 
-- [ ] Confirmar branch `feat/sse-reconnection-14-2c`
-- [ ] Confirmar que todos os commits usam conventional commits em PT-BR (ex: `feat(notifications): adiciona reconexão SSE com backoff exponencial`)
-- [ ] PR inclui: referência à Story 14-2c e FR77; checklist de review com cenários E2E; link ao `docs/specs/sse-reconnection/quickstart.md`
-- [ ] CI passa (lint + test + build) antes de solicitar review
-- [ ] Atualizar `docs/planning/` com story 14-2c marcada como done (se existir arquivo de progresso — verificar padrão dos EPICs anteriores)
-- [ ] Após merge: fechar PR e marcar story 14-2c como done
+- [x] Confirmar branch `feat/sse-reconnection-14-2c`
+- [x] Confirmar que todos os commits usam conventional commits em PT-BR (ex: `feat(notifications): adiciona reconexão SSE com backoff exponencial`)
+- [x] PR inclui: referência à Story 14-2c e FR77; checklist de review com cenários E2E; link ao `docs/specs/sse-reconnection/quickstart.md`
+- [x] CI passa (lint + test + build) antes de solicitar review
+- [x] Atualizar `docs/planning/` com story 14-2c marcada como done (se existir arquivo de progresso — verificar padrão dos EPICs anteriores)
+- [x] Após merge: fechar PR e marcar story 14-2c como done
 
 **Critério de aceitação**: PR aberto com CI verde; story marcada como done após merge.

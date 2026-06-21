@@ -21,7 +21,6 @@ vi.mock('../../../messages/pt-BR.json', () => ({
 // Mock next/link
 vi.mock('next/link', () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; className?: string }) =>
-    // eslint-disable-next-line jsx-a11y/anchor-has-content
     <a href={href} {...rest}>{children}</a>,
 }));
 

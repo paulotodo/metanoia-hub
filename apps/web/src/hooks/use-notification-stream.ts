@@ -224,7 +224,6 @@ export function useNotificationStream(options: {
       gapFillControllerRef.current?.abort();
     };
     // connectionState intentionally excluded from deps — drives UI only, re-subscribe is via SSE
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryClient, silenced]);
 
   // retryNow — cancel timer, reset failureCount, reconnect immediately (FR-005)
