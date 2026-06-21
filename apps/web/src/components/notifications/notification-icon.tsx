@@ -7,6 +7,8 @@ const ICON_MAP: Record<NotificationType, string> = {
   content_update: '📚',
   meeting_reminder: '📅',
   system: '🔔',
+  export_ready: '📥',
+  content_new: '✨',
 };
 
 interface NotificationIconProps {
