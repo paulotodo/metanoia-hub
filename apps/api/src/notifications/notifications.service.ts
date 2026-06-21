@@ -11,6 +11,7 @@ export interface NotificationsQuery {
   page?: number;
   perPage?: number;
   unread?: boolean;
+  since?: string; // ISO 8601 — gap-fill filter (FR-015/FR-017)
 }
 
 export interface NotificationRow {
@@ -164,6 +165,18 @@ export class NotificationsService {
       : query.status
         ? `AND status = '${query.status}'::"notification_status"`
         : '';
+    // since: bind posicional $4 — NUNCA interpolação de string (CHK048/049/050 / OWASP L1)
+    const sinceFilter = query.since ? 'AND created_at > $4::timestamptz' : '';
+
+    // Base params for SELECT (userId, perPage, offset) + optional since
+    const selectParams: unknown[] = [userId, perPage, offset];
+    if (query.since) selectParams.push(query.since);
+
+    // Base params for COUNT (userId) + optional since
+    // For COUNT: since uses $2::timestamptz when present
+    const countSinceFilter = query.since ? 'AND created_at > $2::timestamptz' : '';
+    const countParams: unknown[] = [userId];
+    if (query.since) countParams.push(query.since);
 
     const [rows, countResult] = await Promise.all([
       withTenantTx(this.prisma, (tx) =>
@@ -171,18 +184,16 @@ export class NotificationsService {
           `SELECT id, tenant_id, user_id, type, channel, status, title, body, metadata,
                   read_at, created_at, updated_at
            FROM notifications
-           WHERE user_id = $1::uuid ${statusFilter}
+           WHERE user_id = $1::uuid ${statusFilter} ${sinceFilter}
            ORDER BY created_at DESC
            LIMIT $2 OFFSET $3`,
-          userId,
-          perPage,
-          offset,
+          ...selectParams,
         ),
       ),
       withTenantTx(this.prisma, (tx) =>
         tx.$queryRawUnsafe<Array<{ count: string }>>(
-          `SELECT COUNT(*)::text AS count FROM notifications WHERE user_id = $1::uuid ${statusFilter}`,
-          userId,
+          `SELECT COUNT(*)::text AS count FROM notifications WHERE user_id = $1::uuid ${statusFilter} ${countSinceFilter}`,
+          ...countParams,
         ),
       ),
     ]);

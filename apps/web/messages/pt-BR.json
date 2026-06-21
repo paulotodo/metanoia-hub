@@ -1779,6 +1779,13 @@
     "empty": {
       "title": "Tudo em ordem",
       "body": "Você está em dia com a sua congregação. Nenhuma notificação pendente."
+    },
+    "connection": {
+      "reconnecting": "Reconectando...",
+      "offline": "Sem conexão. Notificações podem estar atrasadas.",
+      "retryNow": "Tentar agora",
+      "authError": "Sessão expirada. Faça login novamente.",
+      "authErrorLink": "Fazer login"
     }
   }
 }

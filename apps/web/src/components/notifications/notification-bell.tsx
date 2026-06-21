@@ -7,6 +7,7 @@ import { useAsyncAnnouncer } from '@/components/a11y/async-announcer';
 import { useUnreadNotifications } from '@/lib/api/hooks/use-notifications';
 import { useNotificationSilence } from '@/hooks/use-notification-silence';
 import { useNotificationStream } from '@/hooks/use-notification-stream';
+import { ConnectionStatus } from './connection-status';
 
 const MAX_BADGE_COUNT = 99;
 
@@ -29,8 +30,8 @@ export const NotificationBell = React.forwardRef<
   const { silenced } = useNotificationSilence();
   const { announce } = useAsyncAnnouncer();
 
-  // SSE subscription — invalidates query on realtime events
-  useNotificationStream({ silenced, announce });
+  // SSE subscription — invalidates query on realtime events; returns connection state (Story 14-2c)
+  const { connectionState, retryNow } = useNotificationStream({ silenced, announce });
 
   const displayCount = unreadCount > MAX_BADGE_COUNT ? '99+' : String(unreadCount);
   const hasUnread = unreadCount > 0;
@@ -48,6 +49,7 @@ export const NotificationBell = React.forwardRef<
   }
 
   return (
+    <>
     <button
       ref={ref}
       type="button"
@@ -71,6 +73,9 @@ export const NotificationBell = React.forwardRef<
         </Badge>
       )}
     </button>
+    {/* Connection status indicator (Story 14-2c — positioned below bell/badge — CHK025) */}
+    <ConnectionStatus connectionState={connectionState} onRetry={retryNow} />
+    </>
   );
 });
 

@@ -278,3 +278,81 @@ describe('notifications RLS — mark-all cross-tenant isolation (Story 14-2b)', 
     expect(second).toBe(0);
   });
 });
+
+// Story 14-2c — RLS: filtro since preserva isolamento de tenant
+// Idempotente — roda 2x no CI por padrão (ON CONFLICT DO NOTHING).
+
+// Helper: findByUser with since filter via app role (RLS enforced)
+async function findByUserWithSince(
+  prisma: PrismaClient,
+  tenantId: string,
+  userId: string,
+  since: string,
+): Promise<string[]> {
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${tenantId}'`);
+    return tx.$queryRawUnsafe<Array<{ id: string }>>(
+      `SELECT id FROM notifications
+       WHERE user_id = $1::uuid AND created_at > $2::timestamptz
+       ORDER BY created_at DESC`,
+      userId,
+      since,
+    );
+  });
+  return (result as Array<{ id: string }>).map((r) => r.id);
+}
+
+describe('RLS: filtro since preserva isolamento de tenant (Story 14-2c)', () => {
+  // Rodado 2× no CI por padrão (idempotência RLS)
+  const SINCE_A1_ID = '01977000-0002-7000-8000-000000000021';
+  const SINCE_B1_ID = '01977000-0002-7000-8000-000000000022';
+  const USER_SINCE_A = '01977000-0002-7000-8000-000000000a21';
+  const USER_SINCE_B = '01977000-0002-7000-8000-000000000b21';
+
+  // A timestamp older than the notifications we insert
+  const sinceTimestamp = '2020-01-01T00:00:00.000Z';
+
+  beforeAll(async () => {
+    await ensureUser(privileged, USER_SINCE_A, 'user-since-a@rls-test.com');
+    await ensureUser(privileged, USER_SINCE_B, 'user-since-b@rls-test.com');
+    // Insert one notification per tenant (created_at = now(), which is > sinceTimestamp)
+    await insertNotification(privileged, SINCE_A1_ID, TENANT_A_ID, USER_SINCE_A);
+    await insertNotification(privileged, SINCE_B1_ID, TENANT_B_ID, USER_SINCE_B);
+  });
+
+  afterAll(async () => {
+    await privileged.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe(
+        `DELETE FROM notifications WHERE id IN ($1::uuid, $2::uuid)`,
+        SINCE_A1_ID, SINCE_B1_ID,
+      );
+    }).catch(() => {/* best-effort */});
+  });
+
+  it('findByUser with since: Tenant A sees only its own notification', async () => {
+    const ids = await findByUserWithSince(app, TENANT_A_ID, USER_SINCE_A, sinceTimestamp);
+    expect(ids).toContain(SINCE_A1_ID);
+    expect(ids).not.toContain(SINCE_B1_ID);
+  });
+
+  it('findByUser with since: Tenant B does not see Tenant A notification (roles invertidas)', async () => {
+    const ids = await findByUserWithSince(app, TENANT_B_ID, USER_SINCE_B, sinceTimestamp);
+    expect(ids).toContain(SINCE_B1_ID);
+    expect(ids).not.toContain(SINCE_A1_ID);
+  });
+
+  it('since futuro → retorna lista vazia (sem leak cross-tenant)', async () => {
+    const futureTs = new Date(Date.now() + 86400000).toISOString();
+    const ids = await findByUserWithSince(app, TENANT_A_ID, USER_SINCE_A, futureTs);
+    expect(ids).toHaveLength(0);
+  });
+
+  it('is idempotent — re-running setup does not error (ON CONFLICT DO NOTHING)', async () => {
+    await expect(
+      insertNotification(privileged, SINCE_A1_ID, TENANT_A_ID, USER_SINCE_A),
+    ).resolves.not.toThrow();
+    await expect(
+      insertNotification(privileged, SINCE_B1_ID, TENANT_B_ID, USER_SINCE_B),
+    ).resolves.not.toThrow();
+  });
+});

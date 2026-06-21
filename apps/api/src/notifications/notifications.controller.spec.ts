@@ -105,3 +105,55 @@ describe('NotificationsController GET /notifications', () => {
     expect(service.findByUser).toHaveBeenCalledWith(mockUserId, expect.any(Object));
   });
 });
+
+// ---------------------------------------------------------------------------
+// GET /notifications — filtro since (Story 14-2c)
+// ---------------------------------------------------------------------------
+
+describe('NotificationsController GET /notifications — filtro since', () => {
+  it('since válido (ISO 8601) → passes since to service', async () => {
+    const { controller, service } = createController();
+    service.findByUser.mockResolvedValue({
+      data: [{ id: '019756c0-0002-7000-8000-000000000001', title: 'Test' }],
+      meta: { page: 1, perPage: 20, total: 1 },
+    });
+    await controller.list({ status: undefined, page: 1, perPage: 20, since: '2026-01-01T00:00:00.000Z' });
+    expect(service.findByUser).toHaveBeenCalledWith(
+      mockUserId,
+      expect.objectContaining({ since: '2026-01-01T00:00:00.000Z' }),
+    );
+  });
+
+  it('since futuro → service called with future since (returns empty from service mock)', async () => {
+    const { controller, service } = createController();
+    service.findByUser.mockResolvedValue({ data: [], meta: { page: 1, perPage: 20, total: 0 } });
+    const futureDate = new Date(Date.now() + 86400000).toISOString();
+    const result = await controller.list({ status: undefined, page: 1, perPage: 20, since: futureDate });
+    expect(result).toEqual({ data: [], meta: { page: 1, perPage: 20, total: 0 } });
+    expect(service.findByUser).toHaveBeenCalledWith(
+      mockUserId,
+      expect.objectContaining({ since: futureDate }),
+    );
+  });
+
+  it('since ausente → service called without since field (backward compat)', async () => {
+    const { controller, service } = createController();
+    await controller.list({ status: undefined, page: 1, perPage: 20 });
+    const callArgs = service.findByUser.mock.calls[0]?.[1] as Record<string, unknown>;
+    expect(callArgs?.since).toBeUndefined();
+  });
+
+  it('since + status → both fields passed to service', async () => {
+    const { controller, service } = createController();
+    await controller.list({
+      status: 'read' as const,
+      page: 1,
+      perPage: 20,
+      since: '2026-06-01T00:00:00.000Z',
+    });
+    expect(service.findByUser).toHaveBeenCalledWith(
+      mockUserId,
+      expect.objectContaining({ since: '2026-06-01T00:00:00.000Z', status: 'read' }),
+    );
+  });
+});

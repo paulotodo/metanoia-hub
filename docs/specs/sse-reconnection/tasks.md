@@ -104,8 +104,8 @@ FASE 6: Qualidade e Entrega
 
 **Arquivo**: `packages/types/src/notification.ts`
 
-- [ ] Localizar `NotificationsQuerySchema` (linha ~95 do arquivo atual)
-- [ ] Adicionar campo `since: z.string().datetime().optional()` ao objeto — após `unread` e antes do fechamento do `z.object({})`, conforme contrato `contracts/notifications-since.md`:
+- [x] Localizar `NotificationsQuerySchema` (linha ~95 do arquivo atual)
+- [x] Adicionar campo `since: z.string().datetime().optional()` ao objeto — após `unread` e antes do fechamento do `z.object({})`, conforme contrato `contracts/notifications-since.md`:
   ```ts
   export const NotificationsQuerySchema = z.object({
     status: NotificationStatusSchema.optional(),
@@ -115,9 +115,9 @@ FASE 6: Qualidade e Entrega
     since: z.string().datetime().optional(), // ISO 8601 — gap-fill (FR-015/FR-017)
   });
   ```
-- [ ] Verificar que o tipo inferido `NotificationsQuery` inclui `since?: string`
-- [ ] Confirmar que `NotificationListItemSchema` e `NotificationsListSchema` não precisam de alteração (response shape inalterado)
-- [ ] Rodar `pnpm --filter @metanoia/types build` sem erros
+- [x] Verificar que o tipo inferido `NotificationsQuery` inclui `since?: string`
+- [x] Confirmar que `NotificationListItemSchema` e `NotificationsListSchema` não precisam de alteração (response shape inalterado)
+- [x] Rodar `pnpm --filter @metanoia/types build` sem erros
 
 **Critério de aceitação**: `pnpm --filter @metanoia/types build` passa sem erros.
 
@@ -127,11 +127,11 @@ FASE 6: Qualidade e Entrega
 
 **Arquivo**: `packages/types/src/__tests__/notification.snapshot.spec.ts`
 
-- [ ] Rodar `pnpm --filter @metanoia/types test -- --update-snapshots` para regenerar o snapshot incluindo `since`
-- [ ] Verificar que o snapshot em `__snapshots__/notification.snapshot.spec.ts.snap` reflete o novo campo `since`
-- [ ] Confirmar que os demais snapshots do arquivo não foram alterados (diff visual)
-- [ ] Commitar o snapshot atualizado (não ignorar o arquivo .snap)
-- [ ] Rodar `pnpm --filter @metanoia/types test` e confirmar 0 falhas
+- [x] Rodar `pnpm --filter @metanoia/types test -- --update-snapshots` para regenerar o snapshot incluindo `since`
+- [x] Verificar que o snapshot em `__snapshots__/notification.snapshot.spec.ts.snap` reflete o novo campo `since`
+- [x] Confirmar que os demais snapshots do arquivo não foram alterados (diff visual)
+- [x] Commitar o snapshot atualizado (não ignorar o arquivo .snap)
+- [x] Rodar `pnpm --filter @metanoia/types test` e confirmar 0 falhas
 
 **Critério de aceitação**: `pnpm --filter @metanoia/types test` passa com 0 falhas.
 
@@ -143,15 +143,15 @@ FASE 6: Qualidade e Entrega
 
 **Arquivo**: `apps/api/src/notifications/notifications.controller.ts`
 
-- [ ] Remover o `NotificationsQuerySchema` inline do controller (o `z.object({ status, page, perPage })` local sem `unread`/`since`)
-- [ ] Remover a importação local de `z` usada apenas para esse schema inline (se não usada em outro lugar)
-- [ ] Importar `NotificationsQuerySchema` e `NotificationsQuery` de `@metanoia/types`:
+- [x] Remover o `NotificationsQuerySchema` inline do controller (o `z.object({ status, page, perPage })` local sem `unread`/`since`)
+- [x] Remover a importação local de `z` usada apenas para esse schema inline (se não usada em outro lugar)
+- [x] Importar `NotificationsQuerySchema` e `NotificationsQuery` de `@metanoia/types`:
   ```ts
   import { NotificationStatusSchema, NotificationsQuerySchema, type NotificationsQuery } from '@metanoia/types';
   ```
-- [ ] Atualizar a anotação de tipo no método `list()` para usar o `NotificationsQuery` importado
-- [ ] Verificar que `@Query(new ZodValidationPipe(NotificationsQuerySchema))` continua correto (schema agora inclui `unread` e `since`)
-- [ ] Passar `query` completo para `this.notificationsService.findByUser(ctx.userId ?? '', query)` — o serviço receberá `since` automaticamente
+- [x] Atualizar a anotação de tipo no método `list()` para usar o `NotificationsQuery` importado
+- [x] Verificar que `@Query(new ZodValidationPipe(NotificationsQuerySchema))` continua correto (schema agora inclui `unread` e `since`)
+- [x] Passar `query` completo para `this.notificationsService.findByUser(ctx.userId ?? '', query)` — o serviço receberá `since` automaticamente
 
 **Critério de aceitação**: `pnpm --filter @metanoia/api build` passa; endpoint aceita `since` e `unread` via `ZodValidationPipe`.
 
@@ -161,18 +161,18 @@ FASE 6: Qualidade e Entrega
 
 **Arquivo**: `apps/api/src/notifications/notifications.service.ts`
 
-- [ ] Atualizar a interface local `NotificationsQuery` para incluir `since?: string`
-- [ ] No método `findByUser`, após construir `statusFilter`, construir `sinceFilter`:
+- [x] Atualizar a interface local `NotificationsQuery` para incluir `since?: string`
+- [x] No método `findByUser`, após construir `statusFilter`, construir `sinceFilter`:
   - O SELECT atual usa: `$1` (userId), `$2` (perPage), `$3` (offset). O `statusFilter` é string literal hardcoded com enum, não usa bind posicional para o valor de status. Logo `since` será `$4` quando presente.
   - `const sinceFilter = query.since ? 'AND created_at > $4::timestamptz' : '';` (bind posicional — NUNCA interpolação de string — CHK048/049/050 / OWASP L1)
-- [ ] Atualizar `$queryRawUnsafe` do SELECT para incluir `${sinceFilter}` na cláusula WHERE:
+- [x] Atualizar `$queryRawUnsafe` do SELECT para incluir `${sinceFilter}` na cláusula WHERE:
   ```ts
   const selectParams: unknown[] = [userId, perPage, offset];
   if (query.since) selectParams.push(query.since);
   // tx.$queryRawUnsafe(SQL_com_sinceFilter, ...selectParams)
   ```
-- [ ] Aplicar o mesmo `sinceFilter` e params adicionais ao `COUNT(*)` (CHK067: filtro em ambos SELECT e COUNT)
-- [ ] Confirmar que `since` ausente → `sinceFilter = ''` e params sem o valor de since (backward compatibility — CHK009)
+- [x] Aplicar o mesmo `sinceFilter` e params adicionais ao `COUNT(*)` (CHK067: filtro em ambos SELECT e COUNT)
+- [x] Confirmar que `since` ausente → `sinceFilter = ''` e params sem o valor de since (backward compatibility — CHK009)
 
 **Critério de aceitação**: `GET /api/v1/notifications?since=2026-01-01T00:00:00Z&status=unread` retorna apenas notificações após o timestamp; sem `since`, comportamento idêntico ao atual.
 
@@ -182,13 +182,13 @@ FASE 6: Qualidade e Entrega
 
 **Arquivo**: `apps/api/src/notifications/notifications.controller.spec.ts`
 
-- [ ] Adicionar describe block `"GET /api/v1/notifications — filtro since"` com os cenários:
+- [x] Adicionar describe block `"GET /api/v1/notifications — filtro since"` com os cenários:
   - `"since válido (ISO 8601) → 200 com notificações filtradas"` — passar `since` no passado, verificar que apenas itens com `created_at > since` aparecem
   - `"since inválido (não-ISO 8601) → 400 via ZodValidationPipe"` — ex: `since=not-a-date`
   - `"since futuro → 200 com data vazia"` — `since` setado para amanhã, verificar `data: []`
   - `"since ausente → 200 com comportamento idêntico ao atual"` — verificar que a lista retorna normalmente
-- [ ] Mockar `notificationsService.findByUser` para isolar o controller (padrão do spec existente)
-- [ ] Confirmar que os testes existentes de `status` e `unread` continuam passando após a migração do schema (task 2.1)
+- [x] Mockar `notificationsService.findByUser` para isolar o controller (padrão do spec existente)
+- [x] Confirmar que os testes existentes de `status` e `unread` continuam passando após a migração do schema (task 2.1)
 
 **Critério de aceitação**: `pnpm --filter @metanoia/api test -- notifications.controller.spec.ts` passa com 0 falhas.
 
@@ -198,14 +198,14 @@ FASE 6: Qualidade e Entrega
 
 **Arquivo**: `apps/api/test/rls/notifications.rls-spec.ts` (existente — acrescentar caso)
 
-- [ ] Adicionar describe block `"RLS: filtro since preserva isolamento de tenant"` com:
+- [x] Adicionar describe block `"RLS: filtro since preserva isolamento de tenant"` com:
   - Criar 2 tenants distintos (tenant-A e tenant-B) com 1 notificação cada, ambas com `created_at` no passado
   - Chamar `findByUser(userA, { since: <timestamp anterior às notificações> })` autenticado como tenant-A
   - Asseverar que apenas a notificação de tenant-A aparece (notificação de tenant-B não aparece)
   - Repetir com roles invertidas (tenant-B não vê tenant-A) — idempotência
-- [ ] Confirmar que o teste usa integração real com Postgres (não mock)
-- [ ] O teste deve rodar 2× no CI (padrão do projeto — MEMORY epic-13: "teste RLS idempotente roda 2x no CI")
-- [ ] Documentar no comentário do teste: "Rodado 2× no CI por padrão (idempotência RLS)"
+- [x] Confirmar que o teste usa integração real com Postgres (não mock)
+- [x] O teste deve rodar 2× no CI (padrão do projeto — MEMORY epic-13: "teste RLS idempotente roda 2x no CI")
+- [x] Documentar no comentário do teste: "Rodado 2× no CI por padrão (idempotência RLS)"
 
 **Critério de aceitação**: `pnpm --filter @metanoia/api test -- notifications.rls-spec.ts` passa 2× sem falhas.
 
@@ -220,8 +220,8 @@ FASE 6: Qualidade e Entrega
 Task central. Estender sem reescrever — preservar comportamento atual.
 
 **Estado de conexão (client state — `useState`/`useRef`, NUNCA Zustand/TanStack — FR-012):**
-- [ ] Adicionar tipo `ConnectionState = 'connected' | 'reconnecting' | 'extended-outage' | 'auth-error'`
-- [ ] Adicionar `useState<ConnectionState>('connected')` para `connectionState`
+- [x] Adicionar tipo `ConnectionState = 'connected' | 'reconnecting' | 'extended-outage' | 'auth-error'`
+- [x] Adicionar `useState<ConnectionState>('connected')` para `connectionState`
 - [ ] Adicionar `useRef<number>(0)` para `failureCount`
 - [ ] Adicionar `useRef<string | null>(null)` para `lastReceivedAt` (FR-008; NUNCA persistido — FR-009)
 - [ ] Adicionar `useRef<ReturnType<typeof setTimeout> | null>(null)` para `retryTimerRef`
@@ -249,7 +249,7 @@ Task central. Estender sem reescrever — preservar comportamento atual.
   - Capturar `AbortError` silenciosamente
 
 **Retorno do hook:**
-- [ ] Retornar `{ connectionState, retryNow }` além do comportamento original
+- [x] Retornar `{ connectionState, retryNow }` além do comportamento original
 - [ ] `retryNow`: cancela timer, reseta `failureCount.current = 0`, reconecta imediatamente (FR-005)
 
 **Cleanup no desmonte:**
@@ -263,8 +263,8 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 **Arquivo**: `apps/web/src/components/notifications/connection-status.tsx` (NOVO)
 
-- [ ] Criar componente `ConnectionStatus` com props `{ connectionState: ConnectionState; onRetry: () => void }`
-- [ ] `connectionState === 'connected'`: renderizar `null` (sem DOM — FR-013; evita anúncio vazio em aria-live — CHK035)
+- [x] Criar componente `ConnectionStatus` com props `{ connectionState: ConnectionState; onRetry: () => void }`
+- [x] `connectionState === 'connected'`: renderizar `null` (sem DOM — FR-013; evita anúncio vazio em aria-live — CHK035)
 - [ ] `connectionState === 'reconnecting'`: texto "Reconectando..." sutil (abaixo do sino, text-sm text-muted-foreground, sem overlay — CHK025: posicionamento documentado em comentário) com `aria-live="polite"` (CHK032)
 - [ ] `connectionState === 'extended-outage'`: mensagem de outage + botão "Tentar agora" (FR-004/005); mesma região `aria-live="polite"`
 - [ ] `connectionState === 'auth-error'`: mensagem "Sessão expirada. Faça login novamente." + link para `/login` (CHK046/047)
@@ -273,7 +273,7 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 - [ ] Botão com `type="button"` explícito (CHK038)
 - [ ] Textos via `useTranslations('notificationCenter.connection')` (CHK029 — chaves de task 3.4)
 - [ ] Contraste: usar tokens `text-foreground`/`bg-background` (WCAG 4.5:1 por construção dos tokens do projeto — CHK037; documentar em comentário)
-- [ ] Exportar como named export: `export function ConnectionStatus(...)`
+- [x] Exportar como named export: `export function ConnectionStatus(...)`
 
 **Critério de aceitação**: 4 estados renderizam corretamente; unit tests passam (ver 5.2).
 
@@ -287,9 +287,9 @@ Task central. Estender sem reescrever — preservar comportamento atual.
   ```ts
   const { connectionState, retryNow } = useNotificationStream({ silenced, announce });
   ```
-- [ ] Importar `ConnectionStatus` de `./connection-status`
+- [x] Importar `ConnectionStatus` de `./connection-status`
 - [ ] Importar tipo `ConnectionState` de `@/hooks/use-notification-stream`
-- [ ] Renderizar `<ConnectionStatus connectionState={connectionState} onRetry={retryNow} />` dentro do JSX do bell, posicionado abaixo do ícone/badge
+- [x] Renderizar `<ConnectionStatus connectionState={connectionState} onRetry={retryNow} />` dentro do JSX do bell, posicionado abaixo do ícone/badge
 - [ ] Verificar que o seletor de bell no E2E existente (`aria-label`) não é afetado pela adição (ver `apps/web/e2e/notifications/notification-center.spec.ts`)
 
 **Critério de aceitação**: `NotificationBell` renderiza `ConnectionStatus`; E2E existente `notification-center.spec.ts` continua passando.
@@ -300,8 +300,8 @@ Task central. Estender sem reescrever — preservar comportamento atual.
 
 **Arquivo**: `apps/web/messages/pt-BR.json`
 
-- [ ] Localizar o namespace `notificationCenter` existente no JSON
-- [ ] Adicionar sub-namespace `connection` (CHK030):
+- [x] Localizar o namespace `notificationCenter` existente no JSON
+- [x] Adicionar sub-namespace `connection` (CHK030):
   ```json
   "connection": {
     "reconnecting": "Reconectando...",
@@ -311,8 +311,8 @@ Task central. Estender sem reescrever — preservar comportamento atual.
     "authErrorLink": "Fazer login"
   }
   ```
-- [ ] Verificar que `check-i18n-scf.sh --strict` passa com as novas chaves (ver task 6.1)
-- [ ] Vocabulário: textos funcionais aceitos como adequados para o contexto (CHK031 — tech debt de revisão pastoral adiado)
+- [x] Verificar que `check-i18n-scf.sh --strict` passa com as novas chaves (ver task 6.1)
+- [x] Vocabulário: textos funcionais aceitos como adequados para o contexto (CHK031 — tech debt de revisão pastoral adiado)
 
 **Critério de aceitação**: `check-i18n-scf.sh --strict` passa; textos aparecem corretamente no componente.
 
@@ -401,27 +401,27 @@ Resolve CHK064 (race condition: fetch em andamento + nova desconexão):
 
 **Arquivo**: `apps/web/src/hooks/__tests__/use-notification-stream.spec.ts` (NOVO)
 
-- [ ] Setup: mock do `EventSource` com `vi.stubGlobal`, mock do `fetch` para gap-fill, mock de `useQueryClient`
-- [ ] Suite `"backoff exponencial"`:
+- [x] Setup: mock do `EventSource` com `vi.stubGlobal`, mock do `fetch` para gap-fill, mock de `useQueryClient`
+- [x] Suite `"backoff exponencial"`:
   - `calcBackoff(0)` → 1000; `calcBackoff(1)` → 2000; `calcBackoff(2)` → 4000; `calcBackoff(3)` → 8000; `calcBackoff(5)` → 30000; `calcBackoff(10)` → 30000 (teto)
-- [ ] Suite `"lastReceivedAt"`:
+- [x] Suite `"lastReceivedAt"`:
   - Após evento `notification` com `createdAt`, `lastReceivedAt.current` é atualizado
   - `lastReceivedAt.current` nunca escrito em localStorage/sessionStorage (spy verifica)
   - Após desmonte e remontagem, `lastReceivedAt.current` começa `null` (FR-009)
-- [ ] Suite `"estados de conexão"`:
+- [x] Suite `"estados de conexão"`:
   - Conexão inicial → `'connected'`
   - `onerror` (sonda retorna 200) → `'reconnecting'`; 5 falhas no teto → `'extended-outage'`
   - Reconexão bem-sucedida após `extended-outage` → `'connected'`, aviso desaparece
   - `retryNow()` → reset de `failureCount`, reconexão imediata
   - `onerror` (sonda retorna 401) → `'auth-error'`, loop parado (task 4.2)
-- [ ] Suite `"gap-fill"`:
+- [x] Suite `"gap-fill"`:
   - Reconexão com `lastReceivedAt !== null` → fetch `?since=...&status=unread` chamado
   - Reconexão sem `lastReceivedAt` → gap-fill NÃO executado
   - Deduplicação: mock 2 fetches sobrepostos, `invalidateQueries` chamado 1× após completar
   - Paginado (task 4.3): total > perPage → 2 fetches sequenciais
   - Race condition (task 4.4): gap-fill em andamento + novo `onerror` → fetch anterior cancelado
-- [ ] Suite `"segurança"` (task 4.1): `console.*` espionados, nenhum com `token=`
-- [ ] Suite `"cleanup"`: desmonte chama `source.close()`, cancela timer, aborta gap-fill
+- [x] Suite `"segurança"` (task 4.1): `console.*` espionados, nenhum com `token=`
+- [x] Suite `"cleanup"`: desmonte chama `source.close()`, cancela timer, aborta gap-fill
 
 **Critério de aceitação**: `pnpm --filter @metanoia/web test -- use-notification-stream.spec.ts` passa com 0 falhas.
 
@@ -431,13 +431,13 @@ Resolve CHK064 (race condition: fetch em andamento + nova desconexão):
 
 **Arquivo**: `apps/web/src/components/notifications/__tests__/connection-status.spec.tsx` (NOVO)
 
-- [ ] `connectionState="connected"` → componente renderiza `null` (nada no DOM)
-- [ ] `connectionState="reconnecting"` → texto "Reconectando..." presente; `aria-live="polite"` no container
-- [ ] `connectionState="extended-outage"` → mensagem de outage presente; botão "Tentar agora" com `role="button"`
-- [ ] Clicar "Tentar agora" → `onRetry` chamado 1× (FR-005)
-- [ ] `connectionState="auth-error"` → mensagem de sessão expirada; link de login presente
-- [ ] Botão "Tentar agora" tem `type="button"` (CHK038)
-- [ ] Transições: verificar que classes `motion-safe:` estão presentes (snapshot ou class assertion)
+- [x] `connectionState="connected"` → componente renderiza `null` (nada no DOM)
+- [x] `connectionState="reconnecting"` → texto "Reconectando..." presente; `aria-live="polite"` no container
+- [x] `connectionState="extended-outage"` → mensagem de outage presente; botão "Tentar agora" com `role="button"`
+- [x] Clicar "Tentar agora" → `onRetry` chamado 1× (FR-005)
+- [x] `connectionState="auth-error"` → mensagem de sessão expirada; link de login presente
+- [x] Botão "Tentar agora" tem `type="button"` (CHK038)
+- [x] Transições: verificar que classes `motion-safe:` estão presentes (snapshot ou class assertion)
 
 **Critério de aceitação**: `pnpm --filter @metanoia/web test -- connection-status.spec.tsx` passa com 0 falhas.
 
@@ -447,9 +447,9 @@ Resolve CHK064 (race condition: fetch em andamento + nova desconexão):
 
 _(Ver task 2.3 — confirmação final de cobertura)_
 
-- [ ] Confirmar que `notifications.controller.spec.ts` cobre: `since` válido, inválido, futuro, ausente
-- [ ] Confirmar que testes existentes de `status` e `unread` continuam passando após migração do schema
-- [ ] Rodar: `pnpm --filter @metanoia/api test -- notifications.controller.spec.ts` com 0 falhas
+- [x] Confirmar que `notifications.controller.spec.ts` cobre: `since` válido, inválido, futuro, ausente
+- [x] Confirmar que testes existentes de `status` e `unread` continuam passando após migração do schema
+- [x] Rodar: `pnpm --filter @metanoia/api test -- notifications.controller.spec.ts` com 0 falhas
 
 **Critério de aceitação**: 0 falhas; todos os 4 cenários de `since` passam.
 
@@ -512,8 +512,8 @@ _(Ver task 2.4 — confirmação de execução dupla)_
 
 _(Ver task 1.2 — confirmação pré-PR)_
 
-- [ ] Arquivo `packages/types/src/__tests__/__snapshots__/notification.snapshot.spec.ts.snap` atualizado
-- [ ] `pnpm --filter @metanoia/types test` com 0 falhas e snapshot atual
+- [x] Arquivo `packages/types/src/__tests__/__snapshots__/notification.snapshot.spec.ts.snap` atualizado
+- [x] `pnpm --filter @metanoia/types test` com 0 falhas e snapshot atual
 
 **Critério de aceitação**: 0 falhas; diff do PR inclui o .snap atualizado.
 
