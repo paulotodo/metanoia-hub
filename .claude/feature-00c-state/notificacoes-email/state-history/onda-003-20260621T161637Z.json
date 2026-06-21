@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan. Spec clarificada com 4 decisoes (Q1: EMAIL_DAILY_LIMIT hardcoded; Q2: content_new coexiste com content_update; Q3: EMAIL_DEFAULT_FROM via env var; Q4: TTL=seconds_until_midnight_utc). Executar pre-flight clarify->plan antes de avancar.",
   "waves": [
     {
       "id": "onda-001",
@@ -79,19 +79,13 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-21T16:15:46Z",
-      "finished_at": "2026-06-21T16:22:54Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 428,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-21T16:21:15Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -379,42 +373,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T16:16:37Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notificacoes-email)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos derivados da feature: notificacoes email via resend fr77 nfr story",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-017",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T16:21:15Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Plano tecnico gerado reusando infra real notifications (14-1/14-2a/14-2b): EmailChannel real + EmailService(Resend), Lua rate-limit atomico, circuit breaker via EmailHealthPort stub (14-4), templates branding Epic 6. Constitution Check PASS sem violacoes.",
-      "options_considered": [
-        "gerar-plano",
-        "abortar"
-      ],
-      "choice": "gerar-plano",
-      "rationale": "5 artefatos gravados em docs/specs/notificacoes-email/: docs/specs/notificacoes-email/: contracts data-model.md plan.md quickstart.md research.md spec.md  docs/specs/notificacoes-email/contracts/: email-channel.contract.md ",
-      "justification_score": 3,
-      "evidence": "Artefatos em disco: docs/specs/notificacoes-email/: contracts data-model.md plan.md quickstart.md research.md spec.md  docs/specs/notificacoes-email/contracts/: email-channel.contract.md ",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -432,12 +390,12 @@
     "current_wave_start": "2026-06-21T16:15:46Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1019,
+    "wallclock_total_seconds": 591,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 17,
+    "decisions_total": 15,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
