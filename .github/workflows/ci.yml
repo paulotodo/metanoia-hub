@@ -222,6 +222,9 @@ jobs:
       E2E_DEMO_ADMIN_EMAIL: admin@demo.metanoia.app
       KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER || 'admin' }}
       KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD || 'admin' }}
+      # Story 14-3: API valida RESEND_API_KEY no boot (sem default, por seguranca).
+      # E2E nao envia email real — dummy basta para a API subir.
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY || 're_ci_dummy_key' }}
     steps:
       - uses: actions/checkout@v4
 
