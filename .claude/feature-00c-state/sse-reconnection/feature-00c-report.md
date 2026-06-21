@@ -1,6 +1,6 @@
 # Relatorio do Agente-00C — feat-sse-reconnection-20260621T053722Z
 
-**Gerado em**: 2026-06-21T06:51:15Z
+**Gerado em**: 2026-06-21T07:11:23Z
 **Status no momento**: em_andamento
 **Versao do schema**: 1.0.0
 
@@ -18,9 +18,9 @@
 | Motivo termino | (em andamento) |
 | Iniciada em | 2026-06-21T05:37:22Z |
 | Terminada em | ainda em andamento |
-| Ondas executadas | 6 |
+| Ondas executadas | 7 |
 | Tool calls totais | 1 |
-| Decisoes registradas | 19 |
+| Decisoes registradas | 22 |
 | Bloqueios humanos | 0 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -38,16 +38,17 @@
 | onda-004 | 2026-06-21T06:08:27Z | 2026-06-21T06:13:56Z |  | 0 | 329s | concluido |
 | onda-005 | 2026-06-21T06:19:21Z | 2026-06-21T06:28:08Z | create-tasks | 0 | 527s | etapa_concluida_avancando |
 | onda-006 | 2026-06-21T06:32:49Z | 2026-06-21T06:51:00Z | execute-task | 0 | 1091s | concluido |
+| onda-007 | 2026-06-21T06:58:58Z | 2026-06-21T07:10:49Z |  | 0 | 711s | concluido |
 
 ## 3. Decisoes
 
-Total: 19 decisoes registradas.
+Total: 22 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 19 |
+| agente-00c-feature-orchestrator | 22 |
 
 ### 3.2 Lista detalhada
 
@@ -348,6 +349,54 @@ Total: 19 decisoes registradas.
 **Escolha**: executar-FASE-1-a-3
 
 **Justificativa**: FASE 1 e 2 completadas (contratos + backend); FASE 3 completa (hook + componente + i18n); testes unitários 5.1/5.2/5.3/5.6 completos; build passes. FASE 4 (segurança robustez) está impl. inline no hook. Pendente: 5.4 RLS real, 5.5 E2E, 5.7 roundtrip, FASE 6 lint+PR.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-020 — model-routing — agente-00c-feature-orchestrator — 2026-06-21T06:57:12Z
+
+**Contexto**: Selecao de modelo para onda 6 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-021 — execute-task — agente-00c-feature-orchestrator — 2026-06-21T06:58:53Z
+
+**Contexto**: inicio-onda-execute-task-FASE4-5
+
+**Opcoes consideradas**: iniciar / abortar
+
+**Escolha**: iniciar
+
+**Justificativa**: State verificado: hash OK, 0 bloqueios, budget OK. FASE 1-3 commitadas. Onda foca FASE 4 (verificacao checkboxes ja inline) + FASE 5 (testes unit+E2E locais)
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-022 — execute-task — agente-00c-feature-orchestrator — 2026-06-21T07:10:22Z
+
+**Contexto**: conclusao-onda-FASE4-5
+
+**Opcoes consideradas**: fechar-onda / continuar
+
+**Escolha**: fechar-onda
+
+**Justificativa**: FASE 4 verificada inline (todos checkboxes confirmados na implementacao real). FASE 5: unit tests 935/935, controller spec 10/10, RLS spec 2x11/11. E2E spec criado. Falta FASE 6 (lint+build+PR).
 
 **Score**: 2
 

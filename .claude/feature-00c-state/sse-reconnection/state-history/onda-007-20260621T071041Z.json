@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Continuar execute-task: FASE 6 (lint+build+PR). (1) pnpm turbo lint, (2) check scripts a11y (focus-ring, motion-safe, contrast, i18n-scf), (3) pnpm turbo build, (4) abrir PR feat/sse-reconnection-14-2c → dev, (5) atualizar docs/planning story 14-2c done.",
+  "next_instruction": "Continuar execute-task: FASE 4 (segurança robustez — 4.1-4.4 inline no hook, verificar), FASE 5 restante (5.4 RLS local real, 5.5 E2E Playwright, 5.7 roundtrip), FASE 6 (lint+build+PR). Branch: feat/sse-reconnection-14-2c",
   "waves": [
     {
       "id": "onda-001",
@@ -156,11 +156,11 @@
     {
       "id": "onda-007",
       "started_at": "2026-06-21T06:58:58Z",
-      "finished_at": "2026-06-21T07:10:49Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 711,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -605,9 +605,9 @@
     "current_wave_start": "2026-06-21T06:58:58Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 1,
-    "wallclock_total_seconds": 3388,
+    "wallclock_total_seconds": 2677,
     "max_depth_reached": 2,
     "subagents_spawned": 1,
     "decisions_total": 22,
@@ -651,11 +651,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T06:28:41Z",
       "description": "create-tasks concluido; aguardando wakeup para execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T07:11:05Z",
-      "description": "onda-007 concluida, aguardando FASE 6 lint+build+PR"
     }
   ],
   "tasks": [

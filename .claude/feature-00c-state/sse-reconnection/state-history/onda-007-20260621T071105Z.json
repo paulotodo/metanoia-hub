@@ -651,11 +651,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T06:28:41Z",
       "description": "create-tasks concluido; aguardando wakeup para execute-task"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T07:11:05Z",
-      "description": "onda-007 concluida, aguardando FASE 6 lint+build+PR"
     }
   ],
   "tasks": [
