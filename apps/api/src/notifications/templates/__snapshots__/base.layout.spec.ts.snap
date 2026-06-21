@@ -1,0 +1,93 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderBaseLayout > matches snapshot with tenant branding 1`] = `
+"<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Subject</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#D97706;text-align:left;">
+              <img src="https://cdn.example.com/logo.png" alt="Igreja Exemplo logo" width="128" height="128" style="max-height:48px;width:auto;display:block;" />
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              <p>Test content</p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#92400E;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Igreja Exemplo &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>"
+`;
+
+exports[`renderBaseLayout > matches snapshot without branding (uses defaults) 1`] = `
+"<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Subject</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <div style="font-size:24px;font-weight:700;color:#1E40AF;letter-spacing:-0.5px;">Metanoia</div>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              <p>Test content</p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Metanoia &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>"
+`;

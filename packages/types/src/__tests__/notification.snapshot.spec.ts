@@ -10,11 +10,12 @@ import {
   NotificationRealtimeEventSchema,
   NOTIFICATIONS_QUEUE_NAME,
   NOTIFICATION_DIGEST_DEFAULT_WINDOW_MS,
+  CRITICAL_NOTIFICATION_TYPES,
 } from '../notification';
 
 describe('NotificationTypeSchema', () => {
-  it('accepts all valid types', () => {
-    const types = ['pastoral_alert', 'group_message', 'content_update', 'meeting_reminder', 'system'];
+  it('accepts all valid types (7 values including Story 14-3 additions)', () => {
+    const types = ['pastoral_alert', 'group_message', 'content_update', 'meeting_reminder', 'system', 'export_ready', 'content_new'];
     for (const t of types) {
       expect(NotificationTypeSchema.safeParse(t).success).toBe(true);
     }
@@ -215,5 +216,27 @@ describe('NotificationsListSchema', () => {
       meta: { page: 1, perPage: 20, total: 0 },
     };
     expect(NotificationsListSchema.safeParse(valid).success).toBe(true);
+  });
+});
+
+describe('CRITICAL_NOTIFICATION_TYPES (Story 14-3)', () => {
+  it('contains pastoral_alert, export_ready, system', () => {
+    expect(CRITICAL_NOTIFICATION_TYPES).toContain('pastoral_alert');
+    expect(CRITICAL_NOTIFICATION_TYPES).toContain('export_ready');
+    expect(CRITICAL_NOTIFICATION_TYPES).toContain('system');
+  });
+
+  it('does not contain meeting_reminder or content_new (non-critical)', () => {
+    expect(CRITICAL_NOTIFICATION_TYPES).not.toContain('meeting_reminder');
+    expect(CRITICAL_NOTIFICATION_TYPES).not.toContain('content_new');
+  });
+
+  it('is a readonly tuple of 3 elements', () => {
+    expect(CRITICAL_NOTIFICATION_TYPES).toHaveLength(3);
+  });
+
+  it('NotificationTypeSchema accepts export_ready and content_new (Story 14-3)', () => {
+    expect(NotificationTypeSchema.safeParse('export_ready').success).toBe(true);
+    expect(NotificationTypeSchema.safeParse('content_new').success).toBe(true);
   });
 });

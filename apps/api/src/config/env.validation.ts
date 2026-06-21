@@ -55,6 +55,16 @@ export const envSchema = z.object({
     .int()
     .min(1000)
     .default(30000),
+  // ── Email (Story 14-3 / FR77) ─────────────────────────────────────────────
+  // RESEND_API_KEY: required in production; no default (explicit startup failure).
+  // SECURITY: never logged — CHK029/L1. EmailService.send() NEVER logs html body.
+  RESEND_API_KEY: z.string().min(1),
+  EMAIL_DEFAULT_FROM: z.string().default('Metanoia <notifications@metanoia.app>'),
+  EMAIL_DAILY_LIMIT: z.coerce.number().int().positive().default(100),
+  EMAIL_RATE_THRESHOLD: z.coerce.number().int().positive().default(80),
+  // Retry backoff for critical notifications (pastoral_alert, export_ready, system).
+  // SC-01: delivery <= 1 min -> 3 retries * 5s = max 15s (CHK050).
+  EMAIL_CRITICAL_BACKOFF_MS: z.coerce.number().int().positive().default(5000),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

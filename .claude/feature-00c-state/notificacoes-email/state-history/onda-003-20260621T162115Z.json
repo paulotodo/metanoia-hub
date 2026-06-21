@@ -1,0 +1,455 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "notificacoes-email",
+  "execution": {
+    "id": "feat-notificacoes-email-20260621T155101Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Notificacoes por Email via Resend (FR77, NFR-I1/I2/I3) — Story 14-3. Backend apps/api: EmailChannel implementando NotificationChannel, integra Resend SDK via EmailService abstração (modules/notifications/channels/email.service.ts) com timeouts connect<=3s read<=10s (NFR-I3); templates por tipo de notificacao (pastoral_alert, meeting_reminder, export_ready com signed URL 1h, content_new) com branding do tenant (logo/cores do Epic 6) quando disponivel. Retry: erros transientes (Resend 5xx/timeout) lançam erro retryable (BullMQ backoff NFR-I2); apos 3 retries cria fallback in-app + status failed com metadata.failureReason (NFR-I1). Rate limiting via Redis Lua script atomico (INCR contador diario): em 80/100 difere content_new p/ proximo dia; meeting_reminder diferido -> fallback in-app imediato (participante NUNCA perde lembrete); criticos (pastoral_alert/export_ready/system) sempre enviam; admin avisado in-app. Circuit breaker integra com health-check da Story 14.4 (DEPENDENCIA ainda nao-done — tratar via abstração/health-port com stub integravel, NAO bloquear): outage Resend >5min -> fallback in-app + emite evento notifications.email.circuit-open; recupera apos 3 checks saudaveis; nao re-tenta diferidos do periodo de outage. Testes: integracao Resend sandbox, snapshot templates (acentos/URL longa/tenant sem logo), retry mock 500, rate-limit Lua atomicidade (2 jobs concorrentes em 79/100), deferral, circuit breaker, RLS. UUID v7 uuidv7(), Zod packages/types, RLS obrigatorio. Dependencias: 14.1 (Channel Router+BullMQ, done), 14.4 (circuit breaker, NAO done -> integracao pendente), Epic 6 (branding). Fonte: _bmad-output/implementation-artifacts/14-3-notificacoes-por-email-via-resend-fr77-nfr-i1i2i3.md.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-21T15:51:01Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan. Spec clarificada com 4 decisoes (Q1: EMAIL_DAILY_LIMIT hardcoded; Q2: content_new coexiste com content_update; Q3: EMAIL_DEFAULT_FROM via env var; Q4: TTL=seconds_until_midnight_utc). Executar pre-flight clarify->plan antes de avancar.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-21T15:53:56Z",
+      "finished_at": "2026-06-21T15:56:45Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 169,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-21T15:56:45Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-21T16:02:59Z",
+      "finished_at": "2026-06-21T16:10:01Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 422,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-21T16:03:48Z",
+          "decision_id": "dec-005"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-21T16:04:56Z",
+          "decision_id": null
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-21T16:05:44Z",
+          "decision_id": "dec-008"
+        },
+        {
+          "skill": "clarify-answerer",
+          "timestamp": "2026-06-21T16:07:22Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-21T16:15:46Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-21T16:21:15Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-21T15:51:01Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "init",
+      "timestamp": "2026-06-21T15:53:23Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notificacoes-email)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: notificacoes email via resend fr77 nfr story",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-21T15:54:10Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio-de-execucao-onda-001",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "pre-requisitos validados (hash OK, 0 bloqueios, budgets OK, sem aborto). Infra 14-1 (canal, worker, BullMQ) ja existente. NotificationType falta export_ready/content_new nos enums Zod (apenas pastoral_alert, group_message, content_update, meeting_reminder, system definidos). Circuit breaker 14.4 nao-done - abstraction-stub necessaria.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-21T16:01:15Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:03:41Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:04:46Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-asker retornou perguntas=[] (spec autocontida)",
+      "options_considered": [
+        "avancar-para-plan",
+        "solicitar-clarificacao-humana"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "Spec tem 18 FRs detalhados, 5 user stories com acceptance scenarios, entidades definidas, infraestrutura pendente (14-4) resolvida via abstração EmailHealthPort stub documentada em FR-16/SC-07. Nenhuma ambiguidade material identificada.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:05:19Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "correcao: asker retornou 4 perguntas materiais (summary inicial incorreto)",
+      "options_considered": [
+        "processar-perguntas-com-answerer",
+        "escalar-humano"
+      ],
+      "choice": "processar-perguntas-com-answerer",
+      "rationale": "4 perguntas materiais identificadas: limite diario configuravel vs hardcoded, content_new vs content_update, sender padrao, TTL do rate counter. Todas respondiveis com score>=2 via briefing/constitution/spec sem escalar humano.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:05:44Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:07:13Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q1: limite diario de email hardcoded vs configuravel por tenant",
+      "options_considered": [
+        "hardcoded-constante",
+        "configuravel-por-tenant",
+        "env-var"
+      ],
+      "choice": "hardcoded-constante",
+      "rationale": "Limite 100 como constante (EMAIL_DAILY_LIMIT=100, EMAIL_RATE_THRESHOLD=80). Lua script recebe limite como argumento possibilitando troca pos-MVP sem reestruturacao.",
+      "justification_score": 3,
+      "evidence": "packages/types sem campo emailDailyLimit no TenantConfig; FR-09/FR-10 mencionam 80/100 como valores concretos sem referencia a configuracao",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:07:13Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q2: content_new coexiste com content_update no enum NotificationType",
+      "options_considered": [
+        "coexistir",
+        "substituir",
+        "renomear"
+      ],
+      "choice": "coexistir",
+      "rationale": "Ambos coexistem. Rate limiter trata content_new E content_update como tipos nao-criticos deferriveis. Sem migration de dados necessaria.",
+      "justification_score": 3,
+      "evidence": "content_update ja existia no enum em packages/types com semantica de atualizacao de conteudo existente; content_new e semanticamente distinto (novo conteudo disponivel pela primeira vez)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:07:14Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q3: sender padrao para Resend quando tenant sem remetente configurado",
+      "options_considered": [
+        "env-var-com-fallback",
+        "constante-hardcoded",
+        "bloquear-sem-config"
+      ],
+      "choice": "env-var-com-fallback",
+      "rationale": "Sender via ENV EMAIL_DEFAULT_FROM (default: notifications@metanoia.app). Dominio deve ser verificado no Resend. Decisao de deployment, nao de produto.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:07:14Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q4: TTL do rate counter reset a meia-noite UTC exata vs TTL fixo 24h",
+      "options_considered": [
+        "reset-meia-noite-utc",
+        "ttl-fixo-86400s"
+      ],
+      "choice": "reset-meia-noite-utc",
+      "rationale": "YYYYMMDD na chave ja implica semantica de dia-calendario. TTL=seconds_until_midnight_utc evita sobreposicao de contadores entre dias quando primeiro envio ocorre proximo da meia-noite.",
+      "justification_score": 3,
+      "evidence": "chave Redis usa formato {YYYYMMDD} (baseada em data). TTL calculado como segundos-ate-proxima-meia-noite-UTC no Lua script garante alinhamento com a virada de dia",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:08:57Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Q3-override: sender padrao — answerer deu score=0; orquestrador resolve via padrao de deployment SaaS",
+      "options_considered": [
+        "escalar-humano",
+        "resolver-via-env-var-padrao"
+      ],
+      "choice": "resolver-via-env-var-padrao",
+      "rationale": "Sender padrao e decisao de deployment (nao de produto): EMAIL_DEFAULT_FROM lida de env var com fallback 'Metanoia <notifications@metanoia.app>'. Dominio verificado no Resend e pre-requisito operacional documentavel na spec. Padrao universal em SaaS. Nao bloqueia a pipeline SDD.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:09:38Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify concluido: 4 perguntas respondidas (Q1-Q4 score>=2), spec atualizada para Clarified",
+      "options_considered": [
+        "avancar-para-plan",
+        "abrir-bloqueio-humano"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "Q1/Q2/Q4 score=3 via answerer; Q3 score=0 do answerer overridden pelo orquestrador com score=2 (decisao de deployment via env var — nao decisao de produto). Spec atualizada em FR-04, FR-09, FR-10, Key Entities, EmailRateCounter TTL. Nenhum bloqueio humano necessario.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-21T16:14:10Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-21T16:16:37Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notificacoes-email)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: notificacoes email via resend fr77 nfr story",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-21T16:15:46Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 2,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 591,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 16,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "notificacoes",
+    "email",
+    "via",
+    "resend",
+    "fr77",
+    "nfr",
+    "story"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-21T15:53:23Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-21T16:04:56Z",
+      "description": "clarify concluido (0 perguntas) -> avancando para plan"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-21T16:16:37Z",
+      "description": "etapa=plan hits=4"
+    }
+  ]
+}

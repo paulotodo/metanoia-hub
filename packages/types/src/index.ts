@@ -1022,6 +1022,8 @@ export {
   type NotificationRealtimeEvent,
   NOTIFICATIONS_QUEUE_NAME,
   NOTIFICATION_DIGEST_DEFAULT_WINDOW_MS,
+  CRITICAL_NOTIFICATION_TYPES,
+  type CriticalNotificationType,
 } from './notification';
 export {
   NotificationsQuerySchema,

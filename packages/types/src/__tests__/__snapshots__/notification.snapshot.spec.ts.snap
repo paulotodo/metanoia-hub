@@ -1111,7 +1111,9 @@ exports[`NotificationsListSchema > matches snapshot 1`] = `
               "decodeAsync": [Function],
               "def": {
                 "entries": {
+                  "content_new": "content_new",
                   "content_update": "content_update",
+                  "export_ready": "export_ready",
                   "group_message": "group_message",
                   "meeting_reminder": "meeting_reminder",
                   "pastoral_alert": "pastoral_alert",
@@ -1124,7 +1126,9 @@ exports[`NotificationsListSchema > matches snapshot 1`] = `
               "encode": [Function],
               "encodeAsync": [Function],
               "enum": {
+                "content_new": "content_new",
                 "content_update": "content_update",
+                "export_ready": "export_ready",
                 "group_message": "group_message",
                 "meeting_reminder": "meeting_reminder",
                 "pastoral_alert": "pastoral_alert",
@@ -1146,6 +1150,8 @@ exports[`NotificationsListSchema > matches snapshot 1`] = `
                 "content_update",
                 "meeting_reminder",
                 "system",
+                "export_ready",
+                "content_new",
               ],
               "or": [Function],
               "overwrite": [Function],
@@ -2411,7 +2417,9 @@ exports[`NotificationsListSchema > matches snapshot 1`] = `
             "decodeAsync": [Function],
             "def": {
               "entries": {
+                "content_new": "content_new",
                 "content_update": "content_update",
+                "export_ready": "export_ready",
                 "group_message": "group_message",
                 "meeting_reminder": "meeting_reminder",
                 "pastoral_alert": "pastoral_alert",
@@ -2424,7 +2432,9 @@ exports[`NotificationsListSchema > matches snapshot 1`] = `
             "encode": [Function],
             "encodeAsync": [Function],
             "enum": {
+              "content_new": "content_new",
               "content_update": "content_update",
+              "export_ready": "export_ready",
               "group_message": "group_message",
               "meeting_reminder": "meeting_reminder",
               "pastoral_alert": "pastoral_alert",
@@ -2446,6 +2456,8 @@ exports[`NotificationsListSchema > matches snapshot 1`] = `
               "content_update",
               "meeting_reminder",
               "system",
+              "export_ready",
+              "content_new",
             ],
             "or": [Function],
             "overwrite": [Function],

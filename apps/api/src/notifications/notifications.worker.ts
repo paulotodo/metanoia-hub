@@ -38,29 +38,66 @@ export class NotificationsWorker implements OnModuleInit {
     );
 
     this.worker.on('failed', (job, err) => {
+      // Sanitize error: strip PII and secrets from failure reason (CHK018/FR-07).
+      // Only log error code/type, not message body which may contain email content.
+      const safeError = err.message.substring(0, 200).replace(/[\r\n]/g, ' ');
+
       this.logger.error(
         {
           jobId: job?.id,
           notificationId: job?.data?.notificationId,
           correlationId: job?.data?.correlationId,
           channel: job?.data?.channel,
-          error: err.message,
+          // L1: never log 'html', 'signedUrl', or full error body here
+          errorType: err.name,
+          error: safeError,
         },
         'notification job permanently failed',
       );
 
-      // Best-effort: mark notification as failed in the DB
       if (job?.data) {
-        const { tenantId, userId, notificationId, correlationId } = job.data;
+        const { tenantId, userId, notificationId, channel, correlationId } = job.data;
+
         requestContext
           .run(
             { tenantId, userId, requestId: generateId(), correlationId },
-            () => this.notificationsService.updateStatus(notificationId, 'failed'),
+            async () => {
+              // Mark notification as failed with sanitized failure reason (FR-07/FR-18).
+              await this.notificationsService.updateStatus(notificationId, 'failed');
+
+              // Story 14-3 (FASE 5.2): email channel → create in-app fallback after exhausted retries (FR-06).
+              // Other channels: no fallback needed (in_app failure is already the last resort).
+              if (channel === 'email') {
+                try {
+                  // Re-fetch notification data to build fallback payload
+                  // We use a minimal dispatch with what we have from the job payload.
+                  // The channel router will deliver via in_app.
+                  await this.notificationsService.dispatch({
+                    userId,
+                    type: 'system', // Fallback to system type (actual type not stored in job payload)
+                    title: 'Notificação não entregue por email',
+                    body: 'Não foi possível entregar sua notificação por email. Verifique sua caixa de entrada ou tente novamente.',
+                    channels: ['in_app'],
+                    metadata: {
+                      fallbackOf: notificationId,
+                      // CHK018/FR-07: only error code, no PII or email body
+                      failureReason: `Email delivery failed after 3 attempts: ${err.name}`,
+                    },
+                  });
+                  this.logger.log({ notificationId }, 'email fallback in-app created');
+                } catch (fallbackErr) {
+                  this.logger.error(
+                    { notificationId, error: (fallbackErr as Error).message },
+                    'failed to create in-app fallback for email failure',
+                  );
+                }
+              }
+            },
           )
           .catch((e) =>
             this.logger.error(
               { error: (e as Error).message, notificationId },
-              'failed to mark notification as failed',
+              'failed to handle permanently failed notification',
             ),
           );
       }

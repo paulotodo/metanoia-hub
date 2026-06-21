@@ -1,0 +1,625 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderContentNew > matches snapshot with title containing diacritics 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Nova trilha disponível</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <img src="https://cdn.example.com/logo.png" alt="Igreja Exemplo logo" width="128" height="128" style="max-height:48px;width:auto;display:block;" />
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Nova trilha de formação disponível
+    </h1>
+    <p style="margin:0 0 20px;font-size:16px;color:#374151;line-height:1.6;">
+      Uma nova trilha foi adicionada à plataforma para você.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#F5F3FF;border-left:4px solid #7C3AED;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Trilha</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Formação em Oração e Jejum</p>
+          <p style="margin:0;font-size:14px;color:#374151;line-height:1.5;">Uma jornada de 40 dias explorando a espiritualidade cristã.</p>
+        </td>
+      </tr>
+    </table>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#7C3AED;">
+          <a href="https://app.metanoia.app/trails/oracao-jejum" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Acessar trilha →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Igreja Exemplo &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Nova trilha disponível",
+}
+`;
+
+exports[`renderContentNew > matches snapshot without branding 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Nova trilha disponível</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <div style="font-size:24px;font-weight:700;color:#1E40AF;letter-spacing:-0.5px;">Metanoia</div>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Nova trilha de formação disponível
+    </h1>
+    <p style="margin:0 0 20px;font-size:16px;color:#374151;line-height:1.6;">
+      Uma nova trilha foi adicionada à plataforma para você.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#F5F3FF;border-left:4px solid #7C3AED;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Trilha</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Discipulado Básico</p>
+          <p style="margin:0;font-size:14px;color:#374151;line-height:1.5;">Fundamentos da fé cristã.</p>
+        </td>
+      </tr>
+    </table>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#7C3AED;">
+          <a href="https://app.metanoia.app/trails/basico" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Acessar trilha →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Metanoia &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Nova trilha disponível",
+}
+`;
+
+exports[`renderExportReady > matches snapshot with branding 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Arquivo pronto</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <img src="https://cdn.example.com/logo.png" alt="Igreja Exemplo logo" width="128" height="128" style="max-height:48px;width:auto;display:block;" />
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Seu arquivo está pronto
+    </h1>
+    <p style="margin:0 0 20px;font-size:16px;color:#374151;line-height:1.6;">
+      A exportação que você solicitou foi concluída com sucesso.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#F0FDF4;border-left:4px solid #16A34A;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Relatório</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Relatório Mensal</p>
+          <p style="margin:0;font-size:13px;color:#DC2626;">
+            ⏳ Link válido até: <strong>21 de junho de 2026, 16:00</strong>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:0 0 24px;font-size:14px;color:#6B7280;line-height:1.6;">
+      O link de download expira em 1 hora. Faça o download antes que ele expire.
+      Arquivos não são enviados em anexo por segurança.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#16A34A;">
+          <a href="https://cdn.example.com/exports/report.pdf?signed=1" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Baixar arquivo →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Igreja Exemplo &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Arquivo pronto",
+}
+`;
+
+exports[`renderExportReady > matches snapshot without branding 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Arquivo pronto</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <div style="font-size:24px;font-weight:700;color:#1E40AF;letter-spacing:-0.5px;">Metanoia</div>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Seu arquivo está pronto
+    </h1>
+    <p style="margin:0 0 20px;font-size:16px;color:#374151;line-height:1.6;">
+      A exportação que você solicitou foi concluída com sucesso.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#F0FDF4;border-left:4px solid #16A34A;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Relatório</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Dados Exportados</p>
+          <p style="margin:0;font-size:13px;color:#DC2626;">
+            ⏳ Link válido até: <strong>22 de junho de 2026, 10:00</strong>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:0 0 24px;font-size:14px;color:#6B7280;line-height:1.6;">
+      O link de download expira em 1 hora. Faça o download antes que ele expire.
+      Arquivos não são enviados em anexo por segurança.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#16A34A;">
+          <a href="https://cdn.example.com/exports/data.csv?sig=xyz" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Baixar arquivo →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Metanoia &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Arquivo pronto",
+}
+`;
+
+exports[`renderMeetingReminder > matches snapshot with group name containing diacritics 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Lembrete: 21 de junho de 2026</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <img src="https://cdn.example.com/logo.png" alt="Igreja Exemplo logo" width="128" height="128" style="max-height:48px;width:auto;display:block;" />
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Lembrete de encontro
+    </h1>
+    <p style="margin:0 0 20px;font-size:16px;color:#374151;line-height:1.6;">
+      Você tem um encontro agendado. Não esqueça!
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#EFF6FF;border-left:4px solid #1E40AF;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Grupo</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Célula Renovação</p>
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Data e hora</p>
+          <p style="margin:0;font-size:16px;font-weight:600;color:#1E40AF;">21 de junho de 2026 às 19:00</p>
+        </td>
+      </tr>
+    </table>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#1E40AF;">
+          <a href="https://app.metanoia.app/meetings/789" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Ver detalhes do encontro →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Igreja Exemplo &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Lembrete: 21 de junho de 2026",
+}
+`;
+
+exports[`renderMeetingReminder > matches snapshot without branding 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Lembrete: 22 de junho de 2026</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <div style="font-size:24px;font-weight:700;color:#1E40AF;letter-spacing:-0.5px;">Metanoia</div>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Lembrete de encontro
+    </h1>
+    <p style="margin:0 0 20px;font-size:16px;color:#374151;line-height:1.6;">
+      Você tem um encontro agendado. Não esqueça!
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#EFF6FF;border-left:4px solid #1E40AF;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Grupo</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Grupo Beta</p>
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Data e hora</p>
+          <p style="margin:0;font-size:16px;font-weight:600;color:#1E40AF;">22 de junho de 2026 às 09:30</p>
+        </td>
+      </tr>
+    </table>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#1E40AF;">
+          <a href="https://app.metanoia.app/meetings/001" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Ver detalhes do encontro →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Metanoia &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Lembrete: 22 de junho de 2026",
+}
+`;
+
+exports[`renderPastoralAlert > matches snapshot with PT-BR diacritics 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Sinal de cuidado: Célula Esperança</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <img src="https://cdn.example.com/logo.png" alt="Igreja Exemplo logo" width="128" height="128" style="max-height:48px;width:auto;display:block;" />
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Sinal de cuidado identificado
+    </h1>
+    <p style="margin:0 0 16px;font-size:16px;color:#374151;line-height:1.6;">
+      Um membro do seu grupo precisa de atenção pastoral.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#FEF2F2;border-left:4px solid #DC2626;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 8px;font-size:14px;color:#991B1B;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Participante</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">João Conceição</p>
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Grupo: <strong>Célula Esperança</strong></p>
+          <p style="margin:0;font-size:14px;color:#6B7280;">Motivo: <strong>Ausência por 3 semanas</strong></p>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:0 0 24px;font-size:15px;color:#374151;line-height:1.6;">
+      Acesse o Radar Pastoral para mais detalhes sobre o histórico de participação
+      e para registrar suas observações pastorais.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#1E40AF;">
+          <a href="https://app.metanoia.app/radar/123" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Ver no Radar Pastoral →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Igreja Exemplo &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Sinal de cuidado: Célula Esperança",
+}
+`;
+
+exports[`renderPastoralAlert > matches snapshot without branding (CHK065 fallback) 1`] = `
+{
+  "html": "<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Metanoia] Sinal de cuidado: Grupo Fé</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#FFFFFF;border-radius:8px;overflow:hidden;max-width:600px;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E40AF;text-align:left;">
+              <div style="font-size:24px;font-weight:700;color:#1E40AF;letter-spacing:-0.5px;">Metanoia</div>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px;">
+              
+    <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#111827;">
+      Sinal de cuidado identificado
+    </h1>
+    <p style="margin:0 0 16px;font-size:16px;color:#374151;line-height:1.6;">
+      Um membro do seu grupo precisa de atenção pastoral.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background-color:#FEF2F2;border-left:4px solid #DC2626;border-radius:4px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0 0 8px;font-size:14px;color:#991B1B;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Participante</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#111827;">Maria Santos</p>
+          <p style="margin:0 0 4px;font-size:14px;color:#6B7280;">Grupo: <strong>Grupo Fé</strong></p>
+          <p style="margin:0;font-size:14px;color:#6B7280;">Motivo: <strong>Sem participação há 2 meses</strong></p>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:0 0 24px;font-size:15px;color:#374151;line-height:1.6;">
+      Acesse o Radar Pastoral para mais detalhes sobre o histórico de participação
+      e para registrar suas observações pastorais.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="border-radius:6px;background-color:#1E40AF;">
+          <a href="https://app.metanoia.app/radar/456" target="_blank"
+             style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">
+            Ver no Radar Pastoral →
+          </a>
+        </td>
+      </tr>
+    </table>
+  
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#1E3A5F;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#FFFFFF;line-height:1.5;">
+                Metanoia &bull; Esta é uma mensagem automática, não responda a este email.<br />
+                Para deixar de receber notificações, acesse suas preferências na plataforma.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>",
+  "subject": "[Metanoia] Sinal de cuidado: Grupo Fé",
+}
+`;
