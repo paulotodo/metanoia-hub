@@ -62,7 +62,14 @@ export type NotificationJobPayload = z.infer<typeof NotificationJobPayloadSchema
 
 // --- Realtime event (Redis pub/sub) ---
 
+/**
+ * Schema for realtime notification events published via Redis pub/sub.
+ * Note: the field `notificationId` is renamed to `id` at the SSE wire boundary
+ * (Story 14-2a SseRedisService mapper) — consumers of the SSE stream receive `id`,
+ * not `notificationId`. This schema is the authoritative source for the Redis payload.
+ */
 export const NotificationRealtimeEventSchema = z.object({
+  /** Renamed to `id` at the SSE wire boundary. Do not expose `notificationId` in SSE output. */
   notificationId: z.string().uuid(),
   type: NotificationTypeSchema,
   title: z.string(),

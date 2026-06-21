@@ -37,6 +37,24 @@ export const envSchema = z.object({
   ),
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).optional(),
   NOTIFICATION_DIGEST_WINDOW_MS: z.coerce.number().int().positive().default(300000),
+  // SSE (Server-Sent Events) configuration
+  SSE_MAX_CONNECTIONS: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .default(1000)
+    .transform((v) => (v <= 0 ? 1000 : v)),
+  SSE_MAX_PER_USER: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .default(5)
+    .transform((v) => (v <= 0 ? 5 : v)),
+  SSE_HEARTBEAT_INTERVAL_MS: z.coerce
+    .number()
+    .int()
+    .min(1000)
+    .default(30000),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
