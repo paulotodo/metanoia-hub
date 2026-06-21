@@ -64,7 +64,7 @@ export function NotificationCenter() {
               <button
                 type="button"
                 onClick={() => setSilenced(!silenced)}
-                className="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] rounded px-1"
+                className="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-brand-teal/30 rounded px-1"
               >
                 {silenced ? 'Ativar alertas' : 'Silenciar'}
               </button>
@@ -73,7 +73,7 @@ export function NotificationCenter() {
                   type="button"
                   onClick={handleMarkAll}
                   disabled={markAllRead.isPending}
-                  className="text-xs text-[var(--primary)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--ring)] rounded px-1 disabled:opacity-50"
+                  className="text-xs text-[var(--primary)] hover:underline focus:outline-none focus:ring-2 focus:ring-brand-teal/30 rounded px-1 disabled:opacity-50"
                 >
                   Marcar todas como lidas
                 </button>
