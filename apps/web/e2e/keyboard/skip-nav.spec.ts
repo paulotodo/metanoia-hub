@@ -49,14 +49,15 @@ test.describe('Skip Navigation -- keyboard access (US1)', () => {
     expect(className).toContain('skip-nav');
     expect(className).toContain('focus:translate-y-0');
 
-    // After Tab: the bounding box should be in the top area (position:absolute; top-4)
-    // y may be slightly above viewport (e.g. -1px) due to browser sub-pixel rendering
-    // Accept y >= -5 as "effectively visible" (within 5px of viewport edge)
-    const box = await skipNav.boundingBox();
-    expect(box).not.toBeNull();
-    // Use optional chaining to avoid non-null assertion (eslint @typescript-eslint/no-non-null-assertion)
-    const boxY = box?.y ?? -9999;
-    expect(boxY).toBeGreaterThanOrEqual(-5);
+    // After Tab: the bounding box should settle in the top area (position:absolute; top-4).
+    // focus:translate-y-0 runs a 150ms `motion-safe:transition-transform`, so a single
+    // boundingBox() read right after Tab can catch the element MID-TRANSITION (still
+    // partially off-screen, e.g. y=-14px). Poll until the transform settles to avoid that
+    // timing race. y may end slightly above viewport (e.g. -1px) due to sub-pixel rounding,
+    // so accept y >= -5 as "effectively visible" (within 5px of the viewport edge).
+    await expect
+      .poll(async () => (await skipNav.boundingBox())?.y ?? -9999, { timeout: 5_000 })
+      .toBeGreaterThanOrEqual(-5);
   });
 
   test('Enter on SkipNav moves focus to main content area (#conteudo)', async ({ page }) => {

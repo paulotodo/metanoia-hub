@@ -71,7 +71,10 @@ async function mockMarkRead(page: Page) {
 // Sample notifications
 function makeNotifications(count: number) {
   return Array.from({ length: count }, (_, i) => ({
-    id: `notif-${String(i + 1).padStart(3, '0')}`,
+    // id MUST be a valid UUID — NotificationListItemSchema enforces z.string().uuid().
+    // 'notif-001' is NOT a UUID, so the envelope parse threw, the unread query errored
+    // and the badge silently rendered 0 ("Sem notificações") — that broke the badge specs.
+    id: `0199${(i + 1).toString(16).padStart(4, '0')}-7000-7000-8000-000000000001`,
     type: 'pastoral_alert',
     channel: 'in_app',
     status: 'pending',

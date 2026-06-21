@@ -19,13 +19,16 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1
 
 function makeNotifications(count: number) {
   return Array.from({ length: count }, (_, i) => ({
-    id: `a11y-notif-${i + 1}`,
+    // id MUST be a valid UUID — NotificationListItemSchema enforces z.string().uuid().
+    // An invalid id makes the envelope parse throw, the unread query error out and
+    // the badge silently render 0 ("Sem notificações"), which broke this spec.
+    id: `0199${(i + 1).toString(16).padStart(4, '0')}-7000-7000-8000-000000000001`,
     type: 'pastoral_alert',
     channel: 'in_app',
     status: 'pending',
     title: `Notificação ${i + 1}`,
     body: `Descrição da notificação ${i + 1}`,
-    metadata: null,
+    // metadata is optional (z.record(...).optional()) — null FAILS the schema, so omit it.
     read_at: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -54,9 +57,16 @@ test.describe('Notification Center — a11y (Story 14-2b)', () => {
     // Demo admin is single-tenant: login lands on /selecionar-igreja which
     // auto-selects (SPA). Navigate explicitly to an authenticated /app route
     // so the NavigationShell mounts the NotificationCenter bell deterministically
-    // (the bell is loaded via dynamic(ssr:false), so we wait for networkidle).
+    // (the bell is loaded via dynamic(ssr:false), so we wait for the bell selector).
     await page.waitForURL(/\/selecionar-igreja|\/app\//, { timeout: 30_000 });
-    await page.goto('/app/gestao', { waitUntil: 'networkidle' });
+    // NOTE: the NotificationCenter opens a persistent EventSource (SSE) stream, so the
+    // network NEVER reaches 'networkidle' — waitUntil:'networkidle' always times out.
+    // Use 'domcontentloaded' and wait for the bell (a deterministic, dynamic ssr:false
+    // element) instead of relying on network idleness.
+    await page.goto('/app/gestao', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('[aria-label*="notificações" i], [aria-label="Sem notificações"]', {
+      timeout: 15_000,
+    });
   });
 
   test('1. axe WCAG 2AA: zero violações com sino visível', async ({ page }) => {
