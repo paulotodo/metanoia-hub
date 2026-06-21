@@ -51,7 +51,12 @@ test.describe('Notification Center — a11y (Story 14-2b)', () => {
     });
 
     await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
-    await page.waitForURL('**/app/**');
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA). Navigate explicitly to an authenticated /app route
+    // so the NavigationShell mounts the NotificationCenter bell deterministically
+    // (the bell is loaded via dynamic(ssr:false), so we wait for networkidle).
+    await page.waitForURL(/\/selecionar-igreja|\/app\//, { timeout: 30_000 });
+    await page.goto('/app/gestao', { waitUntil: 'networkidle' });
   });
 
   test('1. axe WCAG 2AA: zero violações com sino visível', async ({ page }) => {

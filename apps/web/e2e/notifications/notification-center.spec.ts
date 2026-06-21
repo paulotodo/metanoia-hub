@@ -14,6 +14,7 @@
  */
 import { test, expect, type Page } from '@playwright/test';
 import { loginAs } from '../fixtures/auth.fixture';
+import { E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD } from '../setup/env';
 
 // Base URL for API mock intercepts
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
@@ -91,8 +92,11 @@ test.describe('P1 — Badge do sino', () => {
   test('exibe count correto com 3 notificações não lidas', async ({ page }) => {
     const notifications = makeNotifications(3);
     await mockUnreadNotifications(page, notifications);
-    await loginAs(page, process.env.E2E_USER_EMAIL ?? 'test@test.com', process.env.E2E_USER_PASSWORD ?? 'Test@1234');
-    await page.waitForURL('**/app/**');
+    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA) and forwards to /app/gestao, where the
+    // NavigationShell mounts the NotificationCenter bell.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     // Badge should show 3
     const badge = page.getByText('3').first();
@@ -120,8 +124,11 @@ test.describe('P1 — Badge do sino', () => {
       }
     });
 
-    await loginAs(page, process.env.E2E_USER_EMAIL ?? 'test@test.com', process.env.E2E_USER_PASSWORD ?? 'Test@1234');
-    await page.waitForURL('**/app/**');
+    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA) and forwards to /app/gestao, where the
+    // NavigationShell mounts the NotificationCenter bell.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     await expect(page.getByText('99+').first()).toBeVisible({ timeout: 10_000 });
     const bell = page.getByRole('button', { name: /99\+ notificações/i }).first();
@@ -157,8 +164,11 @@ test.describe('P2 — Painel de notificações', () => {
       }
     });
 
-    await loginAs(page, process.env.E2E_USER_EMAIL ?? 'test@test.com', process.env.E2E_USER_PASSWORD ?? 'Test@1234');
-    await page.waitForURL('**/app/**');
+    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA) and forwards to /app/gestao, where the
+    // NavigationShell mounts the NotificationCenter bell.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     // Click the bell to open panel
     const bell = page.getByRole('button', { name: /notificações não lidas/i }).first();
@@ -178,8 +188,11 @@ test.describe('P2 — Painel de notificações', () => {
   test('empty state pastoral quando sem notificações', async ({ page }) => {
     await mockUnreadNotifications(page, []);
 
-    await loginAs(page, process.env.E2E_USER_EMAIL ?? 'test@test.com', process.env.E2E_USER_PASSWORD ?? 'Test@1234');
-    await page.waitForURL('**/app/**');
+    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA) and forwards to /app/gestao, where the
+    // NavigationShell mounts the NotificationCenter bell.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     // Open panel
     const bell = page.getByRole('button', { name: 'Sem notificações' }).first();
@@ -217,8 +230,11 @@ test.describe('P3 — Marcar todas como lidas', () => {
       }
     });
 
-    await loginAs(page, process.env.E2E_USER_EMAIL ?? 'test@test.com', process.env.E2E_USER_PASSWORD ?? 'Test@1234');
-    await page.waitForURL('**/app/**');
+    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA) and forwards to /app/gestao, where the
+    // NavigationShell mounts the NotificationCenter bell.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     // Open panel
     const bell = page.getByRole('button', { name: '5 notificações não lidas' }).first();
@@ -244,8 +260,11 @@ test.describe('P4 — Toggle Silenciar', () => {
     const notifications = makeNotifications(1);
     await mockUnreadNotifications(page, notifications);
 
-    await loginAs(page, process.env.E2E_USER_EMAIL ?? 'test@test.com', process.env.E2E_USER_PASSWORD ?? 'Test@1234');
-    await page.waitForURL('**/app/**');
+    await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+    // Demo admin is single-tenant: login lands on /selecionar-igreja which
+    // auto-selects (SPA) and forwards to /app/gestao, where the
+    // NavigationShell mounts the NotificationCenter bell.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     // Open panel
     const bell = page.getByRole('button', { name: /notificações não lidas/i }).first();

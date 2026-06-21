@@ -50,7 +50,7 @@ export function NotificationBell({ onClick, open }: NotificationBellProps) {
       aria-label={ariaLabel}
       aria-expanded={open}
       aria-haspopup="dialog"
-      className="relative flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-brand-teal/30 transition-colors"
+      className="relative flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-brand-teal/30 motion-safe:transition-colors"
     >
       <Bell className="h-5 w-5" aria-hidden="true" />
       {hasUnread && (

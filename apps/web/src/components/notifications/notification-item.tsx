@@ -40,7 +40,7 @@ export function NotificationItem({ notification, onMarkRead }: NotificationItemP
       className={[
         'flex w-full items-start gap-3 rounded-md px-3 py-2 text-left',
         'hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-brand-teal/30',
-        'transition-colors min-h-[44px]',
+        'motion-safe:transition-colors min-h-[44px]',
         isUnread ? 'font-medium' : 'opacity-75',
       ].join(' ')}
       aria-label={`${notification.title}: ${preview}`}
