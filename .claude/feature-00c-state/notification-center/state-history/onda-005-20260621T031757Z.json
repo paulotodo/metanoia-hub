@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
-  "next_instruction": "Transitar para review-task: auditar artefatos gerados, verificar completude de tasks, RLS idempotência, E2E e a11y. PR #174 criado em feat/14-2b-notification-center.",
+  "current_stage": "execute-task",
+  "next_instruction": "Etapa execute-task: iterar pelas tasks de docs/specs/notification-center/tasks.md em ordem (FASE 1→6), executando cada task conforme o plano. Comecar pela 1.1 (findByUser unread filter). Registrar outcomes via state-ondas.sh record-task para cada task concluida. Apos todas as tasks concluidas, transitar para review-task.",
   "waves": [
     {
       "id": "onda-001",
@@ -127,13 +127,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-21T02:59:14Z",
-      "finished_at": "2026-06-21T03:17:57Z",
-      "executed_stages": [
-        "execute-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1123,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -618,9 +616,9 @@
     "current_wave_start": "2026-06-21T02:59:14Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 2688,
+    "wallclock_total_seconds": 1565,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 24,

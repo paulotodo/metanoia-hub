@@ -1,6 +1,6 @@
 # Relatorio do Agente-00C — feat-notification-center-20260621T021011Z
 
-**Gerado em**: 2026-06-21T02:39:34Z
+**Gerado em**: 2026-06-21T03:18:19Z
 **Status no momento**: em_andamento
 **Versao do schema**: 1.0.0
 
@@ -18,9 +18,9 @@
 | Motivo termino | (em andamento) |
 | Iniciada em | 2026-06-21T02:10:11Z |
 | Terminada em | ainda em andamento |
-| Ondas executadas | 3 |
+| Ondas executadas | 5 |
 | Tool calls totais | 0 |
-| Decisoes registradas | 16 |
+| Decisoes registradas | 24 |
 | Bloqueios humanos | 0 |
 | Sugestoes para skills globais | 0 |
 | Issues abertas no toolkit | 0 |
@@ -35,16 +35,18 @@
 | onda-001 | 2026-06-21T02:11:37Z | 2026-06-21T02:13:58Z | specify | 0 | 141s | concluido |
 | onda-002 | 2026-06-21T02:17:27Z | 2026-06-21T02:23:43Z | clarify | 0 | 376s | concluido |
 | onda-003 | 2026-06-21T02:29:01Z | 2026-06-21T02:39:09Z |  | 0 | 608s | concluido |
+| onda-004 | 2026-06-21T02:44:21Z | 2026-06-21T02:51:41Z | create-tasks | 0 | 440s | concluido |
+| onda-005 | 2026-06-21T02:59:14Z | 2026-06-21T03:17:57Z | execute-task | 0 | 1123s | concluido |
 
 ## 3. Decisoes
 
-Total: 16 decisoes registradas.
+Total: 24 decisoes registradas.
 
 ### 3.1 Por agente
 
 | Agente | Quantidade |
 |--------|------------|
-| agente-00c-feature-orchestrator | 13 |
+| agente-00c-feature-orchestrator | 21 |
 | feature-00c-clarify-answerer | 3 |
 
 ### 3.2 Lista detalhada
@@ -298,6 +300,134 @@ Total: 16 decisoes registradas.
 **Escolha**: aprovar
 
 **Justificativa**: Artefatos completos, sem ambiguidades obvias nem TBD; o unico ponto aberto (D2) tem default fiel documentado (ampliar findByUser preservando contrato) e vira task, nao bloqueio. Findings: nenhum critical.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-017 — model-routing — agente-00c-feature-orchestrator — 2026-06-21T02:43:11Z
+
+**Contexto**: Selecao de modelo para onda 3 (fase create-tasks)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-018 — create-tasks — agente-00c-feature-orchestrator — 2026-06-21T02:44:28Z
+
+**Contexto**: inicio-onda-create-tasks
+
+**Opcoes consideradas**: gerar-tasks / abortar
+
+**Escolha**: gerar-tasks
+
+**Justificativa**: Artefatos spec/plan/contracts/data-model/research todos presentes e validados. 0 bloqueios pendentes. Budget OK. Pipeline avanca para decomposicao em tarefas executaveis.
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-019 — create-tasks — agente-00c-feature-orchestrator — 2026-06-21T02:50:58Z
+
+**Contexto**: Gate template-fidelity: validate-tasks-template.sh sobre tasks.md
+
+**Opcoes consideradas**: aceitar-resultado / corrigir-e-rerun
+
+**Escolha**: aceitar-resultado
+
+**Justificativa**: RESULT: critical=0, warning=0. tasks.md conforme ao template canonico com tags [C]/[A]/[M], legenda de status, Resumo Quantitativo, Matriz Mermaid, Escopo Coberto/Excluido em tabela.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-020 — create-tasks — agente-00c-feature-orchestrator — 2026-06-21T02:51:22Z
+
+**Contexto**: Gate docs-render: validate-docs-rendered sobre tasks.md (skill indisponivel — fallback manual)
+
+**Opcoes consideradas**: skip-com-justificativa / rodar-gate
+
+**Escolha**: skip-com-justificativa
+
+**Justificativa**: Skill validate-docs-rendered nao disponivel no catalogo (Unknown skill). Validacao manual equivalente executada: (1) Nenhum link interno relativo — sem risco de 404; (2) Unico code block com linguagem explicita 'mermaid'; (3) Mermaid block parseable: flowchart TD com 19 nos e 22 arestas (979 chars); (4) Sem frontmatter YAML (tasks.md nao usa frontmatter — correto para o template); (5) Sem dangling refs. Nenhum finding critical detectado.
+
+**Score**: 3
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-021 — model-routing — agente-00c-feature-orchestrator — 2026-06-21T02:57:11Z
+
+**Contexto**: Selecao de modelo para onda 4 (fase execute-task)
+
+**Opcoes consideradas**: haiku / sonnet / opus / manter-atual
+
+**Escolha**: model:sonnet
+
+**Justificativa**: sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)
+
+**Score**: 0
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-022 — execute-task — agente-00c-feature-orchestrator — 2026-06-21T03:17:37Z
+
+**Contexto**: FASE 1 Backend: findByUser unread filter + PATCH read-all + markAllAsRead + ReadAllResponseSchema
+
+**Opcoes consideradas**: implementar / abortar / adiar
+
+**Escolha**: implementar
+
+**Justificativa**: Tasks 1.1-1.4 implementadas: filtro unread com operador <> em statusFilter; endpoint PATCH /notifications/read-all antes de :id/read (routing order); markAllAsRead BOLA-safe via RequestContext; RLS test cross-tenant idempotente
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-023 — execute-task — agente-00c-feature-orchestrator — 2026-06-21T03:17:37Z
+
+**Contexto**: FASE 2-4 Frontend + UI: Popover/Badge, hooks TanStack, SSE, silence, Bell/Item/Center, formatRelativeTime, safeNavigate, i18n, NavigationShell
+
+**Opcoes consideradas**: implementar / abortar / adiar
+
+**Escolha**: implementar
+
+**Justificativa**: Tasks 2.1-4.4 implementadas: UI components em packages/ui; hooks sem deps diretas de zod; componentes text-only anti-XSS; SSE hardening OWASP; integração NavigationShell via dynamic(ssr:false)
+
+**Score**: 2
+
+**Referencias**: (nenhuma)
+
+**Artefato originador**: (nenhum)
+
+#### dec-024 — execute-task — agente-00c-feature-orchestrator — 2026-06-21T03:17:49Z
+
+**Contexto**: FASE 5-6 Testes + Validação: unit backend/frontend, snapshot Zod, RLS, E2E, a11y; PR criado #174
+
+**Opcoes consideradas**: implementar / abortar / adiar
+
+**Escolha**: implementar
+
+**Justificativa**: Tests implementados: unit API (17/17 verde); unit web (911/911 verde); snapshot Zod (2 gerados); RLS mark-all cross-tenant; E2E P1-P4 (requer stack); a11y axe+teclado; lint+build verde; PR #174 criado em feat/14-2b-notification-center
 
 **Score**: 3
 

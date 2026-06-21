@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "review-task",
-  "next_instruction": "Transitar para review-task: auditar artefatos gerados, verificar completude de tasks, RLS idempotência, E2E e a11y. PR #174 criado em feat/14-2b-notification-center.",
+  "next_instruction": "Etapa execute-task: iterar pelas tasks de docs/specs/notification-center/tasks.md em ordem (FASE 1→6), executando cada task conforme o plano. Comecar pela 1.1 (findByUser unread filter). Registrar outcomes via state-ondas.sh record-task para cada task concluida. Apos todas as tasks concluidas, transitar para review-task.",
   "waves": [
     {
       "id": "onda-001",
