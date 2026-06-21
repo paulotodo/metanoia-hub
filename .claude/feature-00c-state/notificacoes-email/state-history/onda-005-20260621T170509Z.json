@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Proxima onda: FASE 7 (testes integracao + RLS). Tasks 7.1.1-7.1.5 (email.channel.integration-spec), 7.2.1-7.2.3 (RLS isolation), 7.3.1-7.3.5 (lint+test+build+PR). Requer Docker (Postgres+Redis). Criar spec file integration + RLS test, rodar pnpm test:rls, abrir PR.",
+  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -115,11 +115,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-21T16:38:38Z",
-      "finished_at": "2026-06-21T17:05:25Z",
+      "finished_at": "2026-06-21T16:45:08Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1607,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 390,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -641,9 +641,9 @@
     "current_wave_start": "2026-06-21T16:38:38Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3348,
+    "wallclock_total_seconds": 1741,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 26,
@@ -687,11 +687,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T16:39:47Z",
       "description": "etapa=create-tasks hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T17:05:25Z",
-      "description": "onda-005 concluida: FASE 1-6+8 implementadas, 92/110 subtarefas. Aguardando wakeup para FASE 7 (integracao+RLS+PR)."
     }
   ]
 }

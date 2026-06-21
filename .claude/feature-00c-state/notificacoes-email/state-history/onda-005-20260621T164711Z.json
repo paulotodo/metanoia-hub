@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Proxima onda: FASE 7 (testes integracao + RLS). Tasks 7.1.1-7.1.5 (email.channel.integration-spec), 7.2.1-7.2.3 (RLS isolation), 7.3.1-7.3.5 (lint+test+build+PR). Requer Docker (Postgres+Redis). Criar spec file integration + RLS test, rodar pnpm test:rls, abrir PR.",
+  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -115,21 +115,16 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-21T16:38:38Z",
-      "finished_at": "2026-06-21T17:05:25Z",
+      "finished_at": "2026-06-21T16:45:08Z",
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 1607,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 390,
+      "termination_reason": "etapa_concluida_avancando",
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
           "skill": "create-tasks",
           "timestamp": "2026-06-21T16:45:08Z",
-          "decision_id": null
-        },
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-21T17:05:01Z",
           "decision_id": null
         }
       ]
@@ -568,62 +563,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-024",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T16:47:11Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 5 (fase execute-task)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T16:49:08Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da fase execute-task — onda 5. FASE 1 (fundacao) + FASE 2 (infraestrutura) + partes de FASE 3 no orcamento.",
-      "options_considered": [
-        "iniciar-fase1-2-3",
-        "abortar"
-      ],
-      "choice": "iniciar-fase1-2-3",
-      "rationale": "Estado em_andamento, 0 bloqueios, 0 tasks concluidas. Comecando por FASE 1 (decisoes de design/seguranca registradas como comentarios em codigo), FASE 2 (env.validation, types, migration, EmailHealthPort) e inicio de FASE 3 (rate-limiter).",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T17:05:01Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 1+2+3+4+5+6+8 concluidas — 92/110 subtarefas feitas. FASE 7 (testes integracao RLS) pendente para proxima onda (precisa Docker)",
-      "options_considered": [
-        "fechar-onda-continuar-fase7",
-        "abortar"
-      ],
-      "choice": "fechar-onda-continuar-fase7",
-      "rationale": "Build limpo, 70 unit tests passando, snapshots gerados. Fases 1-6+8 completas. FASE 7 precisa Postgres real — deixar para proxima onda.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -641,12 +580,12 @@
     "current_wave_start": "2026-06-21T16:38:38Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3348,
+    "wallclock_total_seconds": 1741,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 26,
+    "decisions_total": 23,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -687,11 +626,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-21T16:39:47Z",
       "description": "etapa=create-tasks hits=4"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T17:05:25Z",
-      "description": "onda-005 concluida: FASE 1-6+8 implementadas, 92/110 subtarefas. Aguardando wakeup para FASE 7 (integracao+RLS+PR)."
     }
   ]
 }
