@@ -112,32 +112,41 @@ test.describe('SSE Reconnection — US1/US2', () => {
     await page.waitForURL('**/app/**', { waitUntil: 'domcontentloaded' });
   });
 
+  // NavigationShell mounts NotificationCenter twice (mobile header `lg:hidden`
+  // + desktop sidebar `hidden lg:flex`), so [data-testid="sse-connection-status"]
+  // is duplicated. `:visible` is unreliable during cold-start (both instances
+  // can momentarily pass before the `lg:` breakpoint CSS applies). Scope the
+  // assertions structurally to the desktop sidebar instance (the visible one at
+  // 1280px) via the `desktop-tenant-header` testid — deterministic regardless of
+  // layout timing. Auto-waiting expect() avoids waitForSelector strict-mode issues.
+  const desktopStatus = (page: Page) =>
+    page
+      .locator('[data-testid="desktop-tenant-header"]')
+      .locator('[data-testid="sse-connection-status"]');
+  const desktopHeader = (page: Page) =>
+    page.locator('[data-testid="desktop-tenant-header"]');
+
   // -------------------------------------------------------------------------
   // Cenário 1 — Reconexão automática + gap-fill (US1, FR-020a)
   // -------------------------------------------------------------------------
   test('Cenário 1 — Reconexão automática exibe "Reconectando..." e executa gap-fill', async ({ page }) => {
-    // Verify initial connected state (no connection status visible)
-    const bellBtn = page.getByRole('button', { name: /notifica/i }).filter({ visible: true });
-    await expect(bellBtn).toBeVisible();
+    // Sanity: bell visible in the desktop sidebar
+    await expect(desktopHeader(page).getByRole('button', { name: /notifica/i })).toBeVisible();
+
+    const status = desktopStatus(page);
 
     // Simulate disconnection: abort SSE route
     await mockSseDisconnected(page);
 
-    // Wait for "Reconectando..." indicator to appear
-    // Uses domcontentloaded + waitForSelector (not networkidle — CHK: SSE never resolves networkidle)
-    await page.waitForSelector('[data-testid="sse-connection-status"]:visible:has-text("Reconectando...")', {
-      timeout: 15_000,
-    });
-
-    const reconStatus = page.locator('[data-testid="sse-connection-status"]:visible');
-    await expect(reconStatus).toContainText('Reconectando...');
+    // "Reconectando..." indicator appears (auto-waiting; no networkidle with SSE)
+    await expect(status).toContainText('Reconectando...', { timeout: 15_000 });
 
     // Restore SSE (mock gap-fill with 2 new notifications)
     await mockSseConnected(page);
     await mockUnreadCount(page, 3);
 
-    // Wait for reconnecting indicator to disappear (transition to connected)
-    await expect(reconStatus).not.toContainText('Reconectando...', { timeout: 40_000 });
+    // Indicator disappears on successful reconnect (ConnectionStatus → null)
+    await expect(status).not.toContainText('Reconectando...', { timeout: 40_000 });
   });
 
   // -------------------------------------------------------------------------
@@ -147,21 +156,12 @@ test.describe('SSE Reconnection — US1/US2', () => {
     // Simulate persistent disconnect
     await mockSseDisconnected(page);
 
-    // Wait for extended-outage state (after 5 failures + backoff timers)
-    // Using long timeout because exponential backoff can take ~30s in real time
-    // In test we wait for the element; if timers are accelerated via page.clock this would be faster
-    await page.waitForSelector('[data-testid="sse-connection-status"]:visible:has-text("Sem conexão")', {
-      timeout: 60_000,
-    });
+    // Extended-outage state (after 5 failures + exponential backoff, up to ~30s)
+    await expect(desktopStatus(page)).toContainText('Sem conexão', { timeout: 60_000 });
 
-    const outageMsg = page.locator('[data-testid="sse-connection-status"]:visible');
-    await expect(outageMsg).toContainText('Sem conexão');
-
-    // Verify "Tentar agora" button is visible and focusable
-    const retryBtn = page.getByRole('button', { name: 'Tentar agora' }).filter({ visible: true });
+    // "Tentar agora" button is visible and focusable
+    const retryBtn = desktopHeader(page).getByRole('button', { name: 'Tentar agora' });
     await expect(retryBtn).toBeVisible();
-
-    // Verify button is focusable via Tab
     await retryBtn.focus();
     await expect(retryBtn).toBeFocused();
   });
@@ -170,25 +170,19 @@ test.describe('SSE Reconnection — US1/US2', () => {
   // Cenário 3 — Reconexão após outage: indicador some + gap-fill (US2 AC3, FR-020c)
   // -------------------------------------------------------------------------
   test('Cenário 3 — Clicar "Tentar agora" reconecta e indicador desaparece', async ({ page }) => {
-    // Trigger disconnect
+    // Trigger disconnect → wait for outage state
     await mockSseDisconnected(page);
-
-    // Wait for outage state
-    await page.waitForSelector('[data-testid="sse-connection-status"]:visible:has-text("Sem conexão")', {
-      timeout: 60_000,
-    });
+    await expect(desktopStatus(page)).toContainText('Sem conexão', { timeout: 60_000 });
 
     // Restore SSE before clicking retry
     await mockSseConnected(page);
     await mockUnreadCount(page, 2);
 
     // Click "Tentar agora"
-    const retryBtn = page.getByRole('button', { name: 'Tentar agora' }).filter({ visible: true });
-    await retryBtn.click();
+    await desktopHeader(page).getByRole('button', { name: 'Tentar agora' }).click();
 
-    // Wait for status to clear
-    const statusRegion = page.locator('[data-testid="sse-connection-status"]:visible');
-    await expect(statusRegion).not.toContainText('Sem conexão', { timeout: 15_000 });
+    // Status clears (ConnectionStatus → null)
+    await expect(desktopStatus(page)).not.toContainText('Sem conexão', { timeout: 15_000 });
   });
 });
 
