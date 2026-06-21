@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — clarify validado sem perguntas (no-op); spec completa e pronta para planejamento tecnico. Rodar feature-00c-preflight.sh na transicao (gate FR-010A) e Skill(plan).",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -38,35 +38,6 @@
         {
           "skill": "specify",
           "timestamp": "2026-06-21T05:42:51Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-002",
-      "started_at": "2026-06-21T05:48:39Z",
-      "finished_at": "2026-06-21T05:51:08Z",
-      "executed_stages": [
-        "clarify"
-      ],
-      "tool_calls": 1,
-      "wallclock_seconds": 149,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "model-selector",
-          "timestamp": "2026-06-21T05:49:08Z",
-          "decision_id": "dec-004"
-        },
-        {
-          "skill": "clarify-asker",
-          "timestamp": "2026-06-21T05:49:59Z",
-          "decision_id": null
-        },
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-21T05:50:38Z",
           "decision_id": null
         }
       ]
@@ -110,66 +81,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-003",
-      "wave_id": "onda-001",
-      "timestamp": "2026-06-21T05:47:25Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 1 (fase clarify)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-004",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T05:49:08Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual",
-        "fallback-default"
-      ],
-      "choice": "manter-atual",
-      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
-      "justification_score": 0,
-      "evidence": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-005",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T05:49:59Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "clarify-asker retornou perguntas=[] — spec completa, secao ## Clarifications declara zero NEEDS_CLARIFICATION; todos parametros (backoff 1/2/4/8/30s, threshold 5 falhas, dedup por id, lastReceivedAt nao-persistido, RLS no filtro since) definidos nos ACs da Story 14-2c",
-      "options_considered": [
-        "avancar-para-plan",
-        "spawnar-answerer",
-        "pausar-humano"
-      ],
-      "choice": "avancar-para-plan",
-      "rationale": "asker (subagente nivel 2) confirmou ausencia de ambiguidade material; Invariante I1: sem spawn de answerer, nenhuma Decisao de model-routing orfa criada",
-      "justification_score": 3,
-      "evidence": "clarify-asker retornou literalmente {\"perguntas\": []}; verificou FR-001/004/005/009/011/012/014/017/018 + 6 edge cases cobertos",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -179,20 +90,20 @@
     "max_retro_executions_per_feature": 2,
     "retro_executions_consumed": 0,
     "max_cycles_per_stage": 5,
-    "cycles_consumed_current_stage": 1,
+    "cycles_consumed_current_stage": 0,
     "tool_calls_threshold_wave": 80,
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
-    "tool_calls_current_wave": 1,
-    "current_wave_start": "2026-06-21T05:48:39Z"
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-21T05:39:48Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
-    "tool_calls_total": 1,
-    "wallclock_total_seconds": 332,
-    "max_depth_reached": 2,
-    "subagents_spawned": 1,
-    "decisions_total": 5,
+    "waves_total": 1,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 183,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 2,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

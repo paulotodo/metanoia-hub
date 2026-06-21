@@ -119,6 +119,10 @@ O sistema de gap fill precisa buscar apenas as notificações criadas após um d
 
 Não há itens `[NEEDS CLARIFICATION]`. Todos os parâmetros de comportamento (backoff 1s/2s/4s/8s/30s, threshold de 5 falhas, deduplicação por ID, memória não-persistida) estão definidos nos ACs da Story 14-2c.
 
+### Session 2026-06-21
+
+Etapa `clarify` executada e validada (no-op). O `clarify-asker` escaneou a taxonomia completa de ambiguidades (escopo funcional, modelo de dados, fluxo UX, qualidade não-funcional, integrações, edge cases, constraints, terminologia) e retornou zero perguntas: nenhuma ambiguidade material que produziria implementações radicalmente diferentes. Itens verificados como já cobertos: backoff exponencial (FR-001), threshold de 5 falhas (FR-004), reset do contador no "Tentar agora" (FR-005), `lastReceivedAt` não-persistido (FR-009), deduplicação por `id` (FR-011), client state sem TanStack Query (FR-012), textos PT-BR pastorais (FR-014), schema Zod com `since` (FR-017), isolamento RLS no filtro `since` (FR-018), e os 6 edge cases (lastReceivedAt nulo, dedup stream+gap, desmontagem na navegação, 401 sem log de token, since muito antigo, falha silenciosa de gap fill). Nenhuma decisão de infraestrutura auditável pendente (a própria spec declara N/A para scheduling/key-rotation/mutex). Spec pronta para `/plan`.
+
 ## Success Criteria
 
 ### Measurable Outcomes
