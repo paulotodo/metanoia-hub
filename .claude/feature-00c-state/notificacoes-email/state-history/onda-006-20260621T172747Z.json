@@ -137,13 +137,11 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-21T17:26:53Z",
-      "finished_at": "2026-06-21T17:27:47Z",
-      "executed_stages": [
-        "execute-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 54,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -678,9 +676,9 @@
     "current_wave_start": "2026-06-21T17:26:53Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3402,
+    "wallclock_total_seconds": 3348,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 27,
@@ -729,11 +727,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T17:05:25Z",
       "description": "onda-005 concluida: FASE 1-6+8 implementadas, 92/110 subtarefas. Aguardando wakeup para FASE 7 (integracao+RLS+PR)."
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T17:28:10Z",
-      "description": "FASE 7 execute-task concluida — PR #179 aberto aguardando CI/merge; proximo: review-task"
     }
   ],
   "tasks": [

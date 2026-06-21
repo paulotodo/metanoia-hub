@@ -22,7 +22,7 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "review-task",
+  "current_stage": "execute-task",
   "next_instruction": "Proxima onda: FASE 7 (testes integracao + RLS). Tasks 7.1.1-7.1.5 (email.channel.integration-spec), 7.2.1-7.2.3 (RLS isolation), 7.3.1-7.3.5 (lint+test+build+PR). Requer Docker (Postgres+Redis). Criar spec file integration + RLS test, rodar pnpm test:rls, abrir PR.",
   "waves": [
     {
@@ -137,21 +137,13 @@
     {
       "id": "onda-006",
       "started_at": "2026-06-21T17:26:53Z",
-      "finished_at": "2026-06-21T17:27:47Z",
-      "executed_stages": [
-        "execute-task"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 54,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "execute-task",
-          "timestamp": "2026-06-21T17:27:04Z",
-          "decision_id": "dec-027"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -643,24 +635,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-027",
-      "wave_id": "onda-006",
-      "timestamp": "2026-06-21T17:27:04Z",
-      "stage": "execute-task",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "FASE 7: testes integração + RLS + lint + build + PR",
-      "options_considered": [
-        "concluir",
-        "bloqueio-humano"
-      ],
-      "choice": "concluir",
-      "rationale": "200 test files / 1474 testes / 2 rodadas idempotentes / lint 0 erros / build OK / migration 14-3 timestamp corrigido / PR #179 aberto",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -678,12 +652,12 @@
     "current_wave_start": "2026-06-21T17:26:53Z"
   },
   "accumulated_metrics": {
-    "waves_total": 7,
+    "waves_total": 6,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 3402,
+    "wallclock_total_seconds": 3348,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 27,
+    "decisions_total": 26,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -729,273 +703,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T17:05:25Z",
       "description": "onda-005 concluida: FASE 1-6+8 implementadas, 92/110 subtarefas. Aguardando wakeup para FASE 7 (integracao+RLS+PR)."
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T17:28:10Z",
-      "description": "FASE 7 execute-task concluida — PR #179 aberto aguardando CI/merge; proximo: review-task"
-    }
-  ],
-  "tasks": [
-    {
-      "task_id": "7.1.1",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.1.2",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.1.3",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.1.4",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.1.5",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.2.1",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.2.2",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.2.3",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:13Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.3.1",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:14Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.3.2",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:14Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.3.3",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:14Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.3.4",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:14Z",
-      "source": "execute-task"
-    },
-    {
-      "task_id": "7.3.5",
-      "title": "FASE 7 execute-task",
-      "wave_id": "onda-006",
-      "outcome": "pass",
-      "tests_run": 1474,
-      "tests_passed": 1474,
-      "lint_ok": true,
-      "touched_files": [
-        "apps/api/prisma/migrations/20260629000001_14-3-email-notification-types/migration.sql",
-        "apps/api/src/notifications/channels/email.channel.integration-spec.ts",
-        "apps/api/src/notifications/channels/email.channel.spec.ts",
-        "apps/api/src/notifications/channels/email.channel.ts",
-        "apps/api/src/notifications/channels/email.service.ts",
-        "apps/api/test/rls/notifications-email.rls-spec.ts",
-        "docs/specs/notificacoes-email/tasks.md"
-      ],
-      "recorded_at": "2026-06-21T17:27:14Z",
-      "source": "execute-task"
     }
   ]
 }

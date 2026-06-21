@@ -729,11 +729,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T17:05:25Z",
       "description": "onda-005 concluida: FASE 1-6+8 implementadas, 92/110 subtarefas. Aguardando wakeup para FASE 7 (integracao+RLS+PR)."
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T17:28:10Z",
-      "description": "FASE 7 execute-task concluida — PR #179 aberto aguardando CI/merge; proximo: review-task"
     }
   ],
   "tasks": [
