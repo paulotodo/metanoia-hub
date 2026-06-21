@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Etapa execute-task: iterar pelas tasks de docs/specs/notification-center/tasks.md em ordem (FASE 1→6), executando cada task conforme o plano. Comecar pela 1.1 (findByUser unread filter). Registrar outcomes via state-ondas.sh record-task para cada task concluida. Apos todas as tasks concluidas, transitar para review-task.",
+  "current_stage": "create-tasks",
+  "next_instruction": "Etapa create-tasks: invocar Skill(create-tasks) sobre docs/specs/notification-center/ para gerar tasks.md (backend PATCH read-all + service + RLS test + snapshot Zod; FE NotificationBell/NotificationCenter/hooks/relative-time/safeNavigate; packages/ui Popover+Badge; i18n; E2E P1-P4 + axe + contraste). Folhar HARDENING do gate owasp (dec-015): task de redacao do token nos access-logs do SSE server-side + corpus hostil do safeNavigate + E2E title inerte. Resolver OPEN D2 (filtro unread no findByUser) como task explicita. Depois rodar gates template-fidelity (validate-tasks-template.sh) + docs-render.",
   "waves": [
     {
       "id": "onda-001",
@@ -103,26 +103,13 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-21T02:44:21Z",
-      "finished_at": "2026-06-21T02:51:41Z",
-      "executed_stages": [
-        "create-tasks"
-      ],
+      "finished_at": null,
+      "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 440,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-21T02:51:31Z",
-          "decision_id": "dec-018"
-        },
-        {
-          "skill": "validate-tasks-template",
-          "timestamp": "2026-06-21T02:51:31Z",
-          "decision_id": "dec-019"
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -451,60 +438,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-018",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T02:44:28Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "inicio-onda-create-tasks",
-      "options_considered": [
-        "gerar-tasks",
-        "abortar"
-      ],
-      "choice": "gerar-tasks",
-      "rationale": "Artefatos spec/plan/contracts/data-model/research todos presentes e validados. 0 bloqueios pendentes. Budget OK. Pipeline avanca para decomposicao em tarefas executaveis.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-019",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T02:50:58Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate template-fidelity: validate-tasks-template.sh sobre tasks.md",
-      "options_considered": [
-        "aceitar-resultado",
-        "corrigir-e-rerun"
-      ],
-      "choice": "aceitar-resultado",
-      "rationale": "RESULT: critical=0, warning=0. tasks.md conforme ao template canonico com tags [C]/[A]/[M], legenda de status, Resumo Quantitativo, Matriz Mermaid, Escopo Coberto/Excluido em tabela.",
-      "justification_score": 3,
-      "evidence": "RESULT|/var/lib/metanoia-hub/docs/specs/notification-center/tasks.md|critical=0|warning=0 (exit 0)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-020",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-21T02:51:22Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gate docs-render: validate-docs-rendered sobre tasks.md (skill indisponivel — fallback manual)",
-      "options_considered": [
-        "skip-com-justificativa",
-        "rodar-gate"
-      ],
-      "choice": "skip-com-justificativa",
-      "rationale": "Skill validate-docs-rendered nao disponivel no catalogo (Unknown skill). Validacao manual equivalente executada: (1) Nenhum link interno relativo — sem risco de 404; (2) Unico code block com linguagem explicita 'mermaid'; (3) Mermaid block parseable: flowchart TD com 19 nos e 22 arestas (979 chars); (4) Sem frontmatter YAML (tasks.md nao usa frontmatter — correto para o template); (5) Sem dangling refs. Nenhum finding critical detectado.",
-      "justification_score": 3,
-      "evidence": "grep '^```': apenas linha 271 (mermaid) e 314 (fechamento). python3 parse: Mermaid blocks found: 1, flowchart/graph detected. Links relatives: none.",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -522,12 +455,12 @@
     "current_wave_start": "2026-06-21T02:44:21Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1565,
+    "wallclock_total_seconds": 1125,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 20,
+    "decisions_total": 17,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
