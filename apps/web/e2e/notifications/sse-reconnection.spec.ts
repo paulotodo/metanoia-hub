@@ -117,7 +117,7 @@ test.describe('SSE Reconnection — US1/US2', () => {
   // -------------------------------------------------------------------------
   test('Cenário 1 — Reconexão automática exibe "Reconectando..." e executa gap-fill', async ({ page }) => {
     // Verify initial connected state (no connection status visible)
-    const bellBtn = page.getByRole('button', { name: /notifica/i }).first();
+    const bellBtn = page.getByRole('button', { name: /notifica/i }).filter({ visible: true });
     await expect(bellBtn).toBeVisible();
 
     // Simulate disconnection: abort SSE route
@@ -125,11 +125,11 @@ test.describe('SSE Reconnection — US1/US2', () => {
 
     // Wait for "Reconectando..." indicator to appear
     // Uses domcontentloaded + waitForSelector (not networkidle — CHK: SSE never resolves networkidle)
-    await page.waitForSelector('[aria-live="polite"] :text("Reconectando...")', {
+    await page.waitForSelector('[data-testid="sse-connection-status"]:visible:has-text("Reconectando...")', {
       timeout: 15_000,
     });
 
-    const reconStatus = page.locator('[aria-live="polite"]');
+    const reconStatus = page.locator('[data-testid="sse-connection-status"]:visible');
     await expect(reconStatus).toContainText('Reconectando...');
 
     // Restore SSE (mock gap-fill with 2 new notifications)
@@ -150,15 +150,15 @@ test.describe('SSE Reconnection — US1/US2', () => {
     // Wait for extended-outage state (after 5 failures + backoff timers)
     // Using long timeout because exponential backoff can take ~30s in real time
     // In test we wait for the element; if timers are accelerated via page.clock this would be faster
-    await page.waitForSelector('[aria-live="polite"] :text("Sem conexão")', {
+    await page.waitForSelector('[data-testid="sse-connection-status"]:visible:has-text("Sem conexão")', {
       timeout: 60_000,
     });
 
-    const outageMsg = page.locator('[aria-live="polite"]');
+    const outageMsg = page.locator('[data-testid="sse-connection-status"]:visible');
     await expect(outageMsg).toContainText('Sem conexão');
 
     // Verify "Tentar agora" button is visible and focusable
-    const retryBtn = page.getByRole('button', { name: 'Tentar agora' }).first();
+    const retryBtn = page.getByRole('button', { name: 'Tentar agora' }).filter({ visible: true });
     await expect(retryBtn).toBeVisible();
 
     // Verify button is focusable via Tab
@@ -174,7 +174,7 @@ test.describe('SSE Reconnection — US1/US2', () => {
     await mockSseDisconnected(page);
 
     // Wait for outage state
-    await page.waitForSelector('[aria-live="polite"] :text("Sem conexão")', {
+    await page.waitForSelector('[data-testid="sse-connection-status"]:visible:has-text("Sem conexão")', {
       timeout: 60_000,
     });
 
@@ -183,11 +183,11 @@ test.describe('SSE Reconnection — US1/US2', () => {
     await mockUnreadCount(page, 2);
 
     // Click "Tentar agora"
-    const retryBtn = page.getByRole('button', { name: 'Tentar agora' }).first();
+    const retryBtn = page.getByRole('button', { name: 'Tentar agora' }).filter({ visible: true });
     await retryBtn.click();
 
     // Wait for status to clear
-    const statusRegion = page.locator('[aria-live="polite"]');
+    const statusRegion = page.locator('[data-testid="sse-connection-status"]:visible');
     await expect(statusRegion).not.toContainText('Sem conexão', { timeout: 15_000 });
   });
 });

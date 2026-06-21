@@ -38,6 +38,7 @@ export function ConnectionStatus({ connectionState, onRetry }: ConnectionStatusP
   return (
     <div
       aria-live="polite"
+      data-testid="sse-connection-status"
       className="motion-safe:transition-all text-sm text-muted-foreground px-2 py-1"
     >
       {connectionState === 'reconnecting' && (
