@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "next_instruction": "Iniciar fase create-tasks: invocar Skill(create-tasks) para decompor o plano em backlog executavel. Checklist concluido (41 items, 30 auto-resolvidos, 0 gaps bloqueantes, 11 humano documentados). Items humano de risco medio CHK025 e CHK033 devem virar criterios de aceite ou notas explicitas nas tasks. Apos create-tasks, rodar gate validate-tasks-template.sh e validate-docs-rendered.",
   "waves": [
     {
       "id": "onda-001",

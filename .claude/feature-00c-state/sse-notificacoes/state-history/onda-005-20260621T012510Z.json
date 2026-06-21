@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar fase create-tasks: invocar Skill(create-tasks) para decompor o plano em backlog executavel. Checklist concluido (41 items, 30 auto-resolvidos, 0 gaps bloqueantes, 11 humano documentados). Items humano de risco medio CHK025 e CHK033 devem virar criterios de aceite ou notas explicitas nas tasks. Apos create-tasks, rodar gate validate-tasks-template.sh e validate-docs-rendered.",
   "waves": [
     {
       "id": "onda-001",
@@ -130,23 +130,6 @@
         {
           "skill": "checklist",
           "timestamp": "2026-06-21T01:21:14Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-006",
-      "started_at": "2026-06-21T01:26:26Z",
-      "finished_at": "2026-06-21T01:30:42Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 256,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-21T01:30:42Z",
           "decision_id": null
         }
       ]
@@ -610,44 +593,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-025",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T01:25:10Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 5 (fase create-tasks)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-026",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T01:26:17Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da onda create-tasks para sse-notificacoes",
-      "options_considered": [
-        "iniciar",
-        "abortar"
-      ],
-      "choice": "iniciar",
-      "rationale": "Todos os 41 checklist items concluídos (30 auto + 11 humano documentados), 0 gaps bloqueantes, artefatos spec/plan/research/data-model/contracts prontos",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -685,15 +630,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T01:26:26Z"
+    "current_wave_start": "2026-06-21T01:18:09Z"
   },
   "accumulated_metrics": {
-    "waves_total": 6,
+    "waves_total": 5,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1642,
+    "wallclock_total_seconds": 1386,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 26,
+    "decisions_total": 24,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
