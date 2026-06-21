@@ -398,11 +398,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T21:21:19Z",
       "description": "onda-001 concluida; proxima: clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:00:25Z",
-      "description": "onda-003 clarify concluida; stage avancado para plan; aguardando wakeup"
     }
   ]
 }

@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar fase plan: invocar Skill(plan) para gerar plan.md + research.md + data-model.md na feature sse-notificacoes. Preflight ja passou (clarify->plan). Aplicar quality gates apos plan (validate-documentation + owasp-security).",
+  "current_stage": "clarify",
+  "next_instruction": "AGUARDANDO HUMANO: 2 bloqueios pendentes (block-001 estrutura Redis ZSET vs SET para conexao mais antiga; block-002 escopo de conexoes afetadas em EC-02). Apos /feature-00c-resume com respostas, aplicar decisoes na spec (FR-05/FR-06/EC-02) e avancar clarify->plan via feature-00c-preflight.sh check.",
   "waves": [
     {
       "id": "onda-001",
@@ -75,23 +75,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-20T21:29:05Z",
           "decision_id": "dec-008"
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-21T00:57:48Z",
-      "finished_at": "2026-06-21T01:00:06Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 138,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-21T00:59:40Z",
-          "decision_id": "dec-011"
         }
       ]
     }
@@ -290,43 +273,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T00:57:59Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resolucao block-001 (Q1): estrutura Redis para conexao mais antiga em FR-05/FR-06/US3/EC-04",
-      "options_considered": [
-        "ZSET-com-score-timestamp",
-        "SET-mais-chave-auxiliar",
-        "SET-sem-ordenacao"
-      ],
-      "choice": "ZSET-com-score-timestamp",
-      "rationale": "Operador decidiu: ZSET com score=timestamp. ZADD ao conectar, ZRANGE/ZRANGEBYSCORE para mais antiga, ZREM para remover. Atomico, sem auxiliar. Desvio justificado: palavra literal SET do AC original e inadequada para ordenacao temporal; ZSET resolve FR-06/EC-04 sem race condition.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T00:58:10Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resolucao block-002 (Q2): escopo de conexoes afetadas em EC-02 (Redis cai com conexoes ativas)",
-      "options_considered": [
-        "encerrar-todas-conexoes-da-instancia",
-        "encerrar-apenas-conexoes-cujo-subscriber-foi-perdido"
-      ],
-      "choice": "encerrar-apenas-conexoes-cujo-subscriber-foi-perdido",
-      "rationale": "Operador decidiu opcao (b): menor blast radius conforme Principio I da constitution. Escopo confinado ao subscriber Redis especifico perdido. event:error enviado antes de cada fechamento. Sem vazamento de subscriptions. Nota: em MVP single-instance uma queda total Redis derruba todas na pratica, mas semantica da spec e granular para multi-instance.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -359,20 +305,20 @@
     "max_retro_executions_per_feature": 2,
     "retro_executions_consumed": 0,
     "max_cycles_per_stage": 5,
-    "cycles_consumed_current_stage": 1,
+    "cycles_consumed_current_stage": 0,
     "tool_calls_threshold_wave": 80,
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T00:57:48Z"
+    "current_wave_start": "2026-06-20T21:24:14Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 660,
+    "wallclock_total_seconds": 522,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 12,
+    "decisions_total": 10,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -398,11 +344,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T21:21:19Z",
       "description": "onda-001 concluida; proxima: clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:00:25Z",
-      "description": "onda-003 clarify concluida; stage avancado para plan; aguardando wakeup"
     }
   ]
 }

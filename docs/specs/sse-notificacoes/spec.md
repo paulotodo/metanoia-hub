@@ -30,27 +30,46 @@ NestJS autônomo; SSE é adapter de entrega dentro desse contexto, não um
 bounded context próprio. A seção 8 (Estrutura de Arquivos) já especifica
 `apps/api/src/notifications/sse/` e "registrar em `notifications.module.ts`".
 
-### Q1 — Estrutura Redis para "conexão mais antiga" (PENDENTE — bloqueio humano block-001)
+### Q1 — Estrutura Redis para "conexão mais antiga" (RESOLVIDA — dec-011, block-001)
 
 **Pergunta**: FR-05/US3 usam Redis SET `sse:connections:{tenantId}:{userId}`,
 mas SET não tem ordenação. Como identificar a "conexão mais antiga"
 (FR-06/EC-04) ao atingir `SSE_MAX_PER_USER`?
 
-**Status**: Aguardando decisão humana. Opções:
-(A) ZSET com `score=timestamp` de criação — `ZRANGE` para a mais antiga,
-atômico via `ZADD`/`ZRANGEBYSCORE`/`ZREM`, mas substitui o "SET" da spec;
-(B) SET de connection IDs + chave auxiliar (ZSET/LIST) por usuário só para ordem.
-Recomendação técnica de partida: (A). Impacta `SseConnectionManager`.
+**Decisão (operador)**: **ZSET com `score=timestamp` de criação**. Usar Redis
+ZSET (não SET) para `sse:connections:{tenantId}:{userId}`:
+- `ZADD` ao conectar (score = timestamp Unix de criação);
+- `ZRANGE`/`ZRANGEBYSCORE` para identificar a conexão mais antiga;
+- `ZREM` para remover — operação atômica sem necessidade de chave auxiliar.
 
-### Q2 — Escopo de "conexões afetadas" em EC-02 (PENDENTE — bloqueio humano block-002)
+**Trade-off documentado**: a palavra literal "SET" do AC original é substituída
+por "ZSET". O desvio é justificado por atomicidade e ordenação temporal nativa —
+um SET simples não permite identificar a mais antiga sem estrutura auxiliar e
+race conditions. O `plan` deve usar a terminologia ZSET em toda implementação.
+
+**Impacto na spec**: FR-05, FR-06, US3 (AC), EC-04, Notas Técnicas — todas
+as referências a "Redis SET `sse:connections:…`" foram atualizadas para
+"Redis ZSET `sse:connections:…`" nesta spec.
+
+### Q2 — Escopo de "conexões afetadas" em EC-02 (RESOLVIDA — dec-012, block-002)
 
 **Pergunta**: Em EC-02 (Redis cai com conexões ativas), "encerrar conexões
 afetadas" significa (a) todas as conexões da instância, ou (b) apenas as
-conexões cujo subscriber Redis foi perdido?
+conexões cujo subscriber Redis específico foi perdido?
 
-**Status**: Aguardando decisão humana. Constitution (menor blast radius)
-favorece (b). Em ambos os casos, emitir `event: error` antes de fechar
-(conforme EC-02). Recomendação de partida: (b) + `event: error`.
+**Decisão (operador)**: **(b) encerrar apenas as conexões cujo subscriber Redis
+específico foi perdido** — menor blast radius, alinhado ao Princípio I da
+constitution. O escopo é confinado ao subscriber falho:
+- emitir `event: error` antes de cada fechamento individual;
+- encerrar somente a conexão cujo subscriber não pôde ser recuperado;
+- não vazar subscriptions (cleanup determinístico por conexão).
+
+**Nota MVP**: em single-instance, uma queda total do Redis derruba todos os
+subscribers, resultando no fechamento de todas as conexões na prática. Mesmo
+assim, a semântica da spec é granular (por subscriber), preparando o código
+para eventual multi-instance sem alteração de contrato.
+
+**Impacto na spec**: EC-02 atualizado com semântica precisa (ver seção 6).
 
 ## 1. Contexto e Problema
 
@@ -113,7 +132,7 @@ notificações para o navegador em tempo real, sem polling.
 
 - Given um usuário já possui `SSE_MAX_PER_USER` (padrão: 5) conexões abertas
   When abre uma 6ª aba e estabelece nova conexão SSE
-  Then o servidor identifica a conexão mais antiga via Redis SET `sse:connections:{tenantId}:{userId}`
+  Then o servidor identifica a conexão mais antiga via Redis ZSET `sse:connections:{tenantId}:{userId}` (score = timestamp; `ZRANGE` retorna a de menor score)
   And envia `event: close\ndata: {"reason":"max_connections_exceeded"}\n\n` à conexão mais antiga
   And encerra a conexão mais antiga
   And aceita a nova conexão
@@ -129,9 +148,9 @@ notificações para o navegador em tempo real, sem polling.
 
 **Acceptance Criteria**:
 
-- Given uma conexão SSE ativa com ID registrado no Redis SET
+- Given uma conexão SSE ativa com ID registrado no Redis ZSET
   When o cliente desconecta (navegação, fechamento de aba, timeout de heartbeat)
-  Then o connection ID é removido do SET `sse:connections:{tenantId}:{userId}`
+  Then o connection ID é removido do ZSET `sse:connections:{tenantId}:{userId}` (via `ZREM`)
   And a subscription Redis Pub/Sub daquele canal é encerrada
 
 ### US5 — Isolamento cross-tenant
@@ -157,11 +176,11 @@ notificações para o navegador em tempo real, sem polling.
 | FR-02 | A resposta bem-sucedida deve ter `Content-Type: text/event-stream` e `Cache-Control: no-cache` | MUST |
 | FR-03 | O servidor deve emitir `: heartbeat` a cada 30 segundos para manter a conexão viva e detectar clientes mortos | MUST |
 | FR-04 | O número máximo de conexões por instância é configurável via variável de ambiente `SSE_MAX_CONNECTIONS` (padrão: 1000); ao exceder, retornar 503 + `Retry-After: 30` | MUST |
-| FR-05 | O número máximo de conexões por usuário é configurável via `SSE_MAX_PER_USER` (padrão: 5); rastreado via Redis SET `sse:connections:{tenantId}:{userId}` (namespace `sse:*`) | MUST |
-| FR-06 | Ao exceder o limite por usuário, a conexão mais antiga deve receber `event: close\ndata: {"reason":"max_connections_exceeded"}` e ser encerrada antes de aceitar a nova | MUST |
+| FR-05 | O número máximo de conexões por usuário é configurável via `SSE_MAX_PER_USER` (padrão: 5); rastreado via Redis ZSET `sse:connections:{tenantId}:{userId}` (namespace `sse:*`; score = timestamp Unix de criação) | MUST |
+| FR-06 | Ao exceder o limite por usuário, a conexão mais antiga (menor score no ZSET) deve receber `event: close\ndata: {"reason":"max_connections_exceeded"}` e ser encerrada antes de aceitar a nova | MUST |
 | FR-07 | O SSE Controller deve assinar o canal `rt:notifications:{tenantId}:{userId}` para cada conexão ativa | MUST |
 | FR-08 | Mensagens recebidas do canal Redis Pub/Sub devem ser emitidas como `event: notification\ndata: {id,type,title,body,createdAt}` | MUST |
-| FR-09 | Na desconexão (heartbeat timeout ou close explícito), o connection ID deve ser removido do Redis SET e a subscription encerrada | MUST |
+| FR-09 | Na desconexão (heartbeat timeout ou close explícito), o connection ID deve ser removido do Redis ZSET (`ZREM`) e a subscription encerrada | MUST |
 | FR-10 | Os canais Redis são tenant-scoped (`rt:notifications:{tenantId}:{userId}`); o tenant_id é obtido do token, nunca de entrada do cliente | MUST |
 | FR-11 | O endpoint deve rejeitar com 401 requisições sem token ou com token inválido/expirado | MUST |
 | FR-12 | Cada conexão SSE deve receber um identificador único (connection ID) para rastreamento no Redis SET | MUST |
@@ -190,7 +209,7 @@ notificações para o navegador em tempo real, sem polling.
 | SC-04 | Conexão mais antiga fechada com `reason: max_connections_exceeded` ao atingir `SSE_MAX_PER_USER` | Teste: abrir 6 conexões, assert primeira recebeu close event |
 | SC-05 | Notificação publicada no canal Redis chega ao cliente SSE correto | Teste de integração: dispatch → InAppChannel → assert SSE event recebido |
 | SC-06 | Isolamento cross-tenant: user no tenant A não recebe notificação do tenant B | Teste determinístico: dois tenants, publicar em A, assert B vazio |
-| SC-07 | Connection ID removido do SET após desconexão | Teste: conectar, desconectar, assert `SCARD sse:connections:{t}:{u}` = 0 |
+| SC-07 | Connection ID removido do ZSET após desconexão | Teste: conectar, desconectar, assert `ZCARD sse:connections:{t}:{u}` = 0 |
 | SC-08 | Carga: 500 conexões simultâneas, heap < 512 MB, lag p99 < 100 ms | Load test (`autocannon` ou similar) com monitoramento de `process.memoryUsage()` e `perf_hooks` |
 
 ---
@@ -200,9 +219,9 @@ notificações para o navegador em tempo real, sem polling.
 | EC | Cenário | Comportamento esperado |
 |----|---------|------------------------|
 | EC-01 | Redis indisponível no momento da conexão | Retornar 503; logar erro; não aceitar conexão sem tracking |
-| EC-02 | Redis cai com conexões ativas | Emitir `event: error` e encerrar conexões afetadas; não vazar subscriptions |
+| EC-02 | Redis cai com conexões ativas | Encerrar apenas as conexões cujo subscriber Redis específico foi perdido (blast radius mínimo — dec-012); emitir `event: error` antes de cada fechamento individual; não vazar subscriptions; cleanup determinístico por conexão |
 | EC-03 | Token expirado mid-stream | SSE não re-valida (validação só na conexão inicial); heartbeat detecta client morto |
-| EC-04 | Conexão mais antiga já não existe (race condition) | Ignorar silenciosamente; tentar a próxima mais antiga; nunca recusar a nova conexão |
+| EC-04 | Conexão mais antiga já não existe (race condition no ZSET) | Ignorar silenciosamente (`ZREM` sem entrada retorna 0 — sem erro); tentar a próxima mais antiga via `ZRANGE`; nunca recusar a nova conexão |
 | EC-05 | Múltiplas instâncias NestJS (horizontal scaling) | Limite por instância (`SSE_MAX_CONNECTIONS`) é local; limite por usuário é global via Redis |
 | EC-06 | Payload do canal Redis inválido (JSON mal-formado) | Logar erro, descartar evento, manter conexão ativa |
 | EC-07 | SSE_MAX_CONNECTIONS=0 ou valor inválido | Usar padrão 1000; logar warning no startup |
@@ -242,5 +261,5 @@ apps/api/src/notifications/
 - **SSE no NestJS**: usar `@Sse()` decorator ou `Response` nativa com `res.write()` — a escolha entre `RxJS Observable` e stream manual é decisão do `plan`.
 - **Redis Pub/Sub separado**: o `RedisService` atual estende `ioredis` e é usado para cache/pub. Pub/Sub requer um client dedicado em modo subscriber; o `SseRedisService` deve instanciar um client separado para `subscribe()`.
 - **Connection ID**: UUID v7 via `uuidv7()` — nunca `crypto.randomUUID()` ou `@default(uuid())` Prisma.
-- **Namespace Redis**: `sse:connections:{tenantId}:{userId}` — SET de connection IDs (novo namespace `sse:*`, conforme story).
+- **Namespace Redis**: `sse:connections:{tenantId}:{userId}` — ZSET de connection IDs com score = timestamp Unix de criação (novo namespace `sse:*`, conforme story; dec-011). Operações: `ZADD` ao conectar, `ZRANGE 0 0` para a mais antiga, `ZREM` para remover, `ZCARD` para contar.
 - **AsyncLocalStorage**: `tenant_id` e `user_id` extraídos do token Keycloak pelo guard e propagados via `RequestContext`; nunca aceitos como parâmetro de função.

@@ -6,7 +6,7 @@
     "target_project_path": "/var/lib/metanoia-hub",
     "target_project_description": "SSE Endpoint & Redis Pub/Sub Backend (FR77) — endpoint GET /api/v1/sse/notifications tenant-scoped (guard Keycloak extrai tenant_id/user_id), heartbeat a cada 30s, limite 1000 conexoes/instancia (SSE_MAX_CONNECTIONS, 503+Retry-After:30) e 5/usuario via Redis SET sse:connections:{tenantId}:{userId} (SSE_MAX_PER_USER, fecha a mais antiga). InAppChannel publica em rt:notifications:{tenantId}:{userId} (criado na 14-1); SseController assina o canal e faz push event:notification. Cleanup remove do SET e desfaz subscription. Teste de isolamento cross-tenant obrigatorio.",
     "suggested_stack": null,
-    "status": "em_andamento",
+    "status": "aguardando_humano",
     "termination_reason": null,
     "started_at": "2026-06-20T21:16:29Z",
     "finished_at": null
@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar fase plan: invocar Skill(plan) para gerar plan.md + research.md + data-model.md na feature sse-notificacoes. Preflight ja passou (clarify->plan). Aplicar quality gates apos plan (validate-documentation + owasp-security).",
+  "current_stage": "clarify",
+  "next_instruction": "AGUARDANDO HUMANO: 2 bloqueios pendentes (block-001 estrutura Redis ZSET vs SET para conexao mais antiga; block-002 escopo de conexoes afetadas em EC-02). Apos /feature-00c-resume com respostas, aplicar decisoes na spec (FR-05/FR-06/EC-02) e avancar clarify->plan via feature-00c-preflight.sh check.",
   "waves": [
     {
       "id": "onda-001",
@@ -75,23 +75,6 @@
           "skill": "clarify",
           "timestamp": "2026-06-20T21:29:05Z",
           "decision_id": "dec-008"
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-21T00:57:48Z",
-      "finished_at": "2026-06-21T01:00:06Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 138,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-21T00:59:40Z",
-          "decision_id": "dec-011"
         }
       ]
     }
@@ -270,63 +253,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-21T00:56:43Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 2 (fase clarify)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T00:57:59Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resolucao block-001 (Q1): estrutura Redis para conexao mais antiga em FR-05/FR-06/US3/EC-04",
-      "options_considered": [
-        "ZSET-com-score-timestamp",
-        "SET-mais-chave-auxiliar",
-        "SET-sem-ordenacao"
-      ],
-      "choice": "ZSET-com-score-timestamp",
-      "rationale": "Operador decidiu: ZSET com score=timestamp. ZADD ao conectar, ZRANGE/ZRANGEBYSCORE para mais antiga, ZREM para remover. Atomico, sem auxiliar. Desvio justificado: palavra literal SET do AC original e inadequada para ordenacao temporal; ZSET resolve FR-06/EC-04 sem race condition.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-21T00:58:10Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Resolucao block-002 (Q2): escopo de conexoes afetadas em EC-02 (Redis cai com conexoes ativas)",
-      "options_considered": [
-        "encerrar-todas-conexoes-da-instancia",
-        "encerrar-apenas-conexoes-cujo-subscriber-foi-perdido"
-      ],
-      "choice": "encerrar-apenas-conexoes-cujo-subscriber-foi-perdido",
-      "rationale": "Operador decidiu opcao (b): menor blast radius conforme Principio I da constitution. Escopo confinado ao subscriber Redis especifico perdido. event:error enviado antes de cada fechamento. Sem vazamento de subscriptions. Nota: em MVP single-instance uma queda total Redis derruba todas na pratica, mas semantica da spec e granular para multi-instance.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [
@@ -347,9 +273,9 @@
       "question": "Clarify Q2: Em EC-02 (Redis cai com conexoes ativas), o que sao 'conexoes afetadas' a encerrar? (a) TODAS as conexoes da instancia NestJS quando Redis cai totalmente; ou (b) APENAS as conexoes cujo subscriber Redis especifico foi perdido. Em ambos os casos, enviar event:error antes de fechar (conforme EC-02)?",
       "context_for_answer": "EC-02 ordena: emitir event:error, encerrar 'conexoes afetadas', nao vazar subscriptions. 'Afetadas' e ambiguo. Constitution (Principio I, menor blast radius) favorece (b) — escopo minimo. A spec exige event:error antes de fechar. Recomendacao de partida: (b) + event:error — encerrar apenas as conexoes com subscriber perdido, enviando event:error antes de cada fechamento. Como Redis e single-instance no MVP (constitution), na pratica uma queda total derruba todas; mas a logica deve confinar o encerramento as conexoes cujo subscriber falhou. Confirme se (b) e aceitavel ou se prefere (a) por simplicidade.",
       "recommended_options": null,
-      "status": "respondido",
-      "human_answer": "Opcao (b): em EC-02 (Redis Pub/Sub cai), encerrar APENAS as conexoes cujo subscriber Redis especifico foi perdido (menor blast radius, Principio I da constitution), sempre enviando event:error antes de cada fechamento e sem vazar subscriptions. A logica deve confinar o encerramento ao escopo do subscriber falho, mesmo que no MVP single-instance uma queda total derrube todas na pratica. Decisao do operador.",
-      "answered_at": "2026-06-21T00:56:27Z",
+      "status": "aguardando",
+      "human_answer": null,
+      "answered_at": null,
       "triggered_at": "2026-06-20T21:28:13Z"
     }
   ],
@@ -359,20 +285,20 @@
     "max_retro_executions_per_feature": 2,
     "retro_executions_consumed": 0,
     "max_cycles_per_stage": 5,
-    "cycles_consumed_current_stage": 1,
+    "cycles_consumed_current_stage": 0,
     "tool_calls_threshold_wave": 80,
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T00:57:48Z"
+    "current_wave_start": "2026-06-20T21:24:14Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 660,
+    "wallclock_total_seconds": 522,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 12,
+    "decisions_total": 9,
     "human_blocks_total": 2,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -398,11 +324,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T21:21:19Z",
       "description": "onda-001 concluida; proxima: clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:00:25Z",
-      "description": "onda-003 clarify concluida; stage avancado para plan; aguardando wakeup"
     }
   ]
 }

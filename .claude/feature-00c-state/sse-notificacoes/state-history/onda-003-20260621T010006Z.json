@@ -81,11 +81,11 @@
     {
       "id": "onda-003",
       "started_at": "2026-06-21T00:57:48Z",
-      "finished_at": "2026-06-21T01:00:06Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 138,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -367,9 +367,9 @@
     "current_wave_start": "2026-06-21T00:57:48Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 660,
+    "wallclock_total_seconds": 522,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
     "decisions_total": 12,
@@ -398,11 +398,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-20T21:21:19Z",
       "description": "onda-001 concluida; proxima: clarify"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-21T01:00:25Z",
-      "description": "onda-003 clarify concluida; stage avancado para plan; aguardando wakeup"
     }
   ]
 }
