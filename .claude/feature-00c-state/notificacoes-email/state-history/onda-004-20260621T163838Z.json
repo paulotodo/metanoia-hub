@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa create-tasks: decompor spec/plan/checklists em backlog executavel tasks.md",
   "waves": [
     {
       "id": "onda-001",
@@ -109,23 +109,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-21T16:32:25Z",
           "decision_id": "dec-019"
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-21T16:38:38Z",
-      "finished_at": "2026-06-21T16:45:08Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 390,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-21T16:45:08Z",
-          "decision_id": null
         }
       ]
     }
@@ -545,24 +528,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-023",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-21T16:39:58Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notificacoes-email)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos: notificacoes email resend bullmq templates rate-limit circuit-breaker",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -577,15 +542,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-21T16:38:38Z"
+    "current_wave_start": "2026-06-21T16:27:34Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1741,
+    "wallclock_total_seconds": 1351,
     "max_depth_reached": 2,
     "subagents_spawned": 2,
-    "decisions_total": 23,
+    "decisions_total": 22,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -621,11 +586,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-21T16:33:29Z",
       "description": "checklist concluido; proxima fase=create-tasks"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-21T16:39:47Z",
-      "description": "etapa=create-tasks hits=4"
     }
   ]
 }
