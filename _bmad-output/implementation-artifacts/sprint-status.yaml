@@ -214,7 +214,7 @@ development_status:
   # Sprint 19: 14-1, 14-2a, 14-2b, 14-2c, 14-3, 14-4
   epic-14: in-progress
   14-1-infraestrutura-de-notificacoes-channel-router-fr77: done                  # PR #170 (8ff258e) — modulo apps/api/src/notifications/ (service anti-IDOR via RequestContext, ChannelRouter O/C, InApp/Email channels, BullMQ worker retry 3x+failed set, DigestService pastoral_alert imediato, Redis rt:notifications:*), migration 20260629000000 + RLS USING/WITH CHECK, RLS spec idempotente 2x, 8 schemas Zod+snapshot; CI 5/5 verde; via feature-00c. Tech-debt: actionUrl sanitize (14.2a), rate-limit leitura
-  14-2a-sse-endpoint-redis-pubsub-backend-fr77: ready-for-dev
+  14-2a-sse-endpoint-redis-pubsub-backend-fr77: done                  # PR #172 (37273390) — apps/api/src/notifications/sse/ (SseController @Sse tenant-scoped + heartbeat 30s, SseConnectionManager Redis ZSET com limites instancia 1000/usuario 5 + evicção da mais antiga, SseRedisService subscriber dedicado rt:notifications:* + refcount + EC-02 blast radius minimo), 3 envs SSE, contrato Zod reusado; 43 testes (incl. isolamento cross-tenant); CI 5/5 verde 1a vez; via feature-00c (2 bloqueios humanos: ZSET + blast radius). Tech-debt: SR-2 XSS->14-2b, SR-3 rate-limit, CHK033 race ZSET multi-instance
   14-2b-notification-center-ui-fr77: ready-for-dev
   14-2c-sse-reconnection-gap-fill-fr77: ready-for-dev
   14-3-notificacoes-por-email-via-resend-fr77-nfr-i1i2i3: ready-for-dev
