@@ -102,12 +102,12 @@ test.describe('P1 — Badge do sino', () => {
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
     // Badge should show 3
-    const badge = page.getByText('3').first();
+    // Locate the VISIBLE bell (desktop: sidebar bell; mobile: header bell)
+    const bell = page.locator('button[aria-label*="notificações" i]:visible');
+    await expect(bell).toHaveAttribute('aria-label', '3 notificações não lidas', { timeout: 10_000 });
+    // Badge is rendered inside the visible bell button
+    const badge = bell.getByText('3');
     await expect(badge).toBeVisible({ timeout: 10_000 });
-
-    // Aria-label confirms count
-    const bell = page.getByRole('button', { name: /notificações não lidas/i }).first();
-    await expect(bell).toHaveAttribute('aria-label', '3 notificações não lidas');
   });
 
   test('badge exibe 99+ quando count > 99', async ({ page }) => {
@@ -133,9 +133,10 @@ test.describe('P1 — Badge do sino', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    await expect(page.getByText('99+').first()).toBeVisible({ timeout: 10_000 });
-    const bell = page.getByRole('button', { name: /99\+ notificações/i }).first();
-    await expect(bell).toHaveAttribute('aria-label', '99+ notificações não lidas');
+    const bell = page.locator('button[aria-label*="notificações" i]:visible');
+    await expect(bell).toHaveAttribute('aria-label', '99+ notificações não lidas', { timeout: 10_000 });
+    const badge = bell.getByText('99+');
+    await expect(badge).toBeVisible({ timeout: 10_000 });
   });
 });
 
@@ -173,8 +174,8 @@ test.describe('P2 — Painel de notificações', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    // Click the bell to open panel
-    const bell = page.getByRole('button', { name: /notificações não lidas/i }).first();
+    // Click the VISIBLE bell to open panel
+    const bell = page.locator('button[aria-label*="notificações" i]:visible');
     await bell.click();
 
     // Panel opens with dialog role
@@ -197,8 +198,8 @@ test.describe('P2 — Painel de notificações', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    // Open panel
-    const bell = page.getByRole('button', { name: 'Sem notificações' }).first();
+    // Open the VISIBLE bell (no notifications)
+    const bell = page.locator('button[aria-label="Sem notificações"]:visible');
     await bell.click();
 
     const panel = page.getByRole('dialog', { name: 'Notificações' });
@@ -239,8 +240,8 @@ test.describe('P3 — Marcar todas como lidas', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    // Open panel
-    const bell = page.getByRole('button', { name: '5 notificações não lidas' }).first();
+    // Open the VISIBLE bell (5 notifications)
+    const bell = page.locator('button[aria-label="5 notificações não lidas"]:visible');
     await bell.click();
 
     const panel = page.getByRole('dialog', { name: 'Notificações' });
@@ -269,8 +270,8 @@ test.describe('P4 — Toggle Silenciar', () => {
     // NavigationShell mounts the NotificationCenter bell.
     await page.waitForURL('**/app/**', { timeout: 30_000 });
 
-    // Open panel
-    const bell = page.getByRole('button', { name: /notificações não lidas/i }).first();
+    // Open the VISIBLE bell (1 notification)
+    const bell = page.locator('button[aria-label*="notificações" i]:visible');
     await bell.click();
 
     const panel = page.getByRole('dialog', { name: 'Notificações' });
@@ -285,6 +286,7 @@ test.describe('P4 — Toggle Silenciar', () => {
     await expect(page.getByRole('button', { name: 'Ativar alertas' })).toBeVisible();
 
     // Badge still visible (silence only suppresses aria-live, not badge)
-    await expect(page.getByText('1').first()).toBeVisible();
+    const badgeAfterSilence = bell.getByText('1');
+    await expect(badgeAfterSilence).toBeVisible();
   });
 });

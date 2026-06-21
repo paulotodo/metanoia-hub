@@ -55,23 +55,22 @@ test.describe('Notification Center — a11y (Story 14-2b)', () => {
 
     await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
     // Demo admin is single-tenant: login lands on /selecionar-igreja which
-    // auto-selects (SPA). Navigate explicitly to an authenticated /app route
-    // so the NavigationShell mounts the NotificationCenter bell deterministically
-    // (the bell is loaded via dynamic(ssr:false), so we wait for the bell selector).
-    await page.waitForURL(/\/selecionar-igreja|\/app\//, { timeout: 30_000 });
+    // auto-selects (SPA) and forwards to /app/gestao.
+    // Do NOT do page.goto('/app/gestao') here — that bypasses the SPA tenant
+    // auto-select and causes a redirect that prevents the bell from mounting.
+    // Instead, wait for the SPA to navigate on its own.
+    await page.waitForURL('**/app/**', { timeout: 30_000 });
     // NOTE: the NotificationCenter opens a persistent EventSource (SSE) stream, so the
-    // network NEVER reaches 'networkidle' — waitUntil:'networkidle' always times out.
-    // Use 'domcontentloaded' and wait for the bell (a deterministic, dynamic ssr:false
-    // element) instead of relying on network idleness.
-    await page.goto('/app/gestao', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('[aria-label*="notificações" i], [aria-label="Sem notificações"]', {
+    // network NEVER reaches 'networkidle' — do NOT use waitUntil:'networkidle'.
+    // Wait for the VISIBLE bell (desktop: sidebar bell; mobile: header bell).
+    await page.waitForSelector('button[aria-label*="notificações" i]:visible', {
       timeout: 15_000,
     });
   });
 
   test('1. axe WCAG 2AA: zero violações com sino visível', async ({ page }) => {
-    // Wait for the bell to render
-    await page.waitForSelector('[aria-label*="notificações"]', { timeout: 10_000 });
+    // Wait for the VISIBLE bell to render
+    await page.waitForSelector('button[aria-label*="notificações" i]:visible', { timeout: 10_000 });
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
@@ -89,7 +88,7 @@ test.describe('Notification Center — a11y (Story 14-2b)', () => {
 
   test('2. keyboard: Tab until bell → Enter opens panel → Escape closes', async ({ page }) => {
     // Tab to the notification bell button
-    const bell = page.getByRole('button', { name: /notificações/i }).first();
+    const bell = page.locator('button[aria-label*="notificações" i]:visible');
     await bell.focus();
     await expect(bell).toBeFocused();
 
@@ -104,7 +103,7 @@ test.describe('Notification Center — a11y (Story 14-2b)', () => {
   });
 
   test('3. keyboard: Tab through panel elements — all focusable', async ({ page }) => {
-    const bell = page.getByRole('button', { name: /notificações/i }).first();
+    const bell = page.locator('button[aria-label*="notificações" i]:visible');
     await bell.click();
 
     const panel = page.getByRole('dialog', { name: 'Notificações' });
