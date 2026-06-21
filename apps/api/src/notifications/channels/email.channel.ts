@@ -27,7 +27,6 @@ import { EmailRateLimiterService } from '../email-rate-limiter.service';
 import { EmailCircuitBreakerService } from '../email-circuit-breaker.service';
 import { BrandingService } from '../../tenants/branding.service';
 import { NotificationsService } from '../notifications.service';
-import { getRequestContext } from '../../common/context/request-context';
 import { renderPastoralAlert } from '../templates/pastoral-alert.template';
 import { renderMeetingReminder } from '../templates/meeting-reminder.template';
 import { renderExportReady } from '../templates/export-ready.template';

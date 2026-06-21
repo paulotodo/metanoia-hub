@@ -252,29 +252,29 @@ Ref: spec.md §FR-05, checklists/performance.md CHK050, task 1.3.1
 
 Ref: quickstart.md C1-C6/C9/C10, spec.md §SC-01..SC-07
 
-- [ ] 7.1.1 `email.channel.integration-spec.ts`: C1 happy path — `EmailChannel.send()` com mock `EmailService` retornando sucesso; confirmar `status=sent` e `providerId` no metadata
-- [ ] 7.1.2 `email.channel.integration-spec.ts`: C5 deferral de `meeting_reminder` com contador ≥ 80 — confirmar fallback in-app criado imediatamente com data/horário/link (SC-02)
-- [ ] 7.1.3 `email.channel.integration-spec.ts`: C6 deferral de `content_new` — confirmar `metadata.deferredUntil` preenchido; sem fallback imediato; idempotência: re-enqueue com mesmo jobId não cria nova notificação
-- [ ] 7.1.4 `email.channel.integration-spec.ts`: C9 schema snapshot — estender `NotificationTypeSchema`, confirmar snapshot falha e atualizar; gate contra breaking change silencioso
-- [ ] 7.1.5 `email.channel.integration-spec.ts`: C10 `StubEmailHealthPort` trocável — registrar fake impl, confirmar que `EmailChannel` não requer modificação (SC-07)
+- [x] 7.1.1 `email.channel.integration-spec.ts`: C1 happy path — `EmailChannel.send()` com mock `EmailService` retornando sucesso; confirmar `status=sent` e `providerId` no metadata
+- [x] 7.1.2 `email.channel.integration-spec.ts`: C5 deferral de `meeting_reminder` com contador ≥ 80 — confirmar fallback in-app criado imediatamente com data/horário/link (SC-02)
+- [x] 7.1.3 `email.channel.integration-spec.ts`: C6 deferral de `content_new` — confirmar `metadata.deferredUntil` preenchido; sem fallback imediato; idempotência: re-enqueue com mesmo jobId não cria nova notificação
+- [x] 7.1.4 `email.channel.integration-spec.ts`: C9 schema snapshot — estender `NotificationTypeSchema`, confirmar snapshot falha e atualizar; gate contra breaking change silencioso
+- [x] 7.1.5 `email.channel.integration-spec.ts`: C10 `StubEmailHealthPort` trocável — registrar fake impl, confirmar que `EmailChannel` não requer modificação (SC-07)
 
 ### 7.2 Teste de isolamento RLS (roda 2× no CI) `[C]`
 
 Ref: spec.md §SC-RLS (Constitution I/VI), quickstart.md C8, data-model.md §RLS, memória do projeto (RLS idempotente 2× CI)
 
-- [ ] 7.2.1 Criar `apps/api/test/rls/notifications-email.rls-spec.ts`: setup 2 tenants com notificações de email; verificar que em contexto do Tenant A: SELECT/UPDATE/DELETE NÃO retorna registros do Tenant B; contadores Redis de rate-limit namespaced (Tenant A: `rate:email:{tenantA}:{hoje}` ≠ Tenant B)
-- [ ] 7.2.2 Garantir que o teste é idempotente: pode rodar 2× consecutivas no CI sem falhar (limpeza explícita no `afterEach`/`afterAll`); sem estado Redis compartilhado entre rodadas
-- [ ] 7.2.3 Adicionar ao script de CI (`ci-rls.yml` ou similar) execução do novo spec RLS 2× conforme padrão existente
+- [x] 7.2.1 Criar `apps/api/test/rls/notifications-email.rls-spec.ts`: setup 2 tenants com notificações de email; verificar que em contexto do Tenant A: SELECT/UPDATE/DELETE NÃO retorna registros do Tenant B; contadores Redis de rate-limit namespaced (Tenant A: `rate:email:{tenantA}:{hoje}` ≠ Tenant B)
+- [x] 7.2.2 Garantir que o teste é idempotente: pode rodar 2× consecutivas no CI sem falhar (limpeza explícita no `afterEach`/`afterAll`); sem estado Redis compartilhado entre rodadas
+- [x] 7.2.3 Adicionar ao script de CI (`ci-rls.yml` ou similar) execução do novo spec RLS 2× conforme padrão existente
 
 ### 7.3 Validar lint e CI local antes do PR `[M]`
 
 Ref: CLAUDE.md §Git Workflow, memória do projeto
 
-- [ ] 7.3.1 Rodar `pnpm --filter api lint` e confirmar zero erros
-- [ ] 7.3.2 Rodar `pnpm --filter api test` (Vitest) e confirmar todos os specs passam, incluindo snapshot tests atualizados
-- [ ] 7.3.3 Rodar `pnpm --filter api build` e confirmar zero erros de TypeScript (`strict: true`)
-- [ ] 7.3.4 Rodar testes RLS com Postgres local: `pnpm --filter api test:rls` e confirmar isolamento multi-tenant
-- [ ] 7.3.5 Criar PR com branch `feat/14-3-notificacoes-email`, conventional commits PT-BR, descrição referenciando FR77/Story 14-3
+- [x] 7.3.1 Rodar `pnpm --filter api lint` e confirmar zero erros
+- [x] 7.3.2 Rodar `pnpm --filter api test` (Vitest) e confirmar todos os specs passam, incluindo snapshot tests atualizados
+- [x] 7.3.3 Rodar `pnpm --filter api build` e confirmar zero erros de TypeScript (`strict: true`)
+- [x] 7.3.4 Rodar testes RLS com Postgres local: `pnpm --filter api test:rls` e confirmar isolamento multi-tenant
+- [x] 7.3.5 Criar PR com branch `feat/14-3-notificacoes-email`, conventional commits PT-BR, descrição referenciando FR77/Story 14-3
 
 ---
 

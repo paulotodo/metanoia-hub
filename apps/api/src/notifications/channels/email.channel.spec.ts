@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { EmailChannel } from './email.channel';
 import type { EmailService } from './email.service';
 import type { EmailRateLimiterService } from '../email-rate-limiter.service';

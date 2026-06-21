@@ -59,7 +59,7 @@ export class EmailService {
   constructor(private readonly configService: ConfigService) {
     // SECURITY: RESEND_API_KEY is never logged (L1/CHK029).
     // ConfigService reads from validated envSchema (env.validation.ts).
-    const apiKey = this.configService.get<string>('RESEND_API_KEY')!;
+    const apiKey = this.configService.get<string>('RESEND_API_KEY') ?? '';
     this.client = new Resend(apiKey);
     this.defaultFrom = this.configService.get<string>(
       'EMAIL_DEFAULT_FROM',
@@ -125,10 +125,6 @@ export class EmailService {
       clearTimeout(timeout);
       const error = err as Error;
       const isTimeout = error.name === 'AbortError' || error.message.includes('abort');
-      const isNetwork = error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('connect') ||
-        isTimeout;
-
       this.logger.warn(
         {
           to: input.to,
