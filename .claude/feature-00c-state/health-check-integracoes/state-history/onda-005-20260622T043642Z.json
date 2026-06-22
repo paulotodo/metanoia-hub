@@ -481,11 +481,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-22T04:31:02Z",
       "description": "etapa=create-tasks hits=0 (fase nao-eligible para read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-22T04:36:42Z",
-      "description": "onda-005 create-tasks concluida; proxima=execute-task; tasks.md 312 linhas, 18 tasks, 77 subtarefas, gate critical=0"
     }
   ]
 }

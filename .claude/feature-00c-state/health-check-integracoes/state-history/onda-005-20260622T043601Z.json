@@ -103,11 +103,11 @@
     {
       "id": "onda-005",
       "started_at": "2026-06-22T04:30:52Z",
-      "finished_at": "2026-06-22T04:36:01Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 309,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -440,9 +440,9 @@
     "current_wave_start": "2026-06-22T04:30:52Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1474,
+    "wallclock_total_seconds": 1165,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 16,
@@ -481,11 +481,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-22T04:31:02Z",
       "description": "etapa=create-tasks hits=0 (fase nao-eligible para read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-22T04:36:42Z",
-      "description": "onda-005 create-tasks concluida; proxima=execute-task; tasks.md 312 linhas, 18 tasks, 77 subtarefas, gate critical=0"
     }
   ]
 }

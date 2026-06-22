@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "execute-task",
-  "next_instruction": "Iniciar etapa execute-task — executar tasks de health-check-integracoes conforme tasks.md. Começar pela FASE 1 (tipos Zod + migration + RLS). Infra real ancorada: createPrivilegedClient, Role.SUPER_ADMIN enum, getUsersByRealmRole a adicionar, substituição StubEmailHealthPort em notifications.module.ts L47-50, bind params posicionais INSERT, micro-cache 5-10s endpoint on-demand. NFR-TEST-001: probes NUNCA batem em produção (mock vi.mock/MSW/nock).",
+  "current_stage": "create-tasks",
+  "next_instruction": "Iniciar etapa create-tasks — gerar tasks.md para health-check-integracoes a partir de spec.md + plan.md + checklists/. Gaps criticos do checklist (CHK076 ARIA SVG, CHK077 tooltip teclado, CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache) devem ser acceptance criteria nas tasks correspondentes.",
   "waves": [
     {
       "id": "onda-001",
@@ -97,23 +97,6 @@
           "skill": "checklist",
           "timestamp": "2026-06-22T04:19:35Z",
           "decision_id": "dec-011"
-        }
-      ]
-    },
-    {
-      "id": "onda-005",
-      "started_at": "2026-06-22T04:30:52Z",
-      "finished_at": "2026-06-22T04:36:01Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 309,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "create-tasks",
-          "timestamp": "2026-06-22T04:35:23Z",
-          "decision_id": null
         }
       ]
     }
@@ -404,25 +387,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-016",
-      "wave_id": "onda-005",
-      "timestamp": "2026-06-22T04:35:35Z",
-      "stage": "create-tasks",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gerar tasks.md para health-check-integracoes com 18 tasks, 77 subtarefas em 4 fases; gaps de checklist (CHK025/CHK013/CHK026/CHK027/CHK028/CHK030/CHK031/CHK033/CHK035/CHK049/CHK074/CHK076/CHK077/CHK085/CHK088) convertidos em acceptance criteria explícitos; gate validate-tasks-template: critical=0 warning=0",
-      "options_considered": [
-        "gerar-tasks",
-        "abortar",
-        "bloqueio-humano"
-      ],
-      "choice": "gerar-tasks",
-      "rationale": "Spec+plan+checklists completos (89 items, 0 bloqueios pendentes); infra real lida e refletida nas tasks (createPrivilegedClient, Role.SUPER_ADMIN enum, getUsersByRealmRole novo, substituição L47-50 NotificationsModule, bind params posicionais, micro-cache on-demand); gate deterministico passou",
-      "justification_score": 3,
-      "evidence": "validate-tasks-template.sh: RESULT|tasks.md|critical=0|warning=0; 312 linhas geradas; Role.SUPER_ADMIN em auth/enums/role.enum.ts L17 confirmado; insertJobLog L258-291 pattern detectado em detect-evasion-risk.processor.ts",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -437,15 +401,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-22T04:30:52Z"
+    "current_wave_start": "2026-06-22T04:19:18Z"
   },
   "accumulated_metrics": {
-    "waves_total": 5,
+    "waves_total": 4,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1474,
+    "wallclock_total_seconds": 1165,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 16,
+    "decisions_total": 15,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -476,16 +440,6 @@
       "event_type": "recall_consulted",
       "timestamp": "2026-06-22T04:07:31Z",
       "description": "etapa=plan hits=4"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-22T04:31:02Z",
-      "description": "etapa=create-tasks hits=0 (fase nao-eligible para read-back)"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-22T04:36:42Z",
-      "description": "onda-005 create-tasks concluida; proxima=execute-task; tasks.md 312 linhas, 18 tasks, 77 subtarefas, gate critical=0"
     }
   ]
 }
