@@ -30,6 +30,23 @@ describe('apiClient', () => {
     expect(result).toEqual({ id: '1', name: 'Test' });
   });
 
+  it('sends requests with cache: no-store (avoids 304 revalidation loop)', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    server.use(
+      http.get('*/api/v1/test', () =>
+        HttpResponse.json({ data: { id: '1', name: 'Test' } }),
+      ),
+    );
+
+    await apiClient.get('/test', TestSchema);
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining('/test'),
+      expect.objectContaining({ cache: 'no-store' }),
+    );
+    fetchSpy.mockRestore();
+  });
+
   it('attaches Authorization header when token exists', async () => {
     sessionStorage.setItem('accessToken', 'test-token-123');
 

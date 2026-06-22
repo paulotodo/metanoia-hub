@@ -61,9 +61,13 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     BullMqModule,
     HealthModule,
     MeetingsModule,
+    // RadarDashboardModule antes de PastoralModule: a rota estática
+    // GET /radar/dashboard precisa ser registrada antes da rota paramétrica
+    // GET /radar/:id (Express casa por ordem de registro), senão "dashboard"
+    // é tratado como :id e o ParseUUIDPipe responde 400.
+    RadarDashboardModule,
     PastoralModule,
     AdminPastoralModule,
-    RadarDashboardModule,
     InvitesModule,
     TenantsModule,
     GroupsModule,
