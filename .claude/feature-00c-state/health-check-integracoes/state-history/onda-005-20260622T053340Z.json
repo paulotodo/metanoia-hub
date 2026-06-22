@@ -561,11 +561,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-22T04:36:42Z",
       "description": "onda-005 create-tasks concluida; proxima=execute-task; tasks.md 312 linhas, 18 tasks, 77 subtarefas, gate critical=0"
-    },
-    {
-      "event_type": "schedule_wait",
-      "timestamp": "2026-06-22T05:33:40Z",
-      "description": "execute-task FASE 4 concluida; PR #184 aberto; proximo: review-task"
     }
   ],
   "tasks": [
