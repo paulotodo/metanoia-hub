@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks — gerar tasks.md para health-check-integracoes a partir de spec.md + plan.md + checklists/. Gaps criticos do checklist (CHK076 ARIA SVG, CHK077 tooltip teclado, CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache) devem ser acceptance criteria nas tasks correspondentes.",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -86,11 +86,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-22T04:19:18Z",
-      "finished_at": "2026-06-22T04:25:37Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 379,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -348,25 +348,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-22T04:25:10Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gaps de seguranca OWASP F1/F2 identificados (CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache)",
-      "options_considered": [
-        "adicionar-spec",
-        "registrar-como-acceptance-criteria",
-        "escalar-para-humano"
-      ],
-      "choice": "registrar-como-acceptance-criteria",
-      "rationale": "CHK015/CHK028/CHK035 nao bloqueiam a geracao de tasks mas devem ser acceptance criteria da task de implementacao correspondente. Score 2: decisao suportada pelos findings OWASP F1/F2/F4 e pela constitution (seguranca como principio MUST).",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -384,12 +365,12 @@
     "current_wave_start": "2026-06-22T04:19:18Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1165,
+    "wallclock_total_seconds": 786,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 14,
+    "decisions_total": 13,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

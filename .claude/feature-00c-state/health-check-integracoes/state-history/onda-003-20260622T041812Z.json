@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks — gerar tasks.md para health-check-integracoes a partir de spec.md + plan.md + checklists/. Gaps criticos do checklist (CHK076 ARIA SVG, CHK077 tooltip teclado, CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache) devem ser acceptance criteria nas tasks correspondentes.",
+  "current_stage": "checklist",
+  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -80,23 +80,6 @@
           "skill": "plan",
           "timestamp": "2026-06-22T04:13:53Z",
           "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-004",
-      "started_at": "2026-06-22T04:19:18Z",
-      "finished_at": "2026-06-22T04:25:37Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 379,
-      "termination_reason": "concluido",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "checklist",
-          "timestamp": "2026-06-22T04:19:35Z",
-          "decision_id": "dec-011"
         }
       ]
     }
@@ -272,101 +255,6 @@
       "evidence": "grep createPrivilegedClient detect-evasion-risk.processor.ts=3 ocorrencias (precedente confirmado); plan.md=199 linhas; EMAIL_HEALTH_PORT provider em notifications.module.ts L49-50 verificado; KeycloakAdminService getAdminToken+baseUrl L22-26 verificado",
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-010",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-22T04:18:12Z",
-      "stage": "model-routing",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Selecao de modelo para onda 3 (fase checklist)",
-      "options_considered": [
-        "haiku",
-        "sonnet",
-        "opus",
-        "manter-atual"
-      ],
-      "choice": "model:sonnet",
-      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
-      "justification_score": 0,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-011",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-22T04:19:35Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Inicio da onda checklist — quality gate de requisitos",
-      "options_considered": [
-        "iniciar-checklist",
-        "abortar"
-      ],
-      "choice": "iniciar-checklist",
-      "rationale": "Artefatos spec.md + plan.md + data-model.md + research.md presentes; 0 bloqueios pendentes; budget OK; drift=1 (abaixo de 5)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-012",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-22T04:24:55Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Checklists gerados para 4 dominios: api (22 itens), security (19 itens), performance (20 itens), ux/a11y (28 itens)",
-      "options_considered": [
-        "gerar-todos-dominios",
-        "gerar-subset",
-        "pular"
-      ],
-      "choice": "gerar-todos-dominios",
-      "rationale": "Feature multi-camada (DB+backend+frontend) com findings OWASP ativos (F1-F4); 4 dominios cobrem todos os riscos identificados: api (contratos/authz), security (OWASP F1-F4), performance (NFR-I5/Promise.all/throttle), ux/a11y (dashboard/sparkline/motion-safe)",
-      "justification_score": 3,
-      "evidence": "37 itens auto-resolvidos com evidencia citada da spec; 12 gaps abertos (CHK009,CHK014,CHK015,CHK027,CHK028,CHK030,CHK031,CHK033,CHK035,CHK049,CHK076,CHK077); itens criticos a11y identificados (CHK076 SVG sem ARIA, CHK077 tooltip inacessivel)",
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-013",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-22T04:25:10Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gaps criticos de a11y identificados no checklist UX (CHK076, CHK077)",
-      "options_considered": [
-        "aceitar-risco-com-justificativa",
-        "adicionar-spec-antes-execute",
-        "escalar-para-humano"
-      ],
-      "choice": "aceitar-risco-com-justificativa",
-      "rationale": "CHK076 (SVG sem ARIA) e CHK077 (tooltip inacessivel) sao bloqueantes para leitores de tela. Gate a11y do CI (Epic 12) pegaria em PR, mas e mais eficiente corrigir na task de implementacao do sparkline. Registrado como task de implementacao em create-tasks.",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-014",
-      "wave_id": "onda-004",
-      "timestamp": "2026-06-22T04:25:10Z",
-      "stage": "checklist",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "Gaps de seguranca OWASP F1/F2 identificados (CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache)",
-      "options_considered": [
-        "adicionar-spec",
-        "registrar-como-acceptance-criteria",
-        "escalar-para-humano"
-      ],
-      "choice": "registrar-como-acceptance-criteria",
-      "rationale": "CHK015/CHK028/CHK035 nao bloqueiam a geracao de tasks mas devem ser acceptance criteria da task de implementacao correspondente. Score 2: decisao suportada pelos findings OWASP F1/F2/F4 e pela constitution (seguranca como principio MUST).",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -381,15 +269,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-22T04:19:18Z"
+    "current_wave_start": "2026-06-22T04:07:48Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1165,
+    "wallclock_total_seconds": 786,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 14,
+    "decisions_total": 9,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0

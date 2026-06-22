@@ -23,7 +23,7 @@
     }
   },
   "current_stage": "create-tasks",
-  "next_instruction": "Iniciar etapa create-tasks — gerar tasks.md para health-check-integracoes a partir de spec.md + plan.md + checklists/. Gaps criticos do checklist (CHK076 ARIA SVG, CHK077 tooltip teclado, CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache) devem ser acceptance criteria nas tasks correspondentes.",
+  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -86,11 +86,11 @@
     {
       "id": "onda-004",
       "started_at": "2026-06-22T04:19:18Z",
-      "finished_at": "2026-06-22T04:25:37Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 379,
-      "termination_reason": "concluido",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
       "skills_invoked": [
         {
@@ -384,9 +384,9 @@
     "current_wave_start": "2026-06-22T04:19:18Z"
   },
   "accumulated_metrics": {
-    "waves_total": 4,
+    "waves_total": 3,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 1165,
+    "wallclock_total_seconds": 786,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
     "decisions_total": 14,
