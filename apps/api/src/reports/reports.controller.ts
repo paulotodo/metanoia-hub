@@ -45,10 +45,13 @@ export class ReportsController {
 
   /**
    * GET /api/v1/reports/trails
-   * Admin: returns summary of all trails in tenant.
+   * Returns summary of all trails in tenant (aggregate counts per trail).
+   * Allowed for ADMIN_TENANT and LIDER: the "Relatórios → Trilhas" screen is
+   * exposed to leaders in navigation, and the per-trail report/export endpoints
+   * already allow LIDER. Data is tenant-scoped via RLS.
    */
   @Get('trails')
-  @Roles(Role.ADMIN_TENANT)
+  @Roles(Role.ADMIN_TENANT, Role.LIDER)
   @HttpCode(HttpStatus.OK)
   async getTrailsSummary() {
     return this.reportsService.getTrailsSummary();
