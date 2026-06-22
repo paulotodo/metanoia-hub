@@ -6,7 +6,6 @@ import type {
   ParticipantProfile,
   CareActionResponse,
   RadarParticipant,
-  PresenceDot,
   CareActionType,
   SignalType,
   SignalVariant,
@@ -29,6 +28,7 @@ import { RadarStatusRepository } from './radar/radar-status.repository';
 import { RadarJobService } from './radar/radar-job.service';
 import type { ParticipantCalculationResult } from './radar/radar-calculator.service';
 import { AlertsService } from './alerts/alerts.service';
+import { normalizePresenceDots } from './presence-dots.util';
 
 @Injectable()
 export class PastoralService {
@@ -93,7 +93,7 @@ export class PastoralService {
         contextPhrase: alert.contextPhrase,
         groupId: alert.group.id,
         groupName: alert.group.name,
-        presenceDots: alert.presenceDots as PresenceDot[],
+        presenceDots: normalizePresenceDots(alert.presenceDots),
         lastCareRecord: lastAction
           ? {
               date: lastAction.recordedAt.toISOString(),
@@ -147,7 +147,7 @@ export class PastoralService {
       systemLimitation: {
         text: alert.systemLimitation ?? 'O radar vê presença e ausência — não sabe o motivo.',
       },
-      presenceDots: alert.presenceDots as PresenceDot[],
+      presenceDots: normalizePresenceDots(alert.presenceDots),
       lastCareRecord: lastAction
         ? {
             date: lastAction.recordedAt.toISOString(),
@@ -174,7 +174,7 @@ export class PastoralService {
       name: alert.participant.name,
       signalType: alert.signalType as SignalType,
       groupName: alert.group.name,
-      presenceDots: alert.presenceDots as PresenceDot[],
+      presenceDots: normalizePresenceDots(alert.presenceDots),
       memory: {
         lastConversation: lastConversation
           ? {
@@ -291,7 +291,9 @@ export class PastoralService {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     for (const c of candidates) {
-      const consecutiveAbsences = this.countConsecutiveAbsences(c.presenceDots);
+      const consecutiveAbsences = this.countConsecutiveAbsences(
+        normalizePresenceDots(c.presenceDots),
+      );
 
       let suggestion: NudgeSuggestion | null = null;
       let reason = '';
