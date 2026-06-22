@@ -35,6 +35,11 @@ async function request<T>(
   const token = getAccessToken();
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
+    // 'no-store' impede a revalidação condicional (If-None-Match) que faz a API
+    // responder 304 sem corpo. Um 304 cairia no `if (!response.ok)` abaixo
+    // (response.ok é false para 304) e seria lançado como ApiError, quebrando a
+    // query e disparando re-render em loop. O cache de dados é do React Query.
+    cache: 'no-store',
     ...options,
     headers: {
       'Content-Type': 'application/json',
