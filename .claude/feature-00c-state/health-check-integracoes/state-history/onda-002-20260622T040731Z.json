@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "checklist",
-  "next_instruction": "Iniciar etapa checklist — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
   "waves": [
     {
       "id": "onda-001",
@@ -57,28 +57,6 @@
         {
           "skill": "clarify",
           "timestamp": "2026-06-22T04:01:31Z",
-          "decision_id": null
-        }
-      ]
-    },
-    {
-      "id": "onda-003",
-      "started_at": "2026-06-22T04:07:48Z",
-      "finished_at": "2026-06-22T04:13:53Z",
-      "executed_stages": [],
-      "tool_calls": 0,
-      "wallclock_seconds": 365,
-      "termination_reason": "etapa_concluida_avancando",
-      "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-22T04:12:38Z",
-          "decision_id": "dec-009"
-        },
-        {
-          "skill": "plan",
-          "timestamp": "2026-06-22T04:13:53Z",
           "decision_id": null
         }
       ]
@@ -218,43 +196,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-008",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-22T04:07:57Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=health-check-integracoes)",
-      "options_considered": [
-        "injetar-achados",
-        "no-op"
-      ],
-      "choice": "injetar-achados",
-      "rationale": "termos: health check integracoes dashboard super admin nfr | achados-chave de metricas-plataforma: createPrivilegedClient confirmado, BullMqService SEM FlowProducer, Role.SUPER_ADMIN, owasp single-barrier super_admin authz (guard unico) vira AC",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
-    },
-    {
-      "id": "dec-009",
-      "wave_id": "onda-003",
-      "timestamp": "2026-06-22T04:12:38Z",
-      "stage": "plan",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "plan: gerado plano tecnico completo (plan/research/data-model/2 contracts/quickstart) para health-check-integracoes",
-      "options_considered": [
-        "gerar-plano-completo",
-        "plano-raso",
-        "abortar"
-      ],
-      "choice": "gerar-plano-completo",
-      "rationale": "5 artefatos; constitution PASS com 1 excecao MUST (Principio I tabela platform-level) documentada via precedente evasion_job_log ratificado; 7 decisoes research; convencoes de borda + roundtrip E2E anti-drift snake/camel; carry OWASP single-barrier authz convertido em AC",
-      "justification_score": 3,
-      "evidence": "grep createPrivilegedClient detect-evasion-risk.processor.ts=3 ocorrencias (precedente confirmado); plan.md=199 linhas; EMAIL_HEALTH_PORT provider em notifications.module.ts L49-50 verificado; KeycloakAdminService getAdminToken+baseUrl L22-26 verificado",
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -269,15 +210,15 @@
     "wallclock_threshold_seconds": 5400,
     "state_size_threshold_bytes": 1048576,
     "tool_calls_current_wave": 0,
-    "current_wave_start": "2026-06-22T04:07:48Z"
+    "current_wave_start": "2026-06-22T03:58:46Z"
   },
   "accumulated_metrics": {
-    "waves_total": 3,
+    "waves_total": 2,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 786,
+    "wallclock_total_seconds": 421,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 9,
+    "decisions_total": 7,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
@@ -303,11 +244,6 @@
       "event_type": "schedule_wait",
       "timestamp": "2026-06-22T03:51:18Z",
       "description": "onda-001 specify concluido; proxima onda: clarify"
-    },
-    {
-      "event_type": "recall_consulted",
-      "timestamp": "2026-06-22T04:07:31Z",
-      "description": "etapa=plan hits=4"
     }
   ]
 }
