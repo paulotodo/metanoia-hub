@@ -266,6 +266,11 @@ services:
       # Observabilidade (opcional)
       SENTRY_DSN: ${SENTRY_DSN:-}
       SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.2}
+      # Email (Story 14-3): RESEND_API_KEY é obrigatória no boot da API
+      # (env.validation, sem default). As demais EMAIL_*/SSE_*/NOTIFICATION_*
+      # têm default no schema, por isso não precisam ser declaradas aqui.
+      RESEND_API_KEY: ${RESEND_API_KEY:?set RESEND_API_KEY in .env.production}
+      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM:-Metanoia <notifications@metanoia.app>}
     depends_on:
       postgres:
         condition: service_healthy
