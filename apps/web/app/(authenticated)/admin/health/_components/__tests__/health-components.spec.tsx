@@ -30,7 +30,7 @@ vi.mock('next-intl', () => ({
 // Mock dos hooks
 // ---------------------------------------------------------------------------
 
-vi.mock('../_hooks/use-integration-health', () => ({
+vi.mock('../../_hooks/use-integration-health', () => ({
   useIntegrationHealth: vi.fn().mockReturnValue({
     data: null,
     isLoading: true,
@@ -135,7 +135,7 @@ describe('HealthDashboard', () => {
   });
 
   it('(d) mostra skeleton durante loading', async () => {
-    const { useIntegrationHealth } = await import('../_hooks/use-integration-health');
+    const { useIntegrationHealth } = await import('../../_hooks/use-integration-health');
     (useIntegrationHealth as ReturnType<typeof vi.fn>).mockReturnValue({
       data: null, isLoading: true, isError: false, dataUpdatedAt: 0, refetch: vi.fn(),
     });
@@ -148,7 +148,7 @@ describe('HealthDashboard', () => {
   });
 
   it('(d2) mostra stale banner quando dados > 2min', async () => {
-    const { useIntegrationHealth } = await import('../_hooks/use-integration-health');
+    const { useIntegrationHealth } = await import('../../_hooks/use-integration-health');
     (useIntegrationHealth as ReturnType<typeof vi.fn>).mockReturnValue({
       data: { data: { integrations: [mockItem], summary: { total: 1, healthy: 1, degraded: 0, unhealthy: 0 } } },
       isLoading: false,
@@ -159,11 +159,11 @@ describe('HealthDashboard', () => {
 
     const { HealthDashboard } = await import('../health-dashboard');
     render(<HealthDashboard />);
-    expect(screen.getByText('Dados podem estar desatualizados')).toBeDefined();
+    expect(screen.getByText(/Dados podem estar desatualizados/)).toBeDefined();
   });
 
   it('(e) mostra alerta crítico quando todas unhealthy', async () => {
-    const { useIntegrationHealth } = await import('../_hooks/use-integration-health');
+    const { useIntegrationHealth } = await import('../../_hooks/use-integration-health');
     const unhealthyItems = ['Resend', 'Keycloak', 'MinIO', 'Redis', 'PostgreSQL'].map((name) => ({
       name, status: 'unhealthy' as const, latencyMs: null, lastChecked: new Date().toISOString(),
     }));
@@ -183,6 +183,6 @@ describe('HealthDashboard', () => {
 
     const { HealthDashboard } = await import('../health-dashboard');
     render(<HealthDashboard />);
-    expect(screen.getByText('Todas as integrações estão indisponíveis')).toBeDefined();
+    expect(screen.getByText(/todas as integrações estão indisponíveis/i)).toBeDefined();
   });
 });
