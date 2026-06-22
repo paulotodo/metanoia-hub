@@ -2,7 +2,7 @@
 
 **Feature:** Story 14-4 — Health Check de Integrações & Dashboard Super Admin (NFR-I5)
 **Versão:** 1.0.0
-**Status:** draft
+**Status:** clarified
 **Autor:** agente-00c-feature-orchestrator (onda-001)
 
 ---
@@ -73,22 +73,24 @@ O sistema consiste em:
 - `ConsentRecord` usa `tenant_id String?` (nullable) com a nota "Tenant-scoped (RLS NULLIF — same pattern as audit_events)".
 - Story 13-3 (`add_evasion_job_log`) criou `evasion_job_log` sem tenant_id, com acesso plataforma-level.
 
-**Decisão:** `integration_health_log` **NÃO terá `tenant_id`**. É uma tabela de plataforma pura. A política RLS será:
+**Decisão:** `integration_health_log` **NÃO terá `tenant_id`**. É uma tabela de plataforma pura. A política RLS segue o padrão canônico `evasion_job_log` (Story 13-3) — **cliente privilegiado** para escrita, política USING para leitura:
+
 ```sql
--- Leitura: qualquer usuário autenticado (RLS não filtra por tenant)
--- Escrita: somente via worker privilegiado (app.current_role = 'service')
-CREATE POLICY "platform_read" ON "integration_health_log"
+-- RLS canônico do projeto (padrão privileged client): tabela de plataforma sem tenant_id.
+-- Leitura: visibilidade global (sem filtragem por tenant — tabela de plataforma).
+ALTER TABLE integration_health_log ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY platform_read ON integration_health_log
   FOR SELECT USING (true);
-CREATE POLICY "service_write" ON "integration_health_log"
-  FOR INSERT WITH CHECK (
-    current_setting('app.current_role', true) = 'service'
-  );
+-- Escrita: somente via cliente privilegiado (DATABASE_URL — metanoia_admin BYPASSRLS).
+-- NÃO usar SET LOCAL app.current_role = 'service' — GUC inexistente no projeto.
 ```
-O endpoint `GET /api/v1/admin/health/integrations` será protegido por guard `@Roles('super_admin')` na camada de aplicação — a RLS de banco é a segunda linha de defesa. O worker usa conexão privilegiada (mesmo padrão do `AuditExportProcessor`).
 
-**Score:** 3 — precedente claro com `evasion_job_log` + `super-audit.controller` que acessa `audit_events` cross-tenant via bypassRLS.
+O worker escreve via `createPrivilegedClient()` (padrão idêntico ao `detect-evasion-risk.processor.ts` L97–101 + `insertJobLog` L269–282): instancia `new PrismaClient` com `DATABASE_URL` (não `DATABASE_APP_URL`) e usa `$executeRawUnsafe` diretamente. O cliente `metanoia_admin` tem BYPASSRLS implícito — nenhum `WITH CHECK` necessário para o INSERT.
 
-**NEEDS_CLARIFICATION:** Confirmar no clarify se o operador prefere que o worker escreva com `current_role = 'service'` explícito ou simplesmente sem RLS na tabela (disable RLS). Impacto: política de auditoria de acesso à tabela.
+O endpoint `GET /api/v1/admin/health/integrations` será protegido por guard `@Roles('super_admin')` na camada de aplicação — a RLS de banco (`platform_read USING (true)`) garante leitura a qualquer usuário autenticado que passe pelo guard.
+
+**Score:** 3 — precedente direto: `evasion_job_log` migration `20260626000004_13-3` + `detect-evasion-risk.processor.ts` `createPrivilegedClient()` + `super-audit.controller` BYPASSRLS via `prisma.client`. Evidência: `createPrivilegedClient()` cria `new PrismaClient({ adapter: new PrismaPg({ connectionString: DATABASE_URL }) })` — sem SET LOCAL; `insertJobLog` usa `$executeRawUnsafe` via cliente privilegiado.
 
 ### D-002: `ResendHealthPort` usa `GET /domains` com timeout 5s e AbortSignal
 
@@ -289,9 +291,9 @@ Ao acionar a notificação (FR-006):
 ```
 
 **Notificação para Super Admins:**
-- Buscar todos os usuários com role `super_admin` via `KeycloakAdminService` ou query Prisma.
-- Para cada super admin: `NotificationsService.dispatch({ userId, type: 'system', channels: ['in_app'], title: '⚠️ {integrationName} está {status}', body: 'Latência: {latencyMs}ms | Verificado: {lastChecked}', metadata: { correlationId } })`.
-- NOTA: `NotificationsService.dispatch()` requer `RequestContext` (AsyncLocalStorage) — o worker precisa inicializar o contexto manualmente com `tenantId = null` (plataforma) e `correlationId` gerado.
+- Buscar todos os usuários com role `super_admin` via **Keycloak Admin API** (`KeycloakAdminService`): `GET /admin/realms/{realm}/roles/super_admin/users`. `super_admin` é `realm_role` do Keycloak — não está em `user_tenants.role` (que só tem `participante/lider/admin_tenant`). Adicionar método `getUsersByRealmRole(roleName: string)` ao `KeycloakAdminService`. Com os `keycloakId` retornados, buscar `userId` locais via `prisma.client.user.findMany({ where: { id: { in: keycloakIds } } })` (non-RLS, padrão `super-admin-tenants.repository.ts`).
+- Para cada super admin: chamar `NotificationsService.dispatch({ userId, type: 'system', channels: ['in_app'], title: '⚠️ {integrationName} está {status}', body: 'Latência: {latencyMs}ms | Verificado: {lastChecked}', metadata: { correlationId } })` dentro de `requestContext.run()` com o `tenantId` do destinatário.
+- **`RequestContext` no worker**: inicializar `requestContext.run({ tenantId, userId: 'system', requestId: generateId(), correlationId }, async () => { ... })` — padrão idêntico ao `NotificationsWorker` (`notifications.worker.ts` L112–139) e `DetectEvasionRiskProcessor` (L135–146). Para operações de plataforma sem tenant (ex: INSERT no `integration_health_log`), usar `createPrivilegedClient()` diretamente (sem `requestContext`). Para o `dispatch()` de cada Super Admin, rodar dentro de `requestContext.run({ tenantId: superAdminTenantId, ... })`.
 
 **Audit log:**
 ```typescript
@@ -526,16 +528,11 @@ apps/web/e2e/
 
 ## Clarifications
 
-*(Seção preenchida pela fase clarify)*
+### Session 2026-06-22
 
----
+- Q: RLS write policy do worker — `SET LOCAL app.current_role = 'service'` ou cliente privilegiado (BYPASSRLS)? → A: Usar **cliente privilegiado** (`createPrivilegedClient()` com `DATABASE_URL`), idêntico ao `evasion_job_log` + `detect-evasion-risk.processor.ts`. O GUC `app.current_role` não existe no projeto. Política RLS da tabela: `USING (true)` para leitura; sem `WITH CHECK` — escrita protegida pelo cliente privilegiado que tem BYPASSRLS implícito.
 
-## NEEDS_CLARIFICATION
+- Q: Resolução de Super Admins para `dispatch()` — query Prisma em `user_tenants` ou Keycloak Admin API? → A: **Keycloak Admin API** via `KeycloakAdminService.getUsersByRealmRole('super_admin')`. `super_admin` é `realm_role` do Keycloak; não existe em `user_tenants.role`. `KeycloakAdminService` já fornece `getAdminToken()` + `baseUrl`. Adicionar método `getUsersByRealmRole`. Mapear `keycloakId → userId` local via `prisma.client.user.findMany`.
 
-As seguintes questões ficam para resolução na fase clarify (prioridade de resposta autônoma com score ≥ 2 via answerer, bloqueio humano apenas se score < 2):
+- Q: Como inicializar `RequestContext` (AsyncLocalStorage) no BullMQ worker sem request HTTP? → A: Usar `requestContext.run({ tenantId, userId: 'system', requestId: generateId(), correlationId }, callback)`, padrão direto de `NotificationsWorker` (L112) e `DetectEvasionRiskProcessor` (L135). Para INSERT em `integration_health_log` (plataforma-level), usar `createPrivilegedClient()` sem `requestContext`. Para `dispatch()` a Super Admins, rodar dentro de `requestContext.run` com o `tenantId` do destinatário.
 
-1. **RLS write policy do worker** (D-001): O worker deve usar `SET LOCAL app.current_role = 'service'` na conexão Prisma para o INSERT em `integration_health_log`, ou a tabela deve simplesmente ter RLS desabilitado para INSERT (BYPASSRLS)? Impacto: padrão de segurança da escrita da tabela plataforma-level.
-
-2. **Resolução de Super Admins para notificação** (FR-007): Como buscar os `userId` de todos os Super Admins para `dispatch()`? Via query Prisma em `users` filtrando por role Keycloak (sincronizado no `user_tenants`), ou via chamada ao Keycloak Admin API? O `AuditService` + `SuperAdminTenantsService` existem — verificar se há precedente.
-
-3. **`RequestContext` no BullMQ worker** (FR-007): `NotificationsService.dispatch()` usa `getRequestContext()` (AsyncLocalStorage). O worker BullMQ não tem contexto HTTP. Verificar se o padrão já estabelecido em `NotificationsWorker` / `AuditExportProcessor` inicializa o contexto manualmente via `requestContext.run({...}, () => ...)`.

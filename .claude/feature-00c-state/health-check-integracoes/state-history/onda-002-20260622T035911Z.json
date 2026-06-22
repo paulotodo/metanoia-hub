@@ -22,8 +22,8 @@
       "version": "1.0.0"
     }
   },
-  "current_stage": "plan",
-  "next_instruction": "Iniciar etapa plan — retomada pela rede de seguranca do command pai (onda anterior fechada sem Schedule intent).",
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — invocar feature-00c-clarify-asker com spec.md gerada. NEEDS_CLARIFICATION: (1) RLS write policy worker integration_health_log; (2) resolucao userId Super Admins para dispatch(); (3) RequestContext AsyncLocalStorage no BullMQ worker.",
   "waves": [
     {
       "id": "onda-001",
@@ -47,19 +47,13 @@
     {
       "id": "onda-002",
       "started_at": "2026-06-22T03:58:46Z",
-      "finished_at": "2026-06-22T04:01:32Z",
+      "finished_at": null,
       "executed_stages": [],
       "tool_calls": 0,
-      "wallclock_seconds": 166,
-      "termination_reason": "etapa_concluida_avancando",
+      "wallclock_seconds": 0,
+      "termination_reason": null,
       "next_wave_scheduled_for": null,
-      "skills_invoked": [
-        {
-          "skill": "clarify",
-          "timestamp": "2026-06-22T04:01:31Z",
-          "decision_id": null
-        }
-      ]
+      "skills_invoked": []
     }
   ],
   "decisions": [
@@ -157,25 +151,6 @@
       "evidence": null,
       "references": [],
       "originating_artifact": null
-    },
-    {
-      "id": "dec-006",
-      "wave_id": "onda-002",
-      "timestamp": "2026-06-22T03:59:11Z",
-      "stage": "clarify",
-      "agent": "agente-00c-feature-orchestrator",
-      "context": "inicio-de-onda clarify: 3 NEEDS_CLARIFICATION a resolver via precedentes do codigo",
-      "options_considered": [
-        "resolver-autonomamente",
-        "escalar-humano",
-        "abortar"
-      ],
-      "choice": "resolver-autonomamente",
-      "rationale": "todos os 3 NEEDS_CLARIFICATION tem precedente direto no codigo: evasion_job_log (RLS), keycloak-admin.service.ts (API admin), notifications.worker.ts (requestContext.run)",
-      "justification_score": 2,
-      "evidence": null,
-      "references": [],
-      "originating_artifact": null
     }
   ],
   "human_blocks": [],
@@ -193,12 +168,12 @@
     "current_wave_start": "2026-06-22T03:58:46Z"
   },
   "accumulated_metrics": {
-    "waves_total": 2,
+    "waves_total": 1,
     "tool_calls_total": 0,
-    "wallclock_total_seconds": 421,
+    "wallclock_total_seconds": 255,
     "max_depth_reached": 1,
     "subagents_spawned": 0,
-    "decisions_total": 6,
+    "decisions_total": 5,
     "human_blocks_total": 0,
     "global_skill_suggestions_total": 0,
     "toolkit_issues_opened": 0
