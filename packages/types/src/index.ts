@@ -1035,3 +1035,19 @@ export {
   NotificationsListSchema,
   type NotificationsList,
 } from './notification';
+export {
+  IntegrationHealthStatusSchema,
+  type IntegrationHealthStatus,
+  IntegrationHealthItemSchema,
+  type IntegrationHealthItem,
+  IntegrationHealthSummarySchema,
+  type IntegrationHealthSummary,
+  IntegrationHealthResponseSchema,
+  type IntegrationHealthResponse,
+  IntegrationHealthHistoryPointSchema,
+  type IntegrationHealthHistoryPoint,
+  IntegrationHealthHistoryResponseSchema,
+  type IntegrationHealthHistoryResponse,
+  IntegrationHealthHistoryQuerySchema,
+  type IntegrationHealthHistoryQuery,
+} from './integration-health';

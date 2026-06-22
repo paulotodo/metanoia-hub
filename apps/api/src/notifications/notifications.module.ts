@@ -11,7 +11,8 @@ import { EmailChannel } from './channels/email.channel';
 import { EmailService } from './channels/email.service';
 import { EmailRateLimiterService } from './email-rate-limiter.service';
 import { EmailCircuitBreakerService } from './email-circuit-breaker.service';
-import { EMAIL_HEALTH_PORT, StubEmailHealthPort } from './ports/email-health.port';
+import { EMAIL_HEALTH_PORT } from './ports/email-health.port';
+import { ResendHealthPort } from '../admin/health/resend-health.port';
 import { DigestService } from './digest.service';
 import { TenantsModule } from '../tenants/tenants.module';
 
@@ -44,10 +45,12 @@ import { TenantsModule } from '../tenants/tenants.module';
     // Email infrastructure
     EmailRateLimiterService,     // Story 14-3: Lua atomic rate limiter
     EmailCircuitBreakerService,  // Story 14-3: Redis-backed circuit breaker
-    // Ports (INTEGRATION POINT: Story 14-4 replaces StubEmailHealthPort)
+    // Ports (Story 14-4: ResendHealthPort substitui StubEmailHealthPort)
+    // SC-07: callers dependem da interface EmailHealthPort, não da classe concreta.
+    // Swapping aqui fecha o circuit breaker do EmailCircuitBreakerService (14-3).
     {
       provide: EMAIL_HEALTH_PORT,
-      useClass: StubEmailHealthPort,
+      useClass: ResendHealthPort,
     },
     // SSE
     SseConnectionManager,

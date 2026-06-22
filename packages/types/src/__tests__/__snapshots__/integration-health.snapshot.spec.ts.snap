@@ -1,0 +1,58 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`IntegrationHealthHistoryPointSchema > snapshot 1`] = `
+{
+  "checkedAt": "2026-06-22T03:00:00Z",
+  "latencyMs": 120,
+  "status": "healthy",
+}
+`;
+
+exports[`IntegrationHealthItemSchema > snapshot da estrutura do schema 1`] = `
+{
+  "lastChecked": "2026-06-22T04:00:00Z",
+  "latencyMs": 120,
+  "message": null,
+  "name": "Resend",
+  "status": "healthy",
+}
+`;
+
+exports[`IntegrationHealthResponseSchema > snapshot do envelope completo 1`] = `
+{
+  "data": {
+    "integrations": [
+      {
+        "lastChecked": "2026-06-22T04:00:00Z",
+        "latencyMs": 2,
+        "message": null,
+        "name": "Redis",
+        "status": "healthy",
+      },
+    ],
+    "summary": {
+      "degraded": 0,
+      "healthy": 1,
+      "total": 1,
+      "unhealthy": 0,
+    },
+  },
+}
+`;
+
+exports[`IntegrationHealthStatusSchema > options snapshot — não mudar silenciosamente 1`] = `
+[
+  "healthy",
+  "degraded",
+  "unhealthy",
+]
+`;
+
+exports[`IntegrationHealthSummarySchema > snapshot — não alterar campos 1`] = `
+{
+  "degraded": 0,
+  "healthy": 5,
+  "total": 5,
+  "unhealthy": 0,
+}
+`;

@@ -25,20 +25,20 @@ dashboard Next.js com sparkline e auto-refresh, e substituição de
 
 Ref: spec §FR-009, plan §Project Structure, contracts/admin-health-api.md
 
-- [ ] 1.1.1 Criar `packages/types/src/integration-health.ts` com `IntegrationHealthStatusSchema` (`z.enum(['healthy','degraded','unhealthy'])`), `IntegrationHealthItemSchema`, `IntegrationHealthSummarySchema`, `IntegrationHealthResponseSchema`, `IntegrationHealthHistoryPointSchema` — exatamente conforme spec §FR-009
-- [ ] 1.1.2 Exportar todos os schemas e tipos inferidos (`IntegrationHealthStatus`, `IntegrationHealthItem`, `IntegrationHealthResponse`, `IntegrationHealthHistoryPoint`) no `packages/types/src/index.ts`
-- [ ] 1.1.3 Escrever snapshot test em `packages/types/src/__tests__/integration-health.spec.ts` verificando que cada `z.enum().options` não muda silenciosamente (gate contra breaking changes)
-- [ ] 1.1.4 Verificar paridade exata com contratos REST em `contracts/admin-health-api.md` — rodar `tsc --noEmit` sobre o pacote de tipos para garantir `strict: true`
+- [x] 1.1.1 Criar `packages/types/src/integration-health.ts` com `IntegrationHealthStatusSchema` (`z.enum(['healthy','degraded','unhealthy'])`), `IntegrationHealthItemSchema`, `IntegrationHealthSummarySchema`, `IntegrationHealthResponseSchema`, `IntegrationHealthHistoryPointSchema` — exatamente conforme spec §FR-009
+- [x] 1.1.2 Exportar todos os schemas e tipos inferidos (`IntegrationHealthStatus`, `IntegrationHealthItem`, `IntegrationHealthResponse`, `IntegrationHealthHistoryPoint`) no `packages/types/src/index.ts`
+- [x] 1.1.3 Escrever snapshot test em `packages/types/src/__tests__/integration-health.spec.ts` verificando que cada `z.enum().options` não muda silenciosamente (gate contra breaking changes)
+- [x] 1.1.4 Verificar paridade exata com contratos REST em `contracts/admin-health-api.md` — rodar `tsc --noEmit` sobre o pacote de tipos para garantir `strict: true`
 
 ### 1.2 Migração Prisma `integration_health_log` `[A]`
 
 Ref: spec §FR-001, §D-001, data-model.md
 
-- [ ] 1.2.1 Criar migration `apps/api/prisma/migrations/YYYYMMDD_14-4-integration-health-log/migration.sql` com: CREATE TYPE `integration_health_status` AS ENUM('healthy','degraded','unhealthy'); CREATE TABLE `integration_health_log` (id UUID PK, integration_name VARCHAR(64), status integration_health_status, latency_ms INT, message TEXT nullable, checked_at TIMESTAMPTZ DEFAULT NOW()); CREATE INDEX `integration_health_log_name_checked_idx` ON `integration_health_log`(integration_name, checked_at DESC)
-- [ ] 1.2.2 Adicionar modelo Prisma `IntegrationHealthLog` e enum `IntegrationHealthStatus` ao `apps/api/prisma/schema.prisma` com `@map`/`@@map` corretos (snake_case no banco ↔ camelCase no client)
-- [ ] 1.2.3 Adicionar RLS à migration: `ALTER TABLE integration_health_log ENABLE ROW LEVEL SECURITY; CREATE POLICY platform_read ON integration_health_log FOR SELECT USING (true);` — sem WITH CHECK (escrita via cliente privilegiado BYPASSRLS conforme §D-001)
-- [ ] 1.2.4 Rodar `prisma migrate dev` em ambiente local e confirmar que `prisma generate` reconhece o novo modelo sem erros TypeScript
-- [ ] 1.2.5 Escrever RLS isolation spec em `apps/api/prisma/rls/integration-health-log.rls-spec.ts`: (a) worker escreve via `createPrivilegedClient()` → registro criado; (b) leitura via cliente normal com `platform_read USING(true)` retorna dados; (c) cliente de tenant normal não obtém dados inesperadamente (tabela sem RLS por tenant — validar que SELECT retorna todos os registros conforme política)
+- [x] 1.2.1 Criar migration `apps/api/prisma/migrations/YYYYMMDD_14-4-integration-health-log/migration.sql` com: CREATE TYPE `integration_health_status` AS ENUM('healthy','degraded','unhealthy'); CREATE TABLE `integration_health_log` (id UUID PK, integration_name VARCHAR(64), status integration_health_status, latency_ms INT, message TEXT nullable, checked_at TIMESTAMPTZ DEFAULT NOW()); CREATE INDEX `integration_health_log_name_checked_idx` ON `integration_health_log`(integration_name, checked_at DESC)
+- [x] 1.2.2 Adicionar modelo Prisma `IntegrationHealthLog` e enum `IntegrationHealthStatus` ao `apps/api/prisma/schema.prisma` com `@map`/`@@map` corretos (snake_case no banco ↔ camelCase no client)
+- [x] 1.2.3 Adicionar RLS à migration: `ALTER TABLE integration_health_log ENABLE ROW LEVEL SECURITY; CREATE POLICY platform_read ON integration_health_log FOR SELECT USING (true);` — sem WITH CHECK (escrita via cliente privilegiado BYPASSRLS conforme §D-001)
+- [x] 1.2.4 Rodar `prisma migrate dev` em ambiente local e confirmar que `prisma generate` reconhece o novo modelo sem erros TypeScript
+- [x] 1.2.5 Escrever RLS isolation spec em `apps/api/prisma/rls/integration-health-log.rls-spec.ts`: (a) worker escreve via `createPrivilegedClient()` → registro criado; (b) leitura via cliente normal com `platform_read USING(true)` retorna dados; (c) cliente de tenant normal não obtém dados inesperadamente (tabela sem RLS por tenant — validar que SELECT retorna todos os registros conforme política)
 
 ---
 
@@ -48,72 +48,72 @@ Ref: spec §FR-001, §D-001, data-model.md
 
 Ref: spec §FR-008, §D-002, notifications/ports/email-health.port.ts (interface existente)
 
-- [ ] 2.1.1 Criar `apps/api/src/admin/health/resend-health.port.ts` implementando `EmailHealthPort.isHealthy()`: `GET https://api.resend.com/domains` com `Authorization: Bearer {RESEND_API_KEY}` e `AbortSignal.timeout(5000)`; retorna `true` para 2xx ou 4xx (conectividade OK, auth issue); `false` para 5xx ou timeout (conforme §D-002)
-- [ ] 2.1.2 Consumir `RESEND_API_KEY` via `this.configService.get('RESEND_API_KEY')` — NUNCA hardcodar; NUNCA logar o valor da chave em nenhum nível
-- [ ] 2.1.3 Escrever testes unitários em `apps/api/src/admin/health/__tests__/resend-health.port.spec.ts`: (a) resposta 200 → `true`; (b) resposta 401 → `true` (conectividade confirmada); (c) resposta 500 → `false`; (d) timeout (AbortError) → `false`; (e) assertiva de que `RESEND_API_KEY` não aparece em nenhuma string de log ou resposta (NFR-TEST-001: mock o `fetch` com `vi.mock`)
+- [x] 2.1.1 Criar `apps/api/src/admin/health/resend-health.port.ts` implementando `EmailHealthPort.isHealthy()`: `GET https://api.resend.com/domains` com `Authorization: Bearer {RESEND_API_KEY}` e `AbortSignal.timeout(5000)`; retorna `true` para 2xx ou 4xx (conectividade OK, auth issue); `false` para 5xx ou timeout (conforme §D-002)
+- [x] 2.1.2 Consumir `RESEND_API_KEY` via `this.configService.get('RESEND_API_KEY')` — NUNCA hardcodar; NUNCA logar o valor da chave em nenhum nível
+- [x] 2.1.3 Escrever testes unitários em `apps/api/src/admin/health/__tests__/resend-health.port.spec.ts`: (a) resposta 200 → `true`; (b) resposta 401 → `true` (conectividade confirmada); (c) resposta 500 → `false`; (d) timeout (AbortError) → `false`; (e) assertiva de que `RESEND_API_KEY` não aparece em nenhuma string de log ou resposta (NFR-TEST-001: mock o `fetch` com `vi.mock`)
 
 ### 2.2 Substituição de `StubEmailHealthPort` por `ResendHealthPort` no `NotificationsModule` `[A]`
 
 Ref: spec §FR-008, notifications.module.ts L47-50 (ponto de integração documentado em código)
 
-- [ ] 2.2.1 Em `apps/api/src/notifications/notifications.module.ts` L49-50: substituir `useClass: StubEmailHealthPort` por `useClass: ResendHealthPort`; atualizar imports (remover `StubEmailHealthPort`; importar `ResendHealthPort` de `../admin/health/resend-health.port`)
-- [ ] 2.2.2 Importar `AdminHealthModule` em `NotificationsModule` (ou fornecer `ResendHealthPort` diretamente como provider exportado) para resolver a dependência de injeção circular
-- [ ] 2.2.3 Verificar que `EmailCircuitBreakerService` (Story 14-3) agora recebe a implementação real — rodar testes do `EmailCircuitBreakerService` para confirmar integração sem regressão
+- [x] 2.2.1 Em `apps/api/src/notifications/notifications.module.ts` L49-50: substituir `useClass: StubEmailHealthPort` por `useClass: ResendHealthPort`; atualizar imports (remover `StubEmailHealthPort`; importar `ResendHealthPort` de `../admin/health/resend-health.port`)
+- [x] 2.2.2 Importar `AdminHealthModule` em `NotificationsModule` (ou fornecer `ResendHealthPort` diretamente como provider exportado) para resolver a dependência de injeção circular
+- [x] 2.2.3 Verificar que `EmailCircuitBreakerService` (Story 14-3) agora recebe a implementação real — rodar testes do `EmailCircuitBreakerService` para confirmar integração sem regressão
 
 ### 2.3 `KeycloakAdminService` — adicionar `getUsersByRealmRole` `[A]`
 
 Ref: spec §FR-007 (§Clarifications Q2), keycloak-admin.service.ts (métodos existentes: getAdminToken, getUsers, createUser, etc.)
 
-- [ ] 2.3.1 Adicionar método `getUsersByRealmRole(roleName: string): Promise<KeycloakUser[]>` ao `apps/api/src/auth/keycloak-admin.service.ts`: chamar `GET ${this.baseUrl}/roles/{roleName}/users` com token de `getAdminToken()`; retornar array de `KeycloakUser` (usar tipo já existente no serviço)
-- [ ] 2.3.2 Garantir que o `roleName` passado seja o valor literal do enum (ex: `Role.SUPER_ADMIN` = `'super_admin'`) — documentar no JSDoc que o parâmetro espera o valor do enum, não o nome
-- [ ] 2.3.3 Escrever testes unitários em `apps/api/src/auth/keycloak-admin.service.spec.ts` (arquivo existente — adicionar caso): mock do `fetch` para `GET /roles/super_admin/users` retornando array de keycloakUsers; testar resposta 200 com 2 users; testar resposta 404 (role inexistente) → array vazio ou erro tratado
+- [x] 2.3.1 Adicionar método `getUsersByRealmRole(roleName: string): Promise<KeycloakUser[]>` ao `apps/api/src/auth/keycloak-admin.service.ts`: chamar `GET ${this.baseUrl}/roles/{roleName}/users` com token de `getAdminToken()`; retornar array de `KeycloakUser` (usar tipo já existente no serviço)
+- [x] 2.3.2 Garantir que o `roleName` passado seja o valor literal do enum (ex: `Role.SUPER_ADMIN` = `'super_admin'`) — documentar no JSDoc que o parâmetro espera o valor do enum, não o nome
+- [x] 2.3.3 Escrever testes unitários em `apps/api/src/auth/keycloak-admin.service.spec.ts` (arquivo existente — adicionar caso): mock do `fetch` para `GET /roles/super_admin/users` retornando array de keycloakUsers; testar resposta 200 com 2 users; testar resposta 404 (role inexistente) → array vazio ou erro tratado
 
 ### 2.4 `HealthCheckService` — cinco probes com classificação `[A]`
 
 Ref: spec §FR-002, §NFR-I5, §D-002 (ResendHealthPort), contracts/admin-health-api.md
 
-- [ ] 2.4.1 Criar `apps/api/src/admin/health/health-check.service.ts` com método `runAllProbes(): Promise<IntegrationHealthItem[]>` executando as 5 probes via `Promise.allSettled()` (não `Promise.all` — garante que falha de uma não cancela as demais)
-- [ ] 2.4.2 Implementar probe Resend: `GET https://api.resend.com/domains` com `AbortSignal.timeout(5000)`; allowlist canônica de `message`: `'timeout'`, `'connection refused'`, `'api key invalid — connectivity confirmed'` — NUNCA incluir o valor da `RESEND_API_KEY` nem hosts internos (CHK028/CHK030)
-- [ ] 2.4.3 Implementar probe Keycloak: `GET ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration` com `AbortSignal.timeout(5000)`; mensagem de erro usa apenas `'timeout'` ou `'connection refused'` — NUNCA expor o valor de `KEYCLOAK_URL` ou hostname no campo `message` (CHK030)
-- [ ] 2.4.4 Implementar probe MinIO: `HEAD ${MINIO_ENDPOINT}/minio/health/live` com `AbortSignal.timeout(5000)`; allowlist de `message`: `'timeout'`, `'connection refused'` — NUNCA expor `MINIO_ENDPOINT` no campo `message` (CHK030)
-- [ ] 2.4.5 Implementar probe Redis: `this.redisService.ping()` com timeout 3s; mensagem: `'timeout'` ou `'connection refused'`
-- [ ] 2.4.6 Implementar probe PostgreSQL: `this.prisma.$queryRaw\`SELECT 1\`` com timeout 3s; mensagem: `'timeout'` ou `'connection refused'`
-- [ ] 2.4.7 Implementar classificação de latência: `healthy` (<1000ms), `degraded` (1000-5000ms), `unhealthy` (>5000ms ou qualquer erro/timeout); medir com `performance.now()` (início → fim de cada probe individual)
-- [ ] 2.4.8 Escrever testes unitários em `apps/api/src/admin/health/__tests__/health-check.service.spec.ts`: (a) todas probes healthy → summary correto; (b) probe Keycloak degraded (latência 1001ms simulada); (c) probe Resend unhealthy (timeout simulado); (d) boundary de latência: 999ms → healthy, 1001ms → degraded, 5001ms → unhealthy; (e) erro de rede em qualquer probe → status unhealthy, `message` da allowlist, sem stack trace; (f) assertiva de que `KEYCLOAK_URL`, `MINIO_ENDPOINT`, `RESEND_API_KEY` não aparecem em nenhum campo `message` da resposta (CHK031)
+- [x] 2.4.1 Criar `apps/api/src/admin/health/health-check.service.ts` com método `runAllProbes(): Promise<IntegrationHealthItem[]>` executando as 5 probes via `Promise.allSettled()` (não `Promise.all` — garante que falha de uma não cancela as demais)
+- [x] 2.4.2 Implementar probe Resend: `GET https://api.resend.com/domains` com `AbortSignal.timeout(5000)`; allowlist canônica de `message`: `'timeout'`, `'connection refused'`, `'api key invalid — connectivity confirmed'` — NUNCA incluir o valor da `RESEND_API_KEY` nem hosts internos (CHK028/CHK030)
+- [x] 2.4.3 Implementar probe Keycloak: `GET ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration` com `AbortSignal.timeout(5000)`; mensagem de erro usa apenas `'timeout'` ou `'connection refused'` — NUNCA expor o valor de `KEYCLOAK_URL` ou hostname no campo `message` (CHK030)
+- [x] 2.4.4 Implementar probe MinIO: `HEAD ${MINIO_ENDPOINT}/minio/health/live` com `AbortSignal.timeout(5000)`; allowlist de `message`: `'timeout'`, `'connection refused'` — NUNCA expor `MINIO_ENDPOINT` no campo `message` (CHK030)
+- [x] 2.4.5 Implementar probe Redis: `this.redisService.ping()` com timeout 3s; mensagem: `'timeout'` ou `'connection refused'`
+- [x] 2.4.6 Implementar probe PostgreSQL: `this.prisma.$queryRaw\`SELECT 1\`` com timeout 3s; mensagem: `'timeout'` ou `'connection refused'`
+- [x] 2.4.7 Implementar classificação de latência: `healthy` (<1000ms), `degraded` (1000-5000ms), `unhealthy` (>5000ms ou qualquer erro/timeout); medir com `performance.now()` (início → fim de cada probe individual)
+- [x] 2.4.8 Escrever testes unitários em `apps/api/src/admin/health/__tests__/health-check.service.spec.ts`: (a) todas probes healthy → summary correto; (b) probe Keycloak degraded (latência 1001ms simulada); (c) probe Resend unhealthy (timeout simulado); (d) boundary de latência: 999ms → healthy, 1001ms → degraded, 5001ms → unhealthy; (e) erro de rede em qualquer probe → status unhealthy, `message` da allowlist, sem stack trace; (f) assertiva de que `KEYCLOAK_URL`, `MINIO_ENDPOINT`, `RESEND_API_KEY` não aparecem em nenhum campo `message` da resposta (CHK031)
 
 ### 2.5 `HealthCheckController` — endpoints REST com segurança `[A]`
 
 Ref: spec §FR-003, §FR-004, §NFR-SEC-002, contracts/admin-health-api.md, auth/enums/role.enum.ts
 
-- [ ] 2.5.1 Criar `apps/api/src/admin/health/health-check.controller.ts` com `@Controller('admin/health')` + `@UseGuards(KeycloakAuthGuard, RolesGuard)` aplicado a nível de controller
-- [ ] 2.5.2 Implementar `GET /api/v1/admin/health/integrations` com decorator `@Roles(Role.SUPER_ADMIN)` — usar obrigatoriamente o enum `Role.SUPER_ADMIN` de `apps/api/src/auth/enums/role.enum.ts`, NUNCA a string literal `'super_admin'` (CHK025/CHK013)
-- [ ] 2.5.3 No handler `GET /integrations`: (a) gerar `correlationId = uuidv7()`; (b) executar `healthCheckService.runAllProbes()`; (c) computar summary; (d) chamar `auditService.create({ userId: req.user.sub, action: 'ADMIN_HEALTH_INTEGRATIONS_READ', resource: 'integration_health', resourceId: 'all', correlationId, ipAddress, userAgent, newState: null })` — audit do acesso HTTP (CHK027/CHK015); (e) retornar envelope `{ data: { integrations, summary } }`
-- [ ] 2.5.4 Implementar `GET /api/v1/admin/health/integrations/history` com `@Roles(Role.SUPER_ADMIN)` e DTO validado por `ZodValidationPipe`: query params `integration` (string, obrigatório, enum de 5 valores) e `hours` (integer, opcional, default=24, max=72); retornar 400/422 para params inválidos (CHK009)
-- [ ] 2.5.5 Implementar micro-cache in-memory server-side de 5-10s para o handler `GET /integrations` on-demand: ao receber request, verificar se existe resultado em cache com timestamp < 10s; se sim, retornar cached sem executar probes novamente; se não, executar probes + atualizar cache — coalescer múltiplas chamadas simultâneas (CHK035/CHK049, OWASP F4)
-- [ ] 2.5.6 Criar DTOs: `apps/api/src/admin/health/dto/integration-health-response.dto.ts` e `apps/api/src/admin/health/dto/integration-history-query.dto.ts` (com `ZodValidationPipe`)
-- [ ] 2.5.7 Escrever testes unitários em `apps/api/src/admin/health/__tests__/health-check.controller.spec.ts`: (a) GET /integrations com token super_admin → 200 com summary correto; (b) GET /integrations com token admin_tenant → 403; (c) GET /integrations com token lider → 403; (d) GET /integrations/history com super_admin → 200 com points e meta; (e) GET /integrations/history com token não-super_admin → 403; (f) GET /integrations/history com `integration` inválido → 400; (g) GET /integrations/history com `hours=73` → 400; (h) verificar que audit-log foi chamado com `correlationId` no handler /integrations; (i) verificar que micro-cache retorna resultado cacheado na segunda chamada sem executar probes novamente
+- [x] 2.5.1 Criar `apps/api/src/admin/health/health-check.controller.ts` com `@Controller('admin/health')` + `@UseGuards(KeycloakAuthGuard, RolesGuard)` aplicado a nível de controller
+- [x] 2.5.2 Implementar `GET /api/v1/admin/health/integrations` com decorator `@Roles(Role.SUPER_ADMIN)` — usar obrigatoriamente o enum `Role.SUPER_ADMIN` de `apps/api/src/auth/enums/role.enum.ts`, NUNCA a string literal `'super_admin'` (CHK025/CHK013)
+- [x] 2.5.3 No handler `GET /integrations`: (a) gerar `correlationId = uuidv7()`; (b) executar `healthCheckService.runAllProbes()`; (c) computar summary; (d) chamar `auditService.create({ userId: req.user.sub, action: 'ADMIN_HEALTH_INTEGRATIONS_READ', resource: 'integration_health', resourceId: 'all', correlationId, ipAddress, userAgent, newState: null })` — audit do acesso HTTP (CHK027/CHK015); (e) retornar envelope `{ data: { integrations, summary } }`
+- [x] 2.5.4 Implementar `GET /api/v1/admin/health/integrations/history` com `@Roles(Role.SUPER_ADMIN)` e DTO validado por `ZodValidationPipe`: query params `integration` (string, obrigatório, enum de 5 valores) e `hours` (integer, opcional, default=24, max=72); retornar 400/422 para params inválidos (CHK009)
+- [x] 2.5.5 Implementar micro-cache in-memory server-side de 5-10s para o handler `GET /integrations` on-demand: ao receber request, verificar se existe resultado em cache com timestamp < 10s; se sim, retornar cached sem executar probes novamente; se não, executar probes + atualizar cache — coalescer múltiplas chamadas simultâneas (CHK035/CHK049, OWASP F4)
+- [x] 2.5.6 Criar DTOs: `apps/api/src/admin/health/dto/integration-health-response.dto.ts` e `apps/api/src/admin/health/dto/integration-history-query.dto.ts` (com `ZodValidationPipe`)
+- [x] 2.5.7 Escrever testes unitários em `apps/api/src/admin/health/__tests__/health-check.controller.spec.ts`: (a) GET /integrations com token super_admin → 200 com summary correto; (b) GET /integrations com token admin_tenant → 403; (c) GET /integrations com token lider → 403; (d) GET /integrations/history com super_admin → 200 com points e meta; (e) GET /integrations/history com token não-super_admin → 403; (f) GET /integrations/history com `integration` inválido → 400; (g) GET /integrations/history com `hours=73` → 400; (h) verificar que audit-log foi chamado com `correlationId` no handler /integrations; (i) verificar que micro-cache retorna resultado cacheado na segunda chamada sem executar probes novamente
 
 ### 2.6 `IntegrationHealthProcessor` — BullMQ worker periódico `[A]`
 
 Ref: spec §FR-005, §FR-006, §FR-007, §D-003, §D-004, padrão detect-evasion-risk.processor.ts
 
-- [ ] 2.6.1 Criar `apps/api/src/admin/health/health-check.processor.ts` implementando `Processor` via `BullMqService.createWorker('queue:integration-health-check', handler)`; registrar worker em `onModuleInit`
-- [ ] 2.6.2 Registrar job repeatable em `onModuleInit`: `this.queue.add('integration-health-check', {}, { repeat: { every: 300000 } })` — idêntico ao padrão `refresh-platform-views.processor.ts` (BullMQ cron via `every` em ms)
-- [ ] 2.6.3 Implementar Redis lock de single-execution: `const lock = await this.redisService.set('rt:health-check:lock:integration', '1', 'NX', 'EX', 270)` — TTL 270s (4.5 min, margem antes do próximo ciclo); se lock retornar null (outra instância), fazer ack silencioso (return)
-- [ ] 2.6.4 Implementar INSERT em `integration_health_log` via `createPrivilegedClient()` + `$executeRawUnsafe` com bind params posicionais: `INSERT INTO integration_health_log (id, integration_name, status, latency_ms, message, checked_at) VALUES ($1::uuid, $2, $3::integration_health_status, $4, $5, $6)` — NUNCA concatenar SQL (CHK033, OWASP F3); padrão idêntico ao `insertJobLog` do `detect-evasion-risk.processor.ts` L268-282
-- [ ] 2.6.5 Implementar lógica de debounce anti-flapping (§D-004, §FR-006): recuperar estado do Redis `rt:health-check:debounce:{name}` → comparar status novo com baseline → se mudou: `consecutiveCount=1`, TTL 30min, sem notificar; se igual e `consecutiveCount>=2`: notificar → emitir evento → audit; TTL 30min na chave; resetar ao voltar ao baseline
-- [ ] 2.6.6 Implementar emissão de evento de domínio `system.integration.status-changed` via Redis pub/sub ao acionar notificação (§FR-007): `eventId=uuidv7()`, `tenantId=null`, `correlationId=uuidv7()`, campos conforme contrato `contracts/integration-status-changed-event.md`
-- [ ] 2.6.7 Implementar resolução de Super Admins e despacho de notificação: `keycloakAdminService.getUsersByRealmRole(Role.SUPER_ADMIN)` → mapear keycloakId para userId local via `prisma.client.user.findMany({ where: { keycloakId: { in: keycloakIds } } })` → para cada super admin, chamar `notificationsService.dispatch(...)` dentro de `requestContext.run({ tenantId: superAdminTenantId, userId: 'system', requestId: uuidv7(), correlationId }, cb)` — padrão idêntico ao `notifications.worker.ts` L112
-- [ ] 2.6.8 Chamar `auditService.create({ userId: null, action: 'INTEGRATION_STATUS_CHANGED', resource: 'integration_health', resourceId: integrationName, ipAddress: 'system', userAgent: 'health-check-worker', newState: { integrationName, previousStatus, newStatus, latencyMs } })` ao emitir a notificação
-- [ ] 2.6.9 Escrever testes unitários em `apps/api/src/admin/health/__tests__/health-check.processor.spec.ts`: (a) single-execution: 2 instâncias simuladas, lock adquirido pela 1ª, 2ª faz ack silencioso sem chamar probes; (b) flapping: 5 alternâncias de status → no máximo 2-3 notificações (debounce funcionando); (c) INSERT via `$executeRawUnsafe` com bind params verificados (não concatenação); (d) requestContext.run com tenantId do super admin ao despachar notificação; (e) job repeatable registrado em `onModuleInit`; (f) ao notificar: evento emitido + audit criado com correlationId; (g) mock de todas as dependências externas (RedisService, PrismaService, NotificationsService, KeycloakAdminService) — NUNCA bater em produção (NFR-TEST-001)
+- [x] 2.6.1 Criar `apps/api/src/admin/health/health-check.processor.ts` implementando `Processor` via `BullMqService.createWorker('queue:integration-health-check', handler)`; registrar worker em `onModuleInit`
+- [x] 2.6.2 Registrar job repeatable em `onModuleInit`: `this.queue.add('integration-health-check', {}, { repeat: { every: 300000 } })` — idêntico ao padrão `refresh-platform-views.processor.ts` (BullMQ cron via `every` em ms)
+- [x] 2.6.3 Implementar Redis lock de single-execution: `const lock = await this.redisService.set('rt:health-check:lock:integration', '1', 'NX', 'EX', 270)` — TTL 270s (4.5 min, margem antes do próximo ciclo); se lock retornar null (outra instância), fazer ack silencioso (return)
+- [x] 2.6.4 Implementar INSERT em `integration_health_log` via `createPrivilegedClient()` + `$executeRawUnsafe` com bind params posicionais: `INSERT INTO integration_health_log (id, integration_name, status, latency_ms, message, checked_at) VALUES ($1::uuid, $2, $3::integration_health_status, $4, $5, $6)` — NUNCA concatenar SQL (CHK033, OWASP F3); padrão idêntico ao `insertJobLog` do `detect-evasion-risk.processor.ts` L268-282
+- [x] 2.6.5 Implementar lógica de debounce anti-flapping (§D-004, §FR-006): recuperar estado do Redis `rt:health-check:debounce:{name}` → comparar status novo com baseline → se mudou: `consecutiveCount=1`, TTL 30min, sem notificar; se igual e `consecutiveCount>=2`: notificar → emitir evento → audit; TTL 30min na chave; resetar ao voltar ao baseline
+- [x] 2.6.6 Implementar emissão de evento de domínio `system.integration.status-changed` via Redis pub/sub ao acionar notificação (§FR-007): `eventId=uuidv7()`, `tenantId=null`, `correlationId=uuidv7()`, campos conforme contrato `contracts/integration-status-changed-event.md`
+- [x] 2.6.7 Implementar resolução de Super Admins e despacho de notificação: `keycloakAdminService.getUsersByRealmRole(Role.SUPER_ADMIN)` → mapear keycloakId para userId local via `prisma.client.user.findMany({ where: { keycloakId: { in: keycloakIds } } })` → para cada super admin, chamar `notificationsService.dispatch(...)` dentro de `requestContext.run({ tenantId: superAdminTenantId, userId: 'system', requestId: uuidv7(), correlationId }, cb)` — padrão idêntico ao `notifications.worker.ts` L112
+- [x] 2.6.8 Chamar `auditService.create({ userId: null, action: 'INTEGRATION_STATUS_CHANGED', resource: 'integration_health', resourceId: integrationName, ipAddress: 'system', userAgent: 'health-check-worker', newState: { integrationName, previousStatus, newStatus, latencyMs } })` ao emitir a notificação
+- [x] 2.6.9 Escrever testes unitários em `apps/api/src/admin/health/__tests__/health-check.processor.spec.ts`: (a) single-execution: 2 instâncias simuladas, lock adquirido pela 1ª, 2ª faz ack silencioso sem chamar probes; (b) flapping: 5 alternâncias de status → no máximo 2-3 notificações (debounce funcionando); (c) INSERT via `$executeRawUnsafe` com bind params verificados (não concatenação); (d) requestContext.run com tenantId do super admin ao despachar notificação; (e) job repeatable registrado em `onModuleInit`; (f) ao notificar: evento emitido + audit criado com correlationId; (g) mock de todas as dependências externas (RedisService, PrismaService, NotificationsService, KeycloakAdminService) — NUNCA bater em produção (NFR-TEST-001)
 
 ### 2.7 `AdminHealthModule` — wiring completo `[A]`
 
 Ref: spec §FR-005, plan §Project Structure
 
-- [ ] 2.7.1 Criar `apps/api/src/admin/health/admin-health.module.ts` declarando: imports (`BullMqModule`, `AuthModule`, `AuditModule`, `NotificationsModule`), providers (`HealthCheckService`, `IntegrationHealthProcessor`, `ResendHealthPort`), controllers (`HealthCheckController`); exports (`ResendHealthPort`) para injeção no `NotificationsModule`
-- [ ] 2.7.2 Registrar `AdminHealthModule` no módulo raiz do NestJS (`apps/api/src/app.module.ts`)
-- [ ] 2.7.3 Verificar que o módulo compila sem erros: `pnpm --filter api build` (sem `npm install` nem `pnpm install` global)
+- [x] 2.7.1 Criar `apps/api/src/admin/health/admin-health.module.ts` declarando: imports (`BullMqModule`, `AuthModule`, `AuditModule`, `NotificationsModule`), providers (`HealthCheckService`, `IntegrationHealthProcessor`, `ResendHealthPort`), controllers (`HealthCheckController`); exports (`ResendHealthPort`) para injeção no `NotificationsModule`
+- [x] 2.7.2 Registrar `AdminHealthModule` no módulo raiz do NestJS (`apps/api/src/app.module.ts`)
+- [x] 2.7.3 Verificar que o módulo compila sem erros: `pnpm --filter api build` (sem `npm install` nem `pnpm install` global)
 
 ---
 
@@ -123,53 +123,53 @@ Ref: spec §FR-005, plan §Project Structure
 
 Ref: spec §FR-010, contracts/admin-health-api.md, packages/types/src/integration-health.ts
 
-- [ ] 3.1.1 Criar `apps/web/app/(authenticated)/admin/health/_hooks/use-integration-health.ts` com `useQuery` para `GET /api/v1/admin/health/integrations`: `staleTime: 55000`, `refetchInterval: 60000`; parsear resposta com `IntegrationHealthResponseSchema.parse()` (validação Zod no frontend)
-- [ ] 3.1.2 Criar hook `useIntegrationHistory(integrationName: string, hours?: number)` com `useQuery` para `GET /api/v1/admin/health/integrations/history`; disparado por `enabled: !!integrationName`
-- [ ] 3.1.3 Escrever testes unitários dos hooks com MSW interceptando a API (NFR-TEST-001): (a) retorna dados válidos parseados por Zod; (b) estado de loading; (c) estado de erro de rede; (d) refetch após `staleTime` expirado
+- [x] 3.1.1 Criar `apps/web/app/(authenticated)/admin/health/_hooks/use-integration-health.ts` com `useQuery` para `GET /api/v1/admin/health/integrations`: `staleTime: 55000`, `refetchInterval: 60000`; parsear resposta com `IntegrationHealthResponseSchema.parse()` (validação Zod no frontend)
+- [x] 3.1.2 Criar hook `useIntegrationHistory(integrationName: string, hours?: number)` com `useQuery` para `GET /api/v1/admin/health/integrations/history`; disparado por `enabled: !!integrationName`
+- [x] 3.1.3 Escrever testes unitários dos hooks com MSW interceptando a API (NFR-TEST-001): (a) retorna dados válidos parseados por Zod; (b) estado de loading; (c) estado de erro de rede; (d) refetch após `staleTime` expirado
 
 ### 3.2 `<LatencySparkline>` — SVG acessível `[A]`
 
 Ref: spec §FR-010, §D-006, checklists/ux.md CHK076/CHK077/CHK088
 
-- [ ] 3.2.1 Criar `apps/web/app/(authenticated)/admin/health/_components/latency-sparkline.tsx` como Client Component (`'use client'`) com SVG gerado em React puro (sem `@nivo` — §D-006); 288 pontos máximos, normalização de coordenadas Y pelo valor máximo do array
-- [ ] 3.2.2 Adicionar atributos de acessibilidade no SVG: `role="img"` + `aria-label="Latência de {integrationName} nas últimas 24h"` + elemento `<title>{integrationName}: histórico de latência 24h</title>` como primeiro filho do SVG (CHK076 — crítico para leitores de tela)
-- [ ] 3.2.3 Implementar hover tooltip: ao passar o mouse sobre um ponto, exibir popover com valor exato de latência e timestamp; implementar também a alternativa de foco via teclado — o tooltip deve ser acionável com Tab/focus no SVG ou em pontos individuais via `tabIndex` e `onKeyDown` (CHK077)
-- [ ] 3.2.4 Definir empty state: quando `data.length === 0`, renderizar mensagem acessível em lugar do SVG: `<p role="status">Sem histórico de latência disponível</p>` (CHK088)
-- [ ] 3.2.5 Aplicar `motion-safe` via Tailwind (`motion-safe:transition-all`) em animações do SVG — sem animar se `prefers-reduced-motion: reduce` (CHK075); usar `focus-ring` do design system (`ring-brand-teal/30`) em elementos focáveis
+- [x] 3.2.1 Criar `apps/web/app/(authenticated)/admin/health/_components/latency-sparkline.tsx` como Client Component (`'use client'`) com SVG gerado em React puro (sem `@nivo` — §D-006); 288 pontos máximos, normalização de coordenadas Y pelo valor máximo do array
+- [x] 3.2.2 Adicionar atributos de acessibilidade no SVG: `role="img"` + `aria-label="Latência de {integrationName} nas últimas 24h"` + elemento `<title>{integrationName}: histórico de latência 24h</title>` como primeiro filho do SVG (CHK076 — crítico para leitores de tela)
+- [x] 3.2.3 Implementar hover tooltip: ao passar o mouse sobre um ponto, exibir popover com valor exato de latência e timestamp; implementar também a alternativa de foco via teclado — o tooltip deve ser acionável com Tab/focus no SVG ou em pontos individuais via `tabIndex` e `onKeyDown` (CHK077)
+- [x] 3.2.4 Definir empty state: quando `data.length === 0`, renderizar mensagem acessível em lugar do SVG: `<p role="status">Sem histórico de latência disponível</p>` (CHK088)
+- [x] 3.2.5 Aplicar `motion-safe` via Tailwind (`motion-safe:transition-all`) em animações do SVG — sem animar se `prefers-reduced-motion: reduce` (CHK075); usar `focus-ring` do design system (`ring-brand-teal/30`) em elementos focáveis
 
 ### 3.3 `<IntegrationHealthCard>` e badges `[A]`
 
 Ref: spec §FR-010, checklists/ux.md CHK062/CHK063/CHK074
 
-- [ ] 3.3.1 Criar `apps/web/app/(authenticated)/admin/health/_components/integration-health-card.tsx` com: badge colorido (`bg-green-500` healthy / `bg-yellow-500` degraded / `bg-red-500` unhealthy) combinando cor E texto PT-BR ("Saudável/Degradado/Indisponível") — WCAG 1.4.1 (CHK062b)
-- [ ] 3.3.2 Implementar navegação por teclado: card deve ser focável (`tabIndex={0}`), acionável com `Enter`/`Space` para abrir modal, `aria-label` descritivo com nome da integração e status atual (CHK074)
-- [ ] 3.3.3 Exibir latência em ms e "Verificado há X min" usando textos de `pt-BR.json` via `useTranslations('health.integrations')` (i18n PT-BR)
+- [x] 3.3.1 Criar `apps/web/app/(authenticated)/admin/health/_components/integration-health-card.tsx` com: badge colorido (`bg-green-500` healthy / `bg-yellow-500` degraded / `bg-red-500` unhealthy) combinando cor E texto PT-BR ("Saudável/Degradado/Indisponível") — WCAG 1.4.1 (CHK062b)
+- [x] 3.3.2 Implementar navegação por teclado: card deve ser focável (`tabIndex={0}`), acionável com `Enter`/`Space` para abrir modal, `aria-label` descritivo com nome da integração e status atual (CHK074)
+- [x] 3.3.3 Exibir latência em ms e "Verificado há X min" usando textos de `pt-BR.json` via `useTranslations('health.integrations')` (i18n PT-BR)
 
 ### 3.4 `<IntegrationHistoryModal>` `[A]`
 
 Ref: spec §FR-010, checklists/ux.md CHK085/CHK074
 
-- [ ] 3.4.1 Criar `apps/web/app/(authenticated)/admin/health/_components/integration-history-modal.tsx` com tabela de logs: colunas "Status", "Latência (ms)", "Mensagem", "Verificado em" (CHK085 — strings i18n do modal)
-- [ ] 3.4.2 Fechar modal com tecla `Escape` e garantir que foco retorna ao card que o abriu após fechar (CHK074 — navegação por teclado no fluxo card → modal → fechar)
-- [ ] 3.4.3 Adicionar as chaves i18n do modal em `apps/web/messages/pt-BR.json` sob `health.integrations.modal.*`: `status`, `latencyMs`, `message`, `checkedAt`, `noHistory`
+- [x] 3.4.1 Criar `apps/web/app/(authenticated)/admin/health/_components/integration-history-modal.tsx` com tabela de logs: colunas "Status", "Latência (ms)", "Mensagem", "Verificado em" (CHK085 — strings i18n do modal)
+- [x] 3.4.2 Fechar modal com tecla `Escape` e garantir que foco retorna ao card que o abriu após fechar (CHK074 — navegação por teclado no fluxo card → modal → fechar)
+- [x] 3.4.3 Adicionar as chaves i18n do modal em `apps/web/messages/pt-BR.json` sob `health.integrations.modal.*`: `status`, `latencyMs`, `message`, `checkedAt`, `noHistory`
 
 ### 3.5 `<HealthDashboard>` — container principal `[A]`
 
 Ref: spec §FR-010, checklists/ux.md CHK067/CHK069/CHK071/CHK087
 
-- [ ] 3.5.1 Criar `apps/web/app/(authenticated)/admin/health/_components/health-dashboard.tsx` com: grid de 5 cards (uma por integração), `aria-live="polite"` no container de status, `role="status"` no indicador de refresh (CHK071/CHK072)
-- [ ] 3.5.2 Implementar indicador stale: se `Date.now() - lastRefreshed > 120000`, exibir banner `"Dados podem estar desatualizados"` (i18n `health.integrations.staleWarning`) — CHK067
-- [ ] 3.5.3 Implementar estado de erro persistente de fetch (após retries do TanStack Query esgotados): exibir mensagem "Não foi possível carregar os dados de saúde" com botão de retry manual (CHK069)
-- [ ] 3.5.4 Estado de carregamento inicial: renderizar skeleton cards (5 placeholders) enquanto `isLoading === true` (CHK066 — padrão coerente com design system)
-- [ ] 3.5.5 Quando TODAS as 5 integrações estão `unhealthy`: exibir alerta de sistema crítico destacado acima do grid (CHK087 — diferente do stale banner)
+- [x] 3.5.1 Criar `apps/web/app/(authenticated)/admin/health/_components/health-dashboard.tsx` com: grid de 5 cards (uma por integração), `aria-live="polite"` no container de status, `role="status"` no indicador de refresh (CHK071/CHK072)
+- [x] 3.5.2 Implementar indicador stale: se `Date.now() - lastRefreshed > 120000`, exibir banner `"Dados podem estar desatualizados"` (i18n `health.integrations.staleWarning`) — CHK067
+- [x] 3.5.3 Implementar estado de erro persistente de fetch (após retries do TanStack Query esgotados): exibir mensagem "Não foi possível carregar os dados de saúde" com botão de retry manual (CHK069)
+- [x] 3.5.4 Estado de carregamento inicial: renderizar skeleton cards (5 placeholders) enquanto `isLoading === true` (CHK066 — padrão coerente com design system)
+- [x] 3.5.5 Quando TODAS as 5 integrações estão `unhealthy`: exibir alerta de sistema crítico destacado acima do grid (CHK087 — diferente do stale banner)
 
 ### 3.6 Página `page.tsx` e i18n completo `[A]`
 
 Ref: spec §FR-010, plan §Project Structure
 
-- [ ] 3.6.1 Criar `apps/web/app/(authenticated)/admin/health/page.tsx` como Client Component (`'use client'`): importar `<HealthDashboard>` com hooks injetados, sem Zustand (estado local via `useState`)
-- [ ] 3.6.2 Adicionar todas as chaves i18n em `apps/web/messages/pt-BR.json` sob `health.integrations.*`: `title`, `subtitle`, `status.healthy/degraded/unhealthy`, `lastUpdated`, `staleWarning`, `integrationNames.*` (5 integrações), `modal.*` (cabeçalhos de tabela), `allUnhealthy`, `fetchError`, `retry`
-- [ ] 3.6.3 Escrever testes unitários dos componentes em `apps/web/app/(authenticated)/admin/health/_components/__tests__/`: (a) `<IntegrationHealthCard>` renderiza badge com texto correto para cada status; (b) `<LatencySparkline>` renderiza SVG com `role="img"` e `aria-label`; (c) `<LatencySparkline data={[]}/>` renderiza empty state; (d) `<HealthDashboard>` mostra stale banner quando dados > 2min; (e) `<HealthDashboard>` mostra alerta crítico quando todas unhealthy
+- [x] 3.6.1 Criar `apps/web/app/(authenticated)/admin/health/page.tsx` como Client Component (`'use client'`): importar `<HealthDashboard>` com hooks injetados, sem Zustand (estado local via `useState`)
+- [x] 3.6.2 Adicionar todas as chaves i18n em `apps/web/messages/pt-BR.json` sob `health.integrations.*`: `title`, `subtitle`, `status.healthy/degraded/unhealthy`, `lastUpdated`, `staleWarning`, `integrationNames.*` (5 integrações), `modal.*` (cabeçalhos de tabela), `allUnhealthy`, `fetchError`, `retry`
+- [x] 3.6.3 Escrever testes unitários dos componentes em `apps/web/app/(authenticated)/admin/health/_components/__tests__/`: (a) `<IntegrationHealthCard>` renderiza badge com texto correto para cada status; (b) `<LatencySparkline>` renderiza SVG com `role="img"` e `aria-label`; (c) `<LatencySparkline data={[]}/>` renderiza empty state; (d) `<HealthDashboard>` mostra stale banner quando dados > 2min; (e) `<HealthDashboard>` mostra alerta crítico quando todas unhealthy
 
 ---
 

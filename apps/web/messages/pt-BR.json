@@ -1787,5 +1787,35 @@
       "authError": "Sessão expirada. Faça login novamente.",
       "authErrorLink": "Fazer login"
     }
+  },
+  "health": {
+    "integrations": {
+      "title": "Saúde das Integrações",
+      "subtitle": "Visibilidade operacional das integrações externas da plataforma.",
+      "lastUpdated": "Atualizado há {seconds} segundos",
+      "staleWarning": "Dados podem estar desatualizados — última atualização há mais de 2 minutos.",
+      "fetchError": "Não foi possível carregar os dados de saúde das integrações.",
+      "retry": "Tentar novamente",
+      "allUnhealthy": "Atenção: todas as integrações estão indisponíveis. Verifique a infraestrutura com urgência.",
+      "status": {
+        "healthy": "Saudável",
+        "degraded": "Degradado",
+        "unhealthy": "Indisponível"
+      },
+      "integrationNames": {
+        "Resend": "Resend (E-mail)",
+        "Keycloak": "Keycloak (Autenticação)",
+        "MinIO": "MinIO (Armazenamento)",
+        "Redis": "Redis (Cache)",
+        "PostgreSQL": "PostgreSQL (Banco de Dados)"
+      },
+      "modal": {
+        "status": "Status",
+        "latencyMs": "Latência (ms)",
+        "message": "Mensagem",
+        "checkedAt": "Verificado em",
+        "noHistory": "Sem histórico disponível para este período."
+      }
+    }
   }
 }
