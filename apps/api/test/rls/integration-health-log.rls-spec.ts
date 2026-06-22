@@ -90,14 +90,21 @@ describe('integration_health_log — RLS isolation', () => {
     expect(rows[0]?.integration_name).toBe('Redis');
   });
 
-  it('(c) DELETE via cliente não-privilegiado é bloqueado pela RLS', async () => {
-    // platform_read policy não tem FOR DELETE — qualquer DELETE via app client deve ser bloqueado
-    // (tabela tem RLS habilitada mas sem política DELETE → acesso negado por padrão)
-    await expect(
-      app.$executeRawUnsafe(
-        `DELETE FROM integration_health_log WHERE id = $1::uuid`,
-        insertedId,
-      ),
-    ).rejects.toThrow(); // RLS block ou permission denied
+  it('(c) DELETE via cliente não-privilegiado é bloqueado pela RLS (retorna 0 linhas afetadas)', async () => {
+    // RLS sem política FOR DELETE: o PostgreSQL bloqueia silenciosamente (zero rows affected),
+    // sem lançar exceção de permissão — comportamento padrão do RLS quando não há política permitindo.
+    const result = await app.$executeRawUnsafe(
+      `DELETE FROM integration_health_log WHERE id = $1::uuid`,
+      insertedId,
+    );
+    // 0 linhas deletadas = RLS bloqueou silenciosamente (acesso negado por default)
+    expect(result).toBe(0);
+
+    // Verificar que o registro ainda existe (via cliente privilegiado)
+    const rows = await privileged.$queryRawUnsafe<{ id: string }[]>(
+      `SELECT id::text FROM integration_health_log WHERE id = $1::uuid`,
+      insertedId,
+    );
+    expect(rows).toHaveLength(1); // registro intacto — DELETE foi bloqueado
   });
 });

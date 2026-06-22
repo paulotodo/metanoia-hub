@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import messages from '../../../../../messages/pt-BR.json';
 import { useIntegrationHealth, useIntegrationHistory } from '../_hooks/use-integration-health';
 import { IntegrationHealthCard } from './integration-health-card';
 import { IntegrationHistoryModal } from './integration-history-modal';
@@ -21,7 +21,7 @@ const STALE_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutos
  *  - Erro persistente com botão retry (CHK069)
  */
 export function HealthDashboard() {
-  const t = useTranslations('health.integrations');
+  const m = messages.health.integrations;
   const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
   const cardRefs = useRef<Map<string, HTMLElement>>(new Map());
 
@@ -72,13 +72,13 @@ export function HealthDashboard() {
   if (isError) {
     return (
       <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-        <p className="font-medium">{t('fetchError')}</p>
+        <p className="font-medium">{m.fetchError}</p>
         <button
           type="button"
           onClick={() => void refetch()}
           className="mt-2 text-sm underline hover:no-underline focus-visible:ring-2 focus-visible:ring-brand-teal/30 rounded"
         >
-          {t('retry')}
+          {m.retry}
         </button>
       </div>
     );
@@ -97,7 +97,7 @@ export function HealthDashboard() {
           role="alert"
           className="mb-4 rounded-lg border border-red-400 bg-red-100 p-4 text-red-800 font-semibold"
         >
-          {t('allUnhealthy')}
+          {m.allUnhealthy}
         </div>
       )}
 
@@ -107,16 +107,14 @@ export function HealthDashboard() {
           role="status"
           className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 p-2 text-sm text-yellow-800"
         >
-          {t('staleWarning')}
+          {m.staleWarning}
         </div>
       )}
 
       {/* Indicador de refresh (CHK071) */}
       {dataUpdatedAt > 0 && (
         <p role="status" className="text-xs text-muted-foreground mb-4">
-          {t('lastUpdated', {
-            seconds: Math.floor((Date.now() - dataUpdatedAt) / 1000),
-          })}
+          {m.lastUpdated.replace('{seconds}', String(Math.floor((Date.now() - dataUpdatedAt) / 1000)))}
         </p>
       )}
 

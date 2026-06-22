@@ -1071,7 +1071,6 @@ model Notification {
   @@index([tenantId], name: "notifications_tenant_idx")
   @@map("notifications")
 }
-}
 
 // ---------------------------------------------------------------------------
 // Story 14-4 — Health Check de Integrações & Dashboard Super Admin (NFR-I5)

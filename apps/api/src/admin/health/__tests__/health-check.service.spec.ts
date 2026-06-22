@@ -31,7 +31,7 @@ function makeResponse(status: number): Response {
 }
 
 /** Simula latência: resolve após N ms */
-function delayedResolve<T>(value: T, ms: number): Promise<T> {
+function _delayedResolve<T>(value: T, ms: number): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 }
 
@@ -83,13 +83,6 @@ describe('HealthCheckService.runAllProbes()', () => {
     const service = makeService();
 
     // Verificar classificação direta
-    // @ts-expect-error — acessar método privado para testar boundary
-    expect(service['classifyLatency'] ?? (() => {
-      // Fallback: testar via thresholds expostos
-      const { HEALTHY_THRESHOLD_MS } = require('../health-check.service');
-      return null;
-    }));
-
     // Testar via resultado: injetar spy de performance.now para controlar latência
     const perfSpy = vi.spyOn(performance, 'now');
     perfSpy.mockReturnValueOnce(0).mockReturnValueOnce(999); // 999ms

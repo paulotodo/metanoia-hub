@@ -76,7 +76,7 @@ export class HealthCheckController {
       resourceId: 'all',
       ipAddress: req.ip ?? 'unknown',
       userAgent: req.get('user-agent') ?? 'unknown',
-      newState: null,
+      newState: { correlationId },
     });
 
     return { data: { integrations, summary } };

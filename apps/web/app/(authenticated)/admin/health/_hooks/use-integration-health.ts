@@ -6,7 +6,7 @@ import {
   type IntegrationHealthResponse,
   type IntegrationHealthHistoryResponse,
 } from '@metanoia/types';
-import { envelopeClient } from '../../../../src/lib/api/envelope';
+import { envelopeClient } from '@/lib/api/envelope';
 
 // ---------------------------------------------------------------------------
 // Story 14-4 §FR-010 — Hooks TanStack Query para health check de integrações.

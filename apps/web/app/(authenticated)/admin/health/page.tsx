@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import messages from '../../../../messages/pt-BR.json';
 import { HealthDashboard } from './_components/health-dashboard';
 
 /**
@@ -13,13 +13,13 @@ import { HealthDashboard } from './_components/health-dashboard';
  * O frontend exibe o dashboard assumindo que o usuário é Super Admin (route guard no layout).
  */
 export default function AdminHealthPage() {
-  const t = useTranslations('health.integrations');
+  const m = messages.health.integrations;
 
   return (
     <main className="container mx-auto p-6">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
+        <h1 className="text-2xl font-bold text-foreground">{m.title}</h1>
+        <p className="text-muted-foreground mt-1">{m.subtitle}</p>
       </header>
 
       <HealthDashboard />

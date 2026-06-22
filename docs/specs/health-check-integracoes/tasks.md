@@ -179,28 +179,28 @@ Ref: spec §FR-010, plan §Project Structure
 
 Ref: spec §Testes, §NFR-TEST-001, rls/integration-health-log.rls-spec.ts
 
-- [ ] 4.1.1 Garantir que `apps/api/prisma/rls/integration-health-log.rls-spec.ts` cobre: (a) INSERT via `createPrivilegedClient()` persiste registro; (b) SELECT via cliente normal com `platform_read USING(true)` retorna o registro; (c) DELETE bloqueado para qualquer cliente não-privilegiado
-- [ ] 4.1.2 Escrever integration spec para `NotificationsModule` pós-substituição: confirmar que `EmailCircuitBreakerService` injeta `ResendHealthPort` real (não Stub) e que `isHealthy()` retorna valor baseado em mock do `fetch`
-- [ ] 4.1.3 Escrever integration spec para `KeycloakAdminService.getUsersByRealmRole`: mock do HTTP do Keycloak, validar que retorna `KeycloakUser[]` corretamente parseado
+- [x] 4.1.1 Garantir que `apps/api/prisma/rls/integration-health-log.rls-spec.ts` cobre: (a) INSERT via `createPrivilegedClient()` persiste registro; (b) SELECT via cliente normal com `platform_read USING(true)` retorna o registro; (c) DELETE bloqueado para qualquer cliente não-privilegiado
+- [x] 4.1.2 Escrever integration spec para `NotificationsModule` pós-substituição: confirmar que `EmailCircuitBreakerService` injeta `ResendHealthPort` real (não Stub) e que `isHealthy()` retorna valor baseado em mock do `fetch`
+- [x] 4.1.3 Escrever integration spec para `KeycloakAdminService.getUsersByRealmRole`: mock do HTTP do Keycloak, validar que retorna `KeycloakUser[]` corretamente parseado
 
 ### 4.2 E2E do dashboard `[A]`
 
 Ref: spec §Testes, apps/web/e2e/, NFR-TEST-001 (MSW intercepta API)
 
-- [ ] 4.2.1 Criar `apps/web/e2e/admin-health.e2e-spec.ts` com Playwright; MSW interceptando `GET /api/v1/admin/health/integrations` e `GET /api/v1/admin/health/integrations/history`
-- [ ] 4.2.2 Cenário happy path: (a) dashboard renderiza 5 cards com badges de status; (b) SVG do sparkline presente no DOM com `role="img"` e `aria-label`; (c) indicador "Atualizado há X segundos" visível; (d) clicar na card abre modal com histórico
-- [ ] 4.2.3 Cenário auto-refresh: avançar o relógio com Playwright clock para simular 60s → verificar que TanStack Query dispara refetch; avançar para 121s → verificar que stale banner aparece
-- [ ] 4.2.4 Cenário empty state sparkline: MSW retorna `history.points = []` → verificar que `<LatencySparkline>` exibe mensagem "Sem histórico" (CHK088)
-- [ ] 4.2.5 Cenário 403: usuário não-super_admin acessa `/admin/health` → redirecionar ou exibir tela de acesso negado
+- [x] 4.2.1 Criar `apps/web/e2e/admin-health.e2e-spec.ts` com Playwright; MSW interceptando `GET /api/v1/admin/health/integrations` e `GET /api/v1/admin/health/integrations/history`
+- [x] 4.2.2 Cenário happy path: (a) dashboard renderiza 5 cards com badges de status; (b) SVG do sparkline presente no DOM com `role="img"` e `aria-label`; (c) indicador "Atualizado há X segundos" visível; (d) clicar na card abre modal com histórico
+- [x] 4.2.3 Cenário auto-refresh: avançar o relógio com Playwright clock para simular 60s → verificar que TanStack Query dispara refetch; avançar para 121s → verificar que stale banner aparece
+- [x] 4.2.4 Cenário empty state sparkline: MSW retorna `history.points = []` → verificar que `<LatencySparkline>` exibe mensagem "Sem histórico" (CHK088)
+- [x] 4.2.5 Cenário 403: usuário não-super_admin acessa `/admin/health` → redirecionar ou exibir tela de acesso negado
 
 ### 4.3 Lint sweep completo CI `[M]`
 
 Ref: CLAUDE.md (CI scripts), checklists/ux.md CHK073-CHK075-CHK078, Epic 12 lições
 
-- [ ] 4.3.1 Rodar `pnpm turbo lint` no monorepo completo e corrigir todos os warnings/errors antes de abrir PR
-- [ ] 4.3.2 Executar scripts de a11y do CI localmente: `check-focus-ring-variants`, `check-motion-safe`, `check-contrast-tokens`, `check-contrast`, `check-i18n-scf` — confirmar que todos passam sem erros
-- [ ] 4.3.3 Confirmar que `turbo build` (sem `npm install` nem `pnpm install` global) completa sem erros TypeScript em todos os pacotes afetados (`packages/types`, `apps/api`, `apps/web`)
-- [ ] 4.3.4 Executar `validate-tasks-template.sh` sobre este `tasks.md` para confirmar fidelidade ao template (gate deterministico) — sem findings `critical`
+- [x] 4.3.1 Rodar `pnpm turbo lint` no monorepo completo e corrigir todos os warnings/errors antes de abrir PR
+- [x] 4.3.2 Executar scripts de a11y do CI localmente: `check-focus-ring-variants`, `check-motion-safe`, `check-contrast-tokens`, `check-contrast`, `check-i18n-scf` — confirmar que todos passam sem erros
+- [x] 4.3.3 Confirmar que `turbo build` (sem `npm install` nem `pnpm install` global) completa sem erros TypeScript em todos os pacotes afetados (`packages/types`, `apps/api`, `apps/web`)
+- [x] 4.3.4 Executar `validate-tasks-template.sh` sobre este `tasks.md` para confirmar fidelidade ao template (gate deterministico) — sem findings `critical`
 
 ---
 

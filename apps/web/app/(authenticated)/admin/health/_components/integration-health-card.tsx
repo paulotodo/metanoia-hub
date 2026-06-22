@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import messages from '../../../../../messages/pt-BR.json';
 import type { IntegrationHealthItem, IntegrationHealthHistoryPoint } from '@metanoia/types';
 import { LatencySparkline } from './latency-sparkline';
 
@@ -21,17 +21,17 @@ const STATUS_BADGE: Record<
   healthy: {
     bg: 'bg-green-500',
     text: 'text-white',
-    label: 'health.integrations.status.healthy',
+    label: messages.health.integrations.status.healthy,
   },
   degraded: {
     bg: 'bg-yellow-500',
     text: 'text-white',
-    label: 'health.integrations.status.degraded',
+    label: messages.health.integrations.status.degraded,
   },
   unhealthy: {
     bg: 'bg-red-500',
     text: 'text-white',
-    label: 'health.integrations.status.unhealthy',
+    label: messages.health.integrations.status.unhealthy,
   },
 };
 
@@ -50,11 +50,11 @@ export function IntegrationHealthCard({
   history = [],
   onOpenHistory,
 }: IntegrationHealthCardProps) {
-  const t = useTranslations();
+  const m = messages.health.integrations;
   const badge = STATUS_BADGE[item.status] ?? STATUS_BADGE['unhealthy'];
   const lastCheckedDate = new Date(item.lastChecked);
   const nowMs = Date.now();
-  const ageMinutes = Math.floor((nowMs - lastCheckedDate.getTime()) / 60_000);
+  const ageSeconds = Math.floor((nowMs - lastCheckedDate.getTime()) / 1_000);
 
   function handleActivate() {
     onOpenHistory(item.name);
@@ -64,7 +64,7 @@ export function IntegrationHealthCard({
     <div
       role="button"
       tabIndex={0}
-      aria-label={`${item.name}: ${t(badge.label as never)}. ${item.latencyMs !== null ? `${item.latencyMs}ms.` : ''} ${t('health.integrations.lastUpdated' as never, { minutes: ageMinutes })}`}
+      aria-label={`${item.name}: ${badge.label}. ${item.latencyMs !== null ? `${item.latencyMs}ms.` : ''} ${m.lastUpdated.replace('{seconds}', String(ageSeconds))}`}
       className={[
         'rounded-lg border border-border bg-card p-4 cursor-pointer',
         'transition-shadow motion-safe:transition-all',
@@ -86,7 +86,7 @@ export function IntegrationHealthCard({
           className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}
           aria-hidden="true"
         >
-          {t(badge.label as never)}
+          {badge.label}
         </span>
       </div>
 
@@ -111,7 +111,7 @@ export function IntegrationHealthCard({
 
       {/* Verificado há X min */}
       <p className="text-xs text-muted-foreground">
-        {t('health.integrations.lastUpdated' as never, { minutes: ageMinutes })}
+        {m.lastUpdated.replace('{seconds}', String(ageSeconds))}
       </p>
     </div>
   );

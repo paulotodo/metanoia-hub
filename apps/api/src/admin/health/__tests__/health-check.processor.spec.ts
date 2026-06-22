@@ -24,11 +24,6 @@ vi.mock('../../../common/context/request-context', () => ({
 }));
 
 // Mock PrismaClient e PrismaPg para createPrivilegedClient
-const mockPrivilegedClient = {
-  $executeRawUnsafe: vi.fn().mockResolvedValue(undefined),
-  $disconnect: vi.fn().mockResolvedValue(undefined),
-};
-
 vi.mock('@prisma/client', () => ({
   PrismaClient: class MockPrismaClient {
     $executeRawUnsafe = vi.fn().mockResolvedValue(undefined);
@@ -37,9 +32,7 @@ vi.mock('@prisma/client', () => ({
 }));
 
 vi.mock('@prisma/adapter-pg', () => ({
-  PrismaPg: class MockPrismaPg {
-    constructor(_opts: unknown) {}
-  },
+  PrismaPg: vi.fn(),
 }));
 
 // ---------------------------------------------------------------------------
@@ -159,7 +152,7 @@ describe('IntegrationHealthProcessor', () => {
   });
 
   it('(c) INSERT via $executeRawUnsafe com bind params $1::uuid — não concatenação SQL', async () => {
-    const { processor, redisMock, prismaMock } = makeProcessor();
+    const { processor, redisMock, prismaMock: _prismaMock } = makeProcessor();
     (redisMock.set as ReturnType<typeof vi.fn>).mockResolvedValueOnce('OK');
     (redisMock.get as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 

@@ -123,7 +123,6 @@ export class HealthCheckService {
       // 5xx
       return { name: 'Resend', status: 'unhealthy', latencyMs, lastChecked, message: MSG.UNKNOWN_ERROR };
     } catch (err) {
-      const latencyMs = Math.round(performance.now() - start);
       const message = isTimeoutError(err) ? MSG.TIMEOUT : MSG.CONNECTION_REFUSED;
       return { name: 'Resend', status: 'unhealthy', latencyMs: null, lastChecked, message };
     }
@@ -150,7 +149,6 @@ export class HealthCheckService {
       const message = response.ok ? undefined : MSG.UNKNOWN_ERROR;
       return { name: 'Keycloak', status, latencyMs, lastChecked, message };
     } catch (err) {
-      const latencyMs = Math.round(performance.now() - start);
       // CHK030: NUNCA incluir `url` ou `endpoint` no message
       const message = isTimeoutError(err) ? MSG.TIMEOUT : MSG.CONNECTION_REFUSED;
       return { name: 'Keycloak', status: 'unhealthy', latencyMs: null, lastChecked, message };
@@ -201,7 +199,6 @@ export class HealthCheckService {
       }
       return { name: 'Redis', status: 'unhealthy', latencyMs, lastChecked, message: MSG.UNKNOWN_ERROR };
     } catch (err) {
-      const latencyMs = Math.round(performance.now() - start);
       const message = isTimeoutError(err) ? MSG.TIMEOUT : MSG.CONNECTION_REFUSED;
       return { name: 'Redis', status: 'unhealthy', latencyMs: null, lastChecked, message };
     }

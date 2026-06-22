@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import messages from '../../../../../messages/pt-BR.json';
 import type { IntegrationHealthHistoryPoint } from '@metanoia/types';
 import { useIntegrationHistory } from '../_hooks/use-integration-health';
 
@@ -26,7 +26,7 @@ export function IntegrationHistoryModal({
   onClose,
   triggerRef,
 }: IntegrationHistoryModalProps) {
-  const t = useTranslations('health.integrations.modal');
+  const m = messages.health.integrations.modal;
   const modalRef = useRef<HTMLDivElement>(null);
   const { data, isLoading, isError } = useIntegrationHistory(integrationName);
 
@@ -114,7 +114,7 @@ export function IntegrationHistoryModal({
 
           {!isLoading && !isError && points.length === 0 && (
             <p role="status" className="text-sm text-muted-foreground italic">
-              {t('noHistory')}
+              {m.noHistory}
             </p>
           )}
 
@@ -122,10 +122,10 @@ export function IntegrationHistoryModal({
             <table className="w-full text-sm" aria-label={`Histórico de saúde de ${integrationName}`}>
               <thead>
                 <tr className="border-b border-border text-left">
-                  <th className="pb-2 font-medium text-muted-foreground">{t('status')}</th>
-                  <th className="pb-2 font-medium text-muted-foreground">{t('latencyMs')}</th>
-                  <th className="pb-2 font-medium text-muted-foreground">{t('message')}</th>
-                  <th className="pb-2 font-medium text-muted-foreground">{t('checkedAt')}</th>
+                  <th className="pb-2 font-medium text-muted-foreground">{m.status}</th>
+                  <th className="pb-2 font-medium text-muted-foreground">{m.latencyMs}</th>
+                  <th className="pb-2 font-medium text-muted-foreground">{m.message}</th>
+                  <th className="pb-2 font-medium text-muted-foreground">{m.checkedAt}</th>
                 </tr>
               </thead>
               <tbody>
