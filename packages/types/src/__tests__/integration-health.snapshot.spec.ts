@@ -171,11 +171,13 @@ describe('IntegrationHealthHistoryResponseSchema', () => {
   it('aceita response de histórico válida', () => {
     const response = {
       data: {
+        integration: 'Redis',
         points: [
           { checkedAt: '2026-06-22T03:00:00Z', status: 'healthy', latencyMs: 120 },
         ],
+        hours: 24,
       },
-      meta: { integration: 'Redis', hours: 24 },
+      meta: { total: 1, integration: 'Redis', hours: 24 },
     };
     expect(IntegrationHealthHistoryResponseSchema.safeParse(response).success).toBe(true);
   });
