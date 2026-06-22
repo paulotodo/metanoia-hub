@@ -16,7 +16,7 @@ import { generateId } from '@metanoia/types';
 import type { EnvConfig } from '../../config/env.validation';
 import type { IntegrationHealthStatus } from '@metanoia/types';
 
-const QUEUE_NAME = 'queue:integration-health-check';
+const QUEUE_NAME = 'integration-health-check';
 const JOB_NAME = 'integration-health-check';
 /** 5 minutos em ms */
 const INTERVAL_MS = 5 * 60 * 1000;
