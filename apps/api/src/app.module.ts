@@ -34,6 +34,7 @@ import { SearchModule } from './search/search.module';
 import { AuditModule } from './audit/audit.module';
 import { RequestContextMiddleware } from './common/context/request-context.middleware';
 import { NotificationsModule } from './notifications/notifications.module';
+import { AdminHealthModule } from './admin/health/admin-health.module';
 import { LastSeenInterceptor } from './common/interceptors/last-seen.interceptor';
 import { pinoLoggerConfig } from './common/logger/logger.config';
 
@@ -87,6 +88,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     SearchModule,
     AuditModule,
     NotificationsModule,
+    AdminHealthModule,
   ],
   providers: [
     {

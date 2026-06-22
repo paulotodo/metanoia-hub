@@ -1071,3 +1071,34 @@ model Notification {
   @@index([tenantId], name: "notifications_tenant_idx")
   @@map("notifications")
 }
+
+// ---------------------------------------------------------------------------
+// Story 14-4 — Health Check de Integrações & Dashboard Super Admin (NFR-I5)
+// Platform-level: sem tenant_id (super admin only).
+// Escrita via createPrivilegedClient() BYPASSRLS; leitura via endpoint REST.
+// Spec §FR-001, §D-001, data-model.md.
+// ---------------------------------------------------------------------------
+
+enum IntegrationHealthStatus {
+  healthy
+  degraded
+  unhealthy
+
+  @@map("integration_health_status")
+}
+
+/// IntegrationHealthLog — histórico de probes das integrações externas.
+/// Platform-level: sem tenant_id (super admin only).
+/// Escrita: createPrivilegedClient() BYPASSRLS no worker BullMQ (Story 14-4).
+/// Leitura: endpoint GET /api/v1/admin/health/integrations (Role.SUPER_ADMIN).
+model IntegrationHealthLog {
+  id              String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  integrationName String                 @map("integration_name") @db.VarChar(64)
+  status          IntegrationHealthStatus
+  latencyMs       Int?                   @map("latency_ms")
+  message         String?                @db.Text
+  checkedAt       DateTime               @default(now()) @map("checked_at") @db.Timestamptz
+
+  @@index([integrationName, checkedAt(sort: Desc)], name: "integration_health_log_name_checked_idx")
+  @@map("integration_health_log")
+}

@@ -13,7 +13,7 @@ const mockConfig = {
 function createService() {
   const configService = {
     get: vi.fn((key: string) => mockConfig[key as keyof typeof mockConfig]),
-  } as unknown as ConfigService;
+  } as unknown as ConfigService<import('../config/env.validation').EnvConfig, true>;
   return new KeycloakAdminService(configService);
 }
 
@@ -217,4 +217,67 @@ describe('KeycloakAdminService', () => {
       expect(result).toBeNull();
     });
   });
+  describe('getUsersByRealmRole', () => {
+    const keycloakUsers = [
+      { id: 'kc-001', email: 'admin@example.com', firstName: 'Admin', lastName: 'User', enabled: true, emailVerified: true },
+      { id: 'kc-002', email: 'admin2@example.com', firstName: 'Admin2', lastName: 'User2', enabled: true, emailVerified: false },
+    ];
+
+    it('retorna lista de usuários com o role (Story 14-4 §FR-007)', async () => {
+      vi.spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify(keycloakUsers), { status: 200 }),
+        );
+
+      const result = await service.getUsersByRealmRole('super_admin');
+      expect(result).toHaveLength(2);
+      expect(result[0]?.id).toBe('kc-001');
+      expect(result[1]?.email).toBe('admin2@example.com');
+    });
+
+    it('retorna [] quando role não existe (404)', async () => {
+      vi.spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(
+          new Response('Not Found', { status: 404 }),
+        );
+
+      const result = await service.getUsersByRealmRole('role_inexistente');
+      expect(result).toEqual([]);
+    });
+
+    it('lança erro para resposta não-200/404', async () => {
+      vi.spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(
+          new Response('Internal Server Error', { status: 500 }),
+        );
+
+      await expect(service.getUsersByRealmRole('super_admin')).rejects.toThrow(
+        'Keycloak role users fetch failed: 500',
+      );
+    });
+
+    it('encode-URI-encodes o roleName no path', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token', expires_in: 300 }), { status: 200 }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify([]), { status: 200 }),
+        );
+
+      await service.getUsersByRealmRole('super admin'); // espaço
+      const roleCall = fetchSpy.mock.calls[1]?.[0] as string;
+      expect(roleCall).toContain('super%20admin');
+    });
+  });
+
 });

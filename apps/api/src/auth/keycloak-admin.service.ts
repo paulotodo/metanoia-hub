@@ -313,6 +313,51 @@ export class KeycloakAdminService {
     const users = (await response.json()) as KeycloakUserRepresentation[];
     return users[0] ?? null;
   }
+  /**
+   * getUsersByRealmRole — lista todos os usuários Keycloak com um dado realm role.
+   *
+   * Story 14-4 §FR-007, §Clarifications Q2.
+   * Usado pelo IntegrationHealthProcessor para encontrar Super Admins e enviar notificações.
+   *
+   * @param roleName — valor literal do enum Role (ex: Role.SUPER_ADMIN = 'super_admin').
+   *   JSDoc intencional: espera o VALOR do enum, não o nome da constante.
+   *   Uso: keycloakAdminService.getUsersByRealmRole(Role.SUPER_ADMIN)
+   *
+   * @returns Array de KeycloakUserRepresentation. Retorna [] se role não encontrada (404)
+   *   ou se não houver usuários com o role.
+   */
+  async getUsersByRealmRole(roleName: string): Promise<KeycloakUserRepresentation[]> {
+    const token = await this.getAdminToken();
+
+    const response = await fetch(
+      `${this.baseUrl}/roles/${encodeURIComponent(roleName)}/users`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      },
+    );
+
+    // 404 = role inexistente → array vazio (comportamento defensivo)
+    if (response.status === 404) {
+      this.logger.warn({ roleName }, 'keycloak_role_not_found');
+      return [];
+    }
+
+    if (!response.ok) {
+      this.logger.error(
+        { status: response.status, roleName },
+        'failed to fetch users by realm role',
+      );
+      throw new Error(`Keycloak role users fetch failed: ${response.status}`);
+    }
+
+    const users = (await response.json()) as KeycloakUserRepresentation[];
+    return users;
+  }
+
 }
 
 export class KeycloakConflictError extends Error {

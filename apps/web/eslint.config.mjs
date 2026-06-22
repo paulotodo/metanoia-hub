@@ -9,6 +9,8 @@ export default [
       '**/dist/**',
       '**/node_modules/**',
       'scripts/**',
+      'playwright-report/**',
+      'test-results/**',
     ],
   },
 ];

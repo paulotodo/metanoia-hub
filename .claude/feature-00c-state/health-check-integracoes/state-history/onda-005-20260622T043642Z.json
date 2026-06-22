@@ -1,0 +1,486 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "health-check-integracoes",
+  "execution": {
+    "id": "feat-health-check-integracoes-20260622T034408Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Health Check de Integracoes & Dashboard Super Admin (NFR-I5) — Story 14-4. Backend apps/api (modules/admin/health/): GET /api/v1/admin/health/integrations roda probes em Resend (GET /domains ou dry-run), Keycloak (.well-known/openid-configuration), MinIO (HEAD/health), Redis (PING), PostgreSQL (SELECT 1), medindo latencia; classificacao healthy<1s/degraded 1-5s/unhealthy>5s-ou-erro; retorna {name,status,latencyMs,lastChecked,message?} + summary{total,healthy,degraded,unhealthy}; guard @Roles('super_admin') -> 403 p/ outros. BullMQ repeatable job a cada 5min (NAO @nestjs/schedule @Cron) com single-execution via Redis lock; persiste em tabela integration_health_log {integration_name,status,latency_ms,message,checked_at} com index (integration_name, checked_at DESC). Notificacao com debounce: so notifica se novo status persiste 2 checks consecutivos (10min, anti-flapping); emite evento system.integration.status-changed; cria notificacao p/ Super Admins via infra da Story 14.1; loga no audit com correlation_id. Frontend apps/web (/app/admin/health, Client Components): painel por integracao (nome, badge verde/amarelo/vermelho, latencia, last checked), sparkline de latencia 24h (288 pontos, SVG inline ou @nivo/line, responsivo, hover), auto-refresh 60s com 'Atualizado ha X segundos' + aviso visual stale>2min, click -> historico detalhado com erros. CRITICO: este host E producao — probes em testes/CI devem ser MOCKADOS, NUNCA bater nos servicos metanoia-prod-*. A 14-4 FORNECE a implementacao real do EmailHealthPort que a Story 14.3 deixou como StubEmailHealthPort (fechar integracao do circuit breaker do Resend). Tabela integration_health_log e platform-level/super-admin (avaliar no clarify se tem tenant_id/RLS ou e global). UUID v7 uuidv7(), Zod packages/types, TanStack Query (server state), vocabulario pastoral pt-BR.json, gate a11y (motion-safe/focus-ring). Testes: probes mock healthy/degraded/unhealthy, boundary latencia (999/1001/5001ms), flapping (max 2-3 notif), guard 403, BullMQ single-execution 2 instancias, E2E dashboard. Dependencias: 14.1 (notif infra, done), Epic 1 (Redis/Postgres). Fonte: _bmad-output/implementation-artifacts/14-4-health-check-de-integracoes-dashboard-super-admin-nfr-i.md.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-22T03:44:08Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "execute-task",
+  "next_instruction": "Iniciar etapa execute-task — executar tasks de health-check-integracoes conforme tasks.md. Começar pela FASE 1 (tipos Zod + migration + RLS). Infra real ancorada: createPrivilegedClient, Role.SUPER_ADMIN enum, getUsersByRealmRole a adicionar, substituição StubEmailHealthPort em notifications.module.ts L47-50, bind params posicionais INSERT, micro-cache 5-10s endpoint on-demand. NFR-TEST-001: probes NUNCA batem em produção (mock vi.mock/MSW/nock).",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-22T03:46:42Z",
+      "finished_at": "2026-06-22T03:50:57Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 255,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-22T03:50:24Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-22T03:58:46Z",
+      "finished_at": "2026-06-22T04:01:32Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 166,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-22T04:01:31Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-22T04:07:48Z",
+      "finished_at": "2026-06-22T04:13:53Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 365,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-22T04:12:38Z",
+          "decision_id": "dec-009"
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-22T04:13:53Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-22T04:19:18Z",
+      "finished_at": "2026-06-22T04:25:37Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 379,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-22T04:19:35Z",
+          "decision_id": "dec-011"
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-22T04:30:52Z",
+      "finished_at": "2026-06-22T04:36:01Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 309,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-22T04:35:23Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-22T03:44:08Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:47:01Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=health-check-integracoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: health check integracoes dashboard super admin nfr",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:47:34Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio-de-execucao: onda specify",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "state.json em_andamento, bloqueios=0, gatilhos=limpos, story BMad 14-4 disponível, infra 14.1/14.3 mapeada (EmailHealthPort/StubEmailHealthPort, NotificationsModule, BullMQService, AuditService)",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:50:35Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify: spec.md gerada para feature health-check-integracoes",
+      "options_considered": [
+        "gerar-spec-completa",
+        "spec-rasa",
+        "abortar"
+      ],
+      "choice": "gerar-spec-completa",
+      "rationale": "Story BMad 14-4 completa, infra 14.1/14.3 mapeada, 3 NEEDS_CLARIFICATION identificados (RLS write policy, resolucao super admins, RequestContext no worker), 6 decisoes arquiteturais documentadas (D-001 tabela platform-level, D-002 GET /domains, D-003 Redis lock, D-004 debounce, D-005 sparkline 288pts, D-006 SVG inline)",
+      "justification_score": 3,
+      "evidence": "spec.md: 541 linhas, FR-001..FR-010 documentados, 5 probes, NotificationsModule integracao mapeada, EmailHealthPort->ResendHealthPort",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:56:13Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-22T03:59:11Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio-de-onda clarify: 3 NEEDS_CLARIFICATION a resolver via precedentes do codigo",
+      "options_considered": [
+        "resolver-autonomamente",
+        "escalar-humano",
+        "abortar"
+      ],
+      "choice": "resolver-autonomamente",
+      "rationale": "todos os 3 NEEDS_CLARIFICATION tem precedente direto no codigo: evasion_job_log (RLS), keycloak-admin.service.ts (API admin), notifications.worker.ts (requestContext.run)",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-22T04:06:09Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-22T04:07:57Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=health-check-integracoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos: health check integracoes dashboard super admin nfr | achados-chave de metricas-plataforma: createPrivilegedClient confirmado, BullMqService SEM FlowProducer, Role.SUPER_ADMIN, owasp single-barrier super_admin authz (guard unico) vira AC",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-22T04:12:38Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "plan: gerado plano tecnico completo (plan/research/data-model/2 contracts/quickstart) para health-check-integracoes",
+      "options_considered": [
+        "gerar-plano-completo",
+        "plano-raso",
+        "abortar"
+      ],
+      "choice": "gerar-plano-completo",
+      "rationale": "5 artefatos; constitution PASS com 1 excecao MUST (Principio I tabela platform-level) documentada via precedente evasion_job_log ratificado; 7 decisoes research; convencoes de borda + roundtrip E2E anti-drift snake/camel; carry OWASP single-barrier authz convertido em AC",
+      "justification_score": 3,
+      "evidence": "grep createPrivilegedClient detect-evasion-risk.processor.ts=3 ocorrencias (precedente confirmado); plan.md=199 linhas; EMAIL_HEALTH_PORT provider em notifications.module.ts L49-50 verificado; KeycloakAdminService getAdminToken+baseUrl L22-26 verificado",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-22T04:18:12Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase checklist)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-22T04:19:35Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio da onda checklist — quality gate de requisitos",
+      "options_considered": [
+        "iniciar-checklist",
+        "abortar"
+      ],
+      "choice": "iniciar-checklist",
+      "rationale": "Artefatos spec.md + plan.md + data-model.md + research.md presentes; 0 bloqueios pendentes; budget OK; drift=1 (abaixo de 5)",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-22T04:24:55Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Checklists gerados para 4 dominios: api (22 itens), security (19 itens), performance (20 itens), ux/a11y (28 itens)",
+      "options_considered": [
+        "gerar-todos-dominios",
+        "gerar-subset",
+        "pular"
+      ],
+      "choice": "gerar-todos-dominios",
+      "rationale": "Feature multi-camada (DB+backend+frontend) com findings OWASP ativos (F1-F4); 4 dominios cobrem todos os riscos identificados: api (contratos/authz), security (OWASP F1-F4), performance (NFR-I5/Promise.all/throttle), ux/a11y (dashboard/sparkline/motion-safe)",
+      "justification_score": 3,
+      "evidence": "37 itens auto-resolvidos com evidencia citada da spec; 12 gaps abertos (CHK009,CHK014,CHK015,CHK027,CHK028,CHK030,CHK031,CHK033,CHK035,CHK049,CHK076,CHK077); itens criticos a11y identificados (CHK076 SVG sem ARIA, CHK077 tooltip inacessivel)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-22T04:25:10Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gaps criticos de a11y identificados no checklist UX (CHK076, CHK077)",
+      "options_considered": [
+        "aceitar-risco-com-justificativa",
+        "adicionar-spec-antes-execute",
+        "escalar-para-humano"
+      ],
+      "choice": "aceitar-risco-com-justificativa",
+      "rationale": "CHK076 (SVG sem ARIA) e CHK077 (tooltip inacessivel) sao bloqueantes para leitores de tela. Gate a11y do CI (Epic 12) pegaria em PR, mas e mais eficiente corrigir na task de implementacao do sparkline. Registrado como task de implementacao em create-tasks.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-22T04:25:10Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gaps de seguranca OWASP F1/F2 identificados (CHK015 audit HTTP, CHK028 allowlist message, CHK035 micro-cache)",
+      "options_considered": [
+        "adicionar-spec",
+        "registrar-como-acceptance-criteria",
+        "escalar-para-humano"
+      ],
+      "choice": "registrar-como-acceptance-criteria",
+      "rationale": "CHK015/CHK028/CHK035 nao bloqueiam a geracao de tasks mas devem ser acceptance criteria da task de implementacao correspondente. Score 2: decisao suportada pelos findings OWASP F1/F2/F4 e pela constitution (seguranca como principio MUST).",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-22T04:29:09Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-22T04:35:35Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gerar tasks.md para health-check-integracoes com 18 tasks, 77 subtarefas em 4 fases; gaps de checklist (CHK025/CHK013/CHK026/CHK027/CHK028/CHK030/CHK031/CHK033/CHK035/CHK049/CHK074/CHK076/CHK077/CHK085/CHK088) convertidos em acceptance criteria explícitos; gate validate-tasks-template: critical=0 warning=0",
+      "options_considered": [
+        "gerar-tasks",
+        "abortar",
+        "bloqueio-humano"
+      ],
+      "choice": "gerar-tasks",
+      "rationale": "Spec+plan+checklists completos (89 items, 0 bloqueios pendentes); infra real lida e refletida nas tasks (createPrivilegedClient, Role.SUPER_ADMIN enum, getUsersByRealmRole novo, substituição L47-50 NotificationsModule, bind params posicionais, micro-cache on-demand); gate deterministico passou",
+      "justification_score": 3,
+      "evidence": "validate-tasks-template.sh: RESULT|tasks.md|critical=0|warning=0; 312 linhas geradas; Role.SUPER_ADMIN em auth/enums/role.enum.ts L17 confirmado; insertJobLog L258-291 pattern detectado em detect-evasion-risk.processor.ts",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-22T04:30:52Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 5,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 1474,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 16,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "health",
+    "check",
+    "integracoes",
+    "dashboard",
+    "super",
+    "admin",
+    "nfr"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-22T03:46:54Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-22T03:51:18Z",
+      "description": "onda-001 specify concluido; proxima onda: clarify"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-22T04:07:31Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-22T04:31:02Z",
+      "description": "etapa=create-tasks hits=0 (fase nao-eligible para read-back)"
+    }
+  ]
+}
