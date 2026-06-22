@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "health-check-integracoes",
+  "execution": {
+    "id": "feat-health-check-integracoes-20260622T034408Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Health Check de Integracoes & Dashboard Super Admin (NFR-I5) — Story 14-4. Backend apps/api (modules/admin/health/): GET /api/v1/admin/health/integrations roda probes em Resend (GET /domains ou dry-run), Keycloak (.well-known/openid-configuration), MinIO (HEAD/health), Redis (PING), PostgreSQL (SELECT 1), medindo latencia; classificacao healthy<1s/degraded 1-5s/unhealthy>5s-ou-erro; retorna {name,status,latencyMs,lastChecked,message?} + summary{total,healthy,degraded,unhealthy}; guard @Roles('super_admin') -> 403 p/ outros. BullMQ repeatable job a cada 5min (NAO @nestjs/schedule @Cron) com single-execution via Redis lock; persiste em tabela integration_health_log {integration_name,status,latency_ms,message,checked_at} com index (integration_name, checked_at DESC). Notificacao com debounce: so notifica se novo status persiste 2 checks consecutivos (10min, anti-flapping); emite evento system.integration.status-changed; cria notificacao p/ Super Admins via infra da Story 14.1; loga no audit com correlation_id. Frontend apps/web (/app/admin/health, Client Components): painel por integracao (nome, badge verde/amarelo/vermelho, latencia, last checked), sparkline de latencia 24h (288 pontos, SVG inline ou @nivo/line, responsivo, hover), auto-refresh 60s com 'Atualizado ha X segundos' + aviso visual stale>2min, click -> historico detalhado com erros. CRITICO: este host E producao — probes em testes/CI devem ser MOCKADOS, NUNCA bater nos servicos metanoia-prod-*. A 14-4 FORNECE a implementacao real do EmailHealthPort que a Story 14.3 deixou como StubEmailHealthPort (fechar integracao do circuit breaker do Resend). Tabela integration_health_log e platform-level/super-admin (avaliar no clarify se tem tenant_id/RLS ou e global). UUID v7 uuidv7(), Zod packages/types, TanStack Query (server state), vocabulario pastoral pt-BR.json, gate a11y (motion-safe/focus-ring). Testes: probes mock healthy/degraded/unhealthy, boundary latencia (999/1001/5001ms), flapping (max 2-3 notif), guard 403, BullMQ single-execution 2 instancias, E2E dashboard. Dependencias: 14.1 (notif infra, done), Epic 1 (Redis/Postgres). Fonte: _bmad-output/implementation-artifacts/14-4-health-check-de-integracoes-dashboard-super-admin-nfr-i.md.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-22T03:44:08Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "clarify",
+  "next_instruction": "Iniciar etapa clarify — invocar feature-00c-clarify-asker com spec.md gerada. NEEDS_CLARIFICATION: (1) RLS write policy worker integration_health_log; (2) resolucao userId Super Admins para dispatch(); (3) RequestContext AsyncLocalStorage no BullMQ worker.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-22T03:46:42Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-22T03:50:24Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-22T03:44:08Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:47:01Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=health-check-integracoes)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: health check integracoes dashboard super admin nfr",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:47:34Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio-de-execucao: onda specify",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "state.json em_andamento, bloqueios=0, gatilhos=limpos, story BMad 14-4 disponível, infra 14.1/14.3 mapeada (EmailHealthPort/StubEmailHealthPort, NotificationsModule, BullMQService, AuditService)",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-22T03:50:35Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify: spec.md gerada para feature health-check-integracoes",
+      "options_considered": [
+        "gerar-spec-completa",
+        "spec-rasa",
+        "abortar"
+      ],
+      "choice": "gerar-spec-completa",
+      "rationale": "Story BMad 14-4 completa, infra 14.1/14.3 mapeada, 3 NEEDS_CLARIFICATION identificados (RLS write policy, resolucao super admins, RequestContext no worker), 6 decisoes arquiteturais documentadas (D-001 tabela platform-level, D-002 GET /domains, D-003 Redis lock, D-004 debounce, D-005 sparkline 288pts, D-006 SVG inline)",
+      "justification_score": 3,
+      "evidence": "spec.md: 541 linhas, FR-001..FR-010 documentados, 5 probes, NotificationsModule integracao mapeada, EmailHealthPort->ResendHealthPort",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-22T03:46:42Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 0,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 0,
+    "max_depth_reached": 1,
+    "subagents_spawned": 0,
+    "decisions_total": 4,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "health",
+    "check",
+    "integracoes",
+    "dashboard",
+    "super",
+    "admin",
+    "nfr"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-22T03:46:54Z",
+      "description": "etapa=specify hits=4"
+    }
+  ]
+}
