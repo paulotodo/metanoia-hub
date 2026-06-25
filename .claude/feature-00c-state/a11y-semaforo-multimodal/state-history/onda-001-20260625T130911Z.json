@@ -1,0 +1,270 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-semaforo-multimodal",
+  "execution": {
+    "id": "feat-a11y-semaforo-multimodal-20260625T125322Z",
+    "target_project_path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates",
+    "target_project_description": "Semaforo multimodal: status pastoral nao depende so de cor — cor + icone Lucide + texto sempre visivel. aria-label, aria-hidden nos canais redundantes, role=img + focusable=false nos SVGs, prefers-reduced-motion (CSS, nao JS) na transicao de pulso, modo compacto (icone >=16px, texto truncado mas aria-label completo), dark mode com contraste >=3:1 validado por color2k em unit test. NFR-A5, UX-DR15/DR20.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-25T12:53:22Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "plan",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-25T12:58:24Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-25T13:00:06Z",
+          "decision_id": null
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T13:04:01Z",
+          "decision_id": "dec-004"
+        },
+        {
+          "skill": "feature-00c-clarify-asker",
+          "timestamp": "2026-06-25T13:05:05Z",
+          "decision_id": null
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-25T13:06:42Z",
+          "decision_id": null
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-25T13:07:14Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-25T12:56:43Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T12:59:00Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-semaforo-multimodal)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: semaforo multimodal status pastoral nao depende cor",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T13:03:07Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: spec.md gerada em docs/specs/a11y-semaforo-multimodal/spec.md",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 15.3 tem 5 user stories, 15 FRs, 2 ambiguidades de produto identificadas (Q1-LABELS, Q2-PULSE-TRIGGER). Contexto pré-flight completo (preflight-reconciliation.md lido). Spec gerada com vocabulário pastoral correto, tokens care-* do projeto, escopo definido.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T13:04:01Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T13:05:24Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q1-LABELS: rótulo do badge multimodal por-participante",
+      "options_considered": [
+        "A-STATUS_LABEL-15.2",
+        "B-SEMAFORO_STATUS_LABELS",
+        "C-criar-novo"
+      ],
+      "choice": "A-STATUS_LABEL-15.2",
+      "rationale": "Os rótulos 'Urgente'/'Atenção necessária'/'Bem' (STATUS_LABEL da 15.2) são pastorais, adjetivais por-pessoa, e têm teste de cobertura ('João — Urgente'). SEMAFORO_STATUS_LABELS é para títulos de seção (plural). Centralizar STATUS_LABEL como SIGNAL_STATUS_LABELS em packages/types preservando os valores exatos. Rejeitar 'Ativo'/'Crítico' corporativos (CLAUDE.md vocabulário pastoral).",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T13:05:24Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q2-PULSE-TRIGGER: detecção de mudança de status para animação de pulso",
+      "options_considered": [
+        "A-prop-animatePulse",
+        "B-useEffect-local",
+        "C-classe-CSS-externa"
+      ],
+      "choice": "A-prop-animatePulse",
+      "rationale": "Badge aceita prop animatePulse?: boolean. O pai (ParticipantCard) detecta delta reutilizando o sinal já existente do useParticipantStatusAnnouncer (15.2) e seta a prop, limpando após 1s. Badge não conhece SSE; só recebe o sinal. Reutiliza infra existente, mantém badge desacoplado de SSE.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T13:05:24Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "SR-ONLY vs VISÍVEL: conciliar sr-only da 15.2 com texto visível da 15.3 sem duplo-anúncio",
+      "options_considered": [
+        "substituir-sronly-por-visivel-aria-correto",
+        "manter-ambos"
+      ],
+      "choice": "substituir-sronly-por-visivel-aria-correto",
+      "rationale": "FR-004/FR-005 prescritivos: substituir o <span sr-only> da 15.2 por ícone (aria-hidden) + texto VISÍVEL. O texto visível carrega o significado para AT. Evitar duplo-anúncio: o aria-label do container, se presente, deve englobar o texto visível via aria-hidden no filho OU o texto visível ser a única fonte (sem sr-only paralelo nem aria-label redundante).",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T13:07:01Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-semaforo-multimodal)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: semaforo multimodal status pastoral icone texto aria",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-25T12:58:24Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 0,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 0,
+    "max_depth_reached": 2,
+    "subagents_spawned": 1,
+    "decisions_total": 8,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0,
+    "cache": {
+      "tokens_cache_misses_disabled": 1
+    }
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "semaforo",
+    "multimodal",
+    "status",
+    "pastoral",
+    "nao",
+    "depende",
+    "cor"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T12:58:48Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T13:07:01Z",
+      "description": "etapa=plan hits=4"
+    }
+  ]
+}

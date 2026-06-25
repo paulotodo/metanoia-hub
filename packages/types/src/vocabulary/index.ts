@@ -45,4 +45,7 @@ export {
   RISK_RESOLVED_BANNER_MESSAGE,
   RISK_RESOLVED_BANNER_DISMISS,
   type RiskReasonKey,
+  // Story 15.3 — Signal status labels (per-participant, multimodal badge)
+  SIGNAL_STATUS_LABELS,
+  type SignalStatusLabel,
 } from './vocabulary';
