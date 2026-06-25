@@ -1,16 +1,32 @@
 {
   "_README": [
     "Lista de páginas auditadas pelo gate axe (axe-quality-gate.e2e-spec.ts).",
-    "Campos por entrada: path (string, rota relativa), label (string, nome do teste),",
-    "requiresAuth (boolean). NESTE SPRINT entradas requiresAuth=true são SKIPPED",
-    "(tech debt R2 — exigem loginAs + Keycloak; ver dec-007/NC-3 na spec).",
-    "Para adicionar página pública: acrescente {path,label,requiresAuth:false}.",
-    "Nenhuma edição no spec file é necessária (iteração dinâmica — FR-11/SC-5.3)."
+    "Campos por entrada:",
+    "  path (string): rota relativa.",
+    "  label (string): nome do teste.",
+    "  requiresAuth (boolean): true → o gate faz loginAs (persona admin demo) antes de navegar.",
+    "  gate ('hard' | 'baseline', default 'hard'):",
+    "    'hard'     → asserta ZERO violações WCAG 2AA; qualquer violação BLOQUEIA o PR.",
+    "    'baseline' → roda o axe e LOGA as violações, mas NÃO bloqueia (ratchet). Usado para",
+    "                 páginas autenticadas com violações pré-existentes (débito R2 do Epic 12).",
+    "  requiresRole (string, opcional): role exigida. Se não houver persona E2E para ela,",
+    "                 a página é SKIPADA com motivo (hoje só existe a persona admin demo).",
+    "",
+    "RATCHET (Epic 15 — Acessibilidade Avançada): conforme cada página autenticada é corrigida,",
+    "trocar seu gate de 'baseline' para 'hard' para torná-la bloqueante. Nenhuma edição no spec",
+    "é necessária — a iteração é dinâmica (FR-11/SC-5.3).",
+    "",
+    "Para 'health-super-admin': criar seed/persona super_admin no E2E e adicioná-la ao",
+    "conjunto de personas do spec antes de remover o skip."
   ],
   "pages": [
-    { "path": "/",                "label": "home-marketing",  "requiresAuth": false },
-    { "path": "/login",           "label": "login",           "requiresAuth": false },
-    { "path": "/register",        "label": "register",        "requiresAuth": false },
-    { "path": "/recuperar-senha", "label": "recuperar-senha", "requiresAuth": false }
+    { "path": "/",                          "label": "home-marketing",     "requiresAuth": false, "gate": "hard" },
+    { "path": "/login",                     "label": "login",              "requiresAuth": false, "gate": "hard" },
+    { "path": "/register",                  "label": "register",           "requiresAuth": false, "gate": "hard" },
+    { "path": "/recuperar-senha",           "label": "recuperar-senha",    "requiresAuth": false, "gate": "hard" },
+    { "path": "/app/admin/igreja/dashboard", "label": "dashboard-lider",     "requiresAuth": true,  "gate": "baseline" },
+    { "path": "/app/gestao/radar",           "label": "radar-pastoral",      "requiresAuth": true,  "gate": "baseline" },
+    { "path": "/app/consumo/trilhas",        "label": "trilhas-discipulado", "requiresAuth": true,  "gate": "baseline" },
+    { "path": "/admin/health",               "label": "health-super-admin",  "requiresAuth": true,  "gate": "baseline", "requiresRole": "super_admin" }
   ]
 }
