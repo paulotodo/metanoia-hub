@@ -1,0 +1,379 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-screen-reader-dashboard",
+  "execution": {
+    "id": "feat-a11y-screen-reader-dashboard-20260625T100503Z",
+    "target_project_path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates",
+    "target_project_description": "Screen Reader: dashboard do lider, radar pastoral, listas de participantes, ParticipantCard expansivel, busca/filtro, tabelas, e anuncios aria-live para atualizacoes SSE em tempo real (Epic 14) com debounce/batch, supressao via toggle silenciar, e desconexao/reconexao com role=status. NFR-A4, UX-DR20.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-25T10:05:03Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "specify",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-25T10:10:03Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-25T10:13:31Z",
+          "decision_id": null
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T10:14:21Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T10:16:08Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-25T10:19:20Z",
+          "decision_id": null
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-25T10:20:18Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-25T10:08:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:10:23Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-screen-reader-dashboard)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: screen reader dashboard lider radar pastoral listas",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:10:36Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: inicio de execucao da feature a11y-screen-reader-dashboard",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 15.2 claramente definida. Artefatos de reconciliation pre-flight disponíveis. Rotas reais mapeadas. Ambiguidades de busca e fronteira 15.2/15.3 identificadas para resolver no clarify.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:13:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify concluido: spec.md gerada para a11y-screen-reader-dashboard Story 15.2",
+      "options_considered": [
+        "avancar-clarify",
+        "revisar-spec",
+        "abortar"
+      ],
+      "choice": "avancar-clarify",
+      "rationale": "Spec gerada com 10 RF, 7 AC, fronteiras explícitas 15.2×15.3, busca fora de escopo documentada, tabelas N/A documentado. Pronto para clarify resolver ambiguidades residuais.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:13:57Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation: skill nao disponivel no ambiente (Unknown skill error)",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "A skill validate-documentation retornou Unknown skill. Gate não pode ser executado. Spec foi validada manualmente via checklist interno: todos os RF são testáveis, SC são mensuráveis e technology-agnostic, escopo delimitado, fronteiras documentadas.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:14:21Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo.",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:16:08Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:17:43Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Clarify P2 texto do status do semaforo para AT: usar textos por extenso",
+      "options_considered": [
+        "urgente-atencao-bem",
+        "atencao-necessaria-cuidado-urgente",
+        "termos-pastorais"
+      ],
+      "choice": "atencao-necessaria-urgente-bem",
+      "rationale": "Spec AC-1/LAC-02/LAC-05 citam literalmente 'Atencao necessaria' e 'Urgente'. Constitution Principio III exige vocabulario pastoral. Textos: care-urgent='Urgente', care-attention='Atencao necessaria', care-ok='Bem'.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:18:29Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P1 (answerer pausou score1): onde colocar aria-label de status do card de participante",
+      "options_considered": [
+        "aria-label-elemento-raiz",
+        "span-sr-only-aninhado"
+      ],
+      "choice": "aria-label-elemento-raiz",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto/negocio. Sonda empirica: grep -n 'aria-labelledby|aria-label' participant-card.tsx retornou ZERO matches — os cards NAO tem aria-labelledby interno, portanto adicionar aria-label no elemento raiz (div do Expanded, Link do Medium) NAO causa conflito. LAC-02 da spec especifica exatamente essa solucao. WCAG: aria-label no raiz e padrao valido quando nao ha labelledby concorrente.",
+      "justification_score": 3,
+      "evidence": "grep -n 'aria-labelledby|aria-label' participant-card.tsx => 0 matches (sem labelledby interno; sem conflito ao aplicar aria-label no raiz)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:18:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P3 (answerer pausou score1): localizacao do hook useParticipantStatusAnnouncer",
+      "options_considered": [
+        "hook-local-radar",
+        "hook-compartilhado-src-hooks"
+      ],
+      "choice": "hook-local-radar",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto. Spec §2.1 lista explicitamente o hook junto a radar/page.tsx. YAGNI: nenhuma outra pagina hoje consome status de participante via SSE — criar em src/hooks/ seria abstracao prematura. Convencao do projeto: src/hooks/ contem hooks ja COMPARTILHADOS (use-notification-stream, use-attendance-live); hooks de pagina unica ficam co-located. Se futura story precisar, refatora-se para src/hooks/ (custo baixo). Constitution nao discrimina.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:18:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P4 (answerer pausou score0): estrutura da assercao anti-redirect no axe spec",
+      "options_considered": [
+        "novo-describe-isolado",
+        "modificar-bloco-axe-hard-existente"
+      ],
+      "choice": "modificar-bloco-axe-hard-existente",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto. Sonda empirica: axe-quality-gate.e2e-spec.ts e DATA-DRIVEN — itera 'for (const pageEntry of allPages)' e gera testes por entrada do a11y-pages.json. NAO ha como adicionar describe isolado por pagina sem quebrar o padrao. A assercao anti-redirect e pre-condicao natural do teste hard (verificar que conteudo autenticado carregou ANTES de rodar axe), entao vai DENTRO do bloco [axe:hard] apos o goto, antes do AxeBuilder.analyze().",
+      "justification_score": 3,
+      "evidence": "axe-quality-gate.e2e-spec.ts:73 'for (const pageEntry of allPages)' + bloco [axe:hard] linha ~133 gerado por loop — describe isolado por pagina nao cabe no padrao data-driven; assercao vai inline no bloco hard",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:19:09Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P5 (answerer pausou score1): mecanismo de title dinamico em Client Component",
+      "options_considered": [
+        "generateMetadata-server-side",
+        "document-title-useEffect-client",
+        "title-jsx-direto"
+      ],
+      "choice": "document-title-useEffect-client",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto. Sonda empirica: radar/page.tsx inicia com 'use client' e o groupName vem de estado client-side (selectedGroupId via useState). generateMetadata e server-only e estatico — NAO captura selecao de filtro client-side (inviavel tecnicamente para RF-08). O projeto NAO tem hook useHead/usePageTitle existente (ls src/hooks/ confirmou). Padrao mais simples e portavel: useEffect que seta document.title quando groupName muda. Evita criar abstracao nova. Constitution Principio V (Client Components) permite.",
+      "justification_score": 3,
+      "evidence": "radar/page.tsx:1 'use client' + selectedGroupId via useState (estado client-side); ls src/hooks/ sem useHead/usePageTitle => generateMetadata server-side nao captura estado dinamico; document.title em useEffect e o caminho viavel",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:20:08Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Transicao clarify->plan: feature-00c-preflight check retornou ok=true",
+      "options_considered": [
+        "avancar-plan",
+        "bloquear"
+      ],
+      "choice": "avancar-plan",
+      "rationale": "Preflight FR-010A passou (ok=true, findings=[]). 5 clarificacoes resolvidas autonomamente, 0 pausas humanas, spec atualizada com secao Clarifications.",
+      "justification_score": 3,
+      "evidence": "feature-00c-preflight.sh check => {ok: true, findings: []} exit 0",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:20:08Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO plan: K=4 achados injetados (anti-eco feature=a11y-screen-reader-dashboard)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos: screen reader dashboard lider radar pastoral listas",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-25T10:10:03Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 0,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 0,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 14,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "screen",
+    "reader",
+    "dashboard",
+    "lider",
+    "radar",
+    "pastoral",
+    "listas"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T10:10:23Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T10:20:08Z",
+      "description": "etapa=plan hits=4"
+    }
+  ]
+}
