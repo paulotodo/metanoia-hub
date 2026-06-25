@@ -31,12 +31,20 @@ export function VideoPlayer({
   className,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const endedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [error, setError] = useState(false);
   const [endedMessage, setEndedMessage] = useState('');
 
   useEffect(() => {
     setError(false);
   }, [signedUrl]);
+
+  // Limpar timer de anúncio pendente ao desmontar (evita setState fora de tela)
+  useEffect(() => {
+    return () => {
+      if (endedTimerRef.current) clearTimeout(endedTimerRef.current);
+    };
+  }, []);
 
   const handleEnded = useCallback(() => {
     // Mover foco: "Próximo módulo" se existir, senão retornar ao <video> (FR-010)
@@ -53,8 +61,10 @@ export function VideoPlayer({
     // Notificar consumidor (ex: ModuleCompletionAnnounce no parent)
     onVideoEnded?.();
 
-    // Limpar anúncio após 3s para evitar re-anúncios em re-renders
-    setTimeout(() => setEndedMessage(''), 3000);
+    // Limpar anúncio após 3s para evitar re-anúncios em re-renders.
+    // Timer em ref + cleanup no unmount evita setState em componente desmontado.
+    if (endedTimerRef.current) clearTimeout(endedTimerRef.current);
+    endedTimerRef.current = setTimeout(() => setEndedMessage(''), 3000);
   }, [nextModuleButtonRef, onVideoEnded]);
 
   if (error) {
