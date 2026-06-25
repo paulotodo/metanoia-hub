@@ -96,8 +96,19 @@ describe('TrailCard', () => {
   it('calls onClick when button is clicked', () => {
     const onClick = vi.fn();
     render(<TrailCard trail={baseTrail} onClick={onClick} />);
-    fireEvent.click(screen.getByRole('button', { name: /Abrir trilha/i }));
+    // aria-label consolidado: "Trilha: {name}, {status}, {progress}% concluída, {n} módulos"
+    fireEvent.click(screen.getByRole('button', { name: /Trilha:/i }));
     expect(onClick).toHaveBeenCalledOnce();
+  });
+
+  it('button aria-label contains trail name, status, progress and module count (FR-002)', () => {
+    render(<TrailCard trail={baseTrail} onClick={vi.fn()} />);
+    const btn = screen.getByRole('button', { name: /Trilha:/i });
+    const label = btn.getAttribute('aria-label') ?? '';
+    expect(label).toContain('Discipulado Básico');
+    expect(label).toContain('Em Andamento');
+    expect(label).toContain('50% concluída');
+    expect(label).toContain('3 módulos');
   });
 
   it('passes jest-axe accessibility checks', async () => {

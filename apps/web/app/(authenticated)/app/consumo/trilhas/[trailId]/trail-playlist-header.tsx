@@ -28,7 +28,7 @@ export function TrailPlaylistHeader({ trailId }: TrailPlaylistHeaderProps) {
       ) : (
         <TrailProgressBar
           progressPercent={progressData?.data.progressPercent ?? 0}
-          label={t.overallProgress}
+          label={`Progresso na trilha: ${progressData?.data.progressPercent ?? 0}%`}
         />
       )}
     </div>

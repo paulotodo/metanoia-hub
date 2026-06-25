@@ -53,11 +53,16 @@ export function TrailCard({
   if (moduleCount !== undefined) meta.push(`${moduleCount} módulo${moduleCount !== 1 ? 's' : ''}`);
   if (lessonCount !== undefined) meta.push(`${lessonCount} aula${lessonCount !== 1 ? 's' : ''}`);
 
+  // aria-label consolidado com status e módulos (FR-002 para catalog variant)
+  const ariaLabel = moduleCount !== undefined
+    ? `Trilha: ${name}, ${statusLabel}, ${moduleCount} módulos`
+    : `Trilha: ${name}, ${statusLabel}`;
+
   return (
     <a
       href={href}
       data-trail-id={trailId}
-      aria-label={t.trailCard.activate.replace('{name}', name)}
+      aria-label={ariaLabel}
       onKeyDown={handleKeyDown}
       className={[
         'block rounded-lg border border-border bg-background p-4',
@@ -68,9 +73,10 @@ export function TrailCard({
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-sm font-semibold text-foreground leading-snug">{name}</h3>
+        {/* Status badge — visual only; o link já anuncia o status via aria-label */}
         <span
           className="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground"
-          aria-label={`Status: ${statusLabel}`}
+          aria-hidden="true"
         >
           {statusLabel}
         </span>

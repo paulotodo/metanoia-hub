@@ -1,12 +1,20 @@
 'use client';
 
-import type { ModuleProgressDetail } from '@metanoia/types';
+import type { ModuleProgressDetail, LessonStatusItem } from '@metanoia/types';
 import { TrailProgressBar, LessonStatusIcon, ResumeLessonLink } from '@/components/content/trail-progress-bar';
 import { useTrailProgress, useResumeLesson } from '@/lib/api/hooks/use-progress';
 
 interface TrailProgressViewProps {
   trailId: string;
 }
+
+// Status labels para aria-label de aulas (lessonName indisponível no contrato —
+// usar posição + status como fallback descritivo para screen readers; follow-up 15.5)
+const LESSON_STATUS_LABELS: Record<LessonStatusItem['status'], string> = {
+  not_started: 'Não iniciada',
+  in_progress: 'Em andamento',
+  completed: 'Concluída',
+};
 
 /**
  * TrailProgressView — Client Component que exibe o progresso de uma trilha.
@@ -44,6 +52,15 @@ export function TrailProgressView({ trailId }: TrailProgressViewProps) {
 
   return (
     <div className="p-6 space-y-8">
+      {/* Summary region — screen readers anunciam o overview antes da lista detalhada (FR-006) */}
+      <div
+        role="region"
+        aria-label={`Resumo: ${data.completedModules} de ${data.totalModules} módulos concluídos`}
+        className="sr-only"
+      >
+        Você tem {data.completedModules} módulos concluídos de {data.totalModules}.
+      </div>
+
       {/* Trail header + overall progress */}
       <section aria-labelledby="trail-progress-heading">
         <div className="flex items-start justify-between gap-4 mb-3">
@@ -60,7 +77,7 @@ export function TrailProgressView({ trailId }: TrailProgressViewProps) {
         </div>
         <TrailProgressBar
           progressPercent={data.progressPercent}
-          label={`Trilha — ${data.progressPercent}% concluída`}
+          label={`Progresso na trilha: ${data.progressPercent}%`}
         />
         <p className="text-sm text-muted-foreground mt-2">
           {data.completedModules} de {data.totalModules}{' '}
@@ -71,13 +88,13 @@ export function TrailProgressView({ trailId }: TrailProgressViewProps) {
       {/* Modules */}
       <section aria-label="Módulos da trilha">
         <div className="space-y-6">
-          {data.modules.map((mod: ModuleProgressDetail) => (
+          {data.modules.map((mod: ModuleProgressDetail, modIndex: number) => (
             <div key={mod.moduleId} className="border rounded-lg p-4 space-y-3">
               {/* Module progress */}
               <div className="space-y-1">
                 <TrailProgressBar
                   progressPercent={mod.progressPercent}
-                  label={`Módulo — ${mod.progressPercent}% concluído`}
+                  label={`Módulo ${modIndex + 1}: ${mod.progressPercent}% concluído`}
                 />
                 <p className="text-xs text-muted-foreground">
                   {mod.completedLessons}/{mod.totalLessons}{' '}
@@ -87,8 +104,14 @@ export function TrailProgressView({ trailId }: TrailProgressViewProps) {
 
               {/* Lessons list */}
               <ul className="space-y-2" aria-label="Aulas deste módulo">
-                {mod.lessons.map((lesson) => (
-                  <li key={lesson.lessonId} className="flex items-center gap-3">
+                {mod.lessons.map((lesson, lessonIndex) => (
+                  <li
+                    key={lesson.lessonId}
+                    className="flex items-center gap-3"
+                    // lessonName indisponível no contrato @metanoia/types (LessonStatusItem);
+                    // usar posição + status como fallback para screen readers (follow-up 15.5)
+                    aria-label={`Aula ${lessonIndex + 1}: ${LESSON_STATUS_LABELS[lesson.status]}`}
+                  >
                     <LessonStatusIcon status={lesson.status} />
                     <span className="text-sm flex-1">
                       {lesson.status === 'in_progress' && (

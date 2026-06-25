@@ -9,14 +9,18 @@ import type { LessonStatus } from '@metanoia/types';
 interface TrailProgressBarProps {
   /** Percentual de conclusão (0–100) */
   progressPercent: number;
-  /** Rótulo acessível, ex: "Trilha Fundamentos — 75% concluída" */
-  label?: string;
+  /**
+   * Rótulo acessível OBRIGATÓRIO — identifica a entidade medida e o percentual.
+   * Exemplos: "Progresso na trilha: 75%", "Progresso no módulo Oração: 40%".
+   * Default genérico removido para forçar label contextual em todos os call sites (FR-005).
+   */
+  label: string;
   className?: string;
 }
 
 export function TrailProgressBar({ progressPercent, label, className }: TrailProgressBarProps) {
   const clampedPercent = Math.min(100, Math.max(0, progressPercent));
-  const displayLabel = label ?? `${clampedPercent}% concluído`;
+  const displayLabel = label;
 
   return (
     <div className={className} role="progressbar" aria-valuenow={clampedPercent} aria-valuemin={0} aria-valuemax={100} aria-label={displayLabel}>
