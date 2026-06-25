@@ -73,7 +73,8 @@ export function RecoveryForm() {
 
   if (formState === 'sent') {
     return (
-      <Card className="w-full max-w-md p-8" data-testid="recovery-sent">
+      // LAC-08: role="status" anuncia a confirmação de envio ao screen reader (polite)
+      <Card className="w-full max-w-md p-8" role="status" data-testid="recovery-sent">
         <h1 className="text-display mb-4 text-center">{t.sent.title}</h1>
         <p className="text-body mb-4 text-center text-text-secondary">
           {t.sent.message}
@@ -111,7 +112,8 @@ export function RecoveryForm() {
         {t.subtitle}
       </p>
 
-      <form onSubmit={submit} noValidate className="flex flex-col gap-4">
+      {/* LAC-08: aria-label identifica o formulário para screen readers */}
+      <form onSubmit={submit} noValidate className="flex flex-col gap-4" aria-label="Formulário de recuperação de senha">
         <FormField label={t.email} error={emailError || undefined} required>
           <Input
             id="recovery-email"

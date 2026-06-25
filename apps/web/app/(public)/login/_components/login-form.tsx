@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { LoginSchema } from '@metanoia/types';
 import { Button, Card, Input } from '@metanoia/ui';
+import { PasswordInputWithToggle } from '@/components/forms';
 import { scrollToFirstError } from '@/lib/form-utils';
 import messages from '../../../../messages/pt-BR.json';
 
@@ -16,7 +17,6 @@ interface FieldErrors {
 export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -82,9 +82,11 @@ export function LoginForm() {
 
   return (
     <Card className="w-full max-w-md p-8">
-      <h1 className="text-display mb-6 text-center">{t.title}</h1>
+      {/* LAC-02: id para aria-labelledby no <form> */}
+      <h1 id="login-form-heading" className="text-display mb-6 text-center">{t.title}</h1>
 
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      {/* LAC-02: aria-labelledby referencia o heading do formulário */}
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4" aria-labelledby="login-form-heading">
         <div>
           <label htmlFor="login-email" className="text-body-sm mb-1 block text-text-secondary">
             {t.email}
@@ -112,32 +114,20 @@ export function LoginForm() {
           <label htmlFor="login-password" className="text-body-sm mb-1 block text-text-secondary">
             {t.password}
           </label>
-          {/* A11y: wrapper div with relative so toggle is positioned inside the input area.
-              Tab order: input -> toggle button (natural DOM order, no tabIndex needed).
-              Shift+Tab reversal is guaranteed by DOM order — no positive tabIndex used.
-              CHK005 resolved: reverse tab order matches forward DOM order naturally. */}
-          <div className="relative">
-            <Input
-              id="login-password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              // dec-029: aria-invalid omitido quando válido
-              aria-invalid={errors.password ? (true as unknown as boolean) : undefined}
-              aria-describedby={errors.password ? 'login-password-error' : undefined}
-            />
-            <button
-              type="button"
-              className="text-caption absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 rounded-sm md:h-9 md:w-9 active:opacity-70"
-              onClick={() => setShowPassword((s) => !s)}
-              aria-label={showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword}
-              data-testid="login-toggle-password"
-            >
-              {showPassword ? '🙈' : '👁'}
-            </button>
-          </div>
+          {/* LAC-03: PasswordInputWithToggle canônico (aria-pressed + ícone SVG acessível).
+              Substitui o toggle inline com emoji e sem aria-pressed. */}
+          <PasswordInputWithToggle
+            id="login-password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            // dec-029: aria-invalid omitido quando válido
+            aria-invalid={errors.password ? (true as unknown as boolean) : undefined}
+            aria-describedby={errors.password ? 'login-password-error' : undefined}
+            toggleShowLabel={messages.newPassword.showPassword}
+            toggleHideLabel={messages.newPassword.hidePassword}
+          />
           {errors.password && (
             <p id="login-password-error" className="text-caption mt-1 text-state-danger" role="alert">
               {errors.password[0]}
