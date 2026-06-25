@@ -41,7 +41,7 @@ export const PasswordInputWithToggle = React.forwardRef<
         {...props}
         ref={ref}
         type={visible ? "text" : "password"}
-        className={cn("pr-10", className)}
+        className={cn("pr-11", className)}
       />
       <button
         type="button"
@@ -49,7 +49,7 @@ export const PasswordInputWithToggle = React.forwardRef<
         aria-label={visible ? toggleHideLabel : toggleShowLabel}
         aria-pressed={visible}
         data-testid={toggleTestId}
-        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 active:opacity-70"
+        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 active:opacity-70"
       >
         {visible ? <EyeOffIcon /> : <EyeIcon />}
       </button>
