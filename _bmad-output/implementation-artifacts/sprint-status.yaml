@@ -221,13 +221,15 @@ development_status:
   14-4-health-check-de-integracoes-dashboard-super-admin-nfr-i: done                  # PR #184 (c1510f2) — AdminHealthModule: GET /api/v1/admin/health/integrations + /history (@Roles(Role.SUPER_ADMIN)->403, micro-cache 10s), 5 probes (Resend/Keycloak/MinIO/Redis/PostgreSQL, Promise.allSettled, AbortSignal 5s, healthy<1s/degraded/unhealthy), BullMQ repeatable 5min + Redis lock NX EX 270, tabela integration_health_log platform-level (BYPASSRLS write via createPrivilegedClient, bind params posicionais), debounce anti-flapping 2 checks, evento system.integration.status-changed, notif Super Admins (getUsersByRealmRole) + audit correlation_id; ResendHealthPort substitui StubEmailHealthPort (fecha circuit breaker 14.3); dashboard Super Admin (sparkline SVG a11y role=img/teclado, auto-refresh 60s, stale banner); OWASP gate 0 high/crit (F1 enum+403/F2 sanitize/F3 binds/F4 throttle); CI 7/7 verde; via feature-00c (3 fix runtime: fixture types, nome fila BullMQ no boot, imports/matchers spec web)
   epic-14-retrospective: done
 
-  # Epic 15: Acessibilidade Avançada
-  # Sprint 20: 15-1, 15-2, 15-3, 15-4
-  epic-15: in-progress
-  15-1-screen-reader-autenticacao-navegacao-global-landmarks-n: ready-for-dev
-  15-2-screen-reader-dashboard-lider-radar-pastoral-listas-nfr: ready-for-dev
-  15-3-semaforo-multimodal-icones-texto-complementar-aria-nfr-: ready-for-dev
-  15-4-screen-reader-trilhas-progresso-conteudo-nfr-a4: ready-for-dev
+  # Epic 15: Acessibilidade Avançada — DONE
+  # Sprint 20: 15-1, 15-2, 15-3, 15-4. PRs #191/#192/#193/#194 mergeados em dev.
+  # DoD transversal (teste manual com >=3 screen readers) PENDENTE = gate humano.
+  # Follow-up 15.5 documentado (Plyr, has_missing_alt_text + admin accessibility-gaps).
+  epic-15: done
+  15-1-screen-reader-autenticacao-navegacao-global-landmarks-n: done
+  15-2-screen-reader-dashboard-lider-radar-pastoral-listas-nfr: done
+  15-3-semaforo-multimodal-icones-texto-complementar-aria-nfr-: done
+  15-4-screen-reader-trilhas-progresso-conteudo-nfr-a4: done
   epic-15-retrospective: optional
 
   # Epic 16: Resiliência, Offline & Expansões Futuras
