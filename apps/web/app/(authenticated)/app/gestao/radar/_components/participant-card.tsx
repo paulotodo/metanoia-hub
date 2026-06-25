@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
 import { cn } from "@metanoia/ui";
 import { ChevronDown } from "lucide-react";
+import type { SignalType } from "@metanoia/types";
 import type { RadarParticipant } from "../../../../../../__mocks__/radar";
 import { RiskReasonBadge } from "./risk-reason-badge";
+
+// --- AC-1 (RF-01): Status labels for screen readers (non-color-only) ---
+// clarify C1 (dec-009), C2 (dec-008): care-urgent="Urgente", care-attention="Atenção necessária", care-ok="Bem"
+const STATUS_LABEL: Record<SignalType, string> = {
+  "care-urgent": "Urgente",
+  "care-attention": "Atenção necessária",
+  "care-ok": "Bem",
+};
 
 // --- Expanded Card (care-urgent) ---
 
@@ -14,8 +23,14 @@ function ParticipantCardExpanded({
 }: {
   participant: RadarParticipant;
 }) {
+  // AC-1: aria-label conveys name + status so AT announces both without relying on color
+  const ariaLabel = `${participant.name} — ${STATUS_LABEL[participant.signalType]}`;
+
   return (
-    <div className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]">
+    <div
+      aria-label={ariaLabel}
+      className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]"
+    >
       <Link
         href={`/app/gestao/radar/${participant.participantId}`}
         className="block"
@@ -61,9 +76,13 @@ function ParticipantCardMedium({
 }: {
   participant: RadarParticipant;
 }) {
+  // AC-1: aria-label on the Link root conveys name + status (label hides children from AT)
+  const ariaLabel = `${participant.name} — ${STATUS_LABEL[participant.signalType]}`;
+
   return (
     <Link
       href={`/app/gestao/radar/${participant.participantId}`}
+      aria-label={ariaLabel}
       className="group block rounded-lg border-l-4 border-l-care-attention border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]"
     >
       <div className="flex items-center justify-between">
@@ -82,7 +101,7 @@ function ParticipantCardMedium({
             </div>
           )}
         </div>
-        <span className="shrink-0 text-sm font-medium text-brand-teal">
+        <span className="shrink-0 text-sm font-medium text-brand-teal" aria-hidden="true">
           Ver
         </span>
       </div>
@@ -98,6 +117,8 @@ function ParticipantCardCompact({
   participants: RadarParticipant[];
 }) {
   const [expanded, setExpanded] = useState(false);
+  // AC-2 (RF-02): aria-controls links button to the panel it controls
+  const panelId = useId();
   const maxInline = 3;
   const overflow = participants.length - maxInline;
 
@@ -115,6 +136,7 @@ function ParticipantCardCompact({
         type="button"
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
+        aria-controls={panelId}
         className="flex w-full items-center justify-between px-4 py-3 text-left motion-safe:transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-interactive-focus"
       >
         <span className="text-sm text-text-secondary">{inlineText}</span>
@@ -127,7 +149,7 @@ function ParticipantCardCompact({
         />
       </button>
       {expanded && (
-        <ul className="border-t border-border-default px-4 py-2">
+        <ul id={panelId} className="border-t border-border-default px-4 py-2">
           {participants.map((p) => (
             <li
               key={p.participantId}

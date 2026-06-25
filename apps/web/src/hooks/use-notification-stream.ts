@@ -48,6 +48,13 @@ export function useNotificationStream(options: {
   // Keep a mutable ref to the current EventSource so inner closures can close it
   const sourceRef = useRef<EventSource | null>(null);
 
+  // AC-6 (RF-06, RF-07): Grace period 5s post-reconnect to suppress gap-fill announces
+  // Activated on reconnecting → connected transition; counts deltas during grace window,
+  // then emits a single "Conexão restaurada. {n} participantes atualizados." summary.
+  const isPostReconnectRef = useRef<boolean>(false);
+  const postReconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const postReconnectDeltaCountRef = useRef<number>(0);
+
   // executeGapFill — fetch missed notifications since lastReceivedAt (FR-010/FR-011)
   // gap-fill paginado: busca até total (CHK021/055 — sem truncamento silencioso)
   const executeGapFill = async () => {
@@ -137,13 +144,34 @@ export function useNotificationStream(options: {
 
           // Transition back to connected on successful event
           if (connectionState !== 'connected') {
+            // AC-6 (RF-06): Activate 5s grace period on reconnecting → connected transition
+            isPostReconnectRef.current = true;
+            postReconnectDeltaCountRef.current = 0;
+            if (postReconnectTimerRef.current !== null) {
+              clearTimeout(postReconnectTimerRef.current);
+            }
+            postReconnectTimerRef.current = setTimeout(() => {
+              isPostReconnectRef.current = false;
+              const count = postReconnectDeltaCountRef.current;
+              postReconnectDeltaCountRef.current = 0;
+              // AC-6 (RF-07): emit single summary announce after grace window
+              if (!silenced && count > 0) {
+                announce(`Conexão restaurada. ${count} participante${count > 1 ? 's' : ''} atualizado${count > 1 ? 's' : ''}.`);
+              }
+            }, 5000);
+
             setConnectionState('connected');
             failureCount.current = 0;
           }
 
-          // Announce ONLY if not silenced
+          // Announce ONLY if not silenced AND not in grace period
           if (!silenced) {
-            announce(`Nova notificação: ${parsed.data.title}`);
+            if (isPostReconnectRef.current) {
+              // Grace period: count delta silently, do not announce individually
+              postReconnectDeltaCountRef.current += 1;
+            } else {
+              announce(`Nova notificação: ${parsed.data.title}`);
+            }
           }
         }
       });
@@ -220,6 +248,11 @@ export function useNotificationStream(options: {
       if (retryTimerRef.current !== null) {
         clearTimeout(retryTimerRef.current);
         retryTimerRef.current = null;
+      }
+      // AC-6: cleanup grace period timer on unmount
+      if (postReconnectTimerRef.current !== null) {
+        clearTimeout(postReconnectTimerRef.current);
+        postReconnectTimerRef.current = null;
       }
       gapFillControllerRef.current?.abort();
     };
