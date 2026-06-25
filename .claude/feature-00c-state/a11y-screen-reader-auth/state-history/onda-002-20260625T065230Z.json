@@ -1,0 +1,770 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-screen-reader-auth",
+  "execution": {
+    "id": "feat-a11y-screen-reader-auth-20260625T062104Z",
+    "target_project_path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates",
+    "target_project_description": "Screen Reader: autenticacao (login/register/recuperar-senha), navegacao global e landmarks semanticos. VoiceOver/NVDA/JAWS. Landmarks com roles (banner/navigation/main/contentinfo), aria-labelledby, role=alert, aria-live, aria-current, aria-expanded, lang inline, gestao de foco, onboarding acessivel. NFR-A4.",
+    "suggested_stack": null,
+    "status": "concluida",
+    "termination_reason": "concluido",
+    "started_at": "2026-06-25T06:21:04Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "review-task",
+  "next_instruction": "Iniciar etapa specify — invocar skill specify com a descricao da feature.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-25T06:23:10Z",
+      "finished_at": "2026-06-25T06:39:47Z",
+      "executed_stages": [
+        "specify",
+        "clarify",
+        "plan",
+        "checklist",
+        "create-tasks"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 997,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-25T06:26:27Z",
+          "decision_id": "dec-003"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T06:27:26Z",
+          "decision_id": "dec-005"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-25T06:28:34Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T06:28:52Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-25T06:34:42Z",
+          "decision_id": "dec-013"
+        },
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-25T06:37:11Z",
+          "decision_id": "dec-016"
+        },
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-25T06:39:21Z",
+          "decision_id": "dec-017"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-25T06:51:47Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-25T06:51:58Z",
+          "decision_id": null
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-25T06:21:11Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:23:32Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-screen-reader-auth)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: screen reader autenticacao login register recuperar senha",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:26:27Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: spec.md gerada para a11y-screen-reader-auth",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Spec criada com base em preflight-reconciliation + story 15.1 + código real auditado. 9 ACs, 8 lacunas catalogadas, ambiguidades resolvidas autonomamente (SC-6 e SC-7 com score>=2 por evidencia no codigo real).",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:26:39Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip do gate validate-documentation: skill nao disponivel no ambiente",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Skill validate-documentation nao registrada no harness. Validacao manual: spec.md tem secoes obrigatorias (Objetivo, Escopo, ACs, Restricoes, Dependencias, Artefatos). Sem TBDs. Secao Clarifications inclusa.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:27:26Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:28:34Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-asker: perguntas=0 (todas ambiguidades resolvidas na spec: SC-6 title fixo, SC-7 single-page, breadcrumbs=15.4)",
+      "options_considered": [
+        "aguardar-respostas-humanas",
+        "avancar-para-plan"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "Spec documenta todas as ambiguidades como decisoes com justificativa. Asker nao gerou perguntas pendentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:28:52Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:30:28Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q1 LAC-07: criterio de escopo para lang inline",
+      "options_considered": [
+        "lista-fechada",
+        "varredura-aberta"
+      ],
+      "choice": "lista-fechada",
+      "rationale": "Opção A: lista fechada de termos (Dashboard, Radar, VoiceOver, NVDA, JAWS, check-in, login, onboarding) em telas públicas + packages/ui. Criterio de completude verificável no review-task.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:30:28Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q2 LAC-05: mecanismo de foco no onboarding",
+      "options_considered": [
+        "reutilizar-FocusManager",
+        "useEffect-por-page"
+      ],
+      "choice": "reutilizar-FocusManager",
+      "rationale": "FocusManager existente é reutilizável via dynamic() no (onboarding)/layout.tsx. Sem risco de colisão — o hook opera exclusivamente via usePathname. Cada etapa tem pathname distinto (/convite/[token], /termos, /criar-conta).",
+      "justification_score": 3,
+      "evidence": "useFocusOnRouteChange usa apenas usePathname() sem acoplamento ao shell autenticado. FocusManager retorna null (sem DOM visivel). Linha 1-30 de focus-manager.tsx confirmam.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:30:28Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Q3 AC-4: local para correcao aria-live em register",
+      "options_considered": [
+        "FormField-compartilhado",
+        "register-form-local"
+      ],
+      "choice": "register-form-local",
+      "rationale": "Opção B: corrigir apenas em register-form.tsx. FormField não é usado no register, portanto mudá-lo não resolveria o problema. Escopo mínimo, zero risco de regressão em outros formulários.",
+      "justification_score": 3,
+      "evidence": "register-form.tsx usa <label>+<Input> direto (linhas 103,125,147,191) — FormField nao e usado. Mudanca em FormField nao afetaria o register. Os erros inline ja tem role=alert via <p role=alert> mas sem aria-live explicito.",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:31:07Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "preflight clarify->plan: ok=true, findings=[]",
+      "options_considered": [
+        "avancar-para-plan",
+        "bloquear"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "feature-00c-preflight.sh check retornou exit 0 com findings=[]. Spec, constitution e briefing sem violacoes detectadas.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:31:21Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-screen-reader-auth)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: screen reader autenticacao login register recuperar senha",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:34:42Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "plan gerado: plan.md + research.md + quickstart.md criados",
+      "options_considered": [
+        "avancar-para-checklist",
+        "revisar-plan"
+      ],
+      "choice": "avancar-para-checklist",
+      "rationale": "Plan document consolida 8 lacunas em 9 fases de implementacao ordenadas. Research.md documenta 8 decisoes tecnicas. Constitution check passou em todos os principios. Zero NEEDS CLARIFICATION restantes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:34:56Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation pos-plan: skill indisponivel",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Skill nao disponivel no harness. Plan.md cobre: summary, constitution check, technical context, project structure, mapa lacunas, roteiro de implementacao, validation gates, re-check. Zero TBDs.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:34:56Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate owasp-security: feature e pure-FE/a11y, sem endpoint/auth/dados nova",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Story 15.1 e exclusivamente frontend: adicao de atributos ARIA, correcao de strings, FocusManager. Zero mudancas em endpoints, zero novos dados, zero alteracoes em autenticacao/autorizacao. Superficie OWASP nao relevante.",
+      "justification_score": 3,
+      "evidence": "SC-5 da spec: 'Sem alteracoes de backend/API. Esta story e exclusivamente frontend (Next.js). Nenhuma mudanca em apps/api/ e esperada.'",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:37:11Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "checklist a11y gerado: 36 itens, 33 auto-resolvidos, 3 humano, 0 gaps",
+      "options_considered": [
+        "avancar-para-create-tasks",
+        "rever-checklist"
+      ],
+      "choice": "avancar-para-create-tasks",
+      "rationale": "Checklist completo sem gaps ou ambiguidades. 3 itens humano sao de natureza de confirmacao (CHK017 detalhe AC, CHK024 fallback fail-silent, CHK029 seletores de teste) — nao bloqueiam create-tasks pois sao pontos de atencao para o executor.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:39:21Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "tasks.md gerado: 12 tarefas, 65 subtarefas, 9 fases. validate-tasks-template: critical=0 warning=0",
+      "options_considered": [
+        "avancar-para-execute-task",
+        "revisar-tasks"
+      ],
+      "choice": "avancar-para-execute-task",
+      "rationale": "Backlog completo, gate deterministico passou (0 critical, 0 warnings). 9 fases ordenadas por dependencia com matriz Mermaid. CHK029 consumido como subtarefa 3.2.1.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:39:22Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate template-fidelity create-tasks: RESULT|/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/specs/a11y-screen-reader-auth/tasks.md|critical=0|warning=0",
+      "options_considered": [
+        "aceitar",
+        "corrigir"
+      ],
+      "choice": "aceitar",
+      "rationale": "Gate deterministico: critical=0 warning=0. Tasks.md conforme ao template canonico.",
+      "justification_score": 3,
+      "evidence": "RESULT|/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/specs/a11y-screen-reader-auth/tasks.md|critical=0|warning=0",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T06:42:17Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-25T06:51:58Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Execução de todas as 9 fases do backlog a11y-screen-reader-auth",
+      "options_considered": [
+        "executar-todas-fases",
+        "executar-parcial",
+        "bloqueio-humano"
+      ],
+      "choice": "executar-todas-fases",
+      "rationale": "Todas as 9 fases concluídas: i18n, landmarks, login ARIA, register aria-live, recovery/nova-senha, onboarding FocusManager, lang-en (N/A), roteiro manual, e gates verdes (947 testes, lint, build, focus-ring, contrast, motion)",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-25T06:51:47Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 1,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 997,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 20,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "screen",
+    "reader",
+    "autenticacao",
+    "login",
+    "register",
+    "recuperar",
+    "senha"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T06:23:23Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T06:31:21Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-25T06:40:22Z",
+      "description": "onda-001 encerrada: specify->clarify->plan->checklist->create-tasks completos; proxima onda = execute-task FASE 1"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "1.1",
+      "title": "Corrigir typos em pt-BR.json",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:08Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.1",
+      "title": "Adicionar landmarks ao layout público",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:08Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.2",
+      "title": "Adicionar landmarks ao layout onboarding",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:08Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.1",
+      "title": "Adicionar aria-labelledby ao formulário de login",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:08Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.2",
+      "title": "Substituir toggle inline por PasswordInputWithToggle no login",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.1",
+      "title": "Melhorar acessibilidade do formulário de registro",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.1",
+      "title": "Corrigir acessibilidade da recuperação de senha",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.2",
+      "title": "Corrigir acessibilidade da nova senha",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "6.1",
+      "title": "Adicionar anúncios de transição de etapa no onboarding",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "7.1",
+      "title": "Adicionar lang=en para termos estrangeiros (N/A — sem ocorrências)",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "8.1",
+      "title": "Criar manual-test-checklist.md",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "9.1",
+      "title": "Executar gates de qualidade pré-done",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 947,
+      "tests_passed": 947,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(onboarding)/layout.tsx",
+        "apps/web/app/(public)/layout.tsx",
+        "apps/web/app/(public)/login/_components/login-form.tsx",
+        "apps/web/app/(public)/nova-senha/[token]/_components/reset-password-form.tsx",
+        "apps/web/app/(public)/recuperar-senha/_components/recovery-form.tsx",
+        "apps/web/app/(public)/register/_components/register-form.tsx",
+        "apps/web/messages/pt-BR.json",
+        "docs/specs/a11y-screen-reader-auth/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T06:52:22Z",
+      "source": "execute-task"
+    }
+  ]
+}
