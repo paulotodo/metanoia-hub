@@ -65,6 +65,8 @@ describe('ModuleAccordionItem — T2 collapsed/expanded', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -82,6 +84,8 @@ describe('ModuleAccordionItem — T2 collapsed/expanded', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -100,6 +104,8 @@ describe('ModuleAccordionItem — T2 collapsed/expanded', () => {
           onLessonSelect={vi.fn()}
           isExpanded={true}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -119,6 +125,8 @@ describe('ModuleAccordionItem — T2 collapsed/expanded', () => {
           onLessonSelect={vi.fn()}
           isExpanded={true}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -143,6 +151,8 @@ describe('ModuleAccordionItem — T2 collapsed/expanded', () => {
           onLessonSelect={vi.fn()}
           isExpanded={true}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -163,6 +173,8 @@ describe('ModuleAccordionItem — T2 collapsed/expanded', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -188,6 +200,8 @@ describe('ModuleAccordionItem — T6 keyboard', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={onToggle}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -208,6 +222,8 @@ describe('ModuleAccordionItem — T6 keyboard', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={onToggle}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -227,6 +243,8 @@ describe('ModuleAccordionItem — T6 keyboard', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -245,11 +263,37 @@ describe('ModuleAccordionItem — T6 keyboard', () => {
           onLessonSelect={vi.fn()}
           isExpanded={true}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
     const header = screen.getByTestId('module-accordion-header');
     expect(header.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('T6-aria-label: header aria-label has pattern "Módulo N de T: name — status" (FR-003)', () => {
+    render(
+      <Wrapper>
+        <ModuleAccordionItem
+          module={MODULE}
+          trailId={MOCK_TRAIL_ID}
+          progressByLessonId={{}}
+          activeLesson={null}
+          onLessonSelect={vi.fn()}
+          isExpanded={false}
+          onToggle={vi.fn()}
+          moduleIndex={2}
+          totalModules={5}
+        />
+      </Wrapper>,
+    );
+    const header = screen.getByTestId('module-accordion-header');
+    const label = header.getAttribute('aria-label') ?? '';
+    expect(label).toContain('Módulo 2 de 5');
+    expect(label).toContain('Módulo 1 — Oração');
+    // 0% completion = "Não iniciado"
+    expect(label).toContain('Não iniciado');
   });
 });
 
@@ -269,6 +313,8 @@ describe('ModuleAccordionItem — T8 touch target', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -293,6 +339,8 @@ describe('ModuleAccordionItem — T7 accessibility (jest-axe)', () => {
           onLessonSelect={vi.fn()}
           isExpanded={false}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );
@@ -311,6 +359,8 @@ describe('ModuleAccordionItem — T7 accessibility (jest-axe)', () => {
           onLessonSelect={vi.fn()}
           isExpanded={true}
           onToggle={vi.fn()}
+          moduleIndex={1}
+          totalModules={3}
         />
       </Wrapper>,
     );

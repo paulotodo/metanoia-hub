@@ -61,7 +61,7 @@ export function TrailCard({ trail, onClick }: TrailCardProps) {
           type="button"
           onClick={onClick}
           className="flex-1 text-left min-h-[44px] focus-visible:outline-none"
-          aria-label={`Abrir trilha: ${trail.name}`}
+          aria-label={`Trilha: ${trail.name}, ${STATUS_LABELS[trail.status]}, ${trail.progressPercent}% concluída, ${trail.moduleCount} módulos`}
         >
           <h2 className="text-base font-semibold text-foreground group-hover:text-primary motion-safe:transition-colors leading-tight">
             {trail.name}
@@ -97,7 +97,7 @@ export function TrailCard({ trail, onClick }: TrailCardProps) {
       {/* Progress bar */}
       <TrailProgressBar
         progressPercent={trail.progressPercent}
-        label={`${trail.name} — ${trail.progressPercent}% concluída`}
+        label={`Progresso na trilha: ${trail.progressPercent}%`}
       />
     </article>
   );

@@ -154,6 +154,8 @@ export function TrailPlaylist({ trailId, onLessonSelect }: TrailPlaylistProps) {
                   onLessonSelect={onLessonSelect}
                   isExpanded={isExpanded}
                   onToggle={() => toggleModule(module.id)}
+                  moduleIndex={index + 1}
+                  totalModules={modules.length}
                 />
               </div>
             );

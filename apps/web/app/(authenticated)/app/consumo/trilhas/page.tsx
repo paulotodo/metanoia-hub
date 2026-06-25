@@ -16,6 +16,16 @@ export default function MinhasTrilhasPage() {
   const router = useRouter();
   const sentinelRef = useRef<HTMLDivElement>(null);
 
+  // FR-001: definir document.title para páginas 'use client' (sem suporte a metadata export)
+  // Padrão idêntico ao usado em apps/web/app/(authenticated)/app/gestao/radar/page.tsx
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = 'Minhas Trilhas | metanoia';
+    return () => {
+      document.title = previousTitle;
+    };
+  }, []);
+
   const {
     data,
     isLoading,

@@ -23,6 +23,10 @@ interface ModuleAccordionItemProps {
   onLessonSelect: (id: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
+  /** Posição 1-based do módulo na trilha (para aria-label) */
+  moduleIndex: number;
+  /** Total de módulos na trilha (para aria-label) */
+  totalModules: number;
 }
 
 export function ModuleAccordionItem({
@@ -33,6 +37,8 @@ export function ModuleAccordionItem({
   onLessonSelect,
   isExpanded,
   onToggle,
+  moduleIndex,
+  totalModules,
 }: ModuleAccordionItemProps) {
   const regionId = useId();
 
@@ -46,6 +52,14 @@ export function ModuleAccordionItem({
   ).length;
   const completionPercent =
     totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+
+  // Derive module status label for aria-label (FR-003)
+  const moduleStatus =
+    completionPercent === 100
+      ? 'Concluído'
+      : completionPercent > 0
+        ? 'Em andamento'
+        : 'Não iniciado';
 
   // Derive lock state for each lesson
   const lockStates = deriveLockedLessons(module, lessons, progressByLessonId);
@@ -64,6 +78,7 @@ export function ModuleAccordionItem({
         type="button"
         aria-expanded={isExpanded}
         aria-controls={regionId}
+        aria-label={`Módulo ${moduleIndex} de ${totalModules}: ${module.name} — ${moduleStatus}`}
         onClick={onToggle}
         onKeyDown={handleKeyDown}
         className="w-full flex items-center gap-3 p-5 min-h-11 text-left bg-card hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
@@ -75,7 +90,7 @@ export function ModuleAccordionItem({
           <div className="mt-1">
             <TrailProgressBar
               progressPercent={completionPercent}
-              label={`Módulo ${module.name} — ${completionPercent}% concluído`}
+              label={`Progresso no módulo ${module.name}: ${completionPercent}%`}
               className="max-w-xs"
             />
           </div>
