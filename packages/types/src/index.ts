@@ -220,6 +220,9 @@ export {
   WIZARD_SKIP_LATER_LABEL,
   WIZARD_REPLAY_LABEL,
   WIZARD_DEMO_PREVIEW_LABEL,
+  // Story 15.3 — Signal status labels (per-participant, multimodal badge)
+  SIGNAL_STATUS_LABELS,
+  type SignalStatusLabel,
 } from './vocabulary';
 export {
   ClientErrorReportSchema,

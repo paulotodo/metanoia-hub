@@ -2,13 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { RadarParticipant, SignalType } from "@metanoia/types";
-
-// AC-1 status labels for announcements (same mapping as participant-card.tsx)
-const STATUS_LABEL: Record<SignalType, string> = {
-  "care-urgent": "Urgente",
-  "care-attention": "Atenção necessária",
-  "care-ok": "Bem",
-};
+import { SIGNAL_STATUS_LABELS } from "@metanoia/types";
 
 interface UseParticipantStatusAnnouncerOptions {
   /** Current list of participants (updated on each SSE-triggered re-render) */
@@ -73,7 +67,7 @@ export function useParticipantStatusAnnouncer({
       pendingDeltasRef.current = [];
 
       if (deltas.length === 1) {
-        announce(`${deltas[0].name} — ${STATUS_LABEL[deltas[0].signalType]}`);
+        announce(`${deltas[0].name} — ${SIGNAL_STATUS_LABELS[deltas[0].signalType]}`);
       } else {
         announce(`${deltas.length} participantes atualizados`);
       }

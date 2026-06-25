@@ -4,24 +4,18 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import { cn } from "@metanoia/ui";
 import { ChevronDown } from "lucide-react";
-import type { SignalType } from "@metanoia/types";
 import type { RadarParticipant } from "../../../../../../__mocks__/radar";
 import { RiskReasonBadge } from "./risk-reason-badge";
-
-// --- AC-1 (RF-01): Status labels for screen readers (non-color-only) ---
-// clarify C1 (dec-009), C2 (dec-008): care-urgent="Urgente", care-attention="Atenção necessária", care-ok="Bem"
-const STATUS_LABEL: Record<SignalType, string> = {
-  "care-urgent": "Urgente",
-  "care-attention": "Atenção necessária",
-  "care-ok": "Bem",
-};
+import { SemaforoStatusBadge } from "./semaforo-status-badge";
 
 // --- Expanded Card (care-urgent) ---
 
 function ParticipantCardExpanded({
   participant,
+  animatePulse,
 }: {
   participant: RadarParticipant;
+  animatePulse?: boolean;
 }) {
   return (
     <div className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]">
@@ -34,8 +28,13 @@ function ParticipantCardExpanded({
             <h3 className="text-base font-semibold text-text-primary">
               {participant.name}
             </h3>
-            {/* AC-1: status as text for AT — the color border alone is insufficient */}
-            <span className="sr-only">{STATUS_LABEL[participant.signalType]}.</span>
+            {/* AC-1/dec-007: badge visível (cor+ícone+texto) substitui sr-only — fonte única para AT */}
+            <SemaforoStatusBadge
+              signalType={participant.signalType}
+              participantName={participant.name}
+              animatePulse={animatePulse}
+              className="mt-1"
+            />
             {participant.contextPhrase && (
               <p className="mt-1 text-sm text-text-secondary lg:text-base">
                 {participant.contextPhrase}
@@ -69,8 +68,10 @@ function ParticipantCardExpanded({
 
 function ParticipantCardMedium({
   participant,
+  animatePulse,
 }: {
   participant: RadarParticipant;
+  animatePulse?: boolean;
 }) {
   return (
     <Link
@@ -82,8 +83,13 @@ function ParticipantCardMedium({
           <h3 className="text-base font-semibold text-text-primary">
             {participant.name}
           </h3>
-          {/* AC-1: status as text for AT — the color border alone is insufficient */}
-          <span className="sr-only">{STATUS_LABEL[participant.signalType]}.</span>
+          {/* AC-1/dec-007: badge visível substitui sr-only — fonte única para AT */}
+          <SemaforoStatusBadge
+            signalType={participant.signalType}
+            participantName={participant.name}
+            animatePulse={animatePulse}
+            className="mt-0.5"
+          />
           {participant.contextPhrase && (
             <p className="mt-0.5 text-sm text-text-secondary">
               {participant.contextPhrase}
@@ -162,14 +168,16 @@ function ParticipantCardCompact({
 
 interface ParticipantCardProps {
   participant: RadarParticipant;
+  /** Quando true, aciona animação de pulso no badge de status por 1s (dec-006). */
+  animatePulse?: boolean;
 }
 
-export function ParticipantCard({ participant }: ParticipantCardProps) {
+export function ParticipantCard({ participant, animatePulse }: ParticipantCardProps) {
   switch (participant.signalType) {
     case "care-urgent":
-      return <ParticipantCardExpanded participant={participant} />;
+      return <ParticipantCardExpanded participant={participant} animatePulse={animatePulse} />;
     case "care-attention":
-      return <ParticipantCardMedium participant={participant} />;
+      return <ParticipantCardMedium participant={participant} animatePulse={animatePulse} />;
     case "care-ok":
       return null; // care-ok uses CompactList
   }

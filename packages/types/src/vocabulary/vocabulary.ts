@@ -92,6 +92,23 @@ export const PASTORAL_CELEBRATION_MESSAGE = '{{name}} está melhorando!' as cons
 export const PASTORAL_CELEBRATION_DISMISS = 'Entendido' as const;
 
 // ---------------------------------------------------------------------------
+// Signal status labels — per-participant status (Story 15.3)
+// Fonte única de rótulos de status por participante (care-urgent/attention/ok).
+// Coexiste com SEMAFORO_STATUS_LABELS (rótulos de seção do semáforo).
+// Valores IDÊNTICOS às duplicatas locais em participant-card.tsx e
+// use-participant-status-announcer.ts — preserva teste 15.2 ("João — Urgente").
+// ---------------------------------------------------------------------------
+
+/** Rótulos de status por participante — uso em badge visível + anúncio AT. */
+export const SIGNAL_STATUS_LABELS = {
+  'care-urgent': 'Urgente',
+  'care-attention': 'Atenção necessária',
+  'care-ok': 'Bem',
+} as const;
+
+export type SignalStatusLabel = (typeof SIGNAL_STATUS_LABELS)[keyof typeof SIGNAL_STATUS_LABELS];
+
+// ---------------------------------------------------------------------------
 // Mapa completo de termos pastorais (para referência e snapshot)
 // ---------------------------------------------------------------------------
 export const PASTORAL_VOCABULARY = {
@@ -116,6 +133,7 @@ export const PASTORAL_VOCABULARY = {
   celebrationTitle: PASTORAL_CELEBRATION_TITLE,
   celebrationMessage: PASTORAL_CELEBRATION_MESSAGE,
   celebrationDismiss: PASTORAL_CELEBRATION_DISMISS,
+  signalStatusLabels: SIGNAL_STATUS_LABELS,
 } as const;
 
 export type PastoralVocabulary = typeof PASTORAL_VOCABULARY;

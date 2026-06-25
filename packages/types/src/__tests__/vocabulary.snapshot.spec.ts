@@ -15,6 +15,7 @@ import {
   PASTORAL_TIMELINE_EVENT_PRESENCE,
   PASTORAL_TIMELINE_EVENT_ACTION,
   PASTORAL_VOCABULARY,
+  SIGNAL_STATUS_LABELS,
 } from '../vocabulary';
 
 describe('PASTORAL_VOCABULARY snapshot', () => {
@@ -44,6 +45,11 @@ describe('PASTORAL_VOCABULARY snapshot', () => {
           "attention": "Pedem atenção",
           "ok": "Estão bem",
           "urgent": "Precisam de cuidado",
+        },
+        "signalStatusLabels": {
+          "care-attention": "Atenção necessária",
+          "care-ok": "Bem",
+          "care-urgent": "Urgente",
         },
         "timelineEmptyMessage": "Que tal começar com uma mensagem?",
         "timelineEmptyTitle": "Nenhuma ação de cuidado registrada",
@@ -87,5 +93,28 @@ describe('Story 6-4 timeline vocabulary constants', () => {
     expect(PASTORAL_CARE_HISTORY_LABEL).toBe('Histórico de cuidado');
     expect(PASTORAL_TIMELINE_EVENT_PRESENCE).toBe('Reunião');
     expect(PASTORAL_TIMELINE_EVENT_ACTION).toBe('Ação pastoral');
+  });
+});
+
+describe('Story 15.3 — SIGNAL_STATUS_LABELS', () => {
+  it('freezes per-participant signal status labels snapshot', () => {
+    expect(SIGNAL_STATUS_LABELS).toMatchInlineSnapshot(`
+      {
+        "care-attention": "Atenção necessária",
+        "care-ok": "Bem",
+        "care-urgent": "Urgente",
+      }
+    `);
+  });
+
+  it('maps all three SignalType values to pastoral PT-BR terms (not corporate terms)', () => {
+    expect(SIGNAL_STATUS_LABELS['care-urgent']).toBe('Urgente');
+    expect(SIGNAL_STATUS_LABELS['care-attention']).toBe('Atenção necessária');
+    expect(SIGNAL_STATUS_LABELS['care-ok']).toBe('Bem');
+    // Ensure corporate terms are not used (dec-005)
+    const labels = Object.values(SIGNAL_STATUS_LABELS);
+    expect(labels).not.toContain('Crítico');
+    expect(labels).not.toContain('Ativo');
+    expect(labels).not.toContain('Alerta');
   });
 });

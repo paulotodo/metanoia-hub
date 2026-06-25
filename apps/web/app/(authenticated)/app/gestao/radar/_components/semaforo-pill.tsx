@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { cn } from "@metanoia/ui";
+import { AlertCircle, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { SEMAFORO_STATUS_LABELS } from "@metanoia/types";
 import type { SignalType } from "../../../../../../__mocks__/radar";
 
@@ -20,6 +21,7 @@ const pillConfig: Record<
   SignalType,
   {
     label: string;
+    Icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true"; focusable?: "false" }>;
     colorClass: string;
     bgClass: string;
     solidClass: string;
@@ -28,6 +30,7 @@ const pillConfig: Record<
 > = {
   "care-urgent": {
     label: SEMAFORO_STATUS_LABELS.urgent,
+    Icon: AlertCircle,
     colorClass: "text-care-urgent",
     bgClass: "bg-care-urgent/10",
     solidClass: "bg-care-urgent text-text-inverse",
@@ -36,6 +39,7 @@ const pillConfig: Record<
   },
   "care-attention": {
     label: SEMAFORO_STATUS_LABELS.attention,
+    Icon: AlertTriangle,
     colorClass: "text-care-attention",
     bgClass: "bg-care-attention/10",
     solidClass: "bg-care-attention text-text-inverse",
@@ -44,6 +48,7 @@ const pillConfig: Record<
   },
   "care-ok": {
     label: SEMAFORO_STATUS_LABELS.ok,
+    Icon: CheckCircle2,
     colorClass: "text-care-ok",
     bgClass: "bg-care-ok/10",
     solidClass: "bg-care-ok text-text-inverse",
@@ -107,6 +112,12 @@ export function SemaforoPill({
         ],
       )}
     >
+      {/* Ícone Lucide: aria-hidden + focusable=false — o aria-label do botão carrega o significado */}
+      <config.Icon
+        className="size-4 shrink-0"
+        aria-hidden="true"
+        focusable="false"
+      />
       <span>{count}</span>
       {showDelta && delta > 0 && effectiveState !== "zero" && (
         <span className="text-xs font-normal">(+{delta})</span>

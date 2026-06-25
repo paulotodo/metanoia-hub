@@ -68,6 +68,27 @@
 }
 
 /* =============================================================================
+ * Pulse-border animation — Story 15.3 Semáforo Multimodal (FR-006/FR-007)
+ * Pulso de borda usado pelo SemaforoStatusBadge quando animatePulse=true.
+ * Aplicado SEMPRE com motion-safe: (Tailwind) — motion-reduce recebe só opacity.
+ * ============================================================================= */
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 currentColor;
+    opacity: 1;
+  }
+  70% {
+    box-shadow: 0 0 0 4px transparent;
+    opacity: 0.8;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    opacity: 1;
+  }
+}
+
+/* =============================================================================
  * Reduced-Motion Safety Net (FR-3.3 / C.1 — dec-007 / CHK025)
  * Backstop universal: cobre toda animacao/transicao nao prefixada com
  * motion-safe:, incluindo @keyframes onboarding-shake acima.
