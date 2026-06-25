@@ -127,6 +127,7 @@ export function LoginForm() {
             aria-describedby={errors.password ? 'login-password-error' : undefined}
             toggleShowLabel={messages.newPassword.showPassword}
             toggleHideLabel={messages.newPassword.hidePassword}
+            toggleTestId="login-toggle-password"
           />
           {errors.password && (
             <p id="login-password-error" className="text-caption mt-1 text-state-danger" role="alert">

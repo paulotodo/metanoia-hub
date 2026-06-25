@@ -10,6 +10,8 @@ interface PasswordInputWithToggleProps
   /** Aria label shown when the password is currently visible. */
   toggleHideLabel: string;
   containerClassName?: string;
+  /** Optional data-testid applied to the toggle button (not the input). */
+  toggleTestId?: string;
 }
 
 /**
@@ -21,7 +23,14 @@ export const PasswordInputWithToggle = React.forwardRef<
   HTMLInputElement,
   PasswordInputWithToggleProps
 >(function PasswordInputWithToggle(
-  { toggleShowLabel, toggleHideLabel, containerClassName, className, ...props },
+  {
+    toggleShowLabel,
+    toggleHideLabel,
+    containerClassName,
+    className,
+    toggleTestId,
+    ...props
+  },
   ref,
 ) {
   const [visible, setVisible] = React.useState(false);
@@ -39,7 +48,8 @@ export const PasswordInputWithToggle = React.forwardRef<
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? toggleHideLabel : toggleShowLabel}
         aria-pressed={visible}
-        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30"
+        data-testid={toggleTestId}
+        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[var(--color-text-muted)] transition-opacity hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 active:opacity-70"
       >
         {visible ? <EyeOffIcon /> : <EyeIcon />}
       </button>
