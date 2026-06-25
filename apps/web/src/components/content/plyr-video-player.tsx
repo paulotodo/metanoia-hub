@@ -233,7 +233,7 @@ export function PlyrVideoPlayer({
             <button
               type="button"
               onClick={() => setShowShortcuts(false)}
-              className="mt-4 w-full rounded-lg border border-border-default px-4 py-2 text-sm text-text-secondary hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus motion-safe:transition-colors"
+              className="mt-4 w-full rounded-lg border border-border-default px-4 py-2 text-sm text-text-secondary hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 motion-safe:transition-colors"
             >
               Fechar
             </button>
