@@ -20,7 +20,7 @@ interface ModuleAccordionItemProps {
   /** Map of lessonId → status from progress API */
   progressByLessonId: Record<string, LessonStatus>;
   activeLesson: string | null;
-  onLessonSelect: (id: string) => void;
+  onLessonSelect: (id: string, moduleId?: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
   /** Posição 1-based do módulo na trilha (para aria-label) */
@@ -147,7 +147,7 @@ export function ModuleAccordionItem({
                       isActive={activeLesson === lesson.id}
                       isLocked={lockState.locked}
                       lockReason={lockState.reason}
-                      onSelect={onLessonSelect}
+                      onSelect={(id) => onLessonSelect(id, module.id)}
                     />
                   );
                 })}

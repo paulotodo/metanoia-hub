@@ -62,6 +62,17 @@ export class LessonController {
     return this.service.reorderLessons(trailId, moduleId, body);
   }
 
+  @Get(':lessonId')
+  @Roles(Role.ADMIN_TENANT, Role.LIDER, Role.PARTICIPANTE)
+  async getLesson(
+    @Param('trailId', ParseUUIDPipe) trailId: string,
+    @Param('moduleId', ParseUUIDPipe) moduleId: string,
+    @Param('lessonId', ParseUUIDPipe) lessonId: string,
+  ) {
+    const data = await this.service.getLesson(trailId, moduleId, lessonId);
+    return { data };
+  }
+
   @Patch(':lessonId')
   @Roles(Role.ADMIN_TENANT)
   async updateLesson(

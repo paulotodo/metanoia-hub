@@ -209,6 +209,13 @@ export class ContentService {
     };
   }
 
+  async getLesson(trailId: string, moduleId: string, lessonId: string): Promise<LessonResponse> {
+    await this.assertModuleExists(trailId, moduleId);
+    const lesson = await this.repository.findLessonById(lessonId, moduleId);
+    if (!lesson) throw new NotFoundException('Aula não encontrada');
+    return this.lessonToResponse(lesson);
+  }
+
   async updateLesson(
     trailId: string,
     moduleId: string,

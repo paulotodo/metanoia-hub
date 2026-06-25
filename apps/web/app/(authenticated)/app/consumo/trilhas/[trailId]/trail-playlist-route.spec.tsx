@@ -125,9 +125,12 @@ describe('TrailPlaylistRoute — T14 router.push', () => {
     const rows = aside.querySelectorAll('[data-testid="lesson-row"]');
     fireEvent.click(rows[0]);
 
+    // router.push is called with lesson path + optional moduleId query param
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith(
-        `/app/consumo/trilhas/${MOCK_TRAIL_ID}/aulas/${MOCK_LESSON_1_ID}`,
+        expect.stringContaining(
+          `/app/consumo/trilhas/${MOCK_TRAIL_ID}/aulas/${MOCK_LESSON_1_ID}`,
+        ),
       );
     });
   });
