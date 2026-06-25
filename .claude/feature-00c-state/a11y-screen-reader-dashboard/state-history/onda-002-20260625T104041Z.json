@@ -1,0 +1,824 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "a11y-screen-reader-dashboard",
+  "execution": {
+    "id": "feat-a11y-screen-reader-dashboard-20260625T100503Z",
+    "target_project_path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates",
+    "target_project_description": "Screen Reader: dashboard do lider, radar pastoral, listas de participantes, ParticipantCard expansivel, busca/filtro, tabelas, e anuncios aria-live para atualizacoes SSE em tempo real (Epic 14) com debounce/batch, supressao via toggle silenciar, e desconexao/reconexao com role=status. NFR-A4, UX-DR20.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-25T10:05:03Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/.claude/worktrees/epic15-prep-validation-gates/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "execute-task",
+  "next_instruction": "Iniciar execute-task: implementar FASE 1 (semantica estatica) do tasks.md, depois validation gates.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-25T10:10:03Z",
+      "finished_at": "2026-06-25T10:25:02Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 899,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-25T10:13:31Z",
+          "decision_id": null
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T10:14:21Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-25T10:16:08Z",
+          "decision_id": "dec-007"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-25T10:19:20Z",
+          "decision_id": null
+        },
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-25T10:20:18Z",
+          "decision_id": null
+        },
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-25T10:22:24Z",
+          "decision_id": null
+        },
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-25T10:23:20Z",
+          "decision_id": null
+        },
+        {
+          "skill": "validate-tasks-template",
+          "timestamp": "2026-06-25T10:24:40Z",
+          "decision_id": "dec-019"
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-25T10:29:24Z",
+      "finished_at": null,
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 0,
+      "termination_reason": null,
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-25T10:40:28Z",
+          "decision_id": "dec-024"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-25T10:08:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:10:23Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=a11y-screen-reader-dashboard)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: screen reader dashboard lider radar pastoral listas",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:10:36Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify-init: inicio de execucao da feature a11y-screen-reader-dashboard",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 15.2 claramente definida. Artefatos de reconciliation pre-flight disponíveis. Rotas reais mapeadas. Ambiguidades de busca e fronteira 15.2/15.3 identificadas para resolver no clarify.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:13:42Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "specify concluido: spec.md gerada para a11y-screen-reader-dashboard Story 15.2",
+      "options_considered": [
+        "avancar-clarify",
+        "revisar-spec",
+        "abortar"
+      ],
+      "choice": "avancar-clarify",
+      "rationale": "Spec gerada com 10 RF, 7 AC, fronteiras explícitas 15.2×15.3, busca fora de escopo documentada, tabelas N/A documentado. Pronto para clarify resolver ambiguidades residuais.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:13:57Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation: skill nao disponivel no ambiente (Unknown skill error)",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "A skill validate-documentation retornou Unknown skill. Gate não pode ser executado. Spec foi validada manualmente via checklist interno: todos os RF são testáveis, SC são mensuráveis e technology-agnostic, escopo delimitado, fronteiras documentadas.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:14:21Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo.",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:16:08Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-answerer",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 40 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:17:43Z",
+      "stage": "clarify",
+      "agent": "feature-00c-clarify-answerer",
+      "context": "Clarify P2 texto do status do semaforo para AT: usar textos por extenso",
+      "options_considered": [
+        "urgente-atencao-bem",
+        "atencao-necessaria-cuidado-urgente",
+        "termos-pastorais"
+      ],
+      "choice": "atencao-necessaria-urgente-bem",
+      "rationale": "Spec AC-1/LAC-02/LAC-05 citam literalmente 'Atencao necessaria' e 'Urgente'. Constitution Principio III exige vocabulario pastoral. Textos: care-urgent='Urgente', care-attention='Atencao necessaria', care-ok='Bem'.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:18:29Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P1 (answerer pausou score1): onde colocar aria-label de status do card de participante",
+      "options_considered": [
+        "aria-label-elemento-raiz",
+        "span-sr-only-aninhado"
+      ],
+      "choice": "aria-label-elemento-raiz",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto/negocio. Sonda empirica: grep -n 'aria-labelledby|aria-label' participant-card.tsx retornou ZERO matches — os cards NAO tem aria-labelledby interno, portanto adicionar aria-label no elemento raiz (div do Expanded, Link do Medium) NAO causa conflito. LAC-02 da spec especifica exatamente essa solucao. WCAG: aria-label no raiz e padrao valido quando nao ha labelledby concorrente.",
+      "justification_score": 3,
+      "evidence": "grep -n 'aria-labelledby|aria-label' participant-card.tsx => 0 matches (sem labelledby interno; sem conflito ao aplicar aria-label no raiz)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:18:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P3 (answerer pausou score1): localizacao do hook useParticipantStatusAnnouncer",
+      "options_considered": [
+        "hook-local-radar",
+        "hook-compartilhado-src-hooks"
+      ],
+      "choice": "hook-local-radar",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto. Spec §2.1 lista explicitamente o hook junto a radar/page.tsx. YAGNI: nenhuma outra pagina hoje consome status de participante via SSE — criar em src/hooks/ seria abstracao prematura. Convencao do projeto: src/hooks/ contem hooks ja COMPARTILHADOS (use-notification-stream, use-attendance-live); hooks de pagina unica ficam co-located. Se futura story precisar, refatora-se para src/hooks/ (custo baixo). Constitution nao discrimina.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:18:51Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P4 (answerer pausou score0): estrutura da assercao anti-redirect no axe spec",
+      "options_considered": [
+        "novo-describe-isolado",
+        "modificar-bloco-axe-hard-existente"
+      ],
+      "choice": "modificar-bloco-axe-hard-existente",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto. Sonda empirica: axe-quality-gate.e2e-spec.ts e DATA-DRIVEN — itera 'for (const pageEntry of allPages)' e gera testes por entrada do a11y-pages.json. NAO ha como adicionar describe isolado por pagina sem quebrar o padrao. A assercao anti-redirect e pre-condicao natural do teste hard (verificar que conteudo autenticado carregou ANTES de rodar axe), entao vai DENTRO do bloco [axe:hard] apos o goto, antes do AxeBuilder.analyze().",
+      "justification_score": 3,
+      "evidence": "axe-quality-gate.e2e-spec.ts:73 'for (const pageEntry of allPages)' + bloco [axe:hard] linha ~133 gerado por loop — describe isolado por pagina nao cabe no padrao data-driven; assercao vai inline no bloco hard",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:19:09Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Clarify P5 (answerer pausou score1): mecanismo de title dinamico em Client Component",
+      "options_considered": [
+        "generateMetadata-server-side",
+        "document-title-useEffect-client",
+        "title-jsx-direto"
+      ],
+      "choice": "document-title-useEffect-client",
+      "rationale": "Decisao de baixo risco, nao e decisao de produto. Sonda empirica: radar/page.tsx inicia com 'use client' e o groupName vem de estado client-side (selectedGroupId via useState). generateMetadata e server-only e estatico — NAO captura selecao de filtro client-side (inviavel tecnicamente para RF-08). O projeto NAO tem hook useHead/usePageTitle existente (ls src/hooks/ confirmou). Padrao mais simples e portavel: useEffect que seta document.title quando groupName muda. Evita criar abstracao nova. Constitution Principio V (Client Components) permite.",
+      "justification_score": 3,
+      "evidence": "radar/page.tsx:1 'use client' + selectedGroupId via useState (estado client-side); ls src/hooks/ sem useHead/usePageTitle => generateMetadata server-side nao captura estado dinamico; document.title em useEffect e o caminho viavel",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:20:08Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Transicao clarify->plan: feature-00c-preflight check retornou ok=true",
+      "options_considered": [
+        "avancar-plan",
+        "bloquear"
+      ],
+      "choice": "avancar-plan",
+      "rationale": "Preflight FR-010A passou (ok=true, findings=[]). 5 clarificacoes resolvidas autonomamente, 0 pausas humanas, spec atualizada com secao Clarifications.",
+      "justification_score": 3,
+      "evidence": "feature-00c-preflight.sh check => {ok: true, findings: []} exit 0",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:20:08Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO plan: K=4 achados injetados (anti-eco feature=a11y-screen-reader-dashboard)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos: screen reader dashboard lider radar pastoral listas",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:21:50Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip do gate owasp-security: feature e pure FE/a11y, sem endpoint novo, sem dados sensiveis novos, sem auth nova",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Plan confirma: zero mudanca de backend/schema/auth/contrato de API. Mudancas sao aria-label, aria-controls, aria-live, document.title e ratchet de teste. Superficie de ataque OWASP/ASVS nao alterada: nenhum input de usuario novo, nenhuma query, nenhum endpoint, nenhum dado pessoal novo manipulado. Os announces SSE usam dados ja autorizados via RLS no backend existente (Epic 7/14). Risco de seguranca: nulo.",
+      "justification_score": 3,
+      "evidence": "plan.md §1: 'Zero mudanca de backend, schema, auth ou contrato de API'; §2 mapa de arquivos so toca componentes FE de apresentacao (.tsx), a11y-pages.json (config de teste) e pt-BR.json (i18n)",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:22:04Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation pos-plan: skill indisponivel (Unknown skill)",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Skill validate-documentation nao disponivel no ambiente. Plan validado manualmente: mapa de arquivos com rotas reais verificadas, abordagem por AC, validation gates explicitos, riscos com mitigacoes, fora de escopo reafirmado. Sem TBD ou ambiguidades pendentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:22:04Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "plan concluido: plan.md gerado com mapa de arquivos, decisoes de design e gates",
+      "options_considered": [
+        "avancar-checklist",
+        "revisar-plan"
+      ],
+      "choice": "avancar-checklist",
+      "rationale": "Plan completo com 8 secoes. Rotas reais verificadas empiricamente. Decisoes de clarify aplicadas. Validation gates da lição 15.1 documentados. Pronto para checklist + create-tasks.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:23:05Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "checklist a11y concluido: 26 itens APROVADO, sem findings criticos",
+      "options_considered": [
+        "avancar-create-tasks",
+        "revisar-spec"
+      ],
+      "choice": "avancar-create-tasks",
+      "rationale": "Quality gate de requisitos APROVADO (26/26 verdes). Completude, clareza, testabilidade, escopo e consistencia anti-retrabalho validados. Pronto para gerar backlog de tarefas.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:24:40Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate template-fidelity create-tasks: validacao deterministica do tasks.md",
+      "options_considered": [
+        "aceitar",
+        "corrigir"
+      ],
+      "choice": "aceitar",
+      "rationale": "Gate deterministico (validate-tasks-template.sh): critical=0 warning=0. Tasks.md conforme ao template canonico — FASE, checkboxes, criticidade, legendas, Matriz de Dependencias, Resumo, Escopo Coberto/Excluido.",
+      "justification_score": 3,
+      "evidence": "RESULT|.../tasks.md|critical=0|warning=0 exit 0",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:24:40Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "create-tasks concluido: tasks.md gerado com 4 fases, 11 tarefas, 41 subtarefas",
+      "options_considered": [
+        "fechar-onda",
+        "continuar-execute-task"
+      ],
+      "choice": "fechar-onda",
+      "rationale": "Backlog completo e validado (template-fidelity critical=0). Pipeline ate create-tasks atingida nesta onda (objetivo ideal do PAI). Execute-task envolve mudancas de codigo + validation gates pesados (lint/build/test/3 gates a11y) — melhor proxima onda dedicada para nao estourar budget e isolar risco.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-25T10:26:46Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-25T10:29:35Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio da onda execute-task (onda-002) — implementar FASE 1-4 do tasks.md",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "state.json hash OK, 0 bloqueios pendentes, 0 violacoes de ciclo/circular/retro. Pipeline pronto para execucao.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-25T10:37:29Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Ratchet axe dashboard-lider + radar-pastoral: manter baseline, NAO promover a hard",
+      "options_considered": [
+        "promover-hard-sem-validacao",
+        "manter-baseline-ate-e2e-verde",
+        "promover-hard-com-validacao-local"
+      ],
+      "choice": "manter-baseline-ate-e2e-verde",
+      "rationale": "Regra 7 do prompt: promover somente apos confirmar 0 violacoes com sessao autenticada real. Stack E2E nao esta rodando neste ambiente (VPS sem docker-compose.test.yml ativo). Promover sem confirmacao poderia introduzir CI vermelho intermitente se a pagina tiver violacoes remanescentes.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-25T10:40:22Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "FASE 1-4 concluidas: semantica estatica, SSE announcer, grace period, axe anti-redirect, roteiro manual",
+      "options_considered": [
+        "marcar-concluido",
+        "bloquear-em-3.1",
+        "continuar-sem-ratchet"
+      ],
+      "choice": "continuar-sem-ratchet",
+      "rationale": "10 de 11 tasks concluidas. Task 3.1 (ratchet hard) bloqueada por ausencia de stack E2E local — nao introduz CI vermelho. Todos os gates locais (lint, test 952/952, build, 3x a11y) verdes. Gate humano VoiceOver/NVDA pendente conforme LIMITE HONESTO.",
+      "justification_score": 3,
+      "evidence": "lint: OK | tests: 952 passed | build: 2 successful | focus-ring: 0 variantes proibidas | contrast: 0 falhas HARD | motion-safe: 0 findings",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-25T10:29:24Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 1,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 899,
+    "max_depth_reached": 2,
+    "subagents_spawned": 2,
+    "decisions_total": 24,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "screen",
+    "reader",
+    "dashboard",
+    "lider",
+    "radar",
+    "pastoral",
+    "listas"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T10:10:23Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-25T10:20:08Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-25T10:25:20Z",
+      "description": "onda-001 concluida (specify->create-tasks); aguardando wakeup p/ execute-task"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "1.1",
+      "title": "Status textual no ParticipantCard (semaforo nao cor-only)",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:39:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "1.2",
+      "title": "aria-controls no ParticipantCardCompact",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:39:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "1.3",
+      "title": "Title dinamico da pagina do Radar",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:39:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "1.4",
+      "title": "Anuncio de contagem pos-filtro",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:39:46Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.1",
+      "title": "Hook useParticipantStatusAnnouncer",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 5,
+      "tests_passed": 5,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:40:00Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.2",
+      "title": "Grace period de 5s na reconexao SSE",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:40:00Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.2",
+      "title": "Assercao anti-redirect no axe spec",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:40:01Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.1",
+      "title": "Validation gates (project-context + licao 15.1)",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 952,
+      "tests_passed": 952,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:40:01Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.2",
+      "title": "Auditoria de specs E2E (anti-regressao licao 15.1)",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 5,
+      "tests_passed": 5,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:40:01Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.3",
+      "title": "Roteiro manual de screen reader",
+      "wave_id": "onda-002",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/app/(authenticated)/app/gestao/radar/_components/participant-card.tsx",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/__tests__/use-participant-status-announcer.spec.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/_hooks/use-participant-status-announcer.ts",
+        "apps/web/app/(authenticated)/app/gestao/radar/page.tsx",
+        "apps/web/e2e/a11y/axe-quality-gate.e2e-spec.ts",
+        "apps/web/next-env.d.ts",
+        "apps/web/src/hooks/use-notification-stream.ts",
+        "docs/specs/a11y-screen-reader-dashboard/manual-test-checklist.md"
+      ],
+      "recorded_at": "2026-06-25T10:40:01Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.1",
+      "title": "Promover paginas baseline para hard",
+      "wave_id": "onda-002",
+      "outcome": "fail",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-25T10:40:09Z",
+      "source": "execute-task"
+    }
+  ]
+}

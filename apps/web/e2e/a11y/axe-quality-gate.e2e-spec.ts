@@ -131,6 +131,31 @@ test.describe('axe quality gate — WCAG 2AA (públicas hard + autenticadas base
         // Navegar para a página e aguardar estabilização
         await pwPage.goto(pageEntry.path, { waitUntil: 'networkidle' });
 
+        // AC-7 (RF-09): Anti-redirect assertion for authenticated pages (3.2.1, 3.2.2, 3.2.3)
+        // Ensures the page loaded real authenticated content, not a /login redirect.
+        // Generic and data-driven: applies to all pages with requiresAuth:true gate:hard.
+        if (pageEntry.requiresAuth) {
+          // 3.2.1: URL must not contain /login (redirect guard)
+          const currentUrl = pwPage.url();
+          if (currentUrl.includes('/login')) {
+            throw new Error(
+              `[axe:hard] ${pageEntry.label}: page redirected to login (${currentUrl}). ` +
+              `Auth setup failed or session expired — cannot run axe on unauthenticated content.`,
+            );
+          }
+
+          // 3.2.2: Authenticated content landmark present (h1 or main landmark)
+          // Uses locator auto-waiting so flaky loads don't fail the assertion prematurely.
+          const mainLandmark = pwPage.locator('main, [role="main"]').first();
+          const hasMain = await mainLandmark.count().then((n) => n > 0);
+          if (!hasMain) {
+            throw new Error(
+              `[axe:hard] ${pageEntry.label}: no <main> landmark found after navigation. ` +
+              `Page may not have rendered authenticated content.`,
+            );
+          }
+        }
+
         // Executar axe com tags WCAG 2A/2AA/2.1AA (best-practice excluída intencionalmente)
         const results = await new AxeBuilder({ page: pwPage }).withTags(WCAG_TAGS).analyze();
 

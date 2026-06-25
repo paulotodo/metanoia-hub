@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { RadarParticipant, SignalType } from "@metanoia/types";
 import {
   useRadarPage,
@@ -18,6 +18,8 @@ import { InboxZeroState } from "./_components/inbox-zero-state";
 import { ReturnBanner } from "./_components/return-banner";
 import { RadarPageSkeleton } from "./_components/radar-skeleton";
 import { RadarError } from "./_components/radar-error";
+import { useParticipantStatusAnnouncer } from "./_hooks/use-participant-status-announcer";
+import { useNotificationSilence } from "@/hooks/use-notification-silence";
 
 type PillFilter = SignalType | null;
 
@@ -32,6 +34,30 @@ export default function RadarPage() {
   );
   const [activePill, setActivePill] = useState<PillFilter>(null);
 
+  // AC-4 (RF-08): dynamic document.title based on selected group
+  useEffect(() => {
+    const groupName = selectedGroupId && data?.groups
+      ? (data.groups.find((g) => g.id === selectedGroupId)?.name ?? null)
+      : null;
+    document.title = groupName
+      ? `Radar Pastoral — ${groupName}`
+      : "Radar Pastoral";
+    // Cleanup not strictly needed (page is client-only), but good practice
+    return () => {
+      document.title = "Radar Pastoral";
+    };
+  }, [selectedGroupId, data]);
+
+  // AC-5 (RF-04, RF-05): SSE status announcer with debounce + silence support
+  const { silenced } = useNotificationSilence();
+  const [announcement, setAnnouncement] = useState<string>("");
+  const participants = useMemo(() => data?.participants ?? [], [data]);
+  useParticipantStatusAnnouncer({
+    participants,
+    silenced,
+    announce: setAnnouncement,
+  });
+
   // Compute counts from participants
   const counts = useMemo(() => {
     if (!data) return { urgent: [], attention: [], ok: [] };
@@ -40,6 +66,25 @@ export default function RadarPage() {
     const ok = data.participants.filter((p) => p.signalType === "care-ok");
     return { urgent, attention, ok };
   }, [data]);
+
+  // AC-3 (RF-03): filter count announcement (suppress on first render)
+  const isMountedRef = useRef(false);
+  const filterAnnouncement = useMemo(() => {
+    if (!isMountedRef.current) return "";
+    if (!data) return "";
+    const visibleCount = activePill === null
+      ? data.participants.length
+      : data.participants.filter((p) => p.signalType === activePill).length;
+    if (!selectedGroupId && activePill === null) return "";
+    return visibleCount === 0
+      ? "Nenhum participante nessa categoria"
+      : `${visibleCount} participantes visíveis`;
+  }, [activePill, selectedGroupId, data]);
+
+  useEffect(() => {
+    // Mark mounted after first render so filter announcements start on interaction
+    isMountedRef.current = true;
+  }, []);
 
   if (isLoading) return <RadarPageSkeleton />;
   if (error) return <RadarError error={error} onRetry={() => refetch()} />;
@@ -106,6 +151,27 @@ export default function RadarPage() {
 
   return (
     <div className="space-y-6 py-6">
+      {/* AC-3 (RF-03): sr-only live region for filter count announcements */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {filterAnnouncement}
+      </div>
+
+      {/* AC-5 (RF-04, RF-05): sr-only live region for SSE status updates.
+          aria-live="off" when silenced (useParticipantStatusAnnouncer handles content). */}
+      <div
+        role="status"
+        aria-live={silenced ? "off" : "polite"}
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {announcement}
+      </div>
+
       {/* 01.2-H1: SaudacaoContextual */}
       <SaudacaoContextual
         firstName={data.userFirstName}
