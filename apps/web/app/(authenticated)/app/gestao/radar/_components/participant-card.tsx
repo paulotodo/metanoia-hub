@@ -23,14 +23,8 @@ function ParticipantCardExpanded({
 }: {
   participant: RadarParticipant;
 }) {
-  // AC-1: aria-label conveys name + status so AT announces both without relying on color
-  const ariaLabel = `${participant.name} — ${STATUS_LABEL[participant.signalType]}`;
-
   return (
-    <div
-      aria-label={ariaLabel}
-      className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]"
-    >
+    <div className="group rounded-lg border-l-4 border-l-care-urgent border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]">
       <Link
         href={`/app/gestao/radar/${participant.participantId}`}
         className="block"
@@ -40,6 +34,8 @@ function ParticipantCardExpanded({
             <h3 className="text-base font-semibold text-text-primary">
               {participant.name}
             </h3>
+            {/* AC-1: status as text for AT — the color border alone is insufficient */}
+            <span className="sr-only">{STATUS_LABEL[participant.signalType]}.</span>
             {participant.contextPhrase && (
               <p className="mt-1 text-sm text-text-secondary lg:text-base">
                 {participant.contextPhrase}
@@ -76,13 +72,9 @@ function ParticipantCardMedium({
 }: {
   participant: RadarParticipant;
 }) {
-  // AC-1: aria-label on the Link root conveys name + status (label hides children from AT)
-  const ariaLabel = `${participant.name} — ${STATUS_LABEL[participant.signalType]}`;
-
   return (
     <Link
       href={`/app/gestao/radar/${participant.participantId}`}
-      aria-label={ariaLabel}
       className="group block rounded-lg border-l-4 border-l-care-attention border border-border-default bg-surface-elevated p-4 motion-safe:transition-transform active:scale-[0.98]"
     >
       <div className="flex items-center justify-between">
@@ -90,6 +82,8 @@ function ParticipantCardMedium({
           <h3 className="text-base font-semibold text-text-primary">
             {participant.name}
           </h3>
+          {/* AC-1: status as text for AT — the color border alone is insufficient */}
+          <span className="sr-only">{STATUS_LABEL[participant.signalType]}.</span>
           {participant.contextPhrase && (
             <p className="mt-0.5 text-sm text-text-secondary">
               {participant.contextPhrase}
@@ -136,7 +130,7 @@ function ParticipantCardCompact({
         type="button"
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
-        aria-controls={panelId}
+        aria-controls={expanded ? panelId : undefined}
         className="flex w-full items-center justify-between px-4 py-3 text-left motion-safe:transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-interactive-focus"
       >
         <span className="text-sm text-text-secondary">{inlineText}</span>
