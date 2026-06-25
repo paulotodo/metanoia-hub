@@ -163,6 +163,7 @@ Injetar como invariantes no `constitution`/checklist de cada story:
 
 ## 9. Critérios de "done" por story
 
+- **Sweep de validação local pré-PR (OBRIGATÓRIO em toda onda `execute-task`)**: rodar os Validation Gates de `docs/project-context.md` → §Validation Gates. Sempre: `pnpm turbo lint` + `pnpm turbo test` + `pnpm turbo build`. Condicional: `--filter @metanoia/types test` + `turbo build --filter=@metanoia/web` se tocar `packages/types`; `--filter @metanoia/web test` se tocar FE; boot da API (`start:e2e` + `curl /api/health`) se mexer em módulo/`onModuleInit`/env/asset. **Não confiar só em `--filter @metanoia/api test`** — features backend/full-stack passam nos unit tests mockados e quebram em runtime que só o CI pega (lição central do Epic 14, ~6 ciclos de CI desperdiçados).
 - PR mergeado em `dev`, CI verde.
 - AC do story file satisfeitos; testes (unit + integration + RLS quando aplica).
 - `sprint-status.yaml` atualizado.

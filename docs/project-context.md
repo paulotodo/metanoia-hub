@@ -151,6 +151,25 @@ _Este arquivo contém regras críticas e padrões que agentes de IA devem seguir
 - **Setup dev**: `git clone → ./scripts/setup.sh → docker compose up → pnpm dev`
 - **`.env.example`** versionado com todas as variáveis documentadas
 
+### Validation Gates (Definition of Done por onda / PR)
+
+Gate obrigatório antes de abrir PR em **toda** onda `execute-task` da pipeline (PAI/humano). Origem: o CI verde exige mais do que `pnpm --filter @metanoia/api test` — uma feature backend/full-stack passa nos unit tests com deps mockadas e ainda quebra em runtime/integração que **só o CI pega** (Epic 14 custou ~6 ciclos de CI por pular este sweep).
+
+**Sempre rodar (independe do que mudou):**
+
+1. `pnpm turbo lint` — lint do monorepo completo (não `--filter` de um app só; lint de `packages/types`/`web` escapa do filtro do `api`).
+2. `pnpm turbo test` — unit + integration + RLS specs (specs RLS rodam idempotentes 2× no CI).
+3. `pnpm turbo build` — type-check completo (tsc); erros de tipo só aparecem no Build do CI, nunca no lint/test.
+
+**Condicional ao que a mudança toca:**
+
+4. **Tocou `packages/types` (schemas Zod / enums)** → `pnpm --filter @metanoia/types test` (snapshot tests; gate contra breaking change) **e** `pnpm turbo build --filter=@metanoia/web` (um enum é contrato FE+BE: `Record<...Type, ...>` exaustivo ou `switch` no FE quebra o build do web).
+5. **Tocou frontend (`apps/web`)** → `pnpm --filter @metanoia/web test` + `pnpm turbo build --filter=@metanoia/web`.
+6. **Tocou módulo da API / `onModuleInit` / env vars / assets não-`.ts`** → boot real: `pnpm --filter @metanoia/api start:e2e` + `curl -s http://localhost:3001/api/health` (deve responder 200). `onModuleInit` não é coberto por unit tests mockados. Pegou no Epic 14: env var obrigatória sem default trava o boot (adicionar ao bloco `env:` dos jobs E2E/Axe com `${{ secrets.X || 'dummy' }}`); asset `.lua`/`.sql`/`.html` não copiado para `dist/` → `ENOENT` (declarar em `compilerOptions.assets` do `nest-cli.json`); nome de fila BullMQ **não pode conter `:`** (usar nome "bare", o `BullMqService` injeta o prefixo).
+7. **Tocou `schema.prisma`** → `pnpm exec prisma generate` (no `apps/api`) antes de buildar, senão o tsc local diverge do CI; e validação Postgres local da migration (subir `docker-compose.test.yml`, `prisma migrate deploy`, conferir RLS).
+
+> Nota CI: o evento `synchronize` **não** dispara run neste repo — após push numa PR aberta, forçar com `gh pr close <n> && gh pr reopen <n>`. Runs cancelados pela `concurrency` aparecem como fails em 0–40s; olhar sempre o run mais recente.
+
 ### Critical Don't-Miss Rules
 
 **Multi-tenancy & RLS:**
