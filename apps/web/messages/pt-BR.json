@@ -12,7 +12,7 @@
       "passwordMismatch": "As senhas nao coincidem",
       "passwordTooShort": "A senha deve ter no minimo 12 caracteres",
       "passwordTooLong": "A senha deve ter no maximo 64 caracteres",
-      "invalidEmail": "E-mail invalido",
+      "invalidEmail": "E-mail inválido",
       "leakedPassword": "Esta senha foi encontrada em vazamentos de dados. Escolha outra senha."
     },
     "success": "Conta criada! Verifique seu e-mail para confirmar o cadastro."
@@ -681,7 +681,7 @@
     "submit": "Salvar e entrar",
     "submitting": "Salvando...",
     "showPassword": "Mostrar senha",
-    "hidePassword": "Esconder senha",
+    "hidePassword": "Ocultar senha",
     "validation": {
       "tooShort": "A senha precisa ter pelo menos 8 caracteres",
       "tooLong": "A senha pode ter no máximo 64 caracteres",

@@ -98,7 +98,8 @@ export function RegisterForm() {
     <Card className="w-full max-w-md p-8">
       <h1 className="text-display mb-6 text-center">{t.title}</h1>
 
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      {/* LAC-04: aria-label identifica o formulário como "Formulário de cadastro" (single-page) */}
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4" aria-label="Formulário de cadastro">
         <div>
           <label htmlFor="register-name" className="text-body-sm mb-1 block text-text-secondary">
             {t.name}
@@ -114,11 +115,14 @@ export function RegisterForm() {
             aria-invalid={errors.name ? (true as unknown as boolean) : undefined}
             aria-describedby={errors.name ? 'name-error' : undefined}
           />
-          {errors.name && (
-            <p id="name-error" className="text-caption mt-1 text-state-danger" role="alert">
-              {errors.name[0]}
-            </p>
-          )}
+          {/* LAC-04: aria-live container estático garante anúncio do erro ao screen reader */}
+          <div aria-live="polite" aria-atomic="true">
+            {errors.name && (
+              <p id="name-error" className="text-caption mt-1 text-state-danger">
+                {errors.name[0]}
+              </p>
+            )}
+          </div>
         </div>
 
         <div>
@@ -136,11 +140,14 @@ export function RegisterForm() {
             aria-invalid={errors.email ? (true as unknown as boolean) : undefined}
             aria-describedby={errors.email ? 'email-error' : undefined}
           />
-          {errors.email && (
-            <p id="email-error" className="text-caption mt-1 text-state-danger" role="alert">
-              {errors.email[0]}
-            </p>
-          )}
+          {/* LAC-04: aria-live container estático garante anúncio do erro ao screen reader */}
+          <div aria-live="polite" aria-atomic="true">
+            {errors.email && (
+              <p id="email-error" className="text-caption mt-1 text-state-danger">
+                {errors.email[0]}
+              </p>
+            )}
+          </div>
         </div>
 
         <div>
@@ -172,6 +179,7 @@ export function RegisterForm() {
               aria-label={
                 showPassword ? messages.newPassword.hidePassword : messages.newPassword.showPassword
               }
+              aria-pressed={showPassword}
               data-testid="register-toggle-password"
             >
               {showPassword ? '🙈' : '👁'}
@@ -180,11 +188,14 @@ export function RegisterForm() {
           <p id="password-hint" className="text-caption mt-1 text-text-tertiary">
             {t.passwordHint}
           </p>
-          {errors.password && (
-            <p id="password-error" className="text-caption mt-1 text-state-danger" role="alert">
-              {errors.password[0]}
-            </p>
-          )}
+          {/* LAC-04: aria-live container estático garante anúncio do erro ao screen reader */}
+          <div aria-live="polite" aria-atomic="true">
+            {errors.password && (
+              <p id="password-error" className="text-caption mt-1 text-state-danger">
+                {errors.password[0]}
+              </p>
+            )}
+          </div>
         </div>
 
         <div>

@@ -175,17 +175,20 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   return (
     <Card className="w-full max-w-md p-8">
-      <h1 className="text-display mb-2 text-center">{t.title}</h1>
+      {/* LAC-08: id para aria-labelledby no <form> */}
+      <h1 id="reset-form-heading" className="text-display mb-2 text-center">{t.title}</h1>
       {maskedEmail && (
         <p className="text-caption mb-6 text-center text-text-tertiary">
           {maskedEmail}
         </p>
       )}
 
+      {/* LAC-08: aria-labelledby referencia o heading do formulário */}
       <form
         onSubmit={handleSubmit}
         noValidate
         className="flex flex-col gap-4"
+        aria-labelledby="reset-form-heading"
       >
         <div>
           <label
