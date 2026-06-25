@@ -230,7 +230,7 @@ development_status:
   15-2-screen-reader-dashboard-lider-radar-pastoral-listas-nfr: done
   15-3-semaforo-multimodal-icones-texto-complementar-aria-nfr-: done
   15-4-screen-reader-trilhas-progresso-conteudo-nfr-a4: done
-  epic-15-retrospective: optional
+  epic-15-retrospective: done
 
   # Epic 16: Resiliência, Offline & Expansões Futuras
   # Sprint 21: 16-1, 16-2, 16-3, 16-4, 16-5, 16-6, 16-7
