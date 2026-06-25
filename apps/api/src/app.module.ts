@@ -20,6 +20,7 @@ import { GroupsModule } from './groups/groups.module';
 import { ParticipantGroupsModule } from './participant-groups/participant-groups.module';
 import { SuperAdminTenantsModule } from './super-admin/super-admin-tenants.module';
 import { AdminUsersModule } from './admin-users/admin-users.module';
+import { AdminAccessibilityModule } from './admin-accessibility/admin-accessibility.module';
 import { ConsentModule } from './consent/consent.module';
 import { GroupMembersModule } from './group-members/group-members.module';
 import { AdminInvitesModule } from './admin-invites/admin-invites.module';
@@ -75,6 +76,7 @@ import { pinoLoggerConfig } from './common/logger/logger.config';
     ParticipantGroupsModule,
     SuperAdminTenantsModule,
     AdminUsersModule,
+    AdminAccessibilityModule,
     ConsentModule,
     GroupMembersModule,
     AdminInvitesModule,

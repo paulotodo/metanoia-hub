@@ -65,6 +65,7 @@ export interface UpdateLessonInput {
   sizeBytes?: number | null;
   uploadedBy?: string | null;
   uploadedAt?: Date | null;
+  hasMissingAltText?: boolean;
 }
 
 // ---------------------------------------------------------------------------

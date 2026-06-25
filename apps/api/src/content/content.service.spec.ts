@@ -73,6 +73,7 @@ function makeLesson(overrides = {}) {
     uploadedAt: null,
     order: 0,
     estimatedDurationMinutes: null,
+    hasMissingAltText: false,
     createdAt: new Date('2026-06-10T12:00:00.000Z'),
     updatedAt: new Date('2026-06-10T12:00:00.000Z'),
     deletedAt: null,
@@ -268,6 +269,39 @@ describe('ContentService — Lesson CRUD', () => {
     });
     expect(result.contentUrl).toBeNull();
     expect(result.contentType).toBe('video');
+  });
+
+  it('updateLesson sets hasMissingAltText=true when contentBody has <img> without alt', async () => {
+    const contentBody = '<p>Texto</p><img src="foto.jpg" />';
+    const updatedLesson = makeLesson({ contentBody, hasMissingAltText: true });
+    vi.mocked(repo.updateLesson).mockResolvedValue(updatedLesson);
+    const result = await service.updateLesson(TRAIL_ID, MODULE_ID, LESSON_ID, { contentBody });
+    expect(vi.mocked(repo.updateLesson)).toHaveBeenCalledWith(
+      LESSON_ID,
+      MODULE_ID,
+      expect.objectContaining({ hasMissingAltText: true }),
+    );
+    expect(result.hasMissingAltText).toBe(true);
+  });
+
+  it('updateLesson sets hasMissingAltText=false when all <img> have alt', async () => {
+    const contentBody = '<img src="foto.jpg" alt="Foto da equipe" />';
+    const updatedLesson = makeLesson({ contentBody, hasMissingAltText: false });
+    vi.mocked(repo.updateLesson).mockResolvedValue(updatedLesson);
+    await service.updateLesson(TRAIL_ID, MODULE_ID, LESSON_ID, { contentBody });
+    expect(vi.mocked(repo.updateLesson)).toHaveBeenCalledWith(
+      LESSON_ID,
+      MODULE_ID,
+      expect.objectContaining({ hasMissingAltText: false }),
+    );
+  });
+
+  it('updateLesson does not set hasMissingAltText when contentBody is not in body', async () => {
+    const updatedLesson = makeLesson({ name: 'Novo nome' });
+    vi.mocked(repo.updateLesson).mockResolvedValue(updatedLesson);
+    await service.updateLesson(TRAIL_ID, MODULE_ID, LESSON_ID, { name: 'Novo nome' });
+    const call = vi.mocked(repo.updateLesson).mock.calls[0][2];
+    expect(call).not.toHaveProperty('hasMissingAltText');
   });
 });
 

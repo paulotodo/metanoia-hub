@@ -780,6 +780,14 @@ export {
   type ReorderLessonsRequest,
 } from './content/lesson.schema';
 export {
+  LessonAccessibilityGapSchema,
+  type LessonAccessibilityGap,
+  AccessibilityGapsQuerySchema,
+  type AccessibilityGapsQuery,
+  AccessibilityGapsResponseSchema,
+  type AccessibilityGapsResponse,
+} from './content/accessibility.schema';
+export {
   UploadResponseSchema,
   type UploadResponse,
   SignedUrlResponseSchema,
