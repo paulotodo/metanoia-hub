@@ -17,7 +17,7 @@ import { LazyModuleMount } from './lazy-module-mount';
 
 interface TrailPlaylistProps {
   trailId: string;
-  onLessonSelect: (lessonId: string) => void;
+  onLessonSelect: (lessonId: string, moduleId?: string) => void;
 }
 
 /** Approximate height of a collapsed module for IntersectionObserver placeholder */

@@ -35,6 +35,7 @@ export const LessonResponseSchema = z.object({
   uploadedAt: z.string().datetime().nullable(),
   order: z.number().int().nonnegative(),
   estimatedDurationMinutes: z.number().int().nullable(),
+  hasMissingAltText: z.boolean(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   deletedAt: z.string().datetime().nullable(),

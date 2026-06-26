@@ -1817,5 +1817,41 @@
         "noHistory": "Sem histórico disponível para este período."
       }
     }
+  },
+  "admin": {
+    "accessibilityGaps": {
+      "title": "Conteúdo com Acessibilidade Incompleta",
+      "description": "Aulas com imagens sem texto alternativo (alt-text) detectadas automaticamente.",
+      "empty": "Nenhuma aula com problemas de acessibilidade encontrada.",
+      "columns": {
+        "lesson": "Aula",
+        "module": "Módulo",
+        "trail": "Trilha"
+      },
+      "loading": "Carregando...",
+      "error": "Erro ao carregar dados."
+    }
+  },
+  "lessonViewer": {
+    "loading": "Carregando aula...",
+    "error": "Não foi possível carregar a aula.",
+    "notFound": "Aula não encontrada.",
+    "contentTypes": {
+      "video": "Vídeo",
+      "rich_text": "Texto",
+      "pdf_doc": "Documento PDF",
+      "external_link": "Link Externo"
+    },
+    "navigation": {
+      "nextLesson": "Próxima aula",
+      "nextModule": "Próximo módulo",
+      "completeTrail": "Concluir trilha",
+      "backToTrail": "Voltar para trilha"
+    },
+    "a11y": {
+      "lessonContent": "Conteúdo da aula",
+      "externalLinkWarning": "Abre em nova janela"
+    },
+    "unsupportedContent": "Este tipo de conteúdo não pode ser exibido aqui."
   }
 }

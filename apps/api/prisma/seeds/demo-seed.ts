@@ -514,6 +514,76 @@ async function main() {
     },
   });
 
+  // -----------------------------------------------------------------------
+  // Story 15.5 — Demo lessons with missing alt-text for accessibility audit
+  // Fixed UUIDs (v7 format): idempotent via upsert by id
+  // -----------------------------------------------------------------------
+  const DEMO_TRAIL_ID = '019899a0-7002-7155-8000-000000000001';
+  const DEMO_MODULE_ID = '019899a0-7002-7155-8000-000000000002';
+  const DEMO_LESSON_ALT1_ID = '019899a0-7002-7155-8000-000000000003';
+  const DEMO_LESSON_ALT2_ID = '019899a0-7002-7155-8000-000000000004';
+
+  await prisma.trail.upsert({
+    where: { id: DEMO_TRAIL_ID },
+    update: {},
+    create: {
+      id: DEMO_TRAIL_ID,
+      tenantId: DEMO_TENANT_ID,
+      name: 'Trilha Demo — Acessibilidade',
+      description: 'Trilha criada pelo seed para demonstrar a auditoria de alt-text.',
+      status: 'published',
+      accessMode: 'free',
+      createdBy: ADMIN_ID,
+      isDemoData: true,
+    },
+  });
+
+  await prisma.module.upsert({
+    where: { id: DEMO_MODULE_ID },
+    update: {},
+    create: {
+      id: DEMO_MODULE_ID,
+      tenantId: DEMO_TENANT_ID,
+      trailId: DEMO_TRAIL_ID,
+      name: 'Módulo Demo',
+      order: 1,
+      lessonAccessMode: 'free',
+      isDemoData: true,
+    },
+  });
+
+  await prisma.lesson.upsert({
+    where: { id: DEMO_LESSON_ALT1_ID },
+    update: { hasMissingAltText: true },
+    create: {
+      id: DEMO_LESSON_ALT1_ID,
+      tenantId: DEMO_TENANT_ID,
+      moduleId: DEMO_MODULE_ID,
+      name: 'Aula com imagem sem alt-text (1)',
+      contentType: 'rich_text',
+      contentBody: '<p>Texto da aula.</p><img src="https://cdn.example.com/foto-equipe.jpg" width="800"><p>Fim.</p>',
+      hasMissingAltText: true,
+      order: 1,
+      isDemoData: true,
+    },
+  });
+
+  await prisma.lesson.upsert({
+    where: { id: DEMO_LESSON_ALT2_ID },
+    update: { hasMissingAltText: true },
+    create: {
+      id: DEMO_LESSON_ALT2_ID,
+      tenantId: DEMO_TENANT_ID,
+      moduleId: DEMO_MODULE_ID,
+      name: 'Aula com imagem sem alt-text (2)',
+      contentType: 'rich_text',
+      contentBody: '<p>Outro conteúdo.</p><img src="https://cdn.example.com/grafico.png" alt=""><p>Consulte o gráfico.</p>',
+      hasMissingAltText: true,
+      order: 2,
+      isDemoData: true,
+    },
+  });
+
   console.log('Demo seed concluído:');
   console.log(`  - tenant ${DEMO_TENANT_ID} (is_demo=true)`);
   console.log(`  - usuários: 1 admin + 1 líder + ${PARTICIPANTS.length} participantes`);
@@ -521,6 +591,7 @@ async function main() {
   console.log(`  - reuniões: ${meetings.length} (${meetings.map((m) => `${m.daysBack}d`).join(', ')})`);
   console.log(`  - alertas: ${PARTICIPANTS.filter((p) => p.status !== 'novo').length}`);
   console.log(`  - ações pastorais: ${actions.length}`);
+  console.log(`  - aulas demo alt-text: 2 (hasMissingAltText=true)`);
 }
 
 function participantByKey(key: ParticipantKey): Participant {

@@ -3,6 +3,8 @@ import { AppQueryProvider } from '@/lib/query';
 import { NavigationShell } from './_components/navigation-shell';
 import { OnboardingRedirectGuard } from './_components/onboarding-redirect-guard';
 import { BrandingResponseSchema } from '@metanoia/types';
+// Plyr CSS — loaded globally for all authenticated routes with video content (task 4.2)
+import 'plyr/dist/plyr.css';
 
 const API_INTERNAL_URL =
   process.env.API_INTERNAL_URL ??

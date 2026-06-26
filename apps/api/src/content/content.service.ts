@@ -27,6 +27,7 @@ import type { Lesson, Module, Trail } from '@prisma/client';
 import { getRequestContext } from '../common/context/request-context';
 import { ContentRepository } from './content.repository';
 import { TemplateService } from './templates/template.service';
+import { AltTextValidator } from './alt-text.validator';
 
 @Injectable()
 export class ContentService {
@@ -208,6 +209,13 @@ export class ContentService {
     };
   }
 
+  async getLesson(trailId: string, moduleId: string, lessonId: string): Promise<LessonResponse> {
+    await this.assertModuleExists(trailId, moduleId);
+    const lesson = await this.repository.findLessonById(lessonId, moduleId);
+    if (!lesson) throw new NotFoundException('Aula não encontrada');
+    return this.lessonToResponse(lesson);
+  }
+
   async updateLesson(
     trailId: string,
     moduleId: string,
@@ -220,6 +228,12 @@ export class ContentService {
       ...(body.contentUrl !== undefined ? { contentUrl: body.contentUrl } : {}),
       ...(body.estimatedDurationMinutes !== undefined
         ? { estimatedDurationMinutes: body.estimatedDurationMinutes }
+        : {}),
+      ...(body.contentBody !== undefined
+        ? {
+            contentBody: body.contentBody,
+            hasMissingAltText: AltTextValidator.hasInvalidImgs(body.contentBody),
+          }
         : {}),
     });
     if (!updated) throw new NotFoundException('Aula não encontrada');
@@ -317,6 +331,7 @@ export class ContentService {
       uploadedAt: lesson.uploadedAt ? lesson.uploadedAt.toISOString() : null,
       order: lesson.order,
       estimatedDurationMinutes: lesson.estimatedDurationMinutes ?? null,
+      hasMissingAltText: lesson.hasMissingAltText,
       createdAt: lesson.createdAt.toISOString(),
       updatedAt: lesson.updatedAt.toISOString(),
       deletedAt: lesson.deletedAt ? lesson.deletedAt.toISOString() : null,

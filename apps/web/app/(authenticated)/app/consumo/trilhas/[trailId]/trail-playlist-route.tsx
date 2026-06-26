@@ -20,8 +20,9 @@ interface TrailPlaylistRouteProps {
 export function TrailPlaylistRoute({ trailId }: TrailPlaylistRouteProps) {
   const router = useRouter();
 
-  const handleLessonSelect = (lessonId: string) => {
-    router.push(`/app/consumo/trilhas/${trailId}/aulas/${lessonId}`);
+  const handleLessonSelect = (lessonId: string, moduleId?: string) => {
+    const qs = moduleId ? `?moduleId=${moduleId}` : '';
+    router.push(`/app/consumo/trilhas/${trailId}/aulas/${lessonId}${qs}`);
   };
 
   return (
