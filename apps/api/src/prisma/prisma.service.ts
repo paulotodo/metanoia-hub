@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { ConfigService } from '@nestjs/config';
 import type { EnvConfig } from '../config/env.validation';
-import { prismaTracingExtension } from './prisma-tracing.extension';
+import { createPrismaTracingExtension } from './prisma-tracing.extension';
 
 @Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
@@ -13,7 +13,7 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     const connectionString = configService.get('DATABASE_APP_URL', { infer: true });
     const adapter = new PrismaPg({ connectionString });
     this.prisma = new PrismaClient({ adapter }).$extends(
-      prismaTracingExtension,
+      createPrismaTracingExtension(),
     ) as unknown as PrismaClient;
   }
 
