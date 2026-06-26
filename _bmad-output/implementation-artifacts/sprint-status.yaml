@@ -224,12 +224,14 @@ development_status:
   # Epic 15: Acessibilidade Avançada — DONE
   # Sprint 20: 15-1, 15-2, 15-3, 15-4. PRs #191/#192/#193/#194 mergeados em dev.
   # DoD transversal (teste manual com >=3 screen readers) PENDENTE = gate humano.
-  # Follow-up 15.5 documentado (Plyr, has_missing_alt_text + admin accessibility-gaps).
+  # Follow-up 15.5 (Plyr + governança de alt-text) DONE — PR #197, migration
+  # has_missing_alt_text aplicada em prod + imagens api/web rebuildadas/ativas.
   epic-15: done
   15-1-screen-reader-autenticacao-navegacao-global-landmarks-n: done
   15-2-screen-reader-dashboard-lider-radar-pastoral-listas-nfr: done
   15-3-semaforo-multimodal-icones-texto-complementar-aria-nfr-: done
   15-4-screen-reader-trilhas-progresso-conteudo-nfr-a4: done
+  15-5-conteudo-multimidia-plyr-alt-text-governance: done
   epic-15-retrospective: done
 
   # Epic 16: Resiliência, Offline & Expansões Futuras
