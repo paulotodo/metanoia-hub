@@ -5,7 +5,6 @@ export const LessonAccessibilityGapSchema = z.object({
   lessonName: z.string(),
   moduleName: z.string(),
   trailName: z.string(),
-  tenantId: z.string().uuid(),
 });
 export type LessonAccessibilityGap = z.infer<typeof LessonAccessibilityGapSchema>;
 

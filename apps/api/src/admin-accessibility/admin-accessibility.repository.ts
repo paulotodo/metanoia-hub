@@ -25,7 +25,6 @@ export class AdminAccessibilityRepository {
           select: {
             id: true,
             name: true,
-            tenantId: true,
             module: {
               select: {
                 name: true,
@@ -55,7 +54,6 @@ export class AdminAccessibilityRepository {
           lessonName: l.name,
           moduleName: l.module.name,
           trailName: l.module.trail.name,
-          tenantId: l.tenantId,
         })),
         total,
       };

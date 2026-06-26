@@ -4,7 +4,8 @@ import { useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useLesson } from '@/lib/api/hooks/use-lesson';
-import { useTrailModules } from '@/lib/api/hooks/use-trail-structure';
+import { useTrailModules, useModuleLessons } from '@/lib/api/hooks/use-trail-structure';
+import { RichTextEditor } from '@/components/content/rich-text-editor';
 import messages from '../../../../../../../../messages/pt-BR.json';
 
 // Dynamic import with ssr:false — Plyr requires DOM (task 4.3)
@@ -29,46 +30,50 @@ interface LessonViewerProps {
   lessonId: string;
 }
 
-/**
- * Finds next lesson across modules given currentLessonId and moduleId.
- * Returns { nextLessonId, nextModuleId } or null if this is the last lesson.
- */
-function findNextLesson(
-  modules: Array<{ id: string; lessons?: Array<{ id: string }> }>,
-  currentModuleId: string,
-  currentLessonId: string,
-): { nextLessonId: string; nextModuleId: string } | null {
-  for (let mi = 0; mi < modules.length; mi++) {
-    const mod = modules[mi];
-    if (!mod || mod.id !== currentModuleId) continue;
-    const lessons = mod.lessons ?? [];
-    for (let li = 0; li < lessons.length; li++) {
-      const lesson = lessons[li];
-      if (!lesson || lesson.id !== currentLessonId) continue;
-      // Next lesson in same module
-      const nextLesson = lessons[li + 1];
-      if (nextLesson) {
-        return { nextLessonId: nextLesson.id, nextModuleId: mod.id };
-      }
-      // First lesson of next module
-      const nextMod = modules[mi + 1];
-      if (nextMod) {
-        const nextModFirstLesson = (nextMod.lessons ?? [])[0];
-        if (nextModFirstLesson) {
-          return { nextLessonId: nextModFirstLesson.id, nextModuleId: nextMod.id };
-        }
-      }
-      return null; // last lesson of last module
-    }
-  }
-  return null;
+interface OrderedItem {
+  id: string;
+  order: number;
+}
+
+/** Sorts by `order` ascending (stable; does not mutate input). */
+function byOrder<T extends OrderedItem>(items: readonly T[]): T[] {
+  return [...items].sort((a, b) => a.order - b.order);
 }
 
 export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps) {
   const { data: lesson, isPending, isError } = useLesson(trailId, moduleId, lessonId);
-  // For navigation: get trail structure to find next lesson
   const { data: modulesData } = useTrailModules(trailId);
+  const { data: currentModuleLessons } = useModuleLessons(trailId, moduleId);
   const nextButtonRef = useRef<HTMLAnchorElement>(null);
+
+  // --- Next-lesson navigation (real fan-out; lessons are fetched per module) ---
+  const modules = byOrder(modulesData?.data ?? []);
+  const currentModuleIdx = modules.findIndex((m) => m.id === moduleId);
+  const nextModule =
+    currentModuleIdx >= 0 ? modules[currentModuleIdx + 1] : undefined;
+
+  const currentLessons = byOrder(currentModuleLessons?.data ?? []);
+  const currentLessonIdx = currentLessons.findIndex((l) => l.id === lessonId);
+  const nextInModule =
+    currentLessonIdx >= 0 ? currentLessons[currentLessonIdx + 1] : undefined;
+
+  // Only fetch the next module's lessons when the current lesson is the last of
+  // its module (otherwise the hook stays disabled via an empty moduleId).
+  const isLastInModule = currentLessonIdx >= 0 && !nextInModule;
+  const { data: nextModuleLessons } = useModuleLessons(
+    trailId,
+    isLastInModule && nextModule ? nextModule.id : '',
+  );
+  const nextModuleFirst =
+    isLastInModule && nextModule
+      ? byOrder(nextModuleLessons?.data ?? [])[0]
+      : undefined;
+
+  const next = nextInModule
+    ? { lessonId: nextInModule.id, moduleId }
+    : nextModuleFirst && nextModule
+      ? { lessonId: nextModuleFirst.id, moduleId: nextModule.id }
+      : null;
 
   if (isPending) {
     return (
@@ -90,20 +95,9 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
     );
   }
 
-  // Build next-lesson navigation
-  const modules = (modulesData?.data ?? []).map((m) => ({
-    id: m.id,
-    // lessons not yet loaded in modulesData — navigation relies on trailId+moduleId context
-    lessons: [] as Array<{ id: string }>,
-  }));
-  const next = moduleId
-    ? findNextLesson(modules, moduleId, lessonId)
-    : null;
-
   const nextHref = next
-    ? `/app/consumo/trilhas/${trailId}/aulas/${next.nextLessonId}?moduleId=${next.nextModuleId}`
+    ? `/app/consumo/trilhas/${trailId}/aulas/${next.lessonId}?moduleId=${next.moduleId}`
     : null;
-
   const backHref = `/app/consumo/trilhas/${trailId}`;
 
   return (
@@ -128,13 +122,11 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
           </div>
         )}
 
-        {lesson.contentType === 'rich_text' && lesson.contentBody && (
-          <div
-            className="prose prose-lg max-w-none text-text-primary"
-            // headings inside rich_text start at h2 (h1 = lesson.name above — CHK-A11Y-002)
-            dangerouslySetInnerHTML={{ __html: lesson.contentBody }}
-            aria-label={lesson.name}
-          />
+        {lesson.contentType === 'rich_text' && (
+          // Reuse the canonical RichTextViewer (RichTextEditor readOnly) instead of
+          // re-implementing dangerouslySetInnerHTML inline. Headings inside the
+          // content start at h2 (h1 = lesson.name above — CHK-A11Y-002).
+          <RichTextEditor value={lesson.contentBody} readOnly className="prose-lg" />
         )}
 
         {lesson.contentType === 'pdf_doc' && lesson.contentUrl && (
@@ -149,7 +141,7 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
               href={lesson.contentUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-interactive-primary underline text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus rounded"
+              className="inline-flex items-center gap-2 text-interactive-primary underline text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 rounded"
             >
               {t.navigation.backToTrail}
               <span className="sr-only">{t.a11y.externalLinkWarning}</span>
@@ -164,13 +156,29 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
               href={lesson.contentUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-11 items-center rounded-lg bg-interactive-primary px-6 text-sm font-semibold text-text-inverse hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus motion-safe:transition-colors"
+              className="inline-flex h-11 items-center rounded-lg bg-interactive-primary px-6 text-sm font-semibold text-text-inverse hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 motion-safe:transition-colors"
             >
               Acessar conteúdo
               <span className="sr-only">{t.a11y.externalLinkWarning}</span>
             </a>
           </div>
         )}
+
+        {/* Fallback for unknown/unsupported contentType or missing URL */}
+        {(() => {
+          const known = ['video', 'rich_text', 'pdf_doc', 'external_link'];
+          const renderable =
+            (lesson.contentType === 'video' && lesson.contentUrl) ||
+            (lesson.contentType === 'rich_text') ||
+            (lesson.contentType === 'pdf_doc' && lesson.contentUrl) ||
+            (lesson.contentType === 'external_link' && lesson.contentUrl);
+          if (renderable && known.includes(lesson.contentType)) return null;
+          return (
+            <p className="text-body text-text-secondary" role="status">
+              {t.unsupportedContent}
+            </p>
+          );
+        })()}
       </section>
 
       {/* Navigation bar */}
@@ -180,7 +188,7 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
       >
         <Link
           href={backHref}
-          className="inline-flex h-10 items-center rounded-lg border border-border-default px-4 text-sm font-medium text-text-secondary hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus motion-safe:transition-colors"
+          className="inline-flex h-10 items-center rounded-lg border border-border-default px-4 text-sm font-medium text-text-secondary hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 motion-safe:transition-colors"
         >
           {t.navigation.backToTrail}
         </Link>
@@ -189,7 +197,7 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
           <Link
             ref={nextButtonRef}
             href={nextHref}
-            className="inline-flex h-11 items-center rounded-lg bg-interactive-primary px-6 text-sm font-semibold text-text-inverse hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus motion-safe:transition-colors"
+            className="inline-flex h-11 items-center rounded-lg bg-interactive-primary px-6 text-sm font-semibold text-text-inverse hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 motion-safe:transition-colors"
           >
             {t.navigation.nextLesson}
           </Link>
@@ -197,7 +205,7 @@ export function LessonViewer({ trailId, moduleId, lessonId }: LessonViewerProps)
           <Link
             ref={nextButtonRef}
             href={backHref}
-            className="inline-flex h-11 items-center rounded-lg bg-interactive-primary px-6 text-sm font-semibold text-text-inverse hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus motion-safe:transition-colors"
+            className="inline-flex h-11 items-center rounded-lg bg-interactive-primary px-6 text-sm font-semibold text-text-inverse hover:bg-interactive-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal/30 motion-safe:transition-colors"
           >
             {t.navigation.completeTrail}
           </Link>
