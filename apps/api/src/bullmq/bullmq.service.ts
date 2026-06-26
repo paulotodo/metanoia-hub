@@ -1,6 +1,8 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FlowProducer, Queue, Worker, type Processor } from 'bullmq';
+import type { Job } from 'bullmq';
+import { injectTraceContext, runWithExtractedContext } from './bullmq-tracing';
 import type { RedisOptions } from 'ioredis';
 import type { EnvConfig } from '../config/env.validation';
 
@@ -33,12 +35,39 @@ export class BullMqService implements OnModuleDestroy {
   }
 
   createWorker(name: string, processor: Processor): Worker {
-    const worker = new Worker(name, processor, {
+    // Wrap processor to extract trace context from job data (FR-12 / OWASP M3/M4)
+    const tracedProcessor: Processor = (job: Job) =>
+      runWithExtractedContext(
+        job.data,
+        {
+          queueName: name,
+          jobName: job.name,
+          jobId: job.id ?? '',
+          attemptsMade: job.attemptsMade,
+        },
+        () => processor(job) as Promise<unknown>,
+      );
+
+    const worker = new Worker(name, tracedProcessor, {
       connection: this.connection,
       prefix: QUEUE_PREFIX,
     });
     this.workers.push(worker);
     return worker;
+  }
+
+  /**
+   * Enqueue a job with trace context injected (FR-12 producer side).
+   * Use this instead of queue.add() to propagate W3C traceparent across async boundary.
+   */
+  async addJob<T extends object>(
+    queue: Queue,
+    name: string,
+    data: T,
+    opts?: Parameters<Queue['add']>[2],
+  ): Promise<ReturnType<Queue['add']>> {
+    const tracedData = injectTraceContext(data);
+    return queue.add(name, tracedData, opts);
   }
 
   private readonly flowProducers: FlowProducer[] = [];
