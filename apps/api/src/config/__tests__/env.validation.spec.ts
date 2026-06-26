@@ -102,4 +102,59 @@ describe('validateEnv email envs (Story 14-3)', () => {
     const result = validateEnv({ ...BASE, RESEND_API_KEY: 're_test', EMAIL_DEFAULT_FROM: 'Test <test@example.com>' });
     expect(result.EMAIL_DEFAULT_FROM).toBe('Test <test@example.com>');
   });
+
+  // ── OTEL_* vars (NFR-O5 / tracing-distribuido-opentelemetry) ──────────────
+  it('OTEL_* vars are all optional — schema valid with no OTEL env', () => {
+    const result = validateEnv({ ...BASE, RESEND_API_KEY: 're_test' });
+    expect(result.OTEL_EXPORTER_OTLP_ENDPOINT).toBeUndefined();
+    expect(result.OTEL_SERVICE_NAME).toBe('metanoia-api');
+    expect(result.OTEL_TRACES_EXPORTER).toBe('otlp');
+    expect(result.OTEL_TRACES_SAMPLER_ARG).toBeUndefined();
+  });
+
+  it('treats empty OTEL_EXPORTER_OTLP_ENDPOINT as undefined (docker-compose empty string)', () => {
+    const result = validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_EXPORTER_OTLP_ENDPOINT: '' });
+    expect(result.OTEL_EXPORTER_OTLP_ENDPOINT).toBeUndefined();
+  });
+
+  it('accepts valid OTEL_EXPORTER_OTLP_ENDPOINT URL', () => {
+    const result = validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_EXPORTER_OTLP_ENDPOINT: 'http://localhost:4318' });
+    expect(result.OTEL_EXPORTER_OTLP_ENDPOINT).toBe('http://localhost:4318');
+  });
+
+  it('rejects invalid URL in OTEL_EXPORTER_OTLP_ENDPOINT', () => {
+    expect(() =>
+      validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_EXPORTER_OTLP_ENDPOINT: 'not-a-url' }),
+    ).toThrow();
+  });
+
+  it('accepts valid OTEL_TRACES_EXPORTER enum values', () => {
+    for (const val of ['otlp', 'console', 'none']) {
+      const result = validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_TRACES_EXPORTER: val });
+      expect(result.OTEL_TRACES_EXPORTER).toBe(val);
+    }
+  });
+
+  it('rejects invalid OTEL_TRACES_EXPORTER value', () => {
+    expect(() =>
+      validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_TRACES_EXPORTER: 'zipkin' }),
+    ).toThrow();
+  });
+
+  it('accepts OTEL_TRACES_SAMPLER_ARG in range 0..1', () => {
+    const result = validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_TRACES_SAMPLER_ARG: '0.5' });
+    expect(result.OTEL_TRACES_SAMPLER_ARG).toBe(0.5);
+  });
+
+  it('rejects OTEL_TRACES_SAMPLER_ARG > 1', () => {
+    expect(() =>
+      validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_TRACES_SAMPLER_ARG: '1.5' }),
+    ).toThrow();
+  });
+
+  it('rejects OTEL_TRACES_SAMPLER_ARG < 0', () => {
+    expect(() =>
+      validateEnv({ ...BASE, RESEND_API_KEY: 're_test', OTEL_TRACES_SAMPLER_ARG: '-0.1' }),
+    ).toThrow();
+  });
 });

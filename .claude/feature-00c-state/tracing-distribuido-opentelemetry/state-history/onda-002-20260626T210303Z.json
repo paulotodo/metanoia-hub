@@ -1,0 +1,276 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "tracing-distribuido-opentelemetry",
+  "execution": {
+    "id": "feat-tracing-distribuido-opentelemetry-20260626T204913Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 16.5 Tracing Distribuido OpenTelemetry (NFR-O5): instrumentar API NestJS e web Next.js com OTel SDK, propagacao W3C traceparent Browser->SSR->NestJS->BullMQ, sampling 100% dev/10% prod, db.statement sanitizado anti-PII, console exporter local, exclusao de spans de health, coexistencia com Sentry. Escopo aprovado: codigo + validar local, ZERO prod.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-26T20:49:13Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "plan",
+  "next_instruction": "Onda 002 (clarify) concluida sem perguntas (asker retornou []; spec ja tem secao Clarifications). Preflight spec->plan OK. Iniciar onda 003: fase plan.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-26T20:50:48Z",
+      "finished_at": "2026-06-26T20:55:16Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 268,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-26T20:54:55Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-26T20:58:06Z",
+      "finished_at": "2026-06-26T21:00:20Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 134,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-26T20:58:53Z",
+          "decision_id": "dec-006"
+        },
+        {
+          "skill": "clarify",
+          "timestamp": "2026-06-26T21:00:05Z",
+          "decision_id": "dec-007"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-26T20:49:21Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T20:51:10Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=tracing-distribuido-opentelemetry)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story tracing distribuido opentelemetry nfr instrumentar api",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T20:54:55Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "inicio de execucao - specify",
+      "options_considered": [
+        "iniciar",
+        "abortar"
+      ],
+      "choice": "iniciar",
+      "rationale": "Story 16.5 ready-for-dev com escopo aprovado pelo operador. Story file presente em _bmad-output/implementation-artifacts/. Sentry v10 ja instalado - coordenacao OTel planejada em FR-02.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T20:55:08Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skip gate validate-documentation: skill nao disponivel no ambiente",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Skill validate-documentation retornou Unknown skill — gate nao instalado. Validacao manual: spec tem todas as secoes obrigatorias (context, user scenarios, requirements com FRs mensuráveis, success criteria technology-agnostic, clarifications). Sem TBD abertos.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T20:56:59Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-26T20:58:53Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-26T20:59:45Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-asker retornou perguntas vazias; spec ja possui secao Clarifications declarando nenhuma ambiguidade critica pendente; operador ausente (background) e gaps tecnicos resolvem-se por sonda no codebase",
+      "options_considered": [
+        "spawn-answerer",
+        "encerrar-clarify-sem-perguntas",
+        "pausar-humano"
+      ],
+      "choice": "encerrar-clarify-sem-perguntas",
+      "rationale": "Nenhuma ambiguidade real de produto: 4 clarificacoes ja documentadas na spec (Sentry/OTel, PrismaPg, sampler, health-checks); FR-04/FR-05 sao gaps tecnicos resolviveis por grep; escopo ZERO-producao inegociavel. Invariante I1: sem spawn de answerer => sem Decisao de model-routing orfa.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-26T21:01:13Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-26T20:58:06Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 2,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 402,
+    "max_depth_reached": 2,
+    "subagents_spawned": 1,
+    "decisions_total": 8,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "tracing",
+    "distribuido",
+    "opentelemetry",
+    "nfr",
+    "instrumentar",
+    "api"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-26T20:51:02Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-26T20:55:43Z",
+      "description": "onda-001 specify concluida; aguardando wakeup para clarify"
+    }
+  ]
+}

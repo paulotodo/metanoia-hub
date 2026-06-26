@@ -65,6 +65,17 @@ export const envSchema = z.object({
   // Retry backoff for critical notifications (pastoral_alert, export_ready, system).
   // SC-01: delivery <= 1 min -> 3 retries * 5s = max 15s (CHK050).
   EMAIL_CRITICAL_BACKOFF_MS: z.coerce.number().int().positive().default(5000),
+  // ── OpenTelemetry Tracing (NFR-O5 / tracing-distribuido-opentelemetry) ──────
+  // All OTEL_* vars are optional. When OTEL_EXPORTER_OTLP_ENDPOINT is absent
+  // the SDK enters no-op mode — no network socket opened, no exception (FR-01/02).
+  // Lição 14-3: env vars sem default travam boot; todas têm defaults seguros.
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    z.string().url().optional(),
+  ),
+  OTEL_SERVICE_NAME: z.string().min(1).default('metanoia-api'),
+  OTEL_TRACES_EXPORTER: z.enum(['otlp', 'console', 'none']).default('otlp'),
+  OTEL_TRACES_SAMPLER_ARG: z.coerce.number().min(0).max(1).optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import type { HttpServer } from '@nestjs/common';
 import * as Sentry from '@sentry/nestjs';
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 import { requestContext } from '../context/request-context';
 
 export interface ErrorEnvelope {
@@ -126,6 +127,25 @@ export class AllExceptionsFilter implements ExceptionFilter {
       });
     } catch {
       // Sentry must not block the response
+    }
+
+    // FR-13: Record error on active OTel span so it appears in trace backend.
+    // Defensive: span may not exist (e.g. health probe, span-filter dropped it).
+    try {
+      const store = requestContext.getStore();
+      const activeSpan = trace.getActiveSpan();
+      if (activeSpan) {
+        activeSpan.setStatus({ code: SpanStatusCode.ERROR });
+        if (exception instanceof Error) {
+          activeSpan.recordException(exception);
+        }
+        // Redundant safety: ensure correlation_id is on the error span
+        if (store?.correlationId) {
+          activeSpan.setAttribute('correlation_id', store.correlationId);
+        }
+      }
+    } catch {
+      // OTel must not block the response
     }
 
     if (statusCode >= 500) {
