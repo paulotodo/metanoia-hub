@@ -17,6 +17,21 @@
     },
     "success": "Conta criada! Verifique seu e-mail para confirmar o cadastro."
   },
+  "confirmEmail": {
+    "title": "Confirmação de e-mail",
+    "loading": "Confirmando seu e-mail…",
+    "successTitle": "E-mail confirmado!",
+    "successBody": "Sua conta está ativa. Você já pode entrar.",
+    "goToLogin": "Ir para o login",
+    "errorTitle": "Não foi possível confirmar",
+    "errorBody": "Este link de confirmação expirou ou já foi usado. Informe seu e-mail para receber um novo link.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "voce@exemplo.com",
+    "resend": "Reenviar link de confirmação",
+    "resending": "Enviando…",
+    "resendDone": "Se houver um cadastro pendente para esse e-mail, enviamos um novo link de confirmação.",
+    "invalidEmail": "E-mail inválido"
+  },
   "login": {
     "title": "Entrar",
     "email": "E-mail",

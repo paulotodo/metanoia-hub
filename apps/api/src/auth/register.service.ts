@@ -3,7 +3,7 @@ import { generateId, type RegisterUser, type RegisterUserResponse } from '@metan
 import { PrismaService } from '../prisma/prisma.service';
 import { KeycloakAdminService, KeycloakConflictError } from './keycloak-admin.service';
 import { PasswordCheckerService } from './password-checker.service';
-import { EmailVerificationProducer } from './email-verification.producer';
+import { EmailVerificationService } from './email-verification.service';
 
 interface RequestMetadata {
   ipAddress: string;
@@ -18,7 +18,7 @@ export class RegisterService {
     private readonly prisma: PrismaService,
     private readonly keycloakAdmin: KeycloakAdminService,
     private readonly passwordChecker: PasswordCheckerService,
-    private readonly emailVerification: EmailVerificationProducer,
+    private readonly emailVerification: EmailVerificationService,
   ) {}
 
   async register(input: RegisterUser, metadata: RequestMetadata): Promise<RegisterUserResponse> {
@@ -86,8 +86,8 @@ export class RegisterService {
       throw error;
     }
 
-    // 5. Enqueue email verification
-    await this.emailVerification.enqueue({ userId, email });
+    // 5. Issue verification token + enqueue confirmation email
+    await this.emailVerification.issue(email, name);
 
     this.logger.log({ userId, email }, 'user registered successfully');
 

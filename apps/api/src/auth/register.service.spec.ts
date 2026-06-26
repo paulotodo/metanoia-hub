@@ -17,7 +17,7 @@ function createMocks() {
     isLeaked: vi.fn().mockResolvedValue(false),
   };
   const emailVerification = {
-    enqueue: vi.fn().mockResolvedValue(undefined),
+    issue: vi.fn().mockResolvedValue(undefined),
   };
 
   const service = new RegisterService(
@@ -54,7 +54,11 @@ describe('RegisterService', () => {
     );
     expect(mocks.prisma.client.user.create).toHaveBeenCalledTimes(1);
     expect(mocks.prisma.client.consent.create).toHaveBeenCalledTimes(1);
-    expect(mocks.emailVerification.enqueue).toHaveBeenCalledTimes(1);
+    expect(mocks.emailVerification.issue).toHaveBeenCalledTimes(1);
+    expect(mocks.emailVerification.issue).toHaveBeenCalledWith(
+      validInput.email,
+      validInput.name,
+    );
   });
 
   it('should reject leaked password', async () => {

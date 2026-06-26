@@ -296,6 +296,39 @@ export class KeycloakAdminService {
     this.logger.log({ keycloakUserId }, 'user password reset in keycloak');
   }
 
+  /**
+   * markEmailVerified — flip the `emailVerified` flag on a Keycloak user.
+   *
+   * Used by the registration confirmation flow: the realm has no SMTP server,
+   * so e-mail verification is driven by our own token (Redis) + EmailService,
+   * and this PUT records the verified state back on the identity.
+   */
+  async markEmailVerified(keycloakUserId: string): Promise<void> {
+    const token = await this.getAdminToken();
+
+    const response = await fetch(`${this.baseUrl}/users/${keycloakUserId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ emailVerified: true }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      this.logger.error(
+        { status: response.status, body: text, keycloakUserId },
+        'failed to mark email verified in keycloak',
+      );
+      throw new Error(
+        `Keycloak email verification update failed: ${response.status}`,
+      );
+    }
+
+    this.logger.log({ keycloakUserId }, 'email marked verified in keycloak');
+  }
+
   async findUserByEmail(email: string): Promise<KeycloakUserRepresentation | null> {
     const token = await this.getAdminToken();
     const response = await fetch(
