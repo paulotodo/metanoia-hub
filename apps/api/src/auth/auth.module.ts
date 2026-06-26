@@ -14,6 +14,9 @@ import { OAuthService } from './oauth.service';
 import { SessionService } from './session.service';
 import { EmailVerificationProducer } from './email-verification.producer';
 import { EmailVerificationWorker } from './email-verification.worker';
+import { EmailVerificationService } from './email-verification.service';
+import { EmailVerificationController } from './email-verification.controller';
+import { EmailService } from '../notifications/channels/email.service';
 import { TenantSelectionController } from './tenant-selection.controller';
 import { TenantSelectionService } from './tenant-selection.service';
 import { PasswordRecoveryController } from './password-recovery.controller';
@@ -28,6 +31,7 @@ import { RecoveryEmailWorker } from './recovery-email.worker';
     OAuthController,
     TenantSelectionController,
     PasswordRecoveryController,
+    EmailVerificationController,
   ],
   providers: [
     KeycloakAuthGuard,
@@ -45,6 +49,10 @@ import { RecoveryEmailWorker } from './recovery-email.worker';
     SessionService,
     EmailVerificationProducer,
     EmailVerificationWorker,
+    EmailVerificationService,
+    // EmailService (Resend) is a thin, stateless wrapper (ConfigService only).
+    // Provided directly here to avoid importing NotificationsModule (cycle risk).
+    EmailService,
     TenantSelectionService,
     PasswordRecoveryService,
     RecoveryEmailProducer,

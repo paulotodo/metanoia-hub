@@ -5,8 +5,9 @@ import { BullMqService } from '../bullmq/bullmq.service';
 const EMAIL_VERIFICATION_QUEUE = 'email-verification';
 
 interface EmailVerificationJobData {
-  userId: string;
   email: string;
+  firstName: string;
+  token: string;
 }
 
 @Injectable()
@@ -26,6 +27,6 @@ export class EmailVerificationProducer implements OnModuleInit {
       attempts: 3,
       backoff: { type: 'exponential', delay: 1000 },
     });
-    this.logger.log({ userId: data.userId, email: data.email }, 'verification email job enqueued');
+    this.logger.log({ email: data.email }, 'verification email job enqueued');
   }
 }

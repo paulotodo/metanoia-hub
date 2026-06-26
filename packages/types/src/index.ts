@@ -241,6 +241,16 @@ export {
   type RegisterUserResponse,
 } from './auth/register';
 export {
+  VerifyEmailSchema,
+  type VerifyEmailInput,
+  VerifyEmailResponseSchema,
+  type VerifyEmailResponse,
+  ResendVerificationSchema,
+  type ResendVerificationInput,
+  ResendVerificationResponseSchema,
+  type ResendVerificationResponse,
+} from './auth/email-verification';
+export {
   LoginSchema,
   type LoginInput,
   LoginResponseSchema,
