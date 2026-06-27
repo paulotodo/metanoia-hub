@@ -1072,3 +1072,12 @@ export {
   IntegrationHealthHistoryQuerySchema,
   type IntegrationHealthHistoryQuery,
 } from './integration-health';
+export {
+  NotificationPreferenceChannelsSchema,
+  type NotificationPreferenceChannels,
+  NotificationPreferencesSchema,
+  type NotificationPreferences,
+  UpdateNotificationPreferencesSchema,
+  type UpdateNotificationPreferences,
+  NOTIFICATION_TYPES,
+} from './notifications/preferences';

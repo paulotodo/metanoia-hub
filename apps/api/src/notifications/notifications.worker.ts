@@ -1,6 +1,8 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import type { Job, Worker } from 'bullmq';
 import { generateId, NOTIFICATIONS_QUEUE_NAME, type NotificationJobPayload } from '@metanoia/types';
+import type { NotificationType, NotificationChannel } from '@metanoia/types';
+import { NotificationPreferencesService } from './preferences/notification-preferences.service';
 import { BullMqService } from '../bullmq/bullmq.service';
 import { requestContext } from '../common/context/request-context';
 import { ChannelRouter } from './channel-router';
@@ -29,6 +31,7 @@ export class NotificationsWorker implements OnModuleInit {
     private readonly bullMqService: BullMqService,
     private readonly channelRouter: ChannelRouter,
     private readonly notificationsService: NotificationsService,
+    private readonly preferencesService: NotificationPreferencesService,
   ) {}
 
   onModuleInit(): void {
@@ -112,6 +115,36 @@ export class NotificationsWorker implements OnModuleInit {
     await requestContext.run(
       { tenantId, userId, requestId: generateId(), correlationId },
       async () => {
+        // Story 16-1: check user preference before routing delivery
+        // Use type from payload (16-1+ jobs) or fetch from DB (legacy jobs)
+        let notifType = job.data.type ?? null;
+        if (!notifType) {
+          const fetched = await this.notificationsService.getTypeById(notificationId);
+          if (fetched) {
+            notifType = fetched as NotificationType;
+          } else {
+            // Notification not found or type unavailable — log + deliver (never silently drop)
+            this.logger.warn({ notificationId, channel }, 'could not resolve notification type; delivering without preference check');
+          }
+        }
+
+        if (notifType) {
+          const enabled = await this.preferencesService.resolveEnabled(
+            userId,
+            notifType as NotificationType,
+            channel as NotificationChannel,
+          );
+          if (!enabled) {
+            // CHK016: return (NOT throw) so BullMQ does NOT retry suppressed notifications
+            await this.preferencesService.markSuppressedByPreference(notificationId);
+            this.logger.log(
+              { notificationId, channel, type: notifType },
+              'notification suppressed by user preference',
+            );
+            return;
+          }
+        }
+
         const channelImpl = this.channelRouter.route(channel);
 
         // Build a minimal payload — InAppChannel reads the actual title/body
@@ -121,7 +154,7 @@ export class NotificationsWorker implements OnModuleInit {
           tenantId,
           userId,
           channel: channel as NotificationJobPayload['channel'],
-          type: 'system', // actual type is fetched from DB by channel impl if needed
+          type: (notifType ?? 'system') as NotificationType,
           title: '',
           body: '',
         });

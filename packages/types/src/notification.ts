@@ -67,6 +67,8 @@ export const NotificationJobPayloadSchema = z.object({
   userId: z.string().uuid(),
   channel: NotificationChannelSchema,
   correlationId: z.string(),
+  // Story 16-1: optional for backward compat — jobs enqueued before 16-1 may lack this field
+  type: NotificationTypeSchema.optional(),
 });
 export type NotificationJobPayload = z.infer<typeof NotificationJobPayloadSchema>;
 

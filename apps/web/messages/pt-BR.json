@@ -1868,5 +1868,62 @@
       "externalLinkWarning": "Abre em nova janela"
     },
     "unsupportedContent": "Este tipo de conteúdo não pode ser exibido aqui."
+  },
+  "notificationPreferences": {
+    "pageTitle": "Preferências de notificações",
+    "pageDescription": "Escolha como deseja receber cada tipo de notificação.",
+    "channels": {
+      "inApp": "No app",
+      "email": "E-mail"
+    },
+    "types": {
+      "pastoral_alert": {
+        "label": "Alertas pastorais",
+        "description": "Quando um participante muda de status no semáforo"
+      },
+      "meeting_reminder": {
+        "label": "Lembretes de reunião",
+        "description": "24h antes de uma reunião agendada"
+      },
+      "content_new": {
+        "label": "Novo conteúdo",
+        "description": "Quando uma nova trilha é publicada no seu grupo"
+      },
+      "content_update": {
+        "label": "Atualização de conteúdo",
+        "description": "Quando uma trilha que você acompanha é atualizada"
+      },
+      "group_message": {
+        "label": "Mensagens do grupo",
+        "description": "Novas mensagens no seu grupo"
+      },
+      "export_ready": {
+        "label": "Relatórios prontos",
+        "description": "Quando um relatório exportado está disponível"
+      },
+      "system": {
+        "label": "Anúncios do sistema",
+        "description": "Atualizações e comunicados da plataforma"
+      }
+    },
+    "tooltip": {
+      "leaderPastoralLock": "Alertas pastorais no app não podem ser desativados"
+    },
+    "errors": {
+      "fetchFailed": "Não foi possível carregar suas preferências. Tente novamente.",
+      "updateFailed": "Não foi possível salvar sua preferência. Tente novamente."
+    },
+    "silenceBanner": {
+      "message": "Todas as notificações no app estão silenciadas. Desative o modo silencioso para usar preferências por tipo.",
+      "dismiss": "Entendido"
+    },
+    "migrationModal": {
+      "title": "Notificações silenciadas",
+      "body": "Você estava com notificações silenciadas. Deseja manter tudo desativado ou configurar por tipo?",
+      "keepSilenced": "Manter silenciado",
+      "configureByType": "Configurar por tipo"
+    },
+    "loading": "Carregando preferências…",
+    "retry": "Tentar novamente"
   }
 }
