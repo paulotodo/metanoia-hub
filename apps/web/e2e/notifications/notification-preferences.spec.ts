@@ -10,19 +10,33 @@
  *   T-M2 : "Manter silenciado" → PATCH 7 tipos inApp=false → localStorage removido → reload sem modal
  *   T-M3 : "Configurar por tipo" → sem PATCH; localStorage removido; reload sem modal
  *
- * Estratégia: page.route intercepts para API + addInitScript para localStorage/token.
- * NÃO requer infra real (DB, Keycloak). Roda com a app em modo dev ou produção.
+ * Estratégia de auth: login REAL via UI (loginAs) — mesmo padrão de
+ * notification-center.spec.ts. O guard de rota autenticada usa a sessão real
+ * (cookie/sessionStorage do login). Os mocks da API de preferências são
+ * configurados via page.route ANTES do login, de modo que GET/PATCH de
+ * /users/me/notification-preferences são interceptados e controlam cada
+ * cenário (defaults, erro 500, etc.) sem depender de dados reais no banco.
+ *
+ * T-E2 (Líder): faz login com a PERSONA LÍDER REAL do seed demo
+ * (lider@demo.metanoia.app, role 'lider'). Um token fake de líder NÃO funciona
+ * aqui porque o client da API (client.ts) redireciona a /login em qualquer 401
+ * — e o OnboardingRedirectGuard consultaria a API com o token fake recebendo
+ * 401. Com a persona real, useCurrentRole() retorna 'lider' (lock visual) e a
+ * sessão permanece válida.
  *
  * Gotchas do projeto:
  *  - waitUntil:'networkidle' não resolve com SSE → usar domcontentloaded + waitForSelector.
  *  - Componentes duplicados mobile/desktop → ":visible".
  *  - UUID válido nos payloads de mock.
- *  - loginAs usa UI login real; aqui usamos addInitScript para simular token no sessionStorage.
  *
  * Ref: spec FR78, constitution.md Princípio I, tasks.md FASE 7.
  */
 import { test, expect, type Page } from '@playwright/test';
-import { E2E_BASE_URL } from '../setup/env';
+import { loginAs } from '../fixtures/auth.fixture';
+import { E2E_BASE_URL, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD } from '../setup/env';
+
+/** Persona Líder do seed demo (role 'lider', mesma senha demo). */
+const E2E_DEMO_LIDER_EMAIL = process.env.E2E_DEMO_LIDER_EMAIL ?? 'lider@demo.metanoia.app';
 
 // ---------------------------------------------------------------------------
 // Constantes
@@ -31,38 +45,6 @@ import { E2E_BASE_URL } from '../setup/env';
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 const PREFS_ENDPOINT = `${API_URL}/users/me/notification-preferences`;
 const PAGE_URL = `${E2E_BASE_URL}/app/configuracoes/notificacoes`;
-
-/** Token JWT mínimo: realm_access.roles = ['participante'] (role padrão). */
-const FAKE_TOKEN_PARTICIPANTE = [
-  'eyJhbGciOiJSUzI1NiJ9',
-  btoa(
-    JSON.stringify({
-      sub: '0199abcd-0000-7000-8000-000000000001',
-      realm_access: { roles: ['participante'] },
-      exp: Math.floor(Date.now() / 1000) + 3600,
-    }),
-  )
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, ''),
-  'fakesig',
-].join('.');
-
-/** Token JWT mínimo: realm_access.roles = ['lider']. */
-const FAKE_TOKEN_LIDER = [
-  'eyJhbGciOiJSUzI1NiJ9',
-  btoa(
-    JSON.stringify({
-      sub: '0199abcd-0000-7000-8000-000000000002',
-      realm_access: { roles: ['lider'] },
-      exp: Math.floor(Date.now() / 1000) + 3600,
-    }),
-  )
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, ''),
-  'fakesig',
-].join('.');
 
 /** Preferências padrão com todos os tipos habilitados. */
 function makeDefaultPrefs(overrides: Record<string, Partial<{ inApp: boolean; email: boolean }>> = {}) {
@@ -87,17 +69,6 @@ function makeDefaultPrefs(overrides: Record<string, Partial<{ inApp: boolean; em
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-/**
- * Injeta o token no sessionStorage ANTES do carregamento da página,
- * para que useCurrentRole() e useNotificationPreferences() o encontrem.
- * NÃO faz login real via UI (sem Keycloak em testes unitários de componente).
- */
-async function injectToken(page: Page, token: string) {
-  await page.addInitScript((t) => {
-    sessionStorage.setItem('accessToken', t);
-  }, token);
-}
 
 /** Mock do endpoint GET /notification-preferences. */
 async function mockGetPrefs(page: Page, body: object, status = 200) {
@@ -145,6 +116,19 @@ async function mockPatchPrefs(
   });
 }
 
+/** Faz login real (sessão admin válida por cookie). */
+async function login(page: Page) {
+  await loginAs(page, E2E_DEMO_ADMIN_EMAIL, E2E_DEMO_PASSWORD);
+  // Demo admin single-tenant: login → /selecionar-igreja → /app/gestao.
+  await page.waitForURL('**/app/**', { timeout: 30_000 });
+}
+
+/** Faz login real com a persona LÍDER do seed demo. */
+async function loginLider(page: Page) {
+  await loginAs(page, E2E_DEMO_LIDER_EMAIL, E2E_DEMO_PASSWORD);
+  await page.waitForURL('**/app/**', { timeout: 30_000 });
+}
+
 /** Navega até a página de preferências com waitForSelector na lista de tipos. */
 async function goToPrefsPage(page: Page) {
   await page.goto(PAGE_URL, { waitUntil: 'domcontentloaded' });
@@ -161,12 +145,10 @@ async function goToPrefsPage(page: Page) {
 
 test.describe('T-E1 — Toggle otimista + rollback em erro 500', () => {
   test('toggle desativa otimisticamente; erro 500 reverte e exibe toast', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_PARTICIPANTE);
-
     const defaultPrefs = makeDefaultPrefs();
     let patchCount = 0;
 
-    // GET: retorna preferências com meeting_reminder.email = true
+    // GET: retorna preferências; PATCH: falha 500
     await page.route(PREFS_ENDPOINT, async (route) => {
       const method = route.request().method();
       if (method === 'GET') {
@@ -177,7 +159,6 @@ test.describe('T-E1 — Toggle otimista + rollback em erro 500', () => {
         });
       } else if (method === 'PATCH') {
         patchCount++;
-        // Simula falha de servidor
         await route.fulfill({
           status: 500,
           contentType: 'application/json',
@@ -188,14 +169,14 @@ test.describe('T-E1 — Toggle otimista + rollback em erro 500', () => {
       }
     });
 
+    await login(page);
     await goToPrefsPage(page);
 
     // Linha meeting_reminder deve estar visível
     const row = page.locator('[data-testid="notif-row-meeting_reminder"]');
     await expect(row).toBeVisible({ timeout: 10_000 });
 
-    // Localizar o toggle de email dentro da linha (segundo toggle)
-    // O toggle é um button[role="switch"] com aria-label="E-mail"
+    // Toggle de email dentro da linha
     const emailToggle = row.locator('button[role="switch"][aria-label="E-mail"]');
     await expect(emailToggle).toBeVisible();
     await expect(emailToggle).toHaveAttribute('aria-checked', 'true');
@@ -203,9 +184,7 @@ test.describe('T-E1 — Toggle otimista + rollback em erro 500', () => {
     // Clicar no toggle (vai triggerar PATCH otimista)
     await emailToggle.click();
 
-    // Otimisticamente o toggle vira false (visualmente)
-    // O PATCH falha → reverte para true
-    // Aguardar toast de erro (aria-live="polite")
+    // O PATCH falha → reverte; toast de erro (aria-live="polite")
     await expect(page.locator('[role="alert"][aria-live="polite"]')).toBeVisible({
       timeout: 10_000,
     });
@@ -213,7 +192,7 @@ test.describe('T-E1 — Toggle otimista + rollback em erro 500', () => {
     // Toggle deve ter revertido para true
     await expect(emailToggle).toHaveAttribute('aria-checked', 'true', { timeout: 5_000 });
 
-    // Confirmar que PATCH foi chamado exatamente uma vez
+    // PATCH chamado exatamente uma vez
     expect(patchCount).toBe(1);
   });
 });
@@ -224,13 +203,12 @@ test.describe('T-E1 — Toggle otimista + rollback em erro 500', () => {
 
 test.describe('T-E2 — Enforcement Líder: toggle inApp bloqueado + tooltip', () => {
   test('pastoral_alert.inApp disabled para líder; email toggle funciona', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_LIDER);
-
     const prefs = makeDefaultPrefs();
     await mockGetPrefs(page, prefs);
-
     // Mock PATCH para permitir clicar em email sem erro
     await mockPatchPrefs(page, makeDefaultPrefs({ pastoral_alert: { inApp: true, email: false } }));
+
+    await loginLider(page);
 
     await goToPrefsPage(page);
 
@@ -245,7 +223,6 @@ test.describe('T-E2 — Enforcement Líder: toggle inApp bloqueado + tooltip', (
 
     // Hover no toggle → tooltip deve aparecer
     await inAppToggle.hover();
-    // O tooltip usa group-hover:block — verificar presença do texto
     const tooltip = row.locator('text=Alertas pastorais no app não podem ser desativados');
     await expect(tooltip).toBeVisible({ timeout: 5_000 });
 
@@ -255,7 +232,6 @@ test.describe('T-E2 — Enforcement Líder: toggle inApp bloqueado + tooltip', (
 
     // Clicar email não falha
     await emailToggle.click();
-    // Após clique, toggle permanece interativo (sem assert de aria-checked para evitar flake de estado)
   });
 });
 
@@ -265,22 +241,21 @@ test.describe('T-E2 — Enforcement Líder: toggle inApp bloqueado + tooltip', (
 
 test.describe('T-E3 — Erro no GET: mensagem + botão retry', () => {
   test('GET 500 exibe mensagem de erro e retry re-tenta', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_PARTICIPANTE);
-
     let callCount = 0;
 
     await page.route(PREFS_ENDPOINT, async (route) => {
       if (route.request().method() === 'GET') {
         callCount++;
-        if (callCount === 1) {
-          // Primeira chamada: falha
+        // TanStack Query auto-retries 5xx up to 3x (1 inicial + 3 = 4 chamadas).
+        // Todas devem falhar para o estado de erro/retry aparecer; só o clique
+        // manual em "Tentar novamente" (refetch) deve ter sucesso.
+        if (callCount <= 4) {
           await route.fulfill({
             status: 500,
             contentType: 'application/json',
             body: JSON.stringify({ statusCode: 500, error: 'Server Error' }),
           });
         } else {
-          // Segunda chamada (retry): sucesso
           await route.fulfill({
             status: 200,
             contentType: 'application/json',
@@ -292,11 +267,12 @@ test.describe('T-E3 — Erro no GET: mensagem + botão retry', () => {
       }
     });
 
+    await login(page);
     await goToPrefsPage(page);
 
     // Botão retry deve aparecer após falha
     const retryBtn = page.getByTestId('pref-error-retry');
-    await expect(retryBtn).toBeVisible({ timeout: 10_000 });
+    await expect(retryBtn).toBeVisible({ timeout: 20_000 });
 
     // Clicar retry
     await retryBtn.click();
@@ -306,7 +282,7 @@ test.describe('T-E3 — Erro no GET: mensagem + botão retry', () => {
       timeout: 10_000,
     });
 
-    // Confirmar que foram feitas 2 chamadas GET
+    // 2 chamadas GET
     expect(callCount).toBeGreaterThanOrEqual(2);
   });
 });
@@ -317,8 +293,6 @@ test.describe('T-E3 — Erro no GET: mensagem + botão retry', () => {
 
 test.describe('T-E4 — Toggles bloqueados durante PATCH em voo', () => {
   test('durante PATCH pendente, todos os toggles ficam desabilitados', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_PARTICIPANTE);
-
     let patchResolve!: () => void;
     const patchHeld = new Promise<void>((res) => { patchResolve = res; });
 
@@ -331,7 +305,6 @@ test.describe('T-E4 — Toggles bloqueados durante PATCH em voo', () => {
           body: JSON.stringify({ data: makeDefaultPrefs() }),
         });
       } else if (method === 'PATCH') {
-        // Segurar o PATCH até o teste liberar
         await patchHeld;
         await route.fulfill({
           status: 200,
@@ -343,6 +316,7 @@ test.describe('T-E4 — Toggles bloqueados durante PATCH em voo', () => {
       }
     });
 
+    await login(page);
     await goToPrefsPage(page);
 
     const row = page.locator('[data-testid="notif-row-meeting_reminder"]');
@@ -354,7 +328,7 @@ test.describe('T-E4 — Toggles bloqueados durante PATCH em voo', () => {
     // Disparar PATCH (clique no toggle)
     await emailToggle.click();
 
-    // Enquanto PATCH está pendente, o toggle deve ficar desabilitado (isMutating=true)
+    // Enquanto PATCH pendente, toggle desabilitado (isMutating=true)
     await expect(emailToggle).toBeDisabled({ timeout: 5_000 });
 
     // Liberar o PATCH
@@ -371,17 +345,21 @@ test.describe('T-E4 — Toggles bloqueados durante PATCH em voo', () => {
 
 test.describe('T-M1 — localStorage silenciado → banner + modal exibidos', () => {
   test('banner e modal aparecem quando localStorage tem a chave de silêncio', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_PARTICIPANTE);
-
     // Configurar localStorage ANTES de navegar
+    // addInitScript roda em TODA navegação (incluindo o reload). Só semeamos a
+    // chave de silêncio na PRIMEIRA visita; após o usuário interagir com o
+    // modal, 'pref:migrationSeen' fica setado e o reload NÃO deve re-exibir o
+    // modal nem re-silenciar. Por isso guardamos pela marca de migração já vista.
     await page.addInitScript(() => {
-      localStorage.setItem('metanoia:notificationSilence', 'true');
-      // Limpar sessionStorage para garantir first visit
-      sessionStorage.removeItem('pref:migrationSeen');
+      try {
+        if (sessionStorage.getItem('pref:migrationSeen')) return;
+        localStorage.setItem('metanoia:notificationSilence', 'true');
+      } catch {
+        /* indisponível antes de same-origin */
+      }
     });
 
     await mockGetPrefs(page, makeDefaultPrefs());
-    // Mock PATCH para o caso de "Manter silenciado"
     await mockPatchPrefs(page, makeDefaultPrefs(
       Object.fromEntries(
         ['pastoral_alert', 'meeting_reminder', 'content_new', 'content_update', 'export_ready', 'group_message', 'system'].map(
@@ -390,13 +368,14 @@ test.describe('T-M1 — localStorage silenciado → banner + modal exibidos', ()
       ),
     ));
 
+    await login(page);
     await goToPrefsPage(page);
 
     // Banner de silêncio deve estar visível
     const banner = page.getByTestId('silence-banner');
     await expect(banner).toBeVisible({ timeout: 10_000 });
 
-    // Modal de migração deve aparecer na primeira visita
+    // Modal de migração na primeira visita
     const modal = page.getByTestId('migration-modal');
     await expect(modal).toBeVisible({ timeout: 10_000 });
   });
@@ -408,14 +387,18 @@ test.describe('T-M1 — localStorage silenciado → banner + modal exibidos', ()
 
 test.describe('T-M2 — Manter silenciado: PATCH atômico + localStorage removido', () => {
   test('botão "Manter silenciado" envia PATCH com todos inApp=false e remove localStorage', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_PARTICIPANTE);
-
+    // addInitScript roda em TODA navegação (incluindo o reload). Só semeamos a
+    // chave de silêncio na PRIMEIRA visita; após o usuário interagir com o
+    // modal, 'pref:migrationSeen' fica setado e o reload NÃO deve re-exibir o
+    // modal nem re-silenciar. Por isso guardamos pela marca de migração já vista.
     await page.addInitScript(() => {
-      localStorage.setItem('metanoia:notificationSilence', 'true');
-      sessionStorage.removeItem('pref:migrationSeen');
+      try {
+        if (sessionStorage.getItem('pref:migrationSeen')) return;
+        localStorage.setItem('metanoia:notificationSilence', 'true');
+      } catch {
+        /* indisponível antes de same-origin */
+      }
     });
-
-    await mockGetPrefs(page, makeDefaultPrefs());
 
     const patchBodies: object[] = [];
     const silencedPrefs = makeDefaultPrefs(
@@ -447,6 +430,7 @@ test.describe('T-M2 — Manter silenciado: PATCH atômico + localStorage removid
       }
     });
 
+    await login(page);
     await goToPrefsPage(page);
 
     // Aguardar modal
@@ -459,7 +443,7 @@ test.describe('T-M2 — Manter silenciado: PATCH atômico + localStorage removid
     // Modal deve fechar
     await expect(modal).not.toBeVisible({ timeout: 10_000 });
 
-    // Verificar que PATCH foi enviado com todos os 7 tipos inApp=false
+    // PATCH enviado com todos os 7 tipos inApp=false
     expect(patchBodies.length).toBe(1);
     const patchBody = patchBodies[0] as Record<string, { inApp?: boolean }>;
     const expectedTypes = [
@@ -470,7 +454,7 @@ test.describe('T-M2 — Manter silenciado: PATCH atômico + localStorage removid
       expect(patchBody[type]?.inApp).toBe(false);
     }
 
-    // Verificar que localStorage foi removido
+    // localStorage removido
     const silenceKeyValue = await page.evaluate(
       () => localStorage.getItem('metanoia:notificationSilence'),
     );
@@ -492,11 +476,17 @@ test.describe('T-M2 — Manter silenciado: PATCH atômico + localStorage removid
 
 test.describe('T-M3 — Configurar por tipo: sem PATCH, localStorage removido', () => {
   test('botão "Configurar por tipo" fecha modal sem PATCH e remove localStorage', async ({ page }) => {
-    await injectToken(page, FAKE_TOKEN_PARTICIPANTE);
-
+    // addInitScript roda em TODA navegação (incluindo o reload). Só semeamos a
+    // chave de silêncio na PRIMEIRA visita; após o usuário interagir com o
+    // modal, 'pref:migrationSeen' fica setado e o reload NÃO deve re-exibir o
+    // modal nem re-silenciar. Por isso guardamos pela marca de migração já vista.
     await page.addInitScript(() => {
-      localStorage.setItem('metanoia:notificationSilence', 'true');
-      sessionStorage.removeItem('pref:migrationSeen');
+      try {
+        if (sessionStorage.getItem('pref:migrationSeen')) return;
+        localStorage.setItem('metanoia:notificationSilence', 'true');
+      } catch {
+        /* indisponível antes de same-origin */
+      }
     });
 
     let patchCount = 0;
@@ -521,6 +511,7 @@ test.describe('T-M3 — Configurar por tipo: sem PATCH, localStorage removido', 
       }
     });
 
+    await login(page);
     await goToPrefsPage(page);
 
     // Aguardar modal
@@ -536,7 +527,7 @@ test.describe('T-M3 — Configurar por tipo: sem PATCH, localStorage removido', 
     // PATCH NÃO deve ter sido chamado
     expect(patchCount).toBe(0);
 
-    // localStorage deve ter sido removido
+    // localStorage removido
     const silenceKeyValue = await page.evaluate(
       () => localStorage.getItem('metanoia:notificationSilence'),
     );
