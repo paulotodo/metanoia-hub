@@ -1,0 +1,1130 @@
+{
+  "schema_version": "1.0.0",
+  "short_name": "notif-preferencias-granulares",
+  "execution": {
+    "id": "feat-notif-preferencias-granulares-20260626T231545Z",
+    "target_project_path": "/var/lib/metanoia-hub",
+    "target_project_description": "Story 16.1 Preferencias Granulares de Notificacao por Tipo (FR78): tabela notification_preferences (migration+RLS), Zod packages/types, endpoints GET/PATCH /users/me, cache Redis com fallback DB, integracao na pipeline de notificacao (Epic 14), UI optimistic /app/configuracoes/notificacoes, regra nao-overridavel do Lider (enforcement lazy), migracao do toggle silenciar, recalculo de papel lazy. Escopo: construir tudo, validar local, deploy de migration em prod = gate humano.",
+    "suggested_stack": null,
+    "status": "em_andamento",
+    "termination_reason": null,
+    "started_at": "2026-06-26T23:15:45Z",
+    "finished_at": null
+  },
+  "prerequisites": {
+    "briefing": {
+      "path": "/var/lib/metanoia-hub/docs/01-briefing-discovery/briefing.md",
+      "sha256": "7bb2a93ab0a54f0c9bfe25fca0a6dc20a3d6c32803dfacc7f34d31bea9812ba1"
+    },
+    "constitution": {
+      "path": "/var/lib/metanoia-hub/docs/constitution.md",
+      "sha256": "433c220b3abd2f3b79779210d5a782448b1cf06b1236711720729e734f157689",
+      "version": "1.0.0"
+    }
+  },
+  "current_stage": "execute-task",
+  "next_instruction": "FASE 7 concluida: E2E criados (T-E1..T-E4, T-M1..T-M3) + validacao local completa. AGUARDANDO: revisao adversarial pelo PAI + abertura do PR feat/16-1-notif-preferencias-granulares contra dev.",
+  "waves": [
+    {
+      "id": "onda-001",
+      "started_at": "2026-06-26T23:17:02Z",
+      "finished_at": "2026-06-26T23:20:03Z",
+      "executed_stages": [
+        "specify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 181,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "specify",
+          "timestamp": "2026-06-26T23:19:46Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-002",
+      "started_at": "2026-06-26T23:21:55Z",
+      "finished_at": "2026-06-26T23:24:07Z",
+      "executed_stages": [
+        "clarify"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 132,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "model-selector",
+          "timestamp": "2026-06-26T23:22:36Z",
+          "decision_id": "dec-005"
+        },
+        {
+          "skill": "clarify-asker",
+          "timestamp": "2026-06-26T23:23:43Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-003",
+      "started_at": "2026-06-26T23:27:21Z",
+      "finished_at": "2026-06-26T23:37:08Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 587,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "plan",
+          "timestamp": "2026-06-26T23:34:43Z",
+          "decision_id": null
+        },
+        {
+          "skill": "validate-documentation-substituido",
+          "timestamp": "2026-06-26T23:35:33Z",
+          "decision_id": null
+        },
+        {
+          "skill": "owasp-security",
+          "timestamp": "2026-06-26T23:36:57Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-004",
+      "started_at": "2026-06-26T23:39:52Z",
+      "finished_at": "2026-06-26T23:45:19Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 327,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "checklist",
+          "timestamp": "2026-06-26T23:45:19Z",
+          "decision_id": null
+        }
+      ]
+    },
+    {
+      "id": "onda-005",
+      "started_at": "2026-06-26T23:46:40Z",
+      "finished_at": "2026-06-26T23:56:01Z",
+      "executed_stages": [
+        "create-tasks"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 561,
+      "termination_reason": "etapa_concluida_avancando",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-26T23:47:46Z",
+          "decision_id": "dec-018"
+        },
+        {
+          "skill": "create-tasks",
+          "timestamp": "2026-06-26T23:51:50Z",
+          "decision_id": null
+        },
+        {
+          "skill": "validate-tasks-template",
+          "timestamp": "2026-06-26T23:54:58Z",
+          "decision_id": "dec-020"
+        },
+        {
+          "skill": "validate-docs-rendered",
+          "timestamp": "2026-06-26T23:55:45Z",
+          "decision_id": "dec-021"
+        }
+      ]
+    },
+    {
+      "id": "onda-006",
+      "started_at": "2026-06-26T23:59:30Z",
+      "finished_at": "2026-06-27T00:22:07Z",
+      "executed_stages": [
+        "execute-task"
+      ],
+      "tool_calls": 0,
+      "wallclock_seconds": 1357,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": []
+    },
+    {
+      "id": "onda-007",
+      "started_at": "2026-06-27T00:35:16Z",
+      "finished_at": "2026-06-27T00:36:00Z",
+      "executed_stages": [],
+      "tool_calls": 0,
+      "wallclock_seconds": 44,
+      "termination_reason": "concluido",
+      "next_wave_scheduled_for": null,
+      "skills_invoked": [
+        {
+          "skill": "execute-task",
+          "timestamp": "2026-06-27T00:36:00Z",
+          "decision_id": "dec-025"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "wave_id": "init",
+      "timestamp": "2026-06-26T23:15:45Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda init (fase specify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=specify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-002",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T23:17:27Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notif-preferencias-granulares)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "termos derivados da feature: story preferencias granulares notificacao tipo fr78 tabela",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-003",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T23:19:46Z",
+      "stage": "specify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skill specify invocada — spec.md gerada em docs/specs/notif-preferencias-granulares/",
+      "options_considered": [
+        "concluir-specify",
+        "abortar",
+        "clarificar"
+      ],
+      "choice": "concluir-specify",
+      "rationale": "Story file completa com 8 ACs, recon prévio do código base eliminou ambiguidades; 4 user stories independentes; 3 desvios story→spec documentados (system_announcement→system, delivered→metadata, enforcement lazy sem Keycloak listener)",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-004",
+      "wave_id": "onda-001",
+      "timestamp": "2026-06-26T23:20:52Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 1 (fase clarify)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=clarify (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-005",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-26T23:22:36Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para subagente feature-00c-clarify-asker",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual",
+        "fallback-default"
+      ],
+      "choice": "manter-atual",
+      "rationale": "nenhum sinal do catalogo detectado nos 48 tokens validos do input; sem evidencia para sugerir troca de modelo (rasa=0 media=0 profunda=0).",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-006",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-26T23:23:43Z",
+      "stage": "clarify",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "clarify-asker retornou perguntas:[] — spec auto-suficiente (0 NEEDS CLARIFICATION). Invariante I1: answerer NAO spawnado (sem spawn real)",
+      "options_considered": [
+        "spawnar-answerer",
+        "avancar-para-plan"
+      ],
+      "choice": "avancar-para-plan",
+      "rationale": "asker confirmou que todos os 11 FRs + 4 user stories + edge cases cobrem produto; nenhuma decisao de produto genuina nao-resolvivel por sonda; desvios story->spec ja documentados em dec-003",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-007",
+      "wave_id": "onda-002",
+      "timestamp": "2026-06-26T23:25:19Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 2 (fase plan)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:opus",
+      "rationale": "sugerido=opus aplicado=opus origem=mapa | faixa=profunda fase=plan (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-008",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:27:21Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "read-back PRE-DECISAO: K=4 achados injetados (anti-eco feature=notif-preferencias-granulares)",
+      "options_considered": [
+        "injetar-achados",
+        "no-op"
+      ],
+      "choice": "injetar-achados",
+      "rationale": "Achados relevantes: metadata=JSONB no Prisma (infra-notificacoes); owasp MEDIUM sobre z.record metadata como vetor stored-XSS; padrao de tabela+coluna",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-009",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:31:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Enforcement lazy do Lider: como o worker (sem token HTTP) resolve papel. Opcoes: (a) carregar roles no job payload, (b) lookup DB user_tenants.role, (c) Keycloak admin API",
+      "options_considered": [
+        "payload-carry",
+        "db-lookup-user-tenants",
+        "keycloak-admin-api"
+      ],
+      "choice": "db-lookup-user-tenants",
+      "rationale": "user_tenants.role existe no schema (default participante); lookup tenant-scoped por (user_id,tenant_id) e barato (~5-20ms), nao infla payload nem depende de evento Keycloak. No path HTTP (GET/PATCH) o papel vem do token (AuthenticatedUser.roles). Keycloak admin nao tem metodo inverso (roles-by-user).",
+      "justification_score": 3,
+      "evidence": "197:model UserTenant {\n198-  id        String    @id @db.Uuid\n199-  userId    String    @map(\"user_id\") @db.Uuid\n200-  tenantId  String    @map(\"tenant_id\") @db.Uuid\n201-  role      String    @default(\"participante\")\n202-  createdAt DateTime  @default(now()) @map(\"created_at\")\n203-  deletedAt DateTime? @map(\"deleted_at\") @db.Timestamptz",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-010",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:31:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Registro de notificacao suprimida por preferencia sem alterar tabela notifications",
+      "options_considered": [
+        "novo-status-suppressed",
+        "status-failed+metadata.reason",
+        "nova-coluna-delivered"
+      ],
+      "choice": "status-failed+metadata.reason",
+      "rationale": "Enum NotificationStatus=pending|sent|failed|read nao tem suppressed; adicionar valor exigiria migration de enum e quebraria Record exaustivo no FE (licao Epic 14-3). status=failed + metadata.reason=user_preference discrimina sem alterar schema.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-011",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:34:43Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Skill plan executada inline: plan.md + research.md + data-model.md + contracts/ gerados em docs/specs/notif-preferencias-granulares/",
+      "options_considered": [
+        "concluir-plan",
+        "revisar"
+      ],
+      "choice": "concluir-plan",
+      "rationale": "Plano resolve os 8 itens inegociaveis com simbolos REAIS verificados via recon (enums, worker l.115, RLS 14-1, user_tenants.role, RedisService, generateId, silence hook). Defaults no service, status=failed+metadata.reason, enforcement lazy 2-caminhos.",
+      "justification_score": 3,
+      "evidence": "plan.md=241L research.md=181L data-model.md=214L contracts=2 files",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-012",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:35:33Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate doc-quality (validate-documentation): skill nao instalada em ~/.claude/skills neste ambiente. Substituido por checagem deterministica (grep TBD/TODO/FIXME=0 reais; headers presentes 20/13/11; 14 cross-refs a simbolos reais)",
+      "options_considered": [
+        "rodar-gate",
+        "skip-com-justificativa-substituido-por-check-deterministico"
+      ],
+      "choice": "skip-com-justificativa-substituido-por-check-deterministico",
+      "rationale": "validate-documentation ausente (ls ~/.claude/skills nao lista). Check deterministico: 0 placeholders reais (matches sao 'todos'=all PT-BR e snippets z.enum([...]) verbatim), estrutura completa, cross-refs reais.",
+      "justification_score": 2,
+      "evidence": "headers plan/research/data-model=20/13/11; cross-refs reais=14; placeholders reais=0",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-013",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:36:57Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate owasp-security executado sobre arquitetura planejada (IDOR, RLS, enum-validation, Lider-422, metadata-XSS, cache-key). Resultado: 0 high/critical; 1 MEDIUM (mismatch 422->400 do ZodValidationPipe) corrigido nos docs; 1 LOW (nota SQL-injection bind params) adicionada.",
+      "options_considered": [
+        "prosseguir-0-high-critical",
+        "escalar-para-humano"
+      ],
+      "choice": "prosseguir-0-high-critical",
+      "rationale": "IDOR-safe por /users/me sem :userId; RLS+withTenantTx com tenant UUID-validado antes de SET LOCAL; binds $N::uuid (sem interpolacao de input); 422 do Lider via UnprocessableEntityException explicita; metadata so constante server-side.",
+      "justification_score": 3,
+      "evidence": "ZodValidationPipe: 1:import { BadRequestException, Injectable, type PipeTransform } from '@nestjs/common';\n11:      throw new BadRequestException({\n12:        statusCode: 400, ;; withTenantTx: 53:  if (!UUID_RE.test(tenantId)) {\n54:    throw new Error(`Refusing SET LOCAL with non-UUID tenant_id \"${tenantId}\"`);",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-014",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:36:57Z",
+      "stage": "plan",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Finding owasp MEDIUM: contrato dizia 422 para notification_type/channel invalido, mas ZodValidationPipe do projeto lanca BadRequestException (400). Corrigido em api.md + plan.md + teste T-U2.",
+      "options_considered": [
+        "corrigir-agora",
+        "aceitar-risco",
+        "escalar-para-humano"
+      ],
+      "choice": "corrigir-agora",
+      "rationale": "Contrato precisa refletir o status REAL (400 enum / 422 Lider) p/ testes de integracao nao falharem. Corrigido nos 3 artefatos.",
+      "justification_score": 3,
+      "evidence": "1:import { BadRequestException, Injectable, type PipeTransform } from '@nestjs/common';\n11:      throw new BadRequestException({\n12:        statusCode: 400,",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-015",
+      "wave_id": "onda-003",
+      "timestamp": "2026-06-26T23:38:29Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 3 (fase checklist)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=checklist (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-016",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-26T23:40:06Z",
+      "stage": "checklist",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio onda checklist: specify+clarify+plan concluidas, artefatos OK",
+      "options_considered": [
+        "iniciar-checklist",
+        "abortar"
+      ],
+      "choice": "iniciar-checklist",
+      "rationale": "Plan.md, spec.md, research.md, data-model.md e contracts/ presentes; OWASP 0 high/critical; sem bloqueios pendentes",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-017",
+      "wave_id": "onda-004",
+      "timestamp": "2026-06-26T23:45:28Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 4 (fase create-tasks)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=media fase=create-tasks (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-018",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-26T23:47:46Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio de create-tasks: gerando tasks.md a partir de spec+plan+data-model+checklists",
+      "options_considered": [
+        "gerar-tasks-completo",
+        "pausar-humano"
+      ],
+      "choice": "gerar-tasks-completo",
+      "rationale": "Todos os 11 CHK {humano} resolvidos por sonda/default: user_tenants tem @@unique([userId, tenantId]) (N/A indice extra); textos PT-BR estao no story file; demais por defaults sensatos do plan.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-019",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-26T23:51:50Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Resolucao dos 11 itens {humano} por sonda empirica — CHK073: user_tenants @@unique([userId,tenantId]) CONFIRMADO em schema.prisma:207; CHK055 textos PT-BR do story file verbatim; CHK060 PATCH atomico 1 request; CHK062 estado erro+retry; CHK048 toggle disabled durante PATCH; CHK045 ordem pastoral",
+      "options_considered": [
+        "resolver-por-sonda",
+        "pausar-humano"
+      ],
+      "choice": "resolver-por-sonda",
+      "rationale": "CHK073 N/A: sonda grep confirmou @@unique existente. Restantes resolvidos por defaults do plan.md e story file. Nenhuma decisao de produto bloqueante.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-020",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-26T23:54:58Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate template-fidelity (validate-tasks-template.sh): critical=0, warning=0",
+      "options_considered": [
+        "aceitar",
+        "retrabalhar"
+      ],
+      "choice": "aceitar",
+      "rationale": "v1 tinha critical: falta de tags [C]/[A]/[M] + legendas + resumo. v2 corrigida: todas as 21 tasks com criticidade, legenda de status+criticidade, Resumo Quantitativo, Escopo Coberto/Excluido. Gate passou critical=0 warning=0.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-021",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-26T23:55:45Z",
+      "stage": "create-tasks",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Gate docs-render: skill validate-docs-rendered indisponivel; verificacao manual (code blocks com linguagem, sem links quebrados, sem Mermaid invalido)",
+      "options_considered": [
+        "skip-com-justificativa",
+        "escalar-para-humano"
+      ],
+      "choice": "skip-com-justificativa",
+      "rationale": "Skill validate-docs-rendered nao existe no harness atual. Verificacao manual: 1 code block (Matriz Dependencias) corrigido para 'text'; zero links internos; zero Mermaid blocks; zero frontmatter obrigatorio em tasks.md. Nenhum finding critico detectado.",
+      "justification_score": 2,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-022",
+      "wave_id": "onda-005",
+      "timestamp": "2026-06-26T23:56:54Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 5 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-023",
+      "wave_id": "onda-006",
+      "timestamp": "2026-06-27T00:21:22Z",
+      "stage": "execute-task",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "FASE 1-6 implementadas: contratos Zod, migration RLS, service+controller, worker, FE page",
+      "options_considered": [
+        "implementar",
+        "bloquear",
+        "pular"
+      ],
+      "choice": "implementar",
+      "rationale": "Todas as 6 fases (contratos, migration, backend, worker, FE, migração silenciar) implementadas. Tests: types 636/636, web 1000/1000, api service 6/6, RLS 4/4 2×. Lint clean. Build clean. a11y 3/3 gates pass.",
+      "justification_score": 3,
+      "evidence": "pnpm --filter @metanoia/types test: 636 passed; pnpm --filter @metanoia/web test: 1000 passed; RLS: 4 passed 2×; lint: 0 errors",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-024",
+      "wave_id": "onda-006",
+      "timestamp": "2026-06-27T00:23:54Z",
+      "stage": "model-routing",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Selecao de modelo para onda 6 (fase execute-task)",
+      "options_considered": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "manter-atual"
+      ],
+      "choice": "model:sonnet",
+      "rationale": "sugerido=sonnet aplicado=sonnet origem=mapa | faixa=rasa fase=execute-task (mapa primario)",
+      "justification_score": 0,
+      "evidence": null,
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-025",
+      "wave_id": "onda-007",
+      "timestamp": "2026-06-27T00:35:30Z",
+      "stage": "execute-task-fase7",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "Inicio FASE 7: E2E tests (7.1 toggle+rollback+Lider; 7.2 migracao silenciar) + validacao final completa",
+      "options_considered": [
+        "implementar-e2e-e-validar",
+        "skip-e2e",
+        "abortar"
+      ],
+      "choice": "implementar-e2e-e-validar",
+      "rationale": "E2E criados para 7 cenarios (T-E1..T-E4, T-M1..T-M3). Validacao local: lint OK, types(53/636), api unit(6/6), web(150/1000), turbo build 3/3, API boot 401 no endpoint novo",
+      "justification_score": 3,
+      "evidence": "turbo build: Tasks: 3 successful, 3 total; web tests: 150 passed (150); 1000 passed (1000); API boot HTTP 401 em /api/v1/users/me/notification-preferences",
+      "references": [],
+      "originating_artifact": null
+    },
+    {
+      "id": "dec-026",
+      "wave_id": "onda-007",
+      "timestamp": "2026-06-27T00:36:47Z",
+      "stage": "execute-task-fase7",
+      "agent": "agente-00c-feature-orchestrator",
+      "context": "next-env.d.ts modificado no working tree — NAO commitar per instrucao do operador (dec-023)",
+      "options_considered": [
+        "excluir-do-commit",
+        "incluir-no-commit"
+      ],
+      "choice": "excluir-do-commit",
+      "rationale": "Arquivo gerado automaticamente pelo Next.js; instrucao explicita do operador: NÃO commitar apps/web/next-env.d.ts",
+      "justification_score": 3,
+      "evidence": "git status mostra: M apps/web/next-env.d.ts; operador instruiu NUNCA commitar este arquivo",
+      "references": [],
+      "originating_artifact": null
+    }
+  ],
+  "human_blocks": [],
+  "budgets": {
+    "max_recursion": 3,
+    "current_subagent_depth": 1,
+    "max_retro_executions_per_feature": 2,
+    "retro_executions_consumed": 0,
+    "max_cycles_per_stage": 5,
+    "cycles_consumed_current_stage": 0,
+    "tool_calls_threshold_wave": 80,
+    "wallclock_threshold_seconds": 5400,
+    "state_size_threshold_bytes": 1048576,
+    "tool_calls_current_wave": 0,
+    "current_wave_start": "2026-06-27T00:35:16Z"
+  },
+  "accumulated_metrics": {
+    "waves_total": 7,
+    "tool_calls_total": 0,
+    "wallclock_total_seconds": 3189,
+    "max_depth_reached": 2,
+    "subagents_spawned": 1,
+    "decisions_total": 26,
+    "human_blocks_total": 0,
+    "global_skill_suggestions_total": 0,
+    "toolkit_issues_opened": 0
+  },
+  "external_urls_whitelist": [],
+  "circular_movement_history": [],
+  "initial_key_aspects": [
+    "story",
+    "preferencias",
+    "granulares",
+    "notificacao",
+    "tipo",
+    "fr78",
+    "tabela"
+  ],
+  "events": [
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-26T23:17:20Z",
+      "description": "etapa=specify hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-26T23:20:26Z",
+      "description": "onda-001 specify concluida; proxima: clarify"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-26T23:24:49Z",
+      "description": "onda-002 clarify encerrada (etapa_concluida_avancando), aguardando wakeup para onda plan"
+    },
+    {
+      "event_type": "recall_consulted",
+      "timestamp": "2026-06-26T23:27:21Z",
+      "description": "etapa=plan hits=4"
+    },
+    {
+      "event_type": "schedule_wait",
+      "timestamp": "2026-06-27T00:22:22Z",
+      "description": "onda-006 concluida; FASE 7 (E2E+validacao) pendente"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "1.1",
+      "title": "Task 1.1",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:52Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.1",
+      "title": "Task 2.1",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:52Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.2",
+      "title": "Task 2.2",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "2.3",
+      "title": "Task 2.3",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.1",
+      "title": "Task 3.1",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.2",
+      "title": "Task 3.2",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "3.3",
+      "title": "Task 3.3",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.1",
+      "title": "Task 4.1",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "4.2",
+      "title": "Task 4.2",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.1",
+      "title": "Task 5.1",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.2",
+      "title": "Task 5.2",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.3",
+      "title": "Task 5.3",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "5.4",
+      "title": "Task 5.4",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "6.1",
+      "title": "Task 6.1",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "6.2",
+      "title": "Task 6.2",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "6.3",
+      "title": "Task 6.3",
+      "wave_id": "onda-006",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/api/prisma/schema.prisma",
+        "apps/api/src/notifications/digest.service.ts",
+        "apps/api/src/notifications/notifications.module.ts",
+        "apps/api/src/notifications/notifications.service.ts",
+        "apps/api/src/notifications/notifications.worker.ts",
+        "apps/web/messages/pt-BR.json",
+        "apps/web/next-env.d.ts",
+        "packages/types/src/index.ts",
+        "packages/types/src/notification.ts"
+      ],
+      "recorded_at": "2026-06-27T00:21:53Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "7.1",
+      "title": "Testes E2E toggle otimista + rollback + Lider",
+      "wave_id": "onda-007",
+      "outcome": "pass",
+      "tests_run": 4,
+      "tests_passed": 4,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/e2e/notifications/notification-preferences.spec.ts"
+      ],
+      "recorded_at": "2026-06-27T00:35:41Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "7.2",
+      "title": "Testes E2E migracao silenciar (T-M1, T-M2, T-M3)",
+      "wave_id": "onda-007",
+      "outcome": "pass",
+      "tests_run": 3,
+      "tests_passed": 3,
+      "lint_ok": true,
+      "touched_files": [
+        "apps/web/e2e/notifications/notification-preferences.spec.ts"
+      ],
+      "recorded_at": "2026-06-27T00:35:41Z",
+      "source": "execute-task"
+    },
+    {
+      "task_id": "7.3",
+      "title": "Validacao completa turbo build + boot da API",
+      "wave_id": "onda-007",
+      "outcome": "pass",
+      "tests_run": 0,
+      "tests_passed": 0,
+      "lint_ok": true,
+      "touched_files": [],
+      "recorded_at": "2026-06-27T00:35:41Z",
+      "source": "execute-task"
+    }
+  ]
+}

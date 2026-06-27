@@ -227,4 +227,18 @@ export class NotificationsService {
     return (rows as Array<{ id: string }>).length;
   }
 
+  /**
+   * getTypeById — fetch the notification_type for a given notification id.
+   * Story 16-1: fallback for jobs enqueued before type was added to payload.
+   * Returns null if the notification does not exist.
+   */
+  async getTypeById(notificationId: string): Promise<string | null> {
+    const rows = await withTenantTx(this.prisma, async (tx) => {
+      return tx.$queryRaw<Array<{ type: string }>>`
+        SELECT type FROM notifications WHERE id = ${notificationId}::uuid LIMIT 1
+      `;
+    });
+    return rows.length > 0 ? rows[0].type : null;
+  }
+
 }

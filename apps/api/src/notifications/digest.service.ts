@@ -48,6 +48,7 @@ export class DigestService implements OnModuleInit {
       userId,
       channel: channel as NotificationJobPayload['channel'],
       correlationId,
+      type: type as NotificationJobPayload['type'], // Story 16-1: enable worker preference check
     };
 
     const isCritical = (CRITICAL_NOTIFICATION_TYPES as readonly string[]).includes(type);

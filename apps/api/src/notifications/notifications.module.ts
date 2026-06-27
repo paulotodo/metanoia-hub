@@ -15,6 +15,8 @@ import { EMAIL_HEALTH_PORT } from './ports/email-health.port';
 import { ResendHealthPort } from '../admin/health/resend-health.port';
 import { DigestService } from './digest.service';
 import { TenantsModule } from '../tenants/tenants.module';
+import { NotificationPreferencesService } from './preferences/notification-preferences.service';
+import { NotificationPreferencesController } from './preferences/notification-preferences.controller';
 
 /**
  * NotificationsModule — Story 14-1 + Story 14-3 (email channel) infrastructure.
@@ -52,11 +54,13 @@ import { TenantsModule } from '../tenants/tenants.module';
       provide: EMAIL_HEALTH_PORT,
       useClass: ResendHealthPort,
     },
+    // Story 16-1: Preferences
+    NotificationPreferencesService,
     // SSE
     SseConnectionManager,
     SseRedisService,
   ],
-  controllers: [NotificationsController, SseController],
-  exports: [NotificationsService],
+  controllers: [NotificationsController, SseController, NotificationPreferencesController],
+  exports: [NotificationsService, NotificationPreferencesService],
 })
 export class NotificationsModule {}

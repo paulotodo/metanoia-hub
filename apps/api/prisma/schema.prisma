@@ -1104,3 +1104,21 @@ model IntegrationHealthLog {
   @@index([integrationName, checkedAt(sort: Desc)], name: "integration_health_log_name_checked_idx")
   @@map("integration_health_log")
 }
+
+/// NotificationPreference — preferências granulares de notificação por tipo e canal.
+/// Story 16-1 (FR78): usuário configura inApp/email por tipo.
+/// RLS tenant_isolation espelha padrão da migration 14-1 (notifications).
+/// id gerado pela aplicação via generateId() (uuidv7) — SEM @default.
+model NotificationPreference {
+  id               String              @id @db.Uuid
+  tenantId         String              @map("tenant_id") @db.Uuid
+  userId           String              @map("user_id") @db.Uuid
+  notificationType NotificationType    @map("notification_type")
+  channel          NotificationChannel
+  enabled          Boolean
+  updatedAt        DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([userId, tenantId, notificationType, channel], name: "notif_prefs_user_tenant_type_channel_uq")
+  @@index([tenantId], name: "notification_preferences_tenant_idx")
+  @@map("notification_preferences")
+}
